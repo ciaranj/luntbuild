@@ -1,0 +1,376 @@
+<project name="luntbuild" default="installer" basedir="..">
+
+    <property name="buildVersion" value="1.2.2"/>
+	<property name="fileVersion" value="1.2.2"/>
+    <property name="buildId" value=""/>
+    <property name="artifactsDir" value="${basedir}/distribute"/>
+	<property name="junitHtmlReportDir" value="test/junitHtmlReport"/>
+    <property name="buildDate" value=""/>
+
+    <property name="compile-with-debug" value="on"/>
+    <property name="compile-source-level" value="1.4"/>
+	<property name="useDemo" value=""/>
+
+    <patternset id="web.images">
+        <include name="**/*.gif"/>
+        <include name="**/*.bmp"/>
+        <include name="**/*.jpg"/>
+        <include name="**/*.png"/>
+    	<include name="**/*.ico"/>
+    </patternset>
+
+    <patternset id="web.css">
+        <include name="**/*.css"/>
+    </patternset>
+
+    <patternset id="web.other_resources">
+        <include name="**/*.htm"/>
+        <include name="**/*.html"/>
+        <include name="**/*.jsp"/>
+        <include name="**/*.page"/>
+        <include name="**/*.jwc"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.properties"/>
+        <include name="**/*.library"/>
+        <include name="**/*.application"/>
+		<exclude name="**/web.xml"/>
+		<exclude name="**/applicationContext.xml"/>
+    </patternset>
+
+    <path id="classpath">
+        <fileset dir="lib" includes="**/*.jar"/>
+    </path>
+
+	<path id="classpath.test">
+		<fileset dir="lib" includes="**/*.jar"/>
+		<pathelement location="stage/web/WEB-INF/classes"/>
+		<pathelement location="test/classes"/>
+	</path>
+
+	<target name="webstage_compile">
+        <path id="classpath.demo">
+            <fileset dir="demo/lib" includes="**/*.jar"/>
+        </path>
+		<mkdir dir="stage/web/WEB-INF/classes"/>
+        <javac sourcepath="" srcdir="src" destdir="stage/web/WEB-INF/classes"
+            debug="${compile-with-debug}" source="${compile-source-level}">
+            <classpath refid="classpath"/>
+        </javac>
+	</target>
+
+    <target name="webstage" depends="webstage_compile" >
+		<filter token="installDir" value="D:/luntbuild-install-dir"/>
+		<filter token="sessionTimeout" value="30"/>
+		<filter token="luntbuildPassword" value="luntbuild"/>
+		<copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
+			overwrite="true" filtering="true" />
+		<copy file="web/WEB-INF/applicationContext.xml"
+			tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+		<copy todir="stage/web/images" flatten="true">
+			<fileset dir="web">
+				<patternset refid="web.images"/>
+			</fileset>
+			<fileset dir="src">
+				<patternset refid="web.images"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/web/css" flatten="true">
+			<fileset dir="web">
+				<patternset refid="web.css"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/web">
+			<fileset dir="web">
+				<patternset refid="web.other_resources"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/web/WEB-INF/lib">
+			<fileset dir="lib">
+				<exclude name="**/servlet*.jar"/>
+			</fileset>
+		</copy>
+        <copy todir="stage/web/WEB-INF/classes">
+            <fileset dir="src">
+                <patternset refid="web.other_resources"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Used for development, please do not remove. lubosp.
+    The luntbuild.war deployment file is in stage/luntbuild.war.
+      -->
+    <target name="war" depends="webstage">
+        <delete file="stage/web/WEB-INF/web.xml"/>
+        <filter token="installDir" value="D:/luntbuild-install-dir"/>
+        <filter token="sessionTimeout" value="30"/>
+        <filter token="luntbuildPassword" value="luntbuild"/>
+        <copy file="web/WEB-INF/web.xml" tofile="stage/web.xml"
+            overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/applicationContext.xml"
+            tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+        <war basedir="stage/web" destfile="stage/luntbuild.war" webxml="stage/web.xml"/>
+        <delete file="stage/web.xml"/>
+    </target>
+
+    <!-- Used for development, please do not remove. lubosp.
+    This can be used with MyEclipse Deploy J2EE Project to Server... action.
+    Just create a project luntbuild-deploy, run this target, and add deployment for the project.
+    Then you can just build luntbuild using deploy target, deploy it by clicking on
+    Deploy J2EE Project to Server... and selecting luntbuild-deploy deployment.
+    Now you can start Tomcat (or your favorite servlet container).
+      -->
+    <target name="deploy" depends="webstage">
+        <filter token="installDir" value="D:/luntbuild-install-dir"/>
+        <filter token="sessionTimeout" value="30"/>
+        <filter token="luntbuildPassword" value="luntbuild"/>
+        <copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
+            overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/applicationContext.xml"
+            tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+        <mkdir dir="../luntbuild-deploy"/>
+        <delete dir="../luntbuild-deploy/web" failonerror="false"/>
+        <mkdir dir="../luntbuild-deploy/web"/>
+        <copy todir="../luntbuild-deploy/web">
+            <fileset dir="stage/web"/>
+        </copy>
+    </target>
+    
+	<target name="api" depends="webstage_compile">
+		<copy todir="remoting">
+			<fileset dir="lib" includes="hessian*.jar"/>
+		</copy>
+		<jar basedir="stage/web/WEB-INF/classes" destfile="remoting/luntbuild-api.jar">
+			<include name="com/luntsys/luntbuild/facades/*.class"/>
+			<include name="com/luntsys/luntbuild/facades/lb12/*.class"/>
+		</jar>
+		<mkdir dir="remoting/samples/classes"/>
+		<javac sourcepath="" srcdir="remoting/samples/src" destdir="remoting/samples/classes"
+			debug="${compile-with-debug}" source="${compile-source-level}">
+			<classpath>
+				<fileset dir="remoting" includes="*.jar"/>
+			</classpath>
+		</javac>
+		<javadoc sourcepath="src" classpathref="classpath" destdir="remoting/javadoc"
+			author="true" version="true" use="true" windowtitle="Luntbuild remoting API">
+			<fileset dir="src" defaultexcludes="yes">
+				<include name="com/luntsys/luntbuild/facades/*.java"/>
+				<include name="com/luntsys/luntbuild/facades/lb12/*.java"/>
+			</fileset>
+			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
+		</javadoc>
+	</target>
+
+    <target name="compile-demo" description="Compiles demo launcher">
+        <mkdir dir="demo/classes"/>
+        <javac sourcepath="" srcdir="demo/src" destdir="demo/classes"
+            debug="${compile-with-debug}" source="${compile-source-level}">
+            <classpath refid="classpath"/>
+            <classpath refid="classpath.demo" />
+        </javac>
+        <unjar dest="demo/classes">
+            <fileset dir="demo/lib">
+                <include name="**/*.jar"/>
+            </fileset>
+        </unjar>
+        <jar destfile="demo/luntbuild-demo.jar" manifest="demo/META-INF/MANIFEST.MF">
+            <fileset dir="demo/classes" />
+        </jar>
+        <delete dir="demo/classes"/>
+    </target>
+
+	<target name="stage_docs">
+		<copy todir="stage/docs/guide">
+			<fileset dir="docs/guide">
+				<exclude name="*.xsl"/>
+				 <exclude name="*.docbook"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/docs/faq">
+			<fileset dir="docs/faq">
+				<exclude name="*.xsl"/>
+				<exclude name="*.docbook"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/docs/images">
+			<fileset dir="docs/images"/>
+		</copy>
+
+		<mkdir dir="stage/docs/javadoc"/>
+		<javadoc sourcepath="src" classpathref="classpath" destdir="stage/docs/javadoc"
+			author="true" version="true" use="true" windowtitle="Luntbuild Java Documentation">
+			<fileset dir="src" defaultexcludes="yes">
+				<include name="com/luntsys/luntbuild/facades/*.java"/>
+				<include name="com/luntsys/luntbuild/db/**/*.java"/>
+				<include name="com/luntsys/luntbuild/builders/**/*.java"/>
+				<include name="com/luntsys/luntbuild/utility/OgnlHelper.java"/>
+				<include name="com/luntsys/luntbuild/utility/Variable.java"/>
+				<include name="com/luntsys/luntbuild/utility/VariableHolder.java"/>
+			</fileset>
+			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
+		</javadoc>
+	</target>
+
+    <target name="stage" depends="webstage, api, stage_docs">
+        <!--
+                Writes some important informations about this build into a property file which
+                will be used by the application to show build version, date, etc.
+        -->
+        <propertyfile file="stage/buildInfo.properties">
+            <entry key="buildVersion" value="${buildVersion}"/>
+            <entry key="buildId" value="${buildId}"/>
+            <entry key="buildDate" value="${buildDate}"/>
+        </propertyfile>
+
+		<copy todir="stage/3rdparty_licenses">
+			<fileset dir="3rdparty_licenses"/>
+		</copy>
+
+		<filter token="installDir" value="$INSTALL_PATH"/>
+		<filter token="sessionTimeout" value="${sessionTimout}"/>
+		<filter token="luntbuildPassword" value="${luntbuildPassword}"/>
+		<copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
+			overwrite="true" filtering="true" />
+		<copy file="web/WEB-INF/applicationContext.xml"
+			tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+
+        <copy todir="stage">
+            <fileset dir="." includes="*.txt,*.properties"/>
+        </copy>
+
+        <copy todir="stage/osdependent">
+            <fileset dir="osdependent"/>
+        </copy>
+
+		<copy todir="stage/remoting">
+			<fileset dir="remoting"/>
+		</copy>
+		<copy todir="stage/scripts">
+			<fileset dir="installer/scripts"/>
+		</copy>
+		<copy todir="stage/contrib">
+			<fileset dir="contrib"/>
+		</copy>
+
+        <mkdir dir="stage/work"/>
+        <touch file="stage/work/dummy"/>
+        <mkdir dir="stage/publish"/>
+        <touch file="stage/publish/dummy"/>
+        <mkdir dir="stage/logs"/>
+        <touch file="stage/logs/luntbuild_log.txt"/>
+        <mkdir dir="stage/tmp"/>
+        <touch file="stage/tmp/dummy"/>
+
+		<delete>
+            <fileset dir="stage" includes="**/*.bak,**/*#*,**/.cvsignore"/>
+        </delete>      
+    </target>
+
+    <target name="clean">
+        <delete dir="stage" failonerror="no"/>
+        <delete dir="remoting/samples/classes" failonerror="no"/>
+        <delete dir="remoting/javadoc" failonerror="no"/>
+        <delete failonerror="no">
+			<fileset dir="remoting" includes="*.jar"/>
+		</delete>
+		<delete dir="test/junitReports"/>
+		<delete dir="test/classes"/>
+		<delete dir="${artifactsDir}"/>
+		<delete dir="${junitHtmlReportDir}"/>
+		<delete file="installer/install.xml.temp"/>
+        <delete dir="demo/classes" failonerror="no"/>
+        <delete file="demo/luntbuild-demo.jar" failonerror="no"/>
+        <delete file="db/luntbuild.script"/>
+        <delete file="db/luntbuild.script.base"/>
+        <delete file="db/luntbuild.script.demo"/>
+    </target>
+
+	<target name="test_compile" depends="webstage_compile">
+		<mkdir dir="test/classes"/>
+		<javac srcdir="test/src" destdir="test/classes" classpathref="classpath.test"/>
+	</target>
+
+	<target name="test" depends="test_compile">
+		<mkdir dir="test/junitReports"/>
+		<junit printsummary="yes">
+			<formatter type="xml"/>
+			<batchtest todir="test/junitReports">
+				<fileset dir="test/src">
+					<include name="**/*.java"/>
+				</fileset>
+			</batchtest>
+			<classpath refid="classpath.test"/>
+		</junit>
+
+		<mkdir dir="${junitHtmlReportDir}"/>
+		<junitreport todir="test/junitReports">
+			<fileset dir="test/junitReports">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report todir="${junitHtmlReportDir}"/>
+		</junitreport>
+	</target>
+
+	<target name="zip" depends="stage" description="Builds Luntbuild zip distribution">
+		<delete dir="stage/db"/>
+		<copy todir="stage/db">
+			<fileset dir="db/demo"/>
+		</copy>
+		<mkdir dir="${artifactsDir}"/>
+		<zip basedir="stage" destfile="${artifactsDir}/luntbuild-${fileVersion}.zip"/>
+	</target>
+
+    <!-- Allows us to use the IzPack Ant task -->
+    <taskdef name="izpack" classpath="installer/lib/standalone-compiler.jar"
+        classname="com.izforge.izpack.ant.IzPackTask"/>
+
+    <target name="installer" depends="stage" description="Builds Luntbuild installer">
+		<delete dir="stage/db"/>
+        <copy todir="stage/db">
+            <fileset dir="db"/>
+        </copy>
+		<mkdir dir="${artifactsDir}"/>
+		<filter token="appVersion" value="${buildVersion}" />
+		<copy file="installer/install.xml" tofile="installer/install.xml.temp"
+			overwrite="true" filtering="true" />
+        <izpack input="${basedir}/installer/install.xml.temp"
+            output="${artifactsDir}/luntbuild-${fileVersion}-installer.jar"
+            installerType="standard"
+            basedir="${basedir}/stage">
+            </izpack>
+    </target>
+    
+    <target name="standalone-demo" depends="stage, compile-demo" description="Builds Luntbuild standalone demo">
+		<delete dir="stage/db"/>
+        <copy todir="stage/db">
+            <fileset dir="db"/>
+        </copy>
+        <mkdir dir="${artifactsDir}"/>
+        <filter token="appVersion" value="${buildVersion}"/>
+        <copy file="${basedir}/demo/install.xml" tofile="${basedir}/demo/install.xml.temp"
+            overwrite="true" filtering="true" />
+        <delete dir="stage/srcipts"/>
+        <mkdir dir="stage/scripts"/>
+        <copy todir="stage/scripts">
+            <fileset dir="demo/scripts"/>
+        </copy>
+        <mkdir dir="stage/lib"/>
+        <copy file="lib/servlet-api.jar" tofile="stage/lib/servlet-api.jar" overwrite="true"/>
+        <copy todir="stage/lib" overwrite="true">
+            <fileset dir="demo/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+        <copy file="demo/luntbuild-demo.jar" tofile="stage/luntbuild-demo.jar" overwrite="true"/>
+        <izpack input="${basedir}/demo/install.xml.temp"
+            output="${artifactsDir}/luntbuild-${fileVersion}-demo-installer.jar"
+            installerType="standard"
+            basedir="${basedir}/stage"/>
+    </target>
+    
+</project>

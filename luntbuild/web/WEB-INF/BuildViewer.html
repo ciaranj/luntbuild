@@ -1,0 +1,111 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+</head>
+<span jwcid="$content$"> <span jwcid="@contrib:Choose"> <span jwcid="@contrib:When" condition="ognl:action != null"> <span jwcid="@RenderBlock" block="ognl:getComponent(action)"/> </span> <span jwcid="@contrib:Otherwise">
+<table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+  <tr> 
+    <td height="26" colspan="4" align="center" bgcolor="#AEDFFF"> <table width="100%" height="24"  border="0" cellpadding="0" cellspacing="0"> 
+        <tr> 
+          <td width="70%" align="center" class="buildTitleLeft"><strong><span jwcid="@Insert" value="ognl:build.version">luntbuild1.0</span></strong></td> 
+
+          <td width="10%" align="center" class="buildTitleRight">
+		  	<span jwcid="@Conditional" condition="ognl:junitHtmlReport!=null">
+          	<span jwcid="@GenericLink" href="ognl:'publish/'+build.schedule.project.name+'/'+build.schedule.name+'/'+build.version+ '/'+junitHtmlReport" title="junit report">junit report</span>
+			</span>
+          </td>
+          <td width="10%" align="center" class="buildTitleRight">
+          	<a jwcid="@Any" href="ognl:'publish/'+build.schedule.project.name+'/'+build.schedule.name+'/'+build.version+'/build_log.txt'" title="build log">build log</a>
+          </td>
+          <td width="10%" height="19" align="center" class="buildTitleRight">
+          	<a jwcid="@Any" href="ognl:'publish/'+build.schedule.project.name+'/'+build.schedule.name+'/'+build.version+'/revision_log.txt'" title="revision log">revision log</a>
+          </td>
+        </tr> 
+      </table></td> 
+  </tr> 
+  <tr> 
+    <td width="24%" height="29" class="propertyListName1"><strong><img src="images/project.gif" width="16" height="16" align="absmiddle"> project</strong></td> 
+    <td width="30%" class="propertyListName1">
+    	<a jwcid="@DirectLink" listener="ognl:container.listeners.gotoProject" parameters="ognl:build.schedule.project.id" href="#"> <span jwcid="@Insert" value="ognl:build.schedule.project.name">project1</span> </a>
+     </td>
+    <td width="24%" height="29" class="propertyListName1"><strong><img src="images/date.gif" width="16" height="14" align="absmiddle"> build start date </strong></td> 
+    <td width="29%" class="propertyListValue1"><span jwcid="@Insert" value="ognl:buildStartDate">2004/4/1</span></td> 
+  </tr> 
+  <tr> 
+    <td height="29" class="propertyListName2"><strong><img src="images/time.gif" width="17" height="14" align="absmiddle">  schedule</strong></td> 
+    <td class="propertyListName2">
+    	<a jwcid="@DirectLink" listener="ognl:container.listeners.gotoSchedule" parameters="ognl:build.schedule.project.id" href="#" anchor="ognl:build.schedule.id"> <span jwcid="@Insert" value="ognl:build.schedule.name">schedule1</span> </a>
+    </td>
+    <td width="24%" height="29" class="propertyListName2"><strong><img src="images/date.gif" width="16" height="14" align="absmiddle"> build finish date </strong></td> 
+    <td width="29%" class="propertyListValue2"><span jwcid="@Insert" value="ognl:buildEndDate">2004/4/1</span></td> 
+  </tr> 
+  <tr> 
+    <td width="24%" height="29" class="propertyListName1"><strong><img src="images/status.gif" width="21" height="18" align="absmiddle"> build status </strong></td> 
+    <td class="propertyListName1"><img jwcid="@Any" src="ognl:buildStatusGif" width="20" height="20" align="absmiddle"/> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.facades.Constants@getBuildStatusText(build.status)">success</span> </td>
+    <td class="propertyListName1"><strong><img src="images/interval.gif" width="16" height="14" align="absmiddle"> build duration</strong></td> 
+    <td class="propertyListValue1"><span jwcid="@Insert" value="ognl:buildCostTime">10</span> minutes</td> 
+  </tr> 
+  <tr> 
+    <td colspan="4" valign="top"> <table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+        <tr> 
+          <td colspan="2"><table width="100%" height="100%"  border="0" cellpadding="0" cellspacing="0"> 
+              <tr> 
+                <td height="24" colspan="4" align="center" class="artifactsTitle"><strong><img src="images/dirAndfile.gif" width="23" height="18" align="absmiddle"> Directory listing for <span jwcid="@Insert" value="ognl:relativePath">/artifacts</span></strong></td> 
+              </tr> 
+              <tr class="directoryTitle"> 
+                <td>Filename</td> 
+                <td>Size</td> 
+                <td>Last modified</td> 
+                <td>&nbsp;</td> 
+              </tr> 
+			  <span jwcid="@Conditional" condition="ognl:cssIndex = 0"/>
+              <span jwcid="@Foreach" source="ognl:files" value="ognl:currentFile"> 
+              <tr jwcid="@Any" class="ognl:fileRowCssClass"> 
+                <td width="28%" height="26">
+				<span jwcid="@Conditional" condition="ognl:currentFile.directory">
+					<a jwcid="@DirectLink" listener="ognl:listeners.listDir" parameters="ognl: relativePath + '/' + currentFile.name" href="#"><span jwcid="@Insert" value="ognl: currentFile.name+ '/'">luntbuild/</span></a>
+				</span>				
+				<span jwcid="@Conditional" condition="ognl:currentFile.file">
+					<a jwcid="@GenericLink" href="ognl:'publish/'+build.schedule.project.name+'/'+build.schedule.name+'/'+build.version +  relativePath + '/' + currentFile.name"><span jwcid="@Insert" value="ognl:currentFile.name">luntbuild.zip</span></a>
+				</span>
+				</td>
+                <td width="24%"> <span jwcid="@Conditional" condition="ognl:currentFile.file"><span jwcid="@Insert" value="ognl: currentFileLength">1.1mb</span> </span> </td> 
+                <td width="35%"> <span jwcid="@Conditional" condition="ognl:currentFile.name!='..'"> <span jwcid="@Insert" value="ognl: currentFileLastModified"> 2004/4/1 </span> </span> <span jwcid="@Conditional" condition="ognl:currentFile.name=='..'">&nbsp;</span> </td> 
+                <td width="13%" align="center">
+                	<span jwcid="@Conditional" condition="ognl:currentFile.name!='..' and isPrjAdministrable(build.schedule.project.id)">
+                	<a jwcid="@DirectLink" listener="ognl:listeners.deleteFile" parameters="ognl:currentFile" href="#" title="delete" ><img src="images/delete.gif" width="18" height="18" border="0" align="absmiddle"></a>
+                	</span>
+                	<span jwcid="@Conditional" condition="ognl:currentFile.name=='..' or !isPrjAdministrable(build.schedule.project.id)">
+                	&nbsp;
+                	</span>
+                </td>
+              </tr> 
+			  <span jwcid="@Conditional" condition="ognl: cssIndex = cssIndex + 1"/>
+              </span> 
+            </table></td> 
+        </tr> 
+		<span jwcid="@Conditional" condition="ognl:isPrjAdministrable(build.schedule.project.id)">
+        <tr>
+          <td align="left" class="ognl:artifactsTailCssClass" jwcid="@Any">
+            <form jwcid="@Form" listener="ognl:listeners.createDir" name="form2" method="post" action="">
+              <input name="textfield" type="text" class="inputBox" value="ognl:dirToBeCreate" size="18" jwcid="@TextField"/> 
+              <input type="submit" name="Submit2" value="mkdir"/> 
+            </form>
+		  </td>
+          <td jwcid="@Any" class="ognl:artifactsTailCssClass" align="left"> 
+		  <form jwcid="@Form" listener="ognl:listeners.upload" name="form1" enctype="multipart/form-data" method="post" action=""> 
+              <input name="file" type="file" size="50" jwcid="@Upload" file="ognl:fileToBeUpload"/> 
+              <input type="submit" name="Submit" value="upload"/> 
+          </form>
+		  </td> 
+        </tr> 
+		</span>
+      </table></td>
+  </tr> 
+</table> 
+</span> </span> <span jwcid="rebuild@Block"> <span jwcid="rebuildEditorComponent@RebuildEditor"/> </span> <span jwcid="deleteFile@Block"> 
+<table width="100%" height="100%"  border="0" cellspacing="0"> 
+  <tr> 
+    <td height="400" align="center" valign="middle"> <span jwcid="@luntbuild:YesNoBox" msg="Do you really want to delete this?" okListener="ognl:listeners.confirmDeleteFile" cancelListener="ognl:listeners.cancelDeleteFile"/> </td> 
+  </tr> 
+</table> 
+</span> </span>
