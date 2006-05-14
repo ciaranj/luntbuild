@@ -1,0 +1,52 @@
+<table width="100%" height="409"  border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="135" align="left" valign="top" bgcolor="#CCCCCC"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td height="30"><a jwcid="@DirectLink" listener="ognl:listeners.createProject" href="#">Create new project</a></td>
+      </tr>
+    </table> </td>
+    <td align="center" valign="top">
+    	<span jwcid="@contrib:Choose">
+    		<span jwcid="@contrib:When" condition="ognl:currentAction != null">
+    			<span jwcid="@RenderBlock" block="ognl:getComponent(currentAction)"/>
+    		</span>
+    		<span jwcid="@contrib:Otherwise">
+				<table width="100%"  border="1" cellpadding="2" cellspacing="0">
+				  <tr align="left">
+				    <td colspan="3" scope="col">This page shows all projects configured in this build system. 
+				    A project will be <br>
+				    configured with informations about version 
+				    control system and one or more views.</td>
+				  </tr>
+				  <tr>
+					<th width="20%" scope="col">Name</th>
+					<th width="69%" scope="col">Description</th>
+					<th scope="col">&nbsp;</th>
+				  </tr>
+				  <span jwcid="@Foreach" source="ognl:projects" value="ognl:currentProject">
+				  <tr>
+					<td align="left" valign="top">
+					<a href="#" jwcid="@DirectLink" listener="ognl:listeners.loadProject" parameters="ognl:currentProject.id">
+					<span jwcid="@Insert" value="ognl:currentProject.name">luntbuild</span>
+					</a></td>
+					<td align="left" valign="top"><span jwcid="@InsertText" value="ognl:currentProject.description">an auto-building tool</span></td>
+					<td align="left" valign="top">
+					<a href="#" jwcid="@DirectLink" listener="ognl:listeners.deleteProject" parameters="ognl:currentProject.id">delete</a>
+					</td>
+				  </tr>
+				  </span>
+				</table>
+    </span>	  </span>	</td>
+  </tr>
+</table>
+
+<span jwcid="delete@Block">
+<table width="100%" height="100%"  border="0" cellspacing="0">
+  <tr>
+    <td height="500" align="center" valign="middle">	
+	<span jwcid="@luntbuild:YesNoBox" msg="Do you really want to delete this project?" okListener="ognl:listeners.confirmDelete" cancelListener="ognl:listeners.cancelDelete"/>
+	</td>
+  </tr>
+</table>
+</span>
+

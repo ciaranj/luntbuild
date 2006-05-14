@@ -1,0 +1,6 @@
+<strong>page <span jwcid="@Insert" value="ognl:currentPage">1</span> of <span jwcid="@Insert" value="ognl:totalPages">1</span>
+<a jwcid="@DirectLink" listener="ognl:listeners.firstPage" parameters="ognl:navigateCount" disabled="ognl:currentPage <= 1" href="#">&lt;&lt;</a>
+<a jwcid="@DirectLink" listener="ognl:listeners.previousPage" parameters="ognl:navigateCount" disabled="ognl:currentPage <= 1" href="#">&lt;</a>
+<a jwcid="@DirectLink" listener="ognl:listeners.nextPage" parameters="ognl:navigateCount" disabled="ognl:currentPage >= totalPages" href="#">&gt;</a>
+<a jwcid="@DirectLink" listener="ognl:listeners.lastPage" parameters="ognl:navigateCount" disabled="ognl:currentPage >= totalPages" href="#">&gt;&gt;</a>
+</strong>
