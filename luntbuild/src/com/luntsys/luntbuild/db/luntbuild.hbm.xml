@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping package="com.luntsys.luntbuild.db">
+	<class name="Property" table="LB_PROPERTY">
+		<id name="name" type="string" column="NAME" length="255">
+			<generator class="assigned"/>
+		</id>
+		<property name="value" type="string" column="VALUE" length="255" />
+	</class>
+
+	<class name="Project" table="LB_PROJECT">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<property name="name" column="NAME" unique="true" not-null="true" length="255" />
+		<property name="description" column="DESCRIPTION" length="255" />
+
+		<property name="notifiers" column="NOTIFIERS" type="serializable" length="4096" />
+
+		<set name="notifyMappings" table="LB_NOTIFY_MAPPING" cascade="all-delete-orphan"
+			inverse="true" lazy="true">
+			<key column="FK_PROJECT_ID"/>
+			<one-to-many class="NotifyMapping"/>
+		</set>
+
+		<!-- serialized form of version control systems configured for this project -->
+		<property name="vcsList" type="serializable" column="VCS_LIST" length="65535" />
+
+		<!-- serialized form of builders configured for this project-->
+		<property name="builderList" type="serializable" column="BUILDER_LIST" length="65535" />
+
+		<set name="schedules" table="LB_SCHEDULE" cascade="delete" inverse="true" lazy="true">
+			<key column="FK_PROJECT_ID"/>
+			<one-to-many class="Schedule"/>
+		</set>
+		<set name="vcsLogins" table="LB_VCS_LOGIN" cascade="delete" inverse="true" lazy="true">
+			<key column="FK_PROJECT_ID"/>
+			<one-to-many class="VcsLogin"/>
+		</set>
+
+		<!-- bi-directional one-to-many association to RolesMapping -->
+		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="all-delete-orphan" inverse="true" lazy="true">
+			<key column="FK_PROJECT_ID"/>
+			<one-to-many class="RolesMapping"/>
+		</set>
+		<property name="variables" column="VARIABLES" length="2048" />
+		<property name="logLevel" column="LOG_LEVEL"/>
+	</class>
+
+	<class name="Schedule" table="LB_SCHEDULE">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<many-to-one name="project" class="Project" outer-join="true" not-null="true">
+			<column name="FK_PROJECT_ID" unique-key="PROJECT_SCHEDULE"/>
+		</many-to-one>
+		<property name="name">
+			<column name="NAME" length="255" not-null="true" unique-key="PROJECT_SCHEDULE"/>
+		</property>
+
+		<property name="description" column="DESCRIPTION" length="255" />
+
+		<property name="nextVersion" column="NEXT_VERSION" length="4096" />
+		
+		<!-- the serialized form of a Quartz trigger to represents the time schedule(refer
+		 to http://www.opensymphony.com/quartz/)
+		 The schedule can only be triggered manually -->
+		<property name="trigger" type="serializable" column="QUARTZ_TRIGGER" length="65535" />
+		<property name="dependentScheduleIds" type="serializable" column="DEPENDENT_SCHEDULE_IDS" length="65535" />
+		<property name="buildNecessaryCondition" column="BUILD_NECESSARY_CONDITION" length="255" />
+		<property name="associatedBuilderNames" column="ASSOCIATED_BUILDER_NAMES" type="serializable" length="4096"/>
+		<property name="associatedPostbuilderNames" column="ASSOCIATED_POSTBUILDER_NAMES" type="serializable" length="4096"/>
+		<property name="buildType" column="BUILD_TYPE"/>
+		<property name="labelStrategy" column="LABEL_STRATEGY"/>
+		<property name="notifyStrategy" column="NOTIFY_STRATEGY"/>
+		<property name="postbuildStrategy" column="POSTBUILD_STRATEGY"/>
+		<property name="triggerDependencyStrategy" column="TRIGGER_DEPENDENCY_STRATEGY"/>
+		<property name="status" column="STATUS"/>
+		<property name="statusDate" column="STATUS_DATE"/>
+		<property name="buildCleanupStrategy" column="BUILD_CLEANUP_STRATEGY"/>
+		<property name="buildCleanupStrategyData" column="BUILD_CLEANUP_STRATEGY_DATA" length="255" />
+		<property name="workingPath" column="WORKING_PATH" length="255" />
+		<set name="builds" table="LB_BUILD" inverse="true" cascade="delete"
+			lazy="true">
+			<key column="FK_SCHEDULE_ID"/>
+			<one-to-many class="Build"/>
+		</set>
+	</class>
+
+	<class name="VcsLogin" table="LB_VCS_LOGIN">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<many-to-one name="project" class="Project" outer-join="true"
+			not-null="true">
+			<column name="FK_PROJECT_ID" unique-key="PROJECT_LOGIN"/>
+		</many-to-one>
+		<property name="login" not-null="true">
+			<column name="LOGIN" unique-key="PROJECT_LOGIN"/>
+		</property>
+		<many-to-one name="user" class="User" outer-join="true" not-null="true">
+			<column name="FK_USER_ID"/>
+		</many-to-one>
+	</class>
+
+	<class name="NotifyMapping" table="LB_NOTIFY_MAPPING">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<many-to-one name="project" class="Project" not-null="true">
+			<column name="FK_PROJECT_ID"/>
+		</many-to-one>
+		<many-to-one name="user" class="User" not-null="true">
+			<column name="FK_USER_ID"/>
+		</many-to-one>
+	</class>
+
+	<class name="Build" table="LB_BUILD">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<property name="status" column="STATUS"/>
+		<property name="version" column="VERSION" length="255" />
+		<property name="labelStrategy" column="LABEL_STRATEGY"/>
+		<property name="postbuildStrategy" column="POSTBUILD_STRATEGY"/>
+		<property name="haveLabelOnHead" column="HAVE_LABEL_ON_HEAD"/>
+		<property name="buildType" column="BUILD_TYPE"/>
+		<property name="startDate" column="START_DATE"/>
+		<property name="endDate" column="END_DATE"/>
+		<property name="rebuild" column="REBUILD"/>
+		<!-- serialized form of version control systems attached to this build -->
+		<property name="vcsList" type="serializable" column="VCS_LIST" length="65535" />
+		<!-- serialized form of builders attached to this build-->
+		<property name="builderList" type="serializable" column="BUILDER_LIST" length="65535" />
+		<!-- serialized form of post-builders attached to this build-->
+		<property name="postbuilderList" type="serializable" column="POSTBUILDER_LIST" length="65535" />
+		<many-to-one name="schedule" class="Schedule"
+			column="FK_SCHEDULE_ID" outer-join="true" not-null="true"/>
+	</class>
+
+	<class name="User" table="LB_USER">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<property name="name" column="NAME" unique="true" not-null="true" length="255" />
+		<property name="password" column="PASSWORD" length="255" />
+		<property name="canCreateProject" column="CAN_CREATE_PROJECT"/>
+		<property name="contacts" column="CONTACTS" type="serializable" length="65535" />
+		<property name="fullname" column="FULLNAME" length="255" />
+
+		<set name="vcsLogins" table="LB_VCS_LOGIN" cascade="delete" inverse="true" lazy="true">
+			<key column="FK_USER_ID"/>
+			<one-to-many class="VcsLogin"/>
+		</set>
+		<set name="notifyMappings" table="LB_NOTIFY_MAPPING" cascade="delete" inverse="true" lazy="true">
+			<key column="FK_USER_ID"/>
+			<one-to-many class="NotifyMapping"/>
+		</set>
+		<!-- bi-directional one-to-many association to RolesMapping -->
+		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="delete" inverse="true" lazy="true">
+			<key column="FK_USER_ID"/>
+			<one-to-many class="RolesMapping"/>
+		</set>
+	</class>
+
+	<class name="Role" table="LB_ROLE">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<property name="name" column="NAME" not-null="true" unique="true" length="255" />
+
+		<!-- bi-directional one-to-many association to RolesMapping -->
+		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="delete" inverse="true" lazy="true">
+			<key column="FK_ROLE_ID"/>
+			<one-to-many class="RolesMapping"/>
+		</set>
+	</class>
+
+
+	<class name="RolesMapping" table="LB_ROLES_MAPPING">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<!-- bi-directional many-to-one association to User -->
+		<many-to-one name="user" class="User" not-null="true">
+			<column name="FK_USER_ID"/>
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Project -->
+		<many-to-one name="project" class="Project" not-null="true">
+			<column name="FK_PROJECT_ID"/>
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Role -->
+		<many-to-one name="role" class="Role" not-null="true">
+			<column name="FK_ROLE_ID"/>
+		</many-to-one>
+
+	</class>
+
+</hibernate-mapping>

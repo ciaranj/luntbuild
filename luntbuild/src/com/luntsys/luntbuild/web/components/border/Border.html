@@ -1,0 +1,43 @@
+<head>
+<title>Luntbuild - make software builds manageable</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link href="../../../../../../../web/WEB-INF/css/luntbuild.css" rel="stylesheet" type="text/css"/>
+</head>
+<span jwcid="$content$"><span jwcid="@Shell" title="ognl:title" refresh="ognl:refreshInterval" delegate="ognl:getComponent('header')">
+<body jwcid="@Body">
+<table width="100%" border="0" cellpadding="0" cellspacing="0"> 
+  <tr bordercolor="0"> 
+    <td bordercolor="0"> <table width="100%" height="93%" border="0" cellpadding="6" cellspacing="0" bgcolor="#336699"> 
+        <tr> 
+          <th height="33" align="left" class="logoText"> LUNTBUILD</th>
+          <th width="20%" align="right" nowrap><span class="productVersion"> <span jwcid="@InsertText" value="ognl:productVersion">luntbuild1.0</span> </span></th>
+          <span jwcid="@Conditional" condition="ognl:userGuideAvailable">
+          <th width="4%" align="center"><a jwcid="@GenericLink" href="ognl:'docs/guide/index.html'"><img src="images/help.gif" alt="help" width="18" height="18" border="0"></a></th>
+          </span>
+          <th width="4%" align="center"><a href="http://www.pmease.com/luntbuild/"><img src="images/home.gif" alt="Goto Luntbuild's home" width="22" height="18" border="0" align="absmiddle"></a></th>
+        </tr> 
+      </table></td> 
+  </tr> 
+  <tr> 
+    <td bordercolor="0"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="hierarchyNavigation"> 
+        <tr> 
+          <td height="20"> <span jwcid="$remove$"> <a href="#"> Home</a><span class="hierarchySymbol"> &gt; </span><a href="#">project - Luntbuild </a></span><img src="images/tree.gif" width="21" height="14" border="0" align="absmiddle">&nbsp;<span jwcid="@Foreach" source="ognl:page.hierarchyPageInfos" value="ognl:currentHierarchyPageInfo"><span jwcid="@ExternalLink" page="ognl:currentHierarchyPageInfo.pageName" parameters="ognl:currentHierarchyPageInfo.pageDataId"><span jwcid="@Insert" value="ognl:currentHierarchyPageInfo.pageDataDescription"/></span><span class="hierarchySymbol"> &gt; </span></span><span jwcid="@Insert" value="ognl:page.pageDataDescription"/></td> 
+          <td width="128" align="right"><span class="refreshText"><span jwcid="@Insert" value="ognl:refreshStatusText">REFRESH IS ON</span></span> <a href="#" jwcid="@DirectLink" listener="ognl:listeners.switchRefreshStatus"><img jwcid="@Any" src="ognl:refreshSwitchGif" alt="ognl:refreshSwitchText" width="18" height="14" border="0" align="absmiddle"/></a></td> 
+          <td width="107" align="right"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.showSystemLog"><img src="images/log.gif" alt="show system log" width="18" height="18" border="0" align="absmiddle"> system log </a></td>
+          <td width="50" align="right"><strong><a href="#" jwcid="@ServiceLink" service="ognl:@org.apache.tapestry.Tapestry@RESTART_SERVICE">logout</a></strong></td>
+        </tr>
+      </table></td> 
+  </tr> 
+  <tr align="center"> 
+    <td bordercolor="0"> <span jwcid="@RenderBody"> page content goes here </span> </td> 
+  </tr> 
+</table> 
+</body>
+</span>
+
+<span jwcid="@Block">
+<span jwcid="header@Header"/>
+</span>
+
+</span>
+
