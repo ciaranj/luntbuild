@@ -1,0 +1,110 @@
+<section><title>Configuring Ant Builder.</title>
+<para>
+    <variablelist>
+        <varlistentry>
+        <term>Name</term>
+        <listitem><para>
+        Provide a name to identify this builder, this name can be changed later.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Command to run Ant</term>
+        <listitem><para>
+        Specify the command to run Ant (normally path to ant.bat or ant shell script).
+        For example: /path/to/ant.
+        String enclosed by ${...} will be interpreted as OGNL expression, and it will be evaluated before execution.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para>
+        <note><para>A single argument that includes spaces should be quoted in order not to be interpreted as multiple arguments.</para></note>
+        <note><para>From available Ant command line options, you should not specify the option
+        &quot;-buildfile&quot; and &quot;-logfile&quot;,
+        which will be used by Luntbuild. Other options are allowed.</para></note>
+        <para>
+        You can modify the command to add Ant command line options and properties, for example -Ddebug=_debug.
+        </para>
+        </listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build script path</term>
+        <listitem><para>
+        The path of the Ant build script. If this path is not an absolute path, it is assumed, that it is relative
+        to the project work directory.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build targets</term>
+        <listitem><para>
+        Specify the target(s) to build. Use space to separate different targets (target name containing spaces should
+        be quoted in order not to be interpreted as multiple targets).
+		If not specified, the default target in the above Ant build file will be build.
+		You can also use OGNL expressions (${...}) to pass variables
+        as the target name. For example you can use ${build.schedule.name} to use different targets for different schedules.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build properties</term>
+        <listitem><para>
+		Define build properties here to pass into the ant build script. For example:
+        <simplelist>
+        <member>buildVersion=${build.version}</member>
+		<member>scheduleName=${build.schedule.name}</member>
+        </simplelist>
+        </para>
+        <para>
+		You should set one variable per line. OGNL expression can be used to form the value provided
+		it is enclosed by ${...}.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Environment variables</term>
+        <listitem><para>
+        Environment variables to set before running this builder. For example:
+        <simplelist>
+        <member>MYAPP_HOME=${build.schedule.workingDir}</member>
+		<member>SCHEDULE_NAME=${build.schedule.name}</member>
+        </simplelist>
+        </para>
+        <para>
+		You should specify one variable per line. OGNL expression can be inserted to form the value,
+		provided they are enclosed by ${...}.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build success condition</term>
+        <listitem><para>
+        The build success condition is an OGNL expression used to determine, if the build of the current project
+        was successful (root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object).
+		If left empty, the <emphasis>result==0 and logContainsLine("BUILD SUCCESSFUL")</emphasis>
+		value is assumed. When this expression evaluates to true, the build is considered successful.
+		Here are some examples to demonstrate format of this OGNL expression:
+        <simplelist>
+			<member>
+			<emphasis>result==0</emphasis>, here "result" represents return code of ant execution of the build file.
+			</member>
+			<member>
+			<emphasis>logContainsLine("^ERROR.*")</emphasis>, the expression will be true if the build's build log contains
+			a line that matches the regular expression pattern "^ERROR.*".
+			Please see <ulink url="http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html">
+			http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html
+			</ulink> for the format of the regular expressions.
+			</member>
+			<member>
+			The above expressions can be prefixed with a '!' character to inverse the value.
+			For example, !logContainsLine("^ERROR.*") will be true if the build log does not contain
+			a line that matches the specified pattern.
+			</member>
+			<member>
+			The above expressions can be joined into expression with "and", and "or".
+			For example, the expression <emphasis>result==0 and !logContainsLine("^ERROR.*")</emphasis>
+			will be true if Ant execution of the build returns 0, and the build log does not
+			contain any line starting with "ERROR".
+			</member>
+		</simplelist>
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>

@@ -1,0 +1,41 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting Cvs connection information.</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch09.html" title="Chapter 9. Creating Version Control System (VCS) Adaptor for the Project"><link rel="prev" href="ch09s02.html" title="Setting Base Clearcase connection information."><link rel="next" href="ch09s04.html" title="Setting File system connection information."></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting Cvs connection information.</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch09s02.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 9. Creating Version Control System (VCS) Adaptor for the Project</th><td width="20%" align="right"> <a accesskey="n" href="ch09s04.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id4764341"></a>Setting Cvs connection information.</h2></div></div></div><p>
+	In order to use this adaptor, install appropriate Cvs client based on your platform from
+	<a href="http://www.cvshome.org" target="_top">http://www.cvshome.org</a> or
+	<a href="http://www.cvsnt.org" target="_top">http://www.cvsnt.org</a> if you are using Windows platform.
+	</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+	Please keep time of the build server machine in sync with the Cvs server machine
+	to allow build server to detect repository changes in Cvs server more accurately.
+	Please make sure that times recorded in the Cvs revision log are in UTC time format instead of local time format.
+	</p></td></tr></table></div><p>
+	Here is the list of properties for this adaptor:
+    </p><div class="variablelist"><dl><dt><span class="term">Cvs root</span></dt><dd><p>
+        The Cvs root for this project, for example, :pserver:administrator@localhost:d:/cvs_repository.
+        If you are using ssh, the :ext: protocol will need to be specified, and proper ssh environment needs
+        to be set outside of Luntbuild. Please refer to your Cvs User's Guide for details.
+        </p></dd><dt><span class="term">Cvs password</span></dt><dd><p>
+        The Cvs password for above Cvs root if connecting using pserver protocol.
+        </p></dd><dt><span class="term">Is cygwin cvs?</span></dt><dd><p>
+        This property indicates whether or not the cvs executable being used is a cygwin one.
+        The possible values are "yes" or "no". When omitted, the "no" value is assumed.
+        </p></dd><dt><span class="term">Disable "-S" option?</span></dt><dd><p>
+        This property indicates whether or not the "-S" option for the log command should be disabled.
+        The possible values are "yes" or "no". When omitted, the "no" value is assumed.
+		The -S option used in the log command can speed up modification detection,
+		however some earlier versions of Cvs do not support this option.
+		In this case you should enter "yes" value to disable it.
+        </p></dd><dt><span class="term">Disable history command?</span></dt><dd><p>
+        This property indicates whether or not to disable the history command when performing modification detection.
+        The possible values are "yes" or "no". When omitted, the "no" value is assumed.
+		Using the history command in conjunction with the log command can speed up modification detection,
+		however some Cvs repositories may not hold history information of commits.
+		In this case you should enter "yes" value to disable it.
+        </p></dd><dt><span class="term">Cvs executable path</span></dt><dd><p>
+		The directory path, where your cvs executable file resides in.
+		It should be specified here, if it does not exist in the system path.
+		</p></dd><dt><span class="term">Quiet period</span></dt><dd><p>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </p></dd></dl></div><p>
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch09s02.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="ch09.html"><img src="../images/up.gif" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="ch09s04.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Setting Base Clearcase connection information. </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Setting File system connection information.</td></tr></table></div></body></html>

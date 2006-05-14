@@ -1,0 +1,169 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+</head>
+<span jwcid="$content$"> <span jwcid="@contrib:Choose"> <span jwcid="@contrib:When" condition="ognl:page.project.id != 0">
+<table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+  <tr> 
+    <td align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0"> 
+        <tr class="iconTable"> 
+          <td class="iconTable">&nbsp;</td> 
+          <td width="25" class="iconTable"><span jwcid="@Conditional" condition="ognl:isPrjAdministrable(page.project.id)"><a jwcid="@DirectLink" listener="ognl:listeners.createVcs" href="#"><img src="images/new.gif" title="new Version Control System" width="18" height="18" border="0" align="absmiddle"></a></span><span jwcid="@Conditional" condition="ognl:!isPrjAdministrable(page.project.id)">&nbsp;</span></td> 
+        </tr> 
+      </table></td> 
+  </tr> 
+  <tr> 
+    <td align="center" valign="top"> 
+	<span jwcid="@contrib:Choose"> 
+	<span jwcid="@contrib:When" condition="ognl:action != null">
+	<span jwcid="@RenderBlock" block="ognl:getComponent(action)"/>
+	</span> 
+	<span jwcid="@contrib:Otherwise"> 
+	<span jwcid="@Conditional" condition="ognl:page.project.vcsList.size()==0"> 
+      <table width="100%" height="100"  border="0" cellspacing="0"> 
+        <tr> 
+          <td height="100" align="center"><p><img src="images/sigh.gif" width="32" height="32"></p> 
+            <p><strong>No Version Control Systems defined! </strong></p></td> 
+        </tr> 
+      </table> 
+      </span> 
+	
+      <table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+        <span jwcid="@Foreach" source="ognl:page.project.vcsList" value="ognl:vcs" index="ognl:vcsIndex">
+        <tr> 
+          <td jwcid="@Any" colspan="4" align="center" valign="top" class="ognl:vcsCssClass">
+		  <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="vcsTable"> 
+              <tr> 
+                <td width="682" align="center" valign="middle" class="subIconTable"><a name="ognl:vcsIndex" id="ognl:vcsIndex" jwcid="@Any"/><img src="ognl:'images/' + vcs.iconName" width="18" height="18" align="absmiddle" jwcid="@Any"/>&nbsp;<span jwcid="@Insert" value="ognl:vcs.displayName">cvs</span></td>
+                <td width="25" align="center" valign="middle" class="subIconTable">&nbsp;</td>
+                <td width="25" align="center" valign="middle" class="subIconTable">&nbsp;</td>
+                <td width="25" align="center" valign="top" class="subIconTable"><span jwcid="@Conditional" condition="ognl:isPrjAdministrable(page.project.id)"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.editVcs" parameters="ognl:vcsIndex"><img src="images/edit.gif" title="edit" width="18" height="18" border="0" align="absmiddle"></a></span><span jwcid="@Conditional" condition="ognl:!isPrjAdministrable(page.project.id)">&nbsp;</span></td>
+                <td width="25" align="center" valign="top" class="subIconTable"><span jwcid="@Conditional" condition="ognl:isPrjAdministrable(page.project.id)"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.copyVcs" parameters="ognl:vcsIndex"><img src="images/copy.gif" title="copy" width="18" height="18" border="0" align="absmiddle"></a></span><span jwcid="@Conditional" condition="ognl:!isPrjAdministrable(page.project.id)">&nbsp;</span></td>
+                <td width="25" align="center" valign="top" class="subIconTable"><span jwcid="@Conditional" condition="ognl:isPrjAdministrable(page.project.id)"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.deleteVcs" parameters="ognl:vcsIndex"><img src="images/delete.gif" title="delete" width="18" height="18" border="0" align="absmiddle"></a></span><span jwcid="@Conditional" condition="ognl:!isPrjAdministrable(page.project.id)">&nbsp;</span></td>
+              </tr> 
+              <tr> 
+				<span jwcid="@Conditional" condition="ognl:cssIndex = 0"></span>
+                <td colspan="5" valign="top"><table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+				  <span jwcid="@Foreach" source="ognl:vcs.properties" value="ognl:vcsProperty">
+				  <tr>
+				    <td jwcid="@Any" class="ognl:propertyNameCssClass" width="25%" align="left" valign="top"><img src="images/property.gif" width="12" height="11"> 
+				    <span jwcid="@Insert" value="ognl:vcsProperty.displayName">field name</span>
+				    </td>
+				    <td jwcid="@Any" class="ognl:propertyValueCssClass" align="left" valign="top">
+				    	<span jwcid="@Conditional" condition="ognl:vcsProperty.secret">*****</span>
+				    	<span jwcid="@Conditional" condition="ognl:vcsProperty.secret">
+				    	</span>
+				    	<span jwcid="@Conditional" condition="ognl:!vcsProperty.secret">
+				    	<span jwcid="@Conditional" condition="ognl:!vcsProperty.multiLine">
+				    	<span jwcid="@Insert" value="ognl:vcsProperty.value">field name</span>
+				    	</span>
+				    	<span jwcid="@Conditional" condition="ognl:vcsProperty.multiLine">
+				    	<span jwcid="@InsertText" value="ognl:vcsProperty.value">field value</span>
+				    	</span>
+				    	</span>
+			    	</td>
+				  </tr>				  
+   				<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+				  </span>
+                  </table></td> 
+              </tr> 
+			  <span jwcid="@Conditional" condition="ognl:vcs.createNewModule() != null">
+			  <tr>
+                <td jwcid="@Any" class="ognl:modulesTitleCssClass" align="center"><img src="images/modules.gif" width="18" height="15" align="absmiddle"> <strong>modules</strong></td>
+                <td jwcid="@Any" class="ognl:modulesTitleCssClass" width="25" align="center" valign="middle">&nbsp;  </td>
+                <td jwcid="@Any" class="ognl:modulesTitleCssClass" width="25" align="center" valign="middle">&nbsp;  </td>
+                <td jwcid="@Any" class="ognl:modulesTitleCssClass" width="25" align="center" valign="middle">&nbsp;</td>
+                <td jwcid="@Any" class="ognl:modulesTitleCssClass" width="25" align="center" valign="top">
+				<span jwcid="@Conditional" condition="ognl:isPrjAdministrable(page.project.id)">
+				<a href="#" jwcid="@DirectLink" listener="ognl:listeners.createModule" parameters="ognl:vcsIndex"><img src="images/new.gif" title="new module" width="18" height="18" border="0" align="absmiddle"></a>
+				</span>
+				<span jwcid="@Conditional" condition="ognl:!isPrjAdministrable(page.project.id)">&nbsp;</span>
+				</td>
+			  </tr>
+			    <span jwcid="@Conditional" condition="ognl: cssIndex = cssIndex + 1"/>
+				<tr><td colspan="5"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+				  <span jwcid="@Foreach" source="ognl:newModule.properties" value="ognl:moduleProperty">
+				  <td align="left" valign="top" class="ognl:modulePropertyTitleCssClass" scope="col" jwcid="@Any"><span jwcid="@Insert" value="ognl:moduleProperty.displayName">property1</span></td>
+				  </span> 
+				  <span jwcid="$remove$">
+				  <td>&nbsp;</td>
+				  <td>&nbsp;</td>
+				  </span>				  
+				  <td width="25" class="ognl:modulePropertyTitleCssClass" jwcid="@Any">&nbsp;</td>
+				  <td width="25" class="ognl:modulePropertyTitleCssClass" jwcid="@Any">&nbsp;</td>
+				</tr> 
+			    <span jwcid="@Conditional" condition="ognl: cssIndex = cssIndex + 1"/>			  
+				<span jwcid="@Foreach" source="ognl:vcs.modules" index="ognl:moduleIndex" value="ognl:module"> 
+				<tr>
+				<span jwcid="@Foreach" source="ognl:module.properties" value="ognl:moduleProperty">
+				  <td jwcid="@Any" class="ognl:moduleCssClass" align="left" valign="top"><span jwcid="@Insert" value="ognl:moduleProperty.value">value1</span></td>
+				</span>
+				  <span jwcid="$remove$">
+				  <td>&nbsp;</td> 			
+				  <td>&nbsp;</td> 
+				  </span>				  
+				  <td align="center" valign="top" class="ognl:moduleCssClass" jwcid="@Any"> 
+				  <span jwcid="@Conditional" condition="ognl:isPrjAdministrable(page.project.id)">
+				  <a href="#" jwcid="@DirectLink" listener="ognl:listeners.editModule" parameters="ognl:{vcsIndex, moduleIndex}"><img src="images/editModule.gif" title="edit module" width="8" height="12" border="0" align="absmiddle"></a> 
+				  </span>
+				  <span jwcid="@Conditional" condition="ognl:!isPrjAdministrable(page.project.id)">&nbsp;</span>
+				  </td>
+				  <td align="center" valign="top" class="ognl:moduleCssClass" jwcid="@Any"> 
+				  <span jwcid="@Conditional" condition="ognl:isPrjAdministrable(page.project.id)">
+				  <a href="#" jwcid="@DirectLink" listener="ognl:listeners.deleteModule" parameters="ognl:{vcsIndex, moduleIndex}"><img src="images/deleteModule.gif" title="delete module" width="14" height="12" border="0" align="absmiddle"></a> 
+				  </span>
+				  <span jwcid="@Conditional" condition="ognl:!isPrjAdministrable(page.project.id)">&nbsp;</span>
+				  </td>
+				</tr>
+			    <span jwcid="@Conditional" condition="ognl: cssIndex = cssIndex + 1"/>			  
+				</span>
+				</table></td></tr>
+			  </span>
+            </table></td> 
+        </tr> 
+        </span> 
+      </table> 
+      </span> </span> </td> 
+  </tr> 
+</table> 
+</span> <span jwcid="@contrib:Otherwise"> 
+<table width="100%" height="100%"  border="0" cellspacing="0"> 
+  <tr> 
+    <td height="18" align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0"> 
+        <tr class="iconTable"> 
+          <td class="iconTable">&nbsp;</td> 
+        </tr> 
+      </table></td> 
+  </tr> 
+  <tr> 
+    <td height="400" align="center" valign="middle"> <span jwcid="@luntbuild:MsgBox" msg="Please save basic information for the new project first!" listener="ognl:page.listeners.gotoBasicTab"/> </td>
+  </tr> 
+</table> 
+</span> </span>
+
+<span jwcid="editVcs@Block">
+<span jwcid="vcsEditorComponent@VcsEditor"/>
+</span>
+
+<span jwcid="deleteVcs@Block">
+<table width="100%" height="100%"  border="0" cellspacing="0"> 
+  <tr> 
+    <td height="500" align="center" valign="middle"> <span jwcid="@luntbuild:YesNoBox" msg="Do you really want to delete this VCS?" okListener="ognl:listeners.confirmDeleteVcs" cancelListener="ognl:listeners.cancelDeleteVcs"/> </td> 
+  </tr> 
+</table> 
+</span>
+
+<span jwcid="editModule@Block">
+<span jwcid="moduleEditorComponent@VcsModuleEditor"/>
+</span>
+
+<span jwcid="deleteModule@Block">
+<table width="100%" height="100%"  border="0" cellspacing="0"> 
+  <tr> 
+    <td height="500" align="center" valign="middle"> <span jwcid="@luntbuild:YesNoBox" msg="Do you really want to delete this module?" okListener="ognl:listeners.confirmDeleteModule" cancelListener="ognl:listeners.cancelDeleteModule"/> </td> 
+  </tr> 
+</table> 
+</span>
+
+</span>
