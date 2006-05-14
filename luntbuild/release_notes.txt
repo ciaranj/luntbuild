@@ -1,0 +1,24 @@
+==============================================
+luntbuild-1.1.1 Release Notes
+==============================================
+
+1. Changes since version 1.1
+
+1) Sender's email address can be specified at the property configuration page
+2) Trunk directory can be specified for subversion adaptor.
+3) Utilize cvs history command to speed up revision checking
+4) Fix the bug that clearcase adaptor reports error when calling "mkview"
+5) Fix the bug that post-build target is ignored by luntbuild
+6) Fix the bug that cvs adaptor log command works in-correctly with some version
+   of cvs
+7) Fix the bug that relative reference to other pages in artifacts directory can not be 
+   displayed correctly
+
+2. Upgrade from version 1.1
+
+1) Copy all files under <luntbuild_install_dir>/db and save to 
+   somewhere else.
+2) Follow installation instructions in readme.txt. 
+3) Stop luntbuild web application, copy back previously saved 
+   db files to <luntbuild_install_dir>/db directory and override 
+   existing files. 
