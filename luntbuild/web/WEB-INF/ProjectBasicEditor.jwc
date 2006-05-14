@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification
+      PUBLIC "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+      "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification
+	class="com.luntsys.luntbuild.web.ProjectBasicEditor"
+	allow-informal-parameters="no">
+
+	<property-specification name="vcsAdaptorProperty" type="com.luntsys.luntbuild.vcs.VcsAdaptorProperty"/>
+	<property-specification name="errorMsg" type="java.lang.String"/>
+
+</component-specification>

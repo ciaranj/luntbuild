@@ -1,0 +1,67 @@
+<table width="100%" height="409"  border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="135" align="left" valign="top" bgcolor="#CCCCCC"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td height="30">&nbsp;</td>
+      </tr>
+    </table> </td>
+    <td align="center" valign="top">
+	<table width="100%"  border="1" cellpadding="2" cellspacing="0">
+	  <tr align="left">
+		<td colspan="5" scope="col">This page shows build information for all projects and all views. Status of a build <br>
+		  is denoted in color: GREEN stands for success, YELLOW stands for building, and RED<br>
+		  stands for failed. </td>
+	  </tr>
+	  <tr>
+		<th width="17%" scope="col">Project</th>
+		<th width="23%" scope="col">View</th>
+		<th width="18%" scope="col">Schedule</th>
+		<th width="22%" scope="col">Last build </th>
+		<th width="20%" scope="col">&nbsp;</th>
+	  </tr>
+	  <span jwcid="@Foreach" source="ognl:buildSchedules" value="ognl:currentBuildSchedule">
+	  <tr>
+		<td align="left" valign="top">
+		<a href="#" jwcid="@DirectLink" listener="ognl:listeners.loadProject" parameters="ognl:currentBuildSchedule.view.project.id">
+		<span jwcid="@Insert" value="ognl:currentBuildSchedule.view.project.name">luntbuild</span>
+		</a>
+		</td>
+		<td align="left" valign="top">
+		<a href="#" jwcid="@DirectLink" listener="ognl:listeners.loadView" parameters="ognl:currentBuildSchedule.view.id">
+		<span jwcid="@Insert" value="ognl:currentBuildSchedule.view.name">development</span>
+		</a>		
+		</td>
+		<td align="left" valign="top">
+		<span jwcid="@Conditional" condition="ognl:currentBuildSchedule.schedule.id != @com.luntsys.luntbuild.web.ManualBuild@SCHEDULE_ID">
+		<a href="#" jwcid="@DirectLink" listener="ognl:listeners.loadSchedule" parameters="ognl:currentBuildSchedule.schedule.id">
+		<span jwcid="@Insert" value="ognl:currentBuildSchedule.schedule.name">nightly</span>
+		</a>		
+		</span>
+		<span jwcid="@Conditional" condition="ognl:currentBuildSchedule.schedule.id == @com.luntsys.luntbuild.web.ManualBuild@SCHEDULE_ID">
+		manually
+		</span>		
+		</td>
+		<td jwcid="@Any" align="left" valign="top" bgcolor="ognl:lastBuildStatusColor">
+		<span jwcid="@Conditional" condition="ognl:lastBuild != null">
+		<a jwcid="@DirectLink" listener="ognl:listeners.showBuild" parameters="ognl:lastBuild.id" href="#">
+		<span jwcid="@Insert" value="ognl:lastBuild.version">luntbuild1.0</span>
+		</a>
+		</span>
+		<span jwcid="@Conditional" condition="ognl:lastBuild == null">
+		no builds yet
+		</span>
+		</td>
+		<td align="left" valign="top">
+		<a jwcid="@DirectLink" listener="ognl:listeners.listBuilds" parameters="ognl:currentBuildSchedule.id" href="#">
+		history builds
+		</a>
+		</td>
+	  </tr>
+	  </span>
+	</table>
+</td>
+  </tr>
+</table>
+
+
+

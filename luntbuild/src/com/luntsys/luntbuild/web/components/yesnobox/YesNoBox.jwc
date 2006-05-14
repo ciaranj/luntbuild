@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification
+      PUBLIC "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+      "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification
+	class="com.luntsys.luntbuild.web.components.yesnobox.YesNoBox"
+	allow-informal-parameters="no">
+
+	<parameter name="msg" type="java.lang.String" direction="in" required="yes" />
+	<parameter name="okListener" type="org.apache.tapestry.IActionListener" direction="in" required="yes"/>
+	<parameter name="cancelListener" type="org.apache.tapestry.IActionListener" direction="in" required="yes"/>
+
+	<private-asset name="yes" resource-path="yes.jpg"/>
+	<private-asset name="no" resource-path="no.jpg"/>
+
+</component-specification>

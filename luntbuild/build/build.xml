@@ -1,0 +1,97 @@
+<project name="luntbuild" default="package" basedir="..">
+
+<!--	Load properties for current build such as build version, build date, publishing directory, etc. -->
+	<property file="build/build.properties"/>
+	<property name="compile-with-debug" value="on"/>
+
+	<patternset id="web.resources">
+		<include name="**/*.htm"/>
+		<include name="**/*.html"/>
+		<include name="**/*.page"/>
+		<include name="**/*.jwc"/>
+		<include name="**/*.xml"/>
+		<include name="**/*.properties"/>
+		<include name="**/*.gif"/>
+		<include name="**/*.jpg"/>
+		<include name="**/*.css"/>
+		<include name="**/*.library"/>
+		<include name="**/*.application"/>
+	</patternset>
+
+	<target name="prepare">
+		<copy todir="webstage">
+			<fileset dir="web">
+				<patternset refid="web.resources"/>
+			</fileset>
+		</copy>
+		<copy todir="webstage/WEB-INF/lib">
+			<fileset dir="lib">
+				<exclude name="servlet-api.*"/>
+ 			</fileset>
+		</copy>
+		<mkdir dir="webstage/WEB-INF/classes"/>
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac srcdir="src" destdir="webstage/WEB-INF/classes" debug="${compile-with-debug}" >
+			<classpath id="classpath">
+				<fileset dir="lib" includes="**/*.jar"/>
+			</classpath>
+		</javac>
+		<copy todir="webstage/WEB-INF/classes">
+			<fileset dir="src">
+				<patternset refid="web.resources"/>
+			</fileset>
+		</copy>
+		<copy todir="webstage/manual">
+			<fileset dir="docs/manual"/>
+		</copy>
+	</target>
+
+	<target name="war" depends="compile">
+		<delete file="webstage/WEB-INF/web.xml"/>
+		<mkdir dir="stage/web"/>
+		<war basedir="webstage" destfile="stage/web/luntbuild.war" webxml="web/WEB-INF/web.xml"/>
+	</target>
+
+	<target name="package" depends="war">
+		<!--
+				Copy the property file about build information into the desired directory. This property
+				file will be used by the application to show the build number and build date, etc.
+		-->
+		<copy file="build/build.properties" todir="stage"/>
+		<copy todir="stage">
+			<fileset dir="." includes="*.txt,*.properties"/>
+		</copy>
+		<copy todir="stage/docs">
+			<fileset dir="docs"/>
+		</copy>
+		<copy todir="stage/osdependent">
+			<fileset dir="osdependent"/>
+		</copy>
+		<copy todir="stage/db">
+			<fileset dir="db"/>
+		</copy>
+		<mkdir dir="stage/work"/>
+		<mkdir dir="stage/publish"/>
+		<mkdir dir="stage/logs"/>
+		<copy todir="stage/ant">
+			<fileset dir="ant"/>
+		</copy>
+<!--
+		Build artifacts should be putted into the ${publishDir} directory or its sub directories
+-->
+		<mkdir dir="${publishDir}"/>
+		<zip basedir="stage" destfile="${publishDir}/${buildVersion}.zip"/>
+		<tar basedir="stage" compression="gzip" destfile="${publishDir}/${buildVersion}.tar.gz"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="webstage"/>
+		<delete dir="stage"/>
+		<delete>
+			<fileset dir="${publishDir}" includes="**/*.zip, **/*.gz"/>
+		</delete>
+	</target>
+
+</project>

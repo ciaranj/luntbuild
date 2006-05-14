@@ -1,0 +1,58 @@
+<form jwcid="@Form" listener="ognl:listeners.update" name="form" method="post">
+<table width="100%"  border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td width="16%" align="left" valign="top">Command to run ant</td>
+    <td width="84%" align="left"><textarea name="textarea" cols="80" rows="6" type="area" value="ognl:properties.antCommand" jwcid="@TextArea"/>
+      <br>
+      You can optionally specify your own ant command to build all projects configured <br>
+      for this build system
+      . For example, <br>
+      <br>
+&quot;C:\j2sdk1.4.2_04\bin\java&quot; <br>
+-classpath &quot;D:\lunt\cvs\lunt\luntbuild\ant\lib\ant-launcher.jar&quot; <br>
+&quot;-Dant.home=D:\lunt\cvs\lunt\luntbuild\ant&quot; <br>
+org.apache.tools.ant.launch.Launcher<br>
+<br>
+By this way, you can specify your own jdk, ant, jvm options<br>
+or ant options to run ant. However, this can be overrided by view-specific <br> 
+ant command if you specify in the view basic information page.</td>
+  </tr>
+  <tr>
+    <td width="16%" align="left" valign="top">Environment file</td>
+    <td width="84%" align="left"><input name="textfield" type="text" value="ognl:properties.envFile" size="75" jwcid="@TextField"/>
+      <br>
+      You can optionally specify a environment file relative to the view working <br>
+      directory. If specified, this file should be exist after all modules for <br>
+      related view have been checked out. Luntbuild will scan this file and setup<br> 
+      the environment variables
+indicated by properties contained in this file <br>
+before performing build for 
+every projects configured in this build system. <br>
+However, this can be 
+overrided by view-specific environment file if you <br>
+specify in the view  
+basic information page. </td>
+  </tr>
+  <tr>
+    <td width="16%" align="left" valign="top">Working directory </td>
+    <td width="84%" align="left"><input name="textfield" type="text" value="ognl:properties.workingDir" size="75" jwcid="@TextField"/>
+      <br>
+      You can optionally specify a working directory for the build system. Working<br>
+      directory is the directory where luntbuild used to hold checkouted artifacts<br>
+      from the version control system. If not specified, luntbuild will use the <br>
+      &quot;work&quot; directory under the luntbuild installation directory. </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">Publish directory </td>
+    <td align="left"><input name="textfield2" type="text" value="ognl:properties.publishDir" size="75" jwcid="@TextField"/>
+      <br>
+      You can optionally specify a publish directory for the build system. Publish<br>
+      directory is the directory where luntbuild used to hold the output of the <br>
+      build process, thus the build log, and build artifacts, etc.</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td align="left"><input jwcid="@Submit" label="update" type="submit" name="Submit" value="update"/></td>
+  </tr>
+</table>
+</form>
