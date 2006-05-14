@@ -1,0 +1,99 @@
+<style type="text/css">
+<!--
+.seperator1 {
+	border-top: 1px dashed;
+	border-right: 1px none;
+	border-bottom: 1px none;
+	border-left: 1px none;
+}
+body {
+	padding: 20px;
+}
+.comment {
+	font-family: "Courier New", Courier, mono;
+	font-size: x-small;
+	color: #666666;
+}
+-->
+</style>
+<p class="comment"> "Continuous integration is a great step forward to better software project 
+management. We were looking for a tool that meets the two following 
+requirements : powerful enough to set up complex CI processes but easy to 
+use on a daily basis. Amongst lots of existing tools, Luntbuild is the one 
+that meets completely and perfectly these two requirements thanks to a user 
+interface that is far more ergonomic than what can be seen on other tools. 
+After some months of testing Luntbuild with 6 pilot projects, we will soon 
+be in production mode with several tens of projects building on a single 
+Luntbuild platform." <br>
+<br>
+Actually, I hope that Luntbuild will be able to support the load of tens of 
+projects! I've seen some feature requests about having a queue system in 
+Luntbuild: IMHO, that would really help for supporting a big load. <br>
+<br>
+As for my experience with Luntbuild, I have a little remark: 
+When there are too many projects and too many schedules, the "Builds" page 
+becomes difficult to read for the admin role. We have only 6 projects with 
+3 schedules each, which gives 18 lines on this first page, and when I log 
+on as admin, it's not easy for me to find a specific schedule. Maybe that 
+could be interesting to show the schedules in a tree (sorted by projects). 
+It could be useful also to have a input field where you could type a <br>
+project or a schedule name, and with Javascript, that would hide any other 
+project or schedule that doesn't match what you've typed in. <br>
+<br>
+HTH! <br>
+Keep up the good work! </p>
+<p align="right"><strong>-- Fabrice BELLINGARD (Java architect at PSA Peugeot-Citroen)</strong><br>
+  
+</p>
+<div class="comment"><p></div>
+<div class="seperator1"/>
+<p><strong>Craig Walls</strong> (author of &quot;Spring In Action&quot; and &quot;XDoclet In Action&quot;) has came across Luntbuild and written down some words in his blogs:</p>
+<div class="comment"><strong><a href="http://www.jroller.com/page/habuma/20050505">Luntbuild : Automation revisited</a> </strong>
+<p> <strong><a href="http://www.jroller.com/page/habuma/20050513">Luntbuild : A week later</a> </strong>
+<p></div>
+<div class="seperator1"/>
+<p><em>The followings are some user comments at theServerSide news forum:</em></p>
+
+<div class="comment">Luntbuild is very nice. I had set up CruiseControl in the past, and I was looking for something easier, and definitely found it in Luntbuild. <br>
+  <br>
+It's important to realize that Luntbuild is not just a continuous integration system. It's a full automated build and build management system. I've got our QA looking at using it for all of their builds (not scheduled, triggered manually) and for build management and promotion. It's a nice dashboard on your different project builds. <br>
+<br>
+Some of the relatively unique features I like: <br>
+<br>
+1) project build dependencies -&gt; tell it which other builds this build depends on, then tell it if you'd like to build all dependencies before this build, build all projects which depend on this build after the build, both, or none <br>
+<br>
+2) Accurev support -&gt; ok, I built this, but none of the free ones I looked at supported it... <br>
+<br>
+3) Build promotion -&gt; so this QA build passed all regression tests and got approved by QA for release... now just go to that build in Luntbuild and promote it to the "gold release" project and you're done <br>
+<br>
+All in all Luntbuild is very well done. The name's a little strange (ever thought of changing it?)... The UI's functional but a little clunky and not pretty, but that's probably just because they use Tapestry :-) </p>
+</div>
+
+<p align="right"><strong>--Jason Carreira</strong></p>
+<p align="right">&nbsp;</p>
+<div class="comment">We recently switched from cruisecontrol to luntbuild too, and find it much easier to configure because of the web interface, also the monitoring of builds is far easier for us with luntbuild. <br>
+  <br>
+  We found with cruisecontrol that it took 5 minutes to build our code, but then half an hour to create an enormous xml log file. Also these logs were quickly filling up our hard disk. <br>
+  <br>
+  I particularly like the luntbuild feature where you can tell it to keep the last x number of build results only. <br>
+  <br>
+Lastly, you can really see the robustness of this webapp, due I'm sure to its use of Hibernate, Spring and Tapestry.</p>
+</div>
+<p align="right"><strong>--Mike Stephen</strong>
+<p>
+<div class="comment">Yep, same story here. <br>
+  I tried various CI systems and found LuntBuild to be the easiest for our situation. (Multi-location environment, using perforce as the VCS and dependencies between various (sub-)projects). <br>
+  We have other projects that are using CruiseControl, but the decision to switch and all go with LuntBuild was made last week.
+</div>
+<p align="right"><strong>--Eric Pieters</strong><br> 
+<div class="comment">
+  <p>&nbsp;</p>
+  <p>For about a month now I have been running continuous builds on my project which contains about a dozen modules. It was easy to install, easy to setup, it is easy to maintain and I can't think of any major flaws that would prevent me from continuing to use it. After trying various CI systems, I can easily say that LuntBuild is one of the best.</p>
+</div>
+<p align="right"><strong>--Shahid Shah </strong>
+<p><em>For the full list of comments from theServerSide news forum, see:</em>
+<div class="comment"><a href="http://www.theserverside.com/news/thread.tss?thread_id=34210"><strong><br>
+Luntbuild 1.2, Build Automation and Management Server, Released</strong></a></div>
+</p>
+
+<p>&nbsp;</p>

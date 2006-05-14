@@ -1,0 +1,2810 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+  "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd" >
+<book>
+<bookinfo>
+  <title>Luntbuild - Build Automation and Management User's Guide</title>
+  <copyright><year>2005</year><holder>Luntbuild</holder></copyright>
+</bookinfo>
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>
+    Luntbuild is a build automation and management tool based on the popular
+    <ulink url="http://ant.apache.org"><citetitle>Apache Ant</citetitle></ulink>.
+    With Luntbuild, daily builds and continuous integration builds
+    can be set easily. Refer to the following articles for benefits of daily builds and
+    continuous integration builds, if you are not familiar with them:
+</para>
+<itemizedlist>
+   <listitem>
+    <para><ulink url="http://www.martinfowler.com/articles/continuousIntegration.html">
+   <citetitle>Continuous Integration</citetitle>
+   </ulink></para>
+   </listitem>
+   <listitem>
+   <para><ulink url="http://www.joelonsoftware.com/articles/fog0000000023.html">
+   <citetitle>Daily Builds Are Your Friend</citetitle>
+   </ulink></para>
+   </listitem>
+</itemizedlist>
+<para>While Luntbuild team would appreciate if you choose Luntbuild as your tool of choice for your
+    continuous integration process, we realize, there are more tools available, and it is up to you
+    to make the decision, which tool to use. Very nice comparison of continuous integration tools is available in
+    <ulink url="http://damagecontrol.codehaus.org/Continuous+Integration+Server+Feature+Matrix">
+        <emphasis>Continuous Integration Server Feature Matrix.</emphasis>
+    </ulink>
+</para>
+<para>
+    You can explore Luntbuild's functionality by viewing
+    <ulink url="http://www.pmease.com/luntbuild/luntbuild-demo.html"><emphasis>tutorial</emphasis>
+    </ulink> movie. You can also check for Luntbuild <ulink url="../faq/index.html">FAQ</ulink>
+    to learn more about Luntbuild.
+</para>
+<para>Basic unit of work in Luntbuild is a <emphasis>build</emphasis>. Build execution is triggered either by a schedule or
+    it can be started manually. A build in Luntbuild performs following steps:</para>
+<orderedlist numeration="arabic">
+    <listitem><para>Checks out source code from the Version Control System(s) (VCS).</para></listitem>
+    <listitem><para>Labels the current source code based on the current build version.</para></listitem>
+    <listitem><para>Runs an Ant/Maven/Command build script in the source tree.</para></listitem>
+    <listitem><para>Runs an Ant/Maven/Command post build script in the source tree.</para></listitem>
+    <listitem><para>Publishes the build log and other build artifacts.</para></listitem>
+</orderedlist>
+<para>
+    Build configuration, monitoring, and access to the build artifacts are all done using an intuitive web interface.
+    Your development and testing team will have a central area to access the build information.
+</para>
+</chapter>
+
+<chapter id="login">
+<title>Login to Luntbuild</title>
+<para>
+    And now is the exciting time to login for the first time into Luntbuild. The Luntbuild login page:
+    <screenshot>
+    <screeninfo>Luntbuild Login Page</screeninfo>
+    <mediaobject>
+        <imageobject><imagedata fileref="images/login.jpg" format="JPG" /> </imageobject>
+    <textobject> <phrase>Luntbuild Login Page</phrase> </textobject>
+    </mediaobject>
+    </screenshot>
+    asks you to enter a <emphasis>Name</emphasis> and <emphasis>Password</emphasis>. Use luntbuild/luntbuild
+    for name/password, or if you have modified the security configuration, use the password
+    you have specified in applicationContext.xml configuration file (please see
+    <link linkend="security">Luntbuild Security</link> for details).
+</para>
+<para>
+    Login page contains two icons in upper right corner of the screen. Those two icons are present on all Luntbuild
+    pages. The icon
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/help.gif" format="GIF" /> </imageobject>
+    </inlinemediaobject>
+    is a link to this Luntbuild User's Guide.
+    The icon
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/home.gif" format="GIF" /> </imageobject>
+    </inlinemediaobject>
+    is a link to the Luntbuild web site.
+</para>
+<para>
+    Enter the name and the password and click the Login button (or press Enter) to login to Luntbuild.
+</para>
+</chapter>
+
+<chapter id="homepage">
+<title>Luntbuild Home Page</title>
+<para>
+    After you login, Luntbuild Home page will display:
+    <screenshot>
+    <screeninfo>Luntbuild Home Page</screeninfo>
+    <mediaobject>
+        <imageobject><imagedata fileref="images/homepage.jpg" format="JPG" /> </imageobject>
+    <textobject> <phrase>Luntbuild Home Page</phrase> </textobject>
+    </mediaobject>
+    </screenshot>
+There are five tabs on Home page:
+<orderedlist numeration="arabic">
+    <listitem><para><link linkend="builds"><emphasis>Builds</emphasis></link> - shows all Luntbuild builds</para></listitem>
+    <listitem><para><link linkend="projects"><emphasis>Projects</emphasis></link> - shows all Luntbuild projects</para></listitem>
+    <listitem><para><link linkend="adduser"><emphasis>Users</emphasis></link> - shows all Luntbuild users</para></listitem>
+    <listitem><para><link linkend="properties"><emphasis>Properties</emphasis></link> - shows general Luntbuild properties</para></listitem>
+    <listitem><para><link linkend="administration"><emphasis>Administration</emphasis></link> - shows Luntbuild administration tasks like import/export</para></listitem>
+</orderedlist>
+Just click on the tab and the appropriate tab page will display.
+</para>
+<para>
+Top area of the page contains navigation area
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/navigation.jpg" format="JPG" /> </imageobject>
+    </inlinemediaobject>
+that will help you to navigate quickly throughout the different pages of Luntbuild.
+For example, when you are creating a new project (by clicking New icon on Project tab page),
+you can jump quickly to Home page by clicking Home link in the navigation area.
+</para>
+<para>If you run into problems while running Luntbuild, click on <emphasis>system log</emphasis> link in the upper right corner of each page.
+The Luntbuild's system log will display, that contains Luntbuild's and application server logging information. See chapter
+<link linkend="debug">Debugging Build Problems</link> for details about debugging Luntbuild problems.</para>
+<para>
+The upper right corner of each page contains refresh icon
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/enable_refresh.gif" format="GIF" /> </imageobject>
+    </inlinemediaobject>
+, that toggles automatic page refresh on and off. It is good idea to switch refresh on, if you are tracking the status of the currently running build.
+</para>
+<para>To logout from Luntbuild, just click on <emphasis>logout</emphasis> link in the upper right corner.</para>
+</chapter>
+
+<chapter id="properties">
+<title>Setting General Luntbuild Properties</title>
+<para>
+   Properties listed in this tab are applied to all projects in Luntbuild.
+   General Luntbuild Properties are explained in detail here:
+   <variablelist>
+        <varlistentry>
+        <term>Url to access luntbuild servlet</term>
+        <listitem><para>
+          The servlet url should be specified correctly here so it can be
+          used in email notification. Normally this value should be 
+          http://&lt;server&gt;:&lt;port&gt;/luntbuild/app, where &lt;server&gt; is your 
+          build server name or ip address, and &lt;port&gt; is the port number 
+          you use to access Luntbuild. If this property is left empty, Luntbuild will 
+          use default value http://&lt;server_ip&gt;:8080/luntbuild/app, where &lt;server_ip&gt; 
+          is the actual ip address of the build server.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term id="workdir">Work directory</term>
+        <listitem><para>
+            You can optionally specify Luntbuild work directory.
+            Work directory is the directory, where Luntbuild checks out artifacts
+            from the version control system and performs a build.
+            If not specified, Luntbuild uses the <emphasis>work</emphasis> sub-directory of Luntbuild
+            installation directory. When a particular build schedule for given project is executed it creates
+            a sub-directory in the Luntbuild <emphasis>work</emphasis> directory in the form
+            <emphasis>work</emphasis>/&lt;project-name&gt;.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term id="publishdir">Publish directory</term>
+        <listitem><para>
+            You can optionally specify Luntbuild publish directory.
+            Publish directory is the directory, where Luntbuild publishes the output of the build process
+            like the build log, and other build artifacts.
+            If not specified, Luntbuild uses the <emphasis>publish</emphasis> sub-directory of Luntbuild
+            installation directory. When a particular build schedule for given project is executed it creates
+            a sub-directory in the Luntbuild <emphasis>publish</emphasis> directory in the form
+            <emphasis>publish</emphasis>/&lt;project-name&gt;/&lt;schedule-name&gt;/&lt;build-version&gt;.
+            For example, you top level publish directory might be a directory under <emphasis>htdocs</emphasis>
+            directory of your Apache web server.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Page refresh interval</term>
+        <listitem><para>
+        You can optionally specify a page refresh interval in seconds. If left empty, the default value will be 15 seconds.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>SMTP host</term>
+        <listitem><para>
+            You can optionally specify the SMTP mail host Luntbuild can use to send email notification.
+            If this property is not specified, Luntbuild will use localhost as the default value.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>SMTP user</term>
+        <listitem><para>
+            This property is optional. If the SMTP host needs authentication, you should provide the user name here.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>SMTP password</term>
+        <listitem><para>
+            This property is optional. If the SMTP host needs authentication, you should provide the password here.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Luntbuild Jabber account - Set the Jabber related properties here if you want to notify user by Jabber.</term>
+        <listitem><para>
+            Luntbuild need a Jabber account in order to send out build notification messages.
+            <note><para>Connecting through proxy is not currently supported.</para></note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Jabber server</term>
+        <listitem><para>
+            You can optionally specify the Jabber host used by Luntbuild to send Jabber messages. If this property is not specified, Luntbuild will use localhost as the default value.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Jabber server port</term>
+        <listitem><para>
+        The Jabber server port to connect to; default is 5222.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Jabber user</term>
+        <listitem><para>
+        The Jabber account name to be used for Luntbuild to login and send messages.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Jabber password</term>
+        <listitem><para>
+        The Jabber account password to login.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Luntbuild MSN account - Set MSN Messenger related properties here if you want to notify user through MSN Messenger.</term>
+        <listitem><para>
+            Luntbuild needs a MSN Messenger account in order to send out build notification messages.
+            For example <emphasis>luntbuild@hotmail.com</emphasis>.
+            <note><para>Connecting through proxy is not currently supported.</para></note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Luntbuild MSN password</term>
+        <listitem><para>
+            Password for the above MSN account.
+        </para></listitem>
+        </varlistentry>
+   </variablelist>
+</para>
+
+</chapter>
+
+<chapter id="adduser">
+<title>Adding Luntbuild Users</title>
+<para>
+    Before you start using Luntbuild in a team with multiple members, or even if you are the only one
+    using Luntbuild, it is good idea to create Luntbuild user(s) and give them appropriate privileges.
+    Users will be notified of a build status and they will be authorized to access different parts
+    of Luntbuild.
+</para>
+<para>
+    To create a Luntbuild user, click on the Users tab, and on the "new" icon, and following page will display:
+    <screenshot>
+    <screeninfo>New User</screeninfo>
+    <mediaobject>
+        <imageobject><imagedata fileref="images/newuser.jpg" format="JPG" /> </imageobject>
+    <textobject> <phrase>New User</phrase> </textobject>
+    </mediaobject>
+    </screenshot>
+</para>
+<para>
+Fill the following information:
+</para>
+   <variablelist>
+        <varlistentry>
+        <term>Name</term>
+        <listitem><para>
+            Provides a unique name to identify this user. This property is used for presentation and login.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Full name</term>
+        <listitem><para>
+            Full user name.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Can create project?</term>
+        <listitem><para>
+            Check this checkbox to give the rights to this user to create new project.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Password</term>
+        <listitem><para>
+            Provide an initial password (can be changed later by the user).
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Jabber account</term>
+        <listitem><para>
+            JabberID for this user, for example "johndoe@jabber.org". See
+            <ulink url="http://www.jabber.org/about/overview.shtml"><citetitle>jabber.org</citetitle></ulink>
+            for details about Jabber.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Email</term>
+        <listitem><para>
+            Email address for this user.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>MSN account</term>
+        <listitem><para>
+            The MSN Messenger account for this user, for example "foobar@hotmail.com".
+        </para></listitem>
+        </varlistentry>
+   </variablelist>
+</chapter>
+
+<chapter id="firstproject">
+<title>Creating a Project</title>
+    <para>Click on Project Tab.</para>
+    <para>
+        The project page shows all projects configured in the current Luntbuild instance.
+        A project is a buildable unit configured with information such as Version Control System,
+        project builders and schedules.
+    </para>
+    <para>
+        Click on the New Project icon
+        <inlinemediaobject>
+	        <imageobject><imagedata fileref="images/new.jpg" format="JPG" /> </imageobject>
+	    </inlinemediaobject>
+	    in the upper right corner of the tab's frame.
+        <screenshot>
+        <screeninfo>Create Project</screeninfo>
+        <mediaobject>
+            <imageobject><imagedata fileref="images/createproject.jpg" format="JPG" /> </imageobject>
+        <textobject> <phrase>Create Project</phrase> </textobject>
+        </mediaobject>
+        </screenshot>
+    </para>
+    <variablelist>
+        <varlistentry>
+        <term>Name</term>
+        <listitem><para>
+            Provide a name to identify this project.
+            The name will be used to identify this project, and cannot be changed later.
+            Keep in mind that the name of the project will be used as a name of the sub-directory
+            in Luntbuild's work and publish directories.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Description</term>
+        <listitem><para>
+            Specify project description.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Project admins</term>
+        <listitem><para>
+            Select the users who should be assigned the role of 'project admin'.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Project builders</term>
+        <listitem><para>
+            Select the users who should be assigned the role of 'project builders'.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Project viewers</term>
+        <listitem><para>
+            Select the users who should be assigned the role of 'project viewers'.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Notification methods</term>
+        <listitem><para>
+            Select the notification methods for the builds of this project.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Notification users</term>
+        <listitem><para>
+            Select the users who will get notified, when the builds of this project finish.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Variables</term>
+        <listitem><para>
+            Define variables for this project with one variable definition per line, for example:
+            <simplelist>
+            <member>a=1</member>
+            <member>b=2</member>
+            </simplelist>
+			Values of these variables can be referenced or assigned in an OGNL expressions, for example
+ 			when constructing "next build version" property of the schedule.
+            Numeric variables can even be increased or decreased,
+ 			for example, if you have two schedules with the name "nightly" and "release" respectively,
+ 			and you want the build of these two schedules to increase a global build version.
+			You can define the following variables:
+			<simplelist>
+				<member>versionPart=foo-1.0.0</member>
+				<member>iterationPart=1</member>
+			</simplelist>
+			And then set "next build version" of both schedules to be:
+			<simplelist>
+				<member>${project.var["versionPart"]} (${project.var["iterationPart"].increaseAsInt()})</member>
+			</simplelist>
+			This way, build version of both schedules will consist of two parts: the first part takes the value
+			of the variable "versionPart", and the second part takes the value of the variable "iterationPart" and
+            this part will increase with every build. Thus the build version of the consequent builds will look like:
+			<simplelist>
+				<member>foo-1.0.0 (build 1)</member>
+				<member>foo-1.0.0 (build 2)</member>
+				<member>foo-1.0.0 (build 3)</member>
+				<member>...</member>
+			</simplelist>
+			You can define many other types of versioning strategies, refer to
+			<link linkend="nextBuildVersion">next build version</link> property
+			of a schedule for details.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Log level</term>
+        <listitem><para>
+            Select the log level for this project.
+        </para></listitem>
+        </varlistentry>
+   </variablelist>
+</chapter>
+
+<chapter id="vcsadaptor">
+<title>Creating Version Control System (VCS) Adaptor for the Project</title>
+<para>
+<itemizedlist>
+<listitem><para>Select VCS Adaptors tab.</para></listitem>
+<listitem><para>Click on New VCS Adaptor icon in the upper right corner of the tab's frame.</para></listitem>
+<listitem><para>Select Version Control System.</para></listitem>
+</itemizedlist>
+</para>
+<section><title>Setting AccuRev connection information.</title>
+<para>
+	To download AccuRev go to <ulink url="http://www.accurev.com/download/index.htm">
+	http://www.accurev.com/download/index.htm</ulink>.
+	Here is the list of properties for this adaptor:
+    <variablelist>
+        <varlistentry>
+        <term>AccuRev port</term>
+        <listitem><para>
+        The AccuRev port in the format of &lt;servername&gt;:&lt;port&gt;, where &lt;servername&gt; and &lt;port&gt;
+        will be replaced by the actual AccuRev server name and the port number.
+        This property is optional and overrides acclient.cnf values.
+        <note><para>Default values for AccuRev needs to be defined in acclient.cnf and wspaces files.
+        Please consult AccuRev User's Guide for details.</para></note>
+        </para></listitem>
+        </varlistentry>
+		<varlistentry>
+		<term>Path for accurev executable</term>
+		<listitem><para>
+		The directory path, where your accurev executable file resides in.
+		It should be specified here, if it does not exist in the system path.
+		</para></listitem>
+		</varlistentry>
+        <varlistentry>
+        <term>Quiet period</term>
+        <listitem><para>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Setting Base Clearcase connection information.</title>
+<para>
+	You should have Clearcase client installed on the build machine.
+	Also you should make sure that the account running your application server or servlet container
+ 	is able to access your Clearcase server and that it can make snapshot views.
+	Here is the list of properties for this adaptor:
+    <variablelist>
+        <varlistentry>
+        <term>Clearcase view stgloc name</term>
+        <listitem><para>
+        Name of the Clearcase server-side view storage location which will be used as-stgloc option
+        when creating Clearcase view for the current project. Either this property or "Explicit path for view storage"
+        property should be specified.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Explicit path for view storage</term>
+        <listitem><para>
+        This property is required only when the "Clearcase view stgloc name" property is empty.
+        If specified, it will be used as -vws option instead of using the -stgloc option to create Clearcase view
+        for the current project.
+        <note><para>
+            This value should be a writable UNC path on Windows platform.
+        </para></note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Config spec</term>
+        <listitem><para>
+        Config spec used by Luntbuild to create Clearcase snapshot view for a build.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Modification detection config</term>
+        <listitem><para>
+        This property will take effect if there are some LATEST versions from some branch
+        to fetch in the above config spec. It is used by Luntbuild to determine, if there are
+        any changes in the repository since the last build. This property consists of multiple entries,
+        where each entry is of the format &quot;&lt;path&gt;[:&lt;branch&gt;]&quot;.
+        &lt;path&gt; is a path inside a VOB, which should be visible by the above config spec.
+        Luntbuild will lookup any changes in any branch inside this path recursively,
+        or it will lookup changes in the specified branch, if &lt;branch&gt; is specified.
+        Multiple entries are separated by ";" or line terminator.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Extra options when creating snapshot view</term>
+        <listitem><para>
+        You may optionally specify extra options for the cleartool mkview sub command
+        used by Luntbuild to create related Clearcase snapshot view for the current project.
+        Options that can be specified here are restricted to -tmode, -ptime, and -cachesize.
+        For example you can specify "-tmode insert_cr" to use Windows end of line text mode.
+        </para></listitem>
+        </varlistentry>
+		<varlistentry>
+		<term>Path for cleartool executable</term>
+		<listitem><para>
+		The directory path, where your cleartool executable file resides in.
+		It should be specified here, if it does not exist in the system path.
+		</para></listitem>
+		</varlistentry>
+        <varlistentry>
+        <term>Quiet period</term>
+        <listitem><para>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Setting Cvs connection information.</title>
+<para>
+	In order to use this adaptor, install appropriate Cvs client based on your platform from
+	<ulink url="http://www.cvshome.org">http://www.cvshome.org</ulink> or
+	<ulink url="http://www.cvsnt.org">http://www.cvsnt.org</ulink> if you are using Windows platform.
+	<note><para>
+	Please keep time of the build server machine in sync with the Cvs server machine
+	to allow build server to detect repository changes in Cvs server more accurately.
+	Please make sure that times recorded in the Cvs revision log are in UTC time format instead of local time format.
+	</para></note>
+	Here is the list of properties for this adaptor:
+    <variablelist>
+        <varlistentry>
+        <term>Cvs root</term>
+        <listitem><para>
+        The Cvs root for this project, for example, :pserver:administrator@localhost:d:/cvs_repository.
+        If you are using ssh, the :ext: protocol will need to be specified, and proper ssh environment needs
+        to be set outside of Luntbuild. Please refer to your Cvs User's Guide for details.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Cvs password</term>
+        <listitem><para>
+        The Cvs password for above Cvs root if connecting using pserver protocol.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Is cygwin cvs?</term>
+        <listitem><para>
+        This property indicates whether or not the cvs executable being used is a cygwin one.
+        The possible values are "yes" or "no". When omitted, the "no" value is assumed.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Disable "-S" option for log command?</term>
+        <listitem><para>
+        This property indicates whether or not the "-S" option for the log command should be disabled.
+        The possible values are "yes" or "no". When omitted, the "no" value is assumed. 
+		The -S option used in the log command can speed up modification detection,
+		however some earlier versions of Cvs do not support this option.
+		In this case you should enter "yes" value to disable it.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Disable history command?</term>
+        <listitem><para>
+        This property indicates whether or not to disable the history command when performing modification detection.
+        The possible values are "yes" or "no". When omitted, the "no" value is assumed. 
+		Using the history command in conjunction with the log command can speed up modification detection,
+		however some Cvs repositories may not hold history information of commits.
+		In this case you should enter "yes" value to disable it.
+        </para></listitem>
+        </varlistentry>
+		<varlistentry>
+		<term>Path for cvs executable</term>
+		<listitem><para>
+		The directory path, where your cvs executable file resides in.
+		It should be specified here, if it does not exist in the system path.
+		</para></listitem>
+		</varlistentry>
+        <varlistentry>
+        <term>Quiet period</term>
+        <listitem><para>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Setting File system connection information.</title>
+<para>
+    <variablelist>
+        <varlistentry>
+        <term>Source directory</term>
+        <listitem><para>
+        This is an optional property. If specified, changes can be detected in the source directory based
+        on modification time, and modified files under this directory will be copied to the project
+        work directory to perform build.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Quiet period</term>
+        <listitem><para>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Setting Perforce connection information.</title>
+<para>
+	You should have Perforce client installed on the build machine.
+	Contact <ulink url="http://www.perforce.com">http://www.perforce.com</ulink> for licensing information.
+	Here is the list of properties for this adaptor:
+    <variablelist>
+        <varlistentry>
+        <term>Perforce port</term>
+        <listitem><para>
+        The Perforce port in the format of &lt;port&gt;, or &lt;servername&gt;:&lt;port&gt;,
+        where &lt;servername&gt; and &lt;port&gt; will be replaced by the actual Perforce server name and the port number.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>User name</term>
+        <listitem><para>
+        User name to access the above Perforce server. This user should have the rights to create and edit client
+        specifications and to checkout and label code.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Password</term>
+        <listitem><para>
+        Password for the above user. Can be blank, if your Perforce server does not use password based security.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Line end</term>
+        <listitem><para>
+        Set line ending character(s) for client text files. The following values are possible:
+		<simplelist>
+		<member>local: use mode native to the client</member>
+		<member>unix: UNIX style</member>
+		<member>mac: Macintosh style</member>
+		<member>win: Windows style</member>
+		<member>share: writes UNIX style but reads UNIX, Mac or Windows style</member>
+		</simplelist>
+		This property is optional. If not specified, the value will default to "local".
+        </para></listitem>
+        </varlistentry>
+		<varlistentry>
+		<term>Path for p4 executable</term>
+		<listitem><para>
+		The directory path, where your p4 executable file resides in.
+		It should be specified here, if it does not exist in the system path.
+		</para></listitem>
+		</varlistentry>
+        <varlistentry>
+        <term>Quiet period</term>
+        <listitem><para>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Setting Subversion connection information.</title>
+<para>
+	In order to use this adaptor, Subversion client software should be installed on your build machine.
+	You can download subversion from <ulink url="http://subversion.tigris.org/">http://subversion.tigris.org</ulink>.
+	<note><para>
+	Please keep time of the build server machine in sync with the Subversion server machine
+	to allow build server to detect repository changes in Subversion server more accurately.
+	</para></note>
+	Here is the list of properties for this adaptor:
+    <variablelist>
+        <varlistentry>
+        <term>Repository url base</term>
+        <listitem><para>
+        The base part of Subversion url, for example, you can enter "svn://buildmachine.foobar.com/",
+        or "file:///c:/svn_repository", or "svn://buildmachine.foobar.com/myproject/othersubdirectory", etc.
+        Other definitions such as tags directory, branches directory, or modules are relative to this base url.
+        <note><para>If you are using https:// schema, you should make sure that svn server certificate has been
+        accepted permanently by your build machine.</para></note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Directory for trunk</term>
+        <listitem><para>
+        Directory used to hold trunk for this url base. This directory is relative to the url base.
+        Leave it blank, if you didn't define any trunk directory in the above url base.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Directory for branches</term>
+        <listitem><para>
+        Directory used to hold branches for this url base. This directory is relative to the url base.
+        If left blank, "branches" will be used as the default value.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Directory for tags</term>
+        <listitem><para>
+        Directory used to hold tags for this url base. This directory is relative to the url base.
+        If left blank, "tags" will be used as the default value.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Username</term>
+        <listitem><para>
+        User name to use to login to Subversion.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Password</term>
+        <listitem><para>
+        Password to use to login to Subversion.
+        </para></listitem>
+        </varlistentry>
+		<varlistentry>
+		<term>Path for svn executable</term>
+		<listitem><para>
+		The directory path, where your svn executable file resides in.
+		It should be specified here, if it does not exist in the system path.
+		</para></listitem>
+		</varlistentry>
+        <varlistentry>
+        <term>Quiet period</term>
+        <listitem><para>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Setting Clearcase UCM connection information.</title>
+<para>
+	You should have Clearcase client installed on the build machine.
+	Also you should make sure that the account running your application server or
+ 	servlet container is able to access your Clearcase server and that it can make snapshot views.
+	Here is the list of properties for this adaptor:
+    <variablelist>
+        <varlistentry>
+        <term>Clearcase view stgloc name</term>
+        <listitem><para>
+        Name of the Clearcase view storage location, which will be used as -stgloc option when creating Clearcase
+		view for this project.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Project VOB tag</term>
+        <listitem><para>
+        Tag for the project vob, for example: \pvob1.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Explicit path for view storage</term>
+        <listitem><para>
+        This property is required only when the "Clearcase view stgloc name" property is empty. If specified, it will be used
+        as -vws option instead of -stgloc option when creating Clearcase view.
+        </para>
+		<note><para>This value should be a writable UNC path on Windows platform.</para></note>
+        </listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>UCM stream name</term>
+        <listitem><para>
+        Name of the UCM stream.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>What to build</term>
+        <listitem><para>
+        Specifies baselines you want to build inside the stream. Multiple baselines are separated by space.
+        The following values have particular meaning:
+        <simplelist>
+		<member>&lt;latest&gt;: means build with all the latest code from every component</member>
+		<member>&lt;latest baselines&gt;: means build with all the latest baselines from every component</member>
+		<member>&lt;recommended baselines&gt;: means build with all the recommended baselines</member>
+		<member>&lt;foundation baselines&gt;: means build with all the foundation baselines</member>
+		</simplelist>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Modification detection config</term>
+        <listitem><para>
+        This property will only take effect when the "What to build" property equals to "latest". It is used by Luntbuild
+        to lookup if there are any changes in the repository since the last build. This property comprises of multiple entries
+        with each entry in the format &quot;&lt;path&gt;[:&lt;branch&gt;]&quot;. &lt;path&gt; is a path inside a VOB,
+        which should be visible using the above config spec. Luntbuild will lookup any changes at any branch inside
+        this path recursively, or it will lookup changes in the specified branch, if &lt;branch&gt; is specified.
+        Multiple entries are separated by ";" or line terminator. Refer to the Clearcase User's Guide for details.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Extra options when creating snapshot view</term>
+        <listitem><para>
+        You may optionally specify extra options for the cleartool mkview sub command used by Luntbuild to create
+        related clearcase snapshot view for the current project. Options that can be specified here are restricted
+        to -tmode, -ptime, and -cachesize. For example you can specify "-tmode insert_cr" to use Windows end of line text mode.
+        </para></listitem>
+        </varlistentry>
+		<varlistentry>
+		<term>Path for cleartool executable</term>
+		<listitem><para>
+		The directory path, where your cleartool executable file resides in.
+		It should be specified here, if it does not exist in the system path.
+		</para></listitem>
+		</varlistentry>
+        <varlistentry>
+        <term>Quiet period</term>
+        <listitem><para>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Setting Visual Sourcesafe connection information.</title>
+<para>
+	In order to use this VCS adaptor, visual sourcesafe need to be installed in your build machine.
+	Download Visual Sourcesafe from <ulink url="http://download.microsoft.com">http://download.microsoft.com</ulink>.
+	The following list of properties needs to be configured:
+	<note><para>In order to keep history command of Visual Sourcesafe accurate, time setting of all developer workstations,
+	and the build server should be kept in sync.</para></note>
+    <variablelist>
+        <varlistentry>
+        <term>Sourcesafe path</term>
+        <listitem><para>
+        The directory where your srcsafe.ini resides in. For example: \\machine1\directory1.
+        You should use explicit hostname eg. "machine1", not the ip address of the "machine1",
+        or you should specify ip address in the Sourcesafe path.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Username</term>
+        <listitem><para>
+        User name to use to login the above Sourcesafe database.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Password</term>
+        <listitem><para>
+        Password for the above user name.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Datetime format</term>
+        <listitem><para>
+        Specify the date/time format used for the Sourcesafe history command. This property is optional.
+        If left empty, Luntbuild will use "M/dd/yy;h:mm:ssa" as the default value.
+        The default value is suitable for English language operating systems using US locale.
+        For other English speaking countries with different date format like UK, Australia, and Canada
+        the Visual Sourcesafe Date format to use (assuming you're using the appropriate
+        locale setup as Visual Sourcesafe honors the local locale settings) should be as follows:
+        </para>
+        <programlisting>
+		'd/M/yy;H:mm'
+        </programlisting>
+        <para>
+        If Luntbuild is running on non-english operating systems,
+        use the following method to determine the datetime format:
+        </para>
+			<para>
+			Open Visual Sourcesafe <emphasis>installed on your build machine</emphasis>,
+			select an existing VSS database and choose to view one of the projects with files in it.
+			There should be a list of files shown with several fields including the &quot;Date-Time&quot; field.
+			You should use the &quot;datetime format&quot; property from value specified in this field.
+			For example, if one of the values of this field is &quot;04-07-18 20:19&quot;,
+			the &quot;datetime format&quot; property should be &quot;yy-MM-dd;HH:mm&quot;.
+			The <emphasis>semicolon</emphasis> between date and time format should be specified.
+			You are encouraged to specify the property as &quot;yy-MM-dd;HH:mm:ss&quot; to add the accuracy.
+			Take another example, if the value shown in Visual Sourcesafe is &quot;7/18/04 8:19p&quot;,
+			the &quot;datetime format&quot; should be &quot;M/dd/yy;h:mma&quot;.
+			Format &quot;M/dd/yy;h:mm:ssa&quot; would increase the accuracy in this case.
+			</para>
+            <para>
+			The following is a list of format character meanings copied from JDK document:
+			</para>
+			<table>
+			<title>Date/Time format characters</title>
+			<tgroup cols="3">
+			<thead>
+			<row>
+			<entry>Character</entry>
+			<entry>Meaning</entry>
+			<entry>Example</entry>
+			</row>
+			</thead>
+			<tbody>
+			<row><entry>y</entry><entry>Year</entry><entry>1996 ; 96</entry></row>
+			<row><entry>M</entry><entry>Month in year</entry><entry>July ; Jul ; 07</entry></row>
+			<row><entry>d</entry><entry>Day in month</entry><entry>10</entry></row>
+			<row><entry>a</entry><entry>Am/pm marker</entry><entry>p</entry></row>
+			<row><entry>H</entry><entry>Hour in day (0-23)</entry><entry>0</entry></row>
+			<row><entry>h</entry><entry>Hour in am/pm (1-12)</entry><entry>12</entry></row>
+			<row><entry>m</entry><entry>Minute in hour</entry><entry>30</entry></row>
+			<row><entry>s</entry><entry>Second in minute</entry><entry>55</entry></row>
+			</tbody>
+			</tgroup>
+			</table>
+            <para>
+			For details about the format string, please refer to
+			<ulink url="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html">
+			http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html
+			</ulink>
+            </para>
+            </listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Path for ss.exe</term>
+        <listitem><para>
+        The directory path, where your ss.exe file resides in.
+        It should be specified here, if it does not exist in the system path.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Quiet period</term>
+        <listitem><para>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+	<note><para>Make sure you are using English version of Visual Sourcesafe. If you must use other language version, please
+	download source code of Luntbuild and modify below line of VssAdaptor.java:
+	<programlisting>
+	authorPattern = Pattern.compile("^User:(.*)Date:.*");
+	</programlisting>
+	You need to change the author pattern according to the HISTORY command output of your Sourcesafe installation. 
+ 	</para></note>
+</para>
+</section>
+<section><title>Setting StarTeam connection information.</title>
+<para>
+	For Windows platform, you will need to have a full installation of StarTeam SDK runtime
+ 	(which will install some runtime dlls	and put them in the Windows system path). Normally
+ 	this is the part of StarTeam client installation.
+	Please go to <ulink url="http://www.borland.com">http://www.borland.com</ulink> for licensing information.
+	Here is the list of properties for this adaptor:
+    <variablelist>
+        <varlistentry>
+        <term>Project location</term>
+        <listitem><para>
+        Location of a StarTeam project is defined as: &lt;servername&gt;:&lt;portnum&gt;/&lt;projectname&gt;,
+        where &lt;servername&gt; is the host where the StarTeam server runs,
+        &lt;portnum&gt; is the port number the StarTeam server uses, default value is 49201.
+        &lt;projectname&gt; is a StarTeam project under this StarTeam server.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>User</term>
+        <listitem><para>
+        User name to login to the StarTeam server.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Password</term>
+        <listitem><para>
+        Password to login to the StarTeam server.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Convert EOL?</term>
+        <listitem><para>
+        The following values are possible:
+        </para>
+		<para><emphasis>all:</emphasis> all ASCII files will have their end-of-line characters
+		adjusted to the EOL type of the local machine on checkout</para>
+		<para><emphasis>no:</emphasis> the files will be checked out with whatever EOL characters are used on the server</para>
+        <para>
+		This property is optional. If not specified, it will default to <emphasis>yes</emphasis>.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Quiet period</term>
+        <listitem><para>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Using multiple Version Control Adaptors.</title>
+<para>
+For each project, you can define one or more of the above Version Control Systems.
+When a build is performed for such a project, contents of all repositories is checked out to the build's work directory.
+For example, you may have a project with its client module in a Cvs repository, and the server module in a VSS repository.
+This approach is also applicable for projects with modules in different repositories of the same VCS type.
+For example, you may have a project with the client module in a Cvs repository, and the server module in
+different Cvs repository.
+</para>
+</section>
+</chapter>
+
+<chapter id="vcsmodule">
+<title>Creating VCS Module(s)</title>
+<para>
+Click on New Module icon in upper right corner of the Modules frame.
+If you have multiple VCS modules defined, the retrieval process will start from the first module.
+Following modules will override previous modules if the part of the modules overlaps.
+For example, if you define module1 with destination path "/foo/bar",
+and later you define another module with destination path "/foo",
+the contents of module2 will override the contents of module1.
+But if module1 is defined with destination path "/foo",
+and module2 is defined with destination path "/foo/bar", only contents under directory "/foo/bar"
+will be overridden by module2.
+</para>
+<section><title>Setting AccuRev module information.</title>
+<para>
+    <variablelist>
+        <varlistentry>
+        <term>Label</term>
+        <listitem><para>
+        The label is the transaction number to which to sync. Specify the transaction number you want to build at.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Depot</term>
+        <listitem><para>
+        The AccuRev depot to check the code out of.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Backing stream</term>
+        <listitem><para>
+        The backing stream for this build module.
+        The backing stream should be able to have streams created from it by the build user.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build stream</term>
+        <listitem><para>
+        The name of the stream to create from the backing stream. If it doesn't exist it will be created.
+        A reference tree will be created from this stream with a '_reference' suffix appended to the build stream name.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Setting Cvs module information.</title>
+<para>
+    <variablelist>
+        <varlistentry>
+        <term>Source path</term>
+        <listitem><para>
+        Specify a path to retrieve from the Cvs repository, for example: testcvs/src.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Branch</term>
+        <listitem><para>
+        Specify the branch for the above source path. This property is optional. When left empty, main branch is assumed.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Label</term>
+        <listitem><para>
+        Specify the label for the above source path. This property is optional.
+        If specified, it will take preference over branch. When left empty, latest version of the specified branch
+        will be retrieved.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+	"Source path" represents a module path in the cvs repository, for example "/testcvs", "/testcvs/web",
+	or "testcvs", but you can not define a "source path" using "/" or "\".
+	"Branch" stands for a Cvs branch and "Label" stands for a Cvs tag.
+	Only one of these properties will take effect for a particular module.
+	If both of them are not empty, label will take preference over branch.
+	If both of them are empty, Luntbuild will get the latest code from main branch for a particular module.
+</para>
+</section>
+<section><title>Setting Perforce module information.</title>
+    <variablelist>
+        <varlistentry>
+        <term>Depot path</term>
+        <listitem><para>
+        Specify the Perforce depot side path, such as "//depot/testperforce/...".
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Label</term>
+        <listitem><para>
+        Specify the label for the above depot path. This property is optional.
+        When empty, the latest version (head) of the above depot path will be retrieved.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Client path</term>
+        <listitem><para>
+        Specify the client side path, such as "//myclient/testperforce/...".
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+    <para>
+    <note><para>
+        To exclude files or directories, create a separate module for each exclusion and precede
+        the Depot path property with a minus (-) sign, as follows:
+        <programlisting>
+        Depot path:  -//depot.side
+        Client path: //client.side
+        </programlisting>
+    </para></note>
+    </para>
+    <para>
+	The module definition for Perforce maps a repository "Depot path" to "Client path".
+	Luntbuild also supports Perforce "Label" property.
+	"Depot path" represents a path in Perforce repository, such as "//depot/testperforce/...".
+	"Client path" represents a client path (where the contents of the depot path is checked out),
+	such as "//myclient/testperforce/...".
+	"Label" is a Perforce label, used if you want to retrieve a particular snapshot of given "Depot path",
+	or it can be left empty to retrieve the head version of "Depot path".
+	The client path defined in "Client path" does not need to exist.
+	Luntbuild will create the path if it does not exist.
+	The user specified in Perforce connection information at the project level should
+	have enough access rights to create and edit Perforce client specification.
+    </para>
+</section>
+<section><title>Setting Subversion module information.</title>
+    <variablelist>
+        <varlistentry>
+        <term>Source path</term>
+        <listitem><para>
+        Represents a path in the Subversion repository, for example "testsvn", "testsvn/web", or "/testsvn".
+        When "branch" or "label" properties are defined, this path will be mapped to another path in the svn repository.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Branch</term>
+        <listitem><para>
+        Specify the branch for above source path. This property is optional. When left empty, trunk is assumed.
+		<note><para>
+		Subversion does not internally has the notion of branch. Value specified here will be used by Luntbuild
+		to do url mapping for the above source path so that actual effect is just like a branch in Cvs.
+		</para></note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Label</term>
+        <listitem><para>
+        Specify the label for the above source path. This property is optional.
+        If specified, it will take preference over branch. When left empty, head version
+        of the specified branch is assumed.
+        <note><para>
+        Subversion does not internally has the notion of label. Value specified here will be used
+        by Luntbuild to do url mapping for the above source path so that actual effect is just like a tag in Cvs.
+        </para></note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Destination path</term>
+        <listitem><para>
+        This property is optional. If specified, the contents from Subversion repository will be retrieved
+        to the "destination path" relative to the project work directory. Otherwise the contents will be retrieved
+        to "source path" (with no regard to "branch" or "label") relative to the project work directory.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+    <para>
+	"Source path" represents a path in the Svn repository, for example "testsvn", "testsvn/web", or "/testsvn".
+	This path will be mapped to another path in the Svn repository based on other properties.
+	In order to demonstrate this path mapping, we define following properties:
+    </para>
+	<simplelist>
+	<member>Repository url base: svn://localhost</member>
+	<member>Directory for trunk: trunk</member>
+	<member>Directory for branches: branches</member>
+	<member>Directory for tags: tags</member>
+	</simplelist>
+	<para>
+	We will examine the following module settings and give them the url mapping:
+    <variablelist>
+        <varlistentry>
+        <term>Source path: testsvn/web, branch: &lt;empty&gt;, label: &lt;empty&gt;, destination path: &lt;empty&gt;</term>
+        <listitem><para>
+        Luntbuild will check out code from url "svn://localhost/trunk/testsvn/web" to directory
+        "&lt;project work directory&gt;/testsvn/web".
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Source path: testsvn/web, branch: simplified-chinese, label: &lt;empty&gt;, destination path: &lt;empty&gt;</term>
+        <listitem><para>
+        Luntbuild will check out code from url "svn://localhost/branches/simplified-chinese/testsvn/web"
+        to directory "&lt;project work directory&gt;/testsvn/web".
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Source path: testsvn/web, branch: &lt;empty&gt;, label: v1_0, destination path: &lt;empty&gt;</term>
+        <listitem><para>
+        Luntbuild will check out code from url "svn://localhost/tags/v1_0/testsvn/web" to directory
+        "&lt;project work directory&gt;/testsvn/web".
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Source path: testsvn/web, branch: simplified-chinese, label: v1_0, destination path: testsvn/web/simplified-chinese</term>
+        <listitem><para>
+		Luntbuild will check out code from url "svn://localhost/tags/v1_0/testsvn/web" to directory
+		"&lt;project work directory&gt;/testsvn/web/simplified-chinese".
+		<note><para>Branch definition is ignored here because label definition takes preference.</para></note>
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+    </para>
+    <para>
+	When Luntbuild tags a version for example "v1_0" for code checked out to directory
+	"&lt;project work directory&gt;/testsvn/web", the following command will be issued:
+	"svn copy &lt;project work directory&gt;/testsvn/web svn://localhost/tags/v1_0/testsvn/web"
+	</para>
+	<para>
+	Of course you can avoid the above url mapping, by giving "Directory for trunk" property empty value,
+	and giving "Branch" and "Label" properties both empty values. This way, you can control where to check out the code from,
+	and where to put checked out code to, by just using the "Source path" and "Destination path" properties
+	(in this case, source path will only be prefixed with "repository url base" property defined at the project level).
+	</para>
+</section>
+<section><title>Setting Visual Sourcesafe module information.</title>
+<para>
+    <variablelist>
+        <varlistentry>
+        <term>Source path</term>
+        <listitem><para>
+        Specify the path in the VSS repository, for example: "testvss", or "/testvss".
+         <note><para>You should not add $ in front of this path, in order to specify the whole repository,
+         you should just enter "/".</para></note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Label</term>
+        <listitem><para>
+        Specify the label for the above source path. This property is optional.
+        If left empty, latest version is assumed.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Destination path</term>
+        <listitem><para>
+        Specify the destination directory relative to the project work directory, where the contents
+        under the above source path should be retrieved to. This property is optional.
+        If left empty, retrieved code will be put into directory defined by the source path, relative
+        to the project work directory.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+	"Source path" represents a project path relative to the root of Sourcesafe,
+	for example "testvss", "/testvss", or "/testvss/web", etc.
+	Path "/" or "\" can be used to retrieve the whole contents of the repository.
+	"Label" stands for a VSS label. VSS implements branches by creating a new shared Sourcesafe projects.
+	So you may need to configure different modules in order to get code from different branches.
+	If "Label" is left empty, Luntbuild will get latest code for that module from VSS.
+	If "Destination path" is defined, contents from Sourcesafe will be retrieved to
+	"Destination path" relative to the project work directory.
+	Otherwise the contents will be put to "Source path" relative to project work directory.
+</para>
+</section>
+<section><title>Setting StarTeam module information.</title>
+<para>
+    <variablelist>
+        <varlistentry>
+        <term>StarTeam view</term>
+        <listitem><para>
+        Specify a StarTeam view. This property is optional. If it is left empty, the root view
+        of the current StarTeam project will be used.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Source path</term>
+        <listitem><para>
+        Specify a path relative to the root of the above StarTeam view. Enter "/" to specify the root.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Label</term>
+        <listitem><para>
+        Specify the label for the above StarTeam view. This property is optional. When left empty,
+        latest version of the specified view is assumed.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Destination path</term>
+        <listitem><para>
+        Specify the destination directory relative to the project work directory,
+        where the contents under the above source path should be retrieved to.
+        This property is optional. When left empty, retrieved code will be put into directory
+        specified in source path, relative to the project work directory.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+	"StarTeam view" stands for a StarTeam view, and "Label" stands for a label of this StarTeam view.
+	If "StarTeam view" is left empty, the root StarTeam view will be used.
+	"Source path" is a path relative to the root of the chosen StarTeam view.
+	If "Destination path" is defined, the contents from StarTeam repository will be retrieved to
+	the "Destination path" relative to the project work directory, otherwise the contents will be put
+	to the "Source path" relative to the project work directory.
+</para>
+</section>
+</chapter>
+
+<chapter id="builders">
+<title>Creating the Project Builder(s)</title>
+<para>
+	Builder(s) are responsible for executing a build for a particular schedule of the project.
+</para>
+<para>
+	To create Builder(s), click on Builders tab, and click on New icon
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/new.jpg" format="JPG" /> </imageobject>
+    </inlinemediaobject>
+	in the upper right corner of the tab's frame.
+ 	Builders editor tab will display.
+</para>
+<screenshot>
+<screeninfo>Builders Editor Tab</screeninfo>
+<mediaobject>
+    <imageobject><imagedata fileref="images/builders-editor.jpg" format="JPG" /> </imageobject>
+<textobject> <phrase>Builders Editor Tab</phrase> </textobject>
+</mediaobject>
+</screenshot>
+<para>Select the appropriate Builder type. The following Builders are available:
+<simplelist>
+	<member>Ant Builder</member>
+	<member>Command Builder</member>
+	<member>Maven Builder</member>
+</simplelist>
+You can create as many builders as needed for different tasks for the given project. You will then
+select particular builders and/or post-builders for each schedule of this project as appropriate from
+the set of builders defined here.
+</para>
+<section><title>Configuring Ant Builder.</title>
+<para>
+    <variablelist>
+        <varlistentry>
+        <term>Name</term>
+        <listitem><para>
+        Provide a name to identify this builder, this name can be changed later.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Command to run Ant</term>
+        <listitem><para>
+        Specify the command to run Ant (normally path to ant.bat or ant shell script).
+        For example: /path/to/ant.
+        String enclosed by ${...} will be interpreted as OGNL expression, and it will be evaluated before execution.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        <note><para>A single argument that includes spaces should be quoted in order not to be interpreted as multiple arguments.</para></note>
+        <note><para>From available Ant command lime options, you should not specify the option
+        &quot;-buildfile&quot; and &quot;-logfile&quot;,
+        which will be used by Luntbuild. Other options are allowed.</para></note>
+        You can modify the command to add Ant command line options and properties, for example -Ddebug=_debug.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build script path</term>
+        <listitem><para>
+        The path of the Ant build script. If this path is not an absolute path, it is assumed, that it is relative
+        to the project work directory.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build targets</term>
+        <listitem><para>
+        Specify the target(s) to build. Use space to separate different targets (target name containing spaces should
+        be quoted in order not to be interpreted as multiple targets).
+		If not specified, the default target in the above Ant build file will be build.
+		You can also use OGNL expressions (${...}) to pass variables
+        as the target name. For example you can use ${build.schedule.name} to use different targets for different schedules.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build properties</term>
+        <listitem><para>
+		Define build properties here to pass into the ant build script. For example:
+        <simplelist>
+        <member>buildVersion=${build.version}</member>
+		<member>scheduleName=${build.schedule.name}</member>
+        </simplelist>
+		You should set one variable per line. OGNL expression can be used to form the value provided
+		it is enclosed by ${...}.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Environment variables</term>
+        <listitem><para>
+        Environment variables to set before running this builder. For example:
+        <simplelist>
+        <member>MYAPP_HOME=${build.schedule.workingDir}</member>
+		<member>SCHEDULE_NAME=${build.schedule.name}</member>
+        </simplelist>
+		You should specify one variable per line. OGNL expression can be inserted to form the value,
+		provided they are enclosed by ${...}.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build success condition</term>
+        <listitem><para>
+        The build success condition is an OGNL expression used to determine, if the build of the current project
+        was successful (root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object).
+		If left empty, the <emphasis>result==0 and logContainsLine("BUILD SUCCESSFUL")</emphasis>
+		value is assumed. When this expression evaluates to true, the build is considered successful.
+		Here are some examples to demonstrate format of this OGNL expression:
+        <simplelist>
+			<member>
+			<emphasis>result==0</emphasis>, here "result" represents return code of ant execution of the build file.
+			</member>
+			<member>
+			<emphasis>logContainsLine("^ERROR.*")</emphasis>, the expression will be true if the build's build log contains
+			a line that matches the regular expression pattern "^ERROR.*".
+			Please see <ulink url="http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html">
+			http://java.sun.com/j2se/1.4.2/docs/api/java/util/regex/Pattern.html
+			</ulink> for the format of the regular expressions.
+			</member>
+			<member>
+			The above expressions can be prefixed with a '!' character to inverse the value.
+			For example, !logContainsLine("^ERROR.*") will be true if the build log does not contain
+			a line that matches the specified pattern.
+			</member>
+			<member>
+			The above expressions can be joined into expression with "and", and "or".
+			For example, the expression <emphasis>result==0 and !logContainsLine("^ERROR.*")</emphasis>
+			will be true if Ant execution of the build returns 0, and the build log does not
+			contain any line starting with "ERROR".
+			</member>
+		</simplelist>
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Configuring Command Builder.</title>
+<para>
+    <variablelist>
+        <varlistentry>
+        <term>Name</term>
+        <listitem><para>
+        Provide a name to identify this builder, this name can be changed later.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build command</term>
+        <listitem><para>
+        Specify the build command. For example: /path/to/command.bat "${build.version}" "${build.artifactsDir}".
+        String enclosed by ${...} will be interpreted as OGNL expression, and it will be evaluated before execution.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        <note><para>A single argument containing spaces should be quoted in order not be interpreted as multiple arguments.</para></note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Run command in directory</term>
+        <listitem><para>
+        The directory path to run the build command in. If this path is not an absolute path,
+        it is assumed to be relative to the project work directory.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Environment variables</term>
+        <listitem><para>
+        Environment variables to set before running this builder. For example:
+		<code>MYAPP_HOME=${build.schedule.workingDir}</code>
+		<code>SCHEDULE_NAME=${build.schedule.name}</code>
+		You should specify one variable per line. OGNL expression can be inserted to form the value,
+		provided they are enclosed by ${...}.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build success condition</term>
+        <listitem><para>
+        The build success condition is an OGNL expression used to determine, if the build of the current project
+        was successful. If left empty, the <emphasis>result==0</emphasis> value is assumed.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+<section><title>Configuring Maven Builder.</title>
+<para>
+    <variablelist>
+        <varlistentry>
+        <term>Name</term>
+        <listitem><para>
+        Provide a name to identify this builder, this name can be changed later.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Command to run Maven</term>
+        <listitem><para>
+        Specify command to run Maven (normally path to maven.bat or maven shell script).
+        For example: /path/to/maven.
+        String enclosed by ${...} will be interpreted as OGNL expression, and it will be evaluated before execution.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+		<note><para>In order to use Luntbuild provided build version number in Maven, write your project.xml like the following:
+			<programlisting>
+        <![CDATA[
+		<project>
+		...
+		<!--Use value of variable "buildVersion" as current version, this variable is defined in Luntbuild's Maven
+		builder configuration page-->
+		<currentVersion>${buildVersion}</currentVersion>
+		...
+		</project>
+        ]]>
+			</programlisting>
+			</para></note>
+        <note><para>Single argument containing spaces should be quoted in order not be interpreted as multiple arguments.</para></note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Directory to run Maven in</term>
+        <listitem><para>
+        Specify the directory to run Maven in. If this path is not an absolute path,
+        it is assumed to be relative to the project work directory.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Goals to build</term>
+        <listitem><para>
+        Specify the goals to build. Use space to separate different goals (goal name containing spaces should be quoted
+        in order not to be interpreted as multiple goals). You can also use ${...} to pass OGNL variables as the goal name.
+        For example you can use ${build.schedule.name} to use different goals for different schedules.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build properties</term>
+        <listitem><para>
+		Define build properties here to pass into the ant build script. For example:
+        <simplelist>
+        <member>buildVersion=${build.version}</member>
+		<member>scheduleName=${build.schedule.name}</member>
+        </simplelist>
+		You should set one variable per line. OGNL expression can be used to form the value provided
+		it is enclosed by ${...}.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Environment variables</term>
+        <listitem><para>
+        Environment variables to set before running this builder. For example:
+		<code>MYAPP_HOME=${build.schedule.workingDir}</code>
+		<code>SCHEDULE_NAME=${build.schedule.name}</code>
+		You should specify one variable per line. OGNL expression can be inserted to form the value,
+		provided they are enclosed by ${...}.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Build success condition</term>
+        <listitem><para>
+        The build success condition is an OGNL expression used to determine, if the build of the current project
+        was successful (root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object).
+ 		If left empty, the <emphasis>result==0 and logContainsLine("BUILD SUCCESSFUL")</emphasis>
+		value is assumed. When this expression evaluates to true, the build is considered successful.
+        </para></listitem>
+        </varlistentry>
+    </variablelist>
+</para>
+</section>
+</chapter>
+
+<chapter id="schedule">
+<title>Creating Build Schedule(s) for the Project</title>
+<para>
+	Schedules are used to initiate/trigger builds either non-interactively or manually.
+</para>
+<para id="buildworkdir">
+    Each build needs a work directory to checkout the artifacts from VCS repository. Following are
+    the rules that Luntbuild uses to construct work directory:
+    <orderedlist numeration="arabic">
+    <listitem><para>
+        Main Luntbuild <link linkend="workdir">work directory</link> is used as a root
+        of all Luntbuild projects.
+    </para></listitem>
+    <listitem><para>
+        Each schedule allows you to define its work directory. By default, this directory is a subdirectory
+ 		named using the project name under Luntbuild's top level work directory.
+    </para></listitem>
+    <listitem><para>
+        VCS modules contain source path that is appended after the schedule work directory.
+    </para></listitem>
+    </orderedlist>
+</para>
+<para>
+    For example if Luntbuild's work directory is <emphasis>/luntbuild-install-dir/work</emphasis>,
+    project name is <emphasis>myproject</emphasis>,
+    schedule subdirectory is <emphasis>myscheduleworkdir</emphasis>, and VCS source path is <emphasis>source</emphasis>,
+    then absolute path of the build's work directory for given schedule is
+    <emphasis>/luntbuild-install-dir/work/myproject/myscheduleworkdir/source</emphasis>.
+</para>
+<para>
+    Why is this important? Because of following reasons:
+    <simplelist>
+        <member>
+            The build's work directory can be shared between multiple schedules of the same project. In this case
+            the builds of those schedules use the same work directory, thus saving the disk space.
+            Luntbuild guarantees that builds that share the same work directory cannot be
+            executed at the same time. If first build using the shared work directory starts,
+            all additional builds that share the same work directory are entered to the pending
+            build queue, and they are executed only after currently executing build finishes.
+        </member>
+        <member>
+            If the build's work directory is not shared with other schedules of the same project,
+            contents of the VCS modules for the given project is checked multiple times (to multiple
+            work directories), thus consuming more disk space and possibly taking more time
+            to checkout the contents of the VCS modules. Advantage of this approach is, that builds
+            using different work directories (for the same project) can be executed in parallel.
+        </member>
+    </simplelist>
+</para>
+<para id="buildpublishdir">
+Each build also uses its publish directory to store the build artifacts like build log and revision log.
+Following are the rules that Luntbuild uses to construct publish directory:
+    <orderedlist numeration="arabic">
+    <listitem><para>
+        Main Luntbuild <link linkend="publishdir">publish directory</link> is used as a root
+        of all Luntbuild projects.
+    </para></listitem>
+    <listitem><para>
+        Project name is used to define subdirectory in the main <link linkend="publishdir">publish directory</link>.
+    </para></listitem>
+    <listitem><para>
+        Schedule name is used to define subdirectory in the project subdirectory.
+    </para></listitem>
+    <listitem><para>
+        Build version string is used to create subdirectory in the schedule subdirectory. This subdirectory
+        contains build log <emphasis>build_log.txt</emphasis>, revision log <emphasis>revision_log.txt</emphasis>,
+        and two subdirectories <emphasis>artifacts</emphasis> and <emphasis>junit_html_report</emphasis>.
+        Subdirectory <emphasis>artifacts</emphasis> can be used by you to store any other additional artifacts,
+        subdirectories <emphasis>junit_html_report</emphasis> is used to store results of JUnit testing.
+    </para></listitem>
+    </orderedlist>
+</para>
+<para>
+    For example if Luntbuild's publish directory is <emphasis>/luntbuild-install-dir/publish</emphasis>,
+    project name is <emphasis>myproject</emphasis>,
+    schedule name is <emphasis>myschedule</emphasis>, and current build version is <emphasis>myapp-1.2.0</emphasis>,
+    then absolute path of the build's publish directory for given schedule is
+    <emphasis>/luntbuild-install-dir/publish/myproject/myschedule/myapp-1.2.0</emphasis>.
+</para>
+<para>To create a schedule, click on Schedules Tab, and click on New Schedule icon in the upper right corner of the tab's frame.</para>
+<screenshot>
+<screeninfo>Schedules Editor Tab</screeninfo>
+<mediaobject>
+    <imageobject><imagedata fileref="images/schedule-editor.jpg" format="JPG" /> </imageobject>
+<textobject> <phrase>Schedules Editor Tab</phrase> </textobject>
+</mediaobject>
+</screenshot>
+        <formalpara>
+        <title>Name</title>
+        <para>
+        Provide a name for this schedule. This name will be used to identify this schedule, and cannot be changed later.
+        Keep in mind that schedule name is used as subdirectory of the project publish directory.
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Description</title>
+        <para>
+        Provide a description for this schedule.
+        </para>
+        </formalpara>
+		<anchor id="nextBuildVersion"/>
+        <formalpara>
+        <title>Next build version</title>
+        <para>
+            Specify the string for the next build version, keep in mind the name will be used
+            as a subdirectory in the schedule's publish directory.
+            The version string is incremented by Luntbuild as follows:
+            <simplelist>
+            <member>luntbuild-1.0 will be increased to luntbuild-1.1</member>
+            <member>luntbuild-1.2.9 will be increased to luntbuild-1.2.10</member>
+            <member>luntbuild-1.5(1000) will be increased to luntbuild-1.5(1001)</member>
+            </simplelist>
+            In general, the last number in the "Next build version" will be incremented with every build.
+            For example "luntbuild-1.2.0" will increase to "luntbuild-1.2.3" after three builds. However,
+			if there are OGNL expressions (encapsulated within ${...}) embedded in, the last number will not be
+ 			increased automatically. Luntbuild will evaluate every embedded OGNL expression to get the
+ 			actual version string for the specific build. When performing the evaluation,
+ 			current <ulink url="../javadoc/com/luntsys/luntbuild/db/Schedule.html">Schedule</ulink> object will
+			be used as the OGNL root object. Here are some examples of using OGNL expression to achieve
+			various versioning strategy:
+			<variablelist>
+			<varlistentry>
+			<term><emphasis>Scenario 1: Put current date and iteration of this date as the part of the build version</emphasis></term>
+			<listitem><para>
+				Define "next build version" of every schedule to be:
+				<programlisting>
+                    foo-${#currentDay=system.(year+"-"+month+"-"+dayOfMonth), #lastDay=project.var["day"].setValue(#currentDay), \
+                    #dayIterator=project.var["dayIterator"].intValue, project.var["dayIterator"].\
+                    setIntValue(#currentDay==#lastDay?#dayIterator+1:1), #currentDay}.${project.var["dayIterator"]}
+                </programlisting>
+ 				The actual version string for a build will include the build date and iterations for that date.
+				</para>
+			</listitem>
+			</varlistentry>
+			</variablelist>
+			<variablelist>
+			<varlistentry>
+			<term><emphasis>Scenario 2: "test" and "release" schedule shares and increases the same version string, while "continuous integration" schedule uses another independent version</emphasis></term>
+			<listitem><para>
+				Both "test" and "release" schedule set "next build version" to be:
+				<programlisting>	foo-${project.var["majorVersionPart"]}.${project.var["minorVersionPart"].increaseAsInt()}</programlisting>
+ 				For "continuous integration" schedule, set "next build version" to be:
+				<programlisting>	foo-1</programlisting>
+				</para>
+			</listitem>
+			</varlistentry>
+			</variablelist>
+			<variablelist>
+			<varlistentry>
+			<term><emphasis>Scenario3: "release" schedule increases release part of the version, while "nightly" schedule
+			increases iteration part of the version. When release part of the version changes, iteration
+			part should be reset to 1.</emphasis></term>
+			<listitem><para>
+				Define the following variables for the project:
+				<simplelist>
+					<member>fixPart=foo-1.1</member>
+					<member>releasePart=1</member>
+					<member>iterationPart=0</member>
+				</simplelist>
+				Define "next build version" of "nightly" schedule as:
+				<programlisting>${project.var["fixPart"]}.${project.var["releasePart"]} build ${project.var["iterationPart"].increaseAsInt()}</programlisting>
+				Define "next build version" of "release" schedule as:
+				<programlisting>${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), project.var["releasePart"].(increaseAsInt(), value)}</programlisting>
+				This way, builds in "release" schedule will get versions like: foo-1.1.1, foo-1.1.2, foo-1.1.3, ..., and builds in "nightly" schedule
+				will get versions like: foo-1.1.1 build 1, foo-1.1.1 build 2, foo-1.1.1 build3, ...., foo-1.1.2 build 1, foo-1.1.2 build2, ...
+				</para>
+			</listitem>
+			</varlistentry>
+			</variablelist>
+			<note><para>
+                After the evaluation of an OGNL expression, Luntbuild will substitute all "."
+                characters in the version string with "_", and all blank characters with "-".
+                This string is then used as the label which will be applied
+                to source code in the Version Control System for the particular build.
+                For example, if the build's version is "v1.0 build256",
+                source code for this build will be labeled as "v1_0-build256".
+            </para></note>
+            <note><para>
+                Luntbuild labels the source code based on the version number. If there are multiple projects,
+                and/or multiple builds configured in Luntbuild, you should make sure there are no duplicate version
+                strings in Luntbuild. For example, if you configure build1 with next build version as "v1.0",
+                and configure build2 with next build version as "v1.5" and both of these builds contain
+                the same module and they are using the same Version Control System, then after five builds or more,
+                version number of build1 will have duplicate version number(s) with the early builds of build2.
+                The best practice is to name the version number for each build with project/build prefix,
+                such as "luntbuild-dev-0.9.2".
+            </para></note>
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Work directory</title>
+        <para>
+		Work directory for the schedule. Non-absolute path will be assumed to be relative to Luntbuild's top level work directory.
+ 		If left empty, &lt;global_work_dir&gt;/&lt;project_name&gt; will be assumed, where &lt;global_work_dir&gt; stands for
+ 		Luntbuild's top level work directory, and &lt;project_name&gt; stands for project name of this schedule. It is possible to use
+ 		the same work directory for multiple schedules of the same project.
+        <link linkend="buildworkdir">See build work directory</link>.
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Trigger type</title>
+        <para>
+        Select the trigger type for this schedule. Value "manual" means build of this schedule can only be triggered manually.
+        Value "simple" can be used to configure a periodic trigger (repeated every N minutes). Value "cron" can be used
+        to configure a cron-like trigger. Refer to
+        <ulink url="http://www.opensymphony.com/quartz/"><citetitle>http://www.opensymphony.com/quartz/</citetitle></ulink>
+        for details about how to configure cron trigger.
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Cron expression</title>
+        <para>
+        Set the cron expression for this schedule, the format is
+        &lt;seconds&gt; &lt;minutes&gt; &lt;hours&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt;.
+        For example <emphasis>0 1 * * ?</emphasis> means 1:00am every day. For details of the format,
+        refer to <ulink url="http://www.opensymphony.com/quartz/tutorial.html#cronTriggers"><citetitle>Cron triggers tutorial</citetitle></ulink>.
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Repeat interval (minutes)</title>
+        <para>
+        Set the repeat interval for this schedule in minutes.
+        </para>
+        </formalpara>
+		<anchor id="buildNecessaryCondition"/>
+        <formalpara>
+        <title>Build necessary condition</title>
+        <para>
+        The "Build necessary condition" is optional.
+        If left empty, the "vcsModified or dependencyNewer" value is assumed.
+        This property is used by Luntbuild to determine,
+        if the current build is necessary when the build strategy of the build schedule is set to
+        "build when necessary". The "Build necessary condition" is an OGNL expression.
+        When this expression evaluates to true, the build is considered necessary.
+        Root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/db/Schedule.html">
+        Schedule</ulink> object.
+        Here are some examples to show the format of this OGNL expression:
+        </para>
+        </formalpara>
+        <orderedlist numeration="arabic">
+            <listitem><para>
+                <emphasis>vcsModified</emphasis> - this expression will evaluate to true if the repository
+                content of the current build changes
+            </para></listitem>
+            <listitem><para>
+                <emphasis>dependencyNewer</emphasis> - this expression will evaluate to true if new builds are generated in one of 
+                the dependent schedule
+            </para></listitem>
+            <listitem><para>
+                <emphasis>dependencySuccessful</emphasis> - this expression will evaluate to true if latest builds in all dependent 
+                schedules are successful
+            </para></listitem>
+            <listitem><para>
+                <emphasis>always</emphasis> - this expression will always evaluate to true to force the build
+            </para></listitem>
+            <listitem><para>
+                <emphasis>never</emphasis> - this expression will always evaluate to false to pause the build
+            </para></listitem>
+            <listitem><para>
+                <emphasis>alwaysIfFailed</emphasis> - this expression will always evaluate to true if last build has failed, and will have the
+                value of "vcsModified or dependencyNewer" if last build is successful.
+            </para></listitem>
+            <listitem><para>
+                <emphasis>project["testcvs"].vcsModified</emphasis> - this expression
+                will evaluate to true if the repository content of the "testcvs" project
+                changes.
+            </para></listitem>
+            <listitem><para>
+                <emphasis>system.execute("/path/to/command.sh") == 0</emphasis> - this expression will evaluate
+                to true if the return code of the execution of the specified command is 0.
+                <note><para>
+                    Special characters such as '\', '"', should be escaped with '\', just like in Java strings.
+                </para></note>
+            </para></listitem>
+        </orderedlist>
+        <para>
+            The above expressions can be prefixed with '!' to inverse the value,
+            for example <emphasis>!modified</emphasis> will be true when there are no modifications
+            in the repository of the current project.
+        </para>
+        <para>
+            The above expressions can be joined with "and", and "or". For example, the expression:
+            <emphasis>modified or execute("/path/to/command.sh")==0</emphasis> will be true,
+            if repository content of the current project changes, or execution of the specified command returns 0.
+        </para>
+        <para>
+            The above expressions can be prefixed with '!' to negate the value,
+            for example "!modified" will evaluate to true when there are no modifications
+            in the repository of current view.  The above expressions can also be joined with "and", "or".
+            For example, the expression
+            <emphasis>modified or execute("/path/to/command.sh")==0</emphasis> will evaluate to true
+            if the repository content of the current view changes, or execution of the specified command returns 0.
+        </para>
+        <para>
+        Please go to
+        <ulink url="http://www.ognl.org"><citetitle>http://www.ognl.org</citetitle></ulink>
+        to learn more about general grammar of an OGNL expression.
+        </para>
+        <formalpara>
+        <title>Associated builders</title>
+        <para>
+        Select builders associated with the current schedule. They will be executed one by one in the selected order.
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Associated post-builders</title>
+        <para>
+        Select post-builders associated with the current schedule.
+        Associated post-builders will be executed after all associated builders, if the condition indicated by "post-build strategy" is met.
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Build type</title>
+        <para>
+        Select the build type for this schedule, clean build can be more reliable, but can be slower.
+        Incremental build can be quicker, but less reliable. We suggest that all important build schedules
+        such as nightly or release should use clean build, and very frequent build schedules such as hourly development build,
+        can be incremental.
+		<note><para>This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value, when the schedule is being manually build.</para></note>
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Post-build strategy</title>
+        <para>
+        Select the post-build strategy for this schedule. There are following strategies:
+        <variablelist>
+	        <varlistentry><term>do not post-build</term>
+	        <listitem><para>
+	        Do not execute post-build script after the build.
+	        </para></listitem></varlistentry>
+	        <varlistentry><term>post-build when success</term>
+	        <listitem><para>
+	        Execute post-build script only when the build was successful.
+	        </para></listitem></varlistentry>
+	        <varlistentry><term>post-build when failed</term>
+	        <listitem><para>
+	        Execute post-build script only when the build has failed.
+	        </para></listitem></varlistentry>
+	        <varlistentry><term>post-build always</term>
+	        <listitem><para>
+	        Always execute post-build script after the build.
+	        </para></listitem></varlistentry>
+        </variablelist>
+		<note><para>This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value when the schedule is being build manually.
+		</para></note>
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Label strategy</title>
+        <para>
+        Choose the label strategy for this schedule. There are following strategies:
+        <variablelist>
+	        <varlistentry><term>label successful builds</term>
+	        <listitem><para>
+	        Label the repository only for the successful builds.
+	        </para></listitem></varlistentry>
+	        <varlistentry><term>do not label</term>
+	        <listitem><para>
+	        Do not label the repository after the build.
+	        </para></listitem></varlistentry>
+	        <varlistentry><term>label always</term>
+	        <listitem><para>
+	        Always label the repository after the build.
+	        </para></listitem></varlistentry>
+        </variablelist>
+		<note><para>If the build is not labeled when it is initially built, it will not be rebuildable later.</para></note>
+		<note><para>This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value when the schedule is being build manually.
+		</para></note>
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Notify strategy</title>
+        <para>
+        Choose the notify strategy for this schedule. There are following strategies:
+        <variablelist>
+	        <varlistentry><term>notify when status changed</term>
+	        <listitem><para>
+	        Send notification when status of the current build changes against the last build.
+	        That is, notification will be sent when the current build succeeds and the last build failed,
+	        or the current build fails and the last build succeeded.
+	        </para></listitem></varlistentry>
+	        <varlistentry><term>notify when failed</term>
+	        <listitem><para>
+	        Send notification only when the build failed.
+	        </para></listitem></varlistentry>
+	        <varlistentry><term>notify when success</term>
+	        <listitem><para>
+	        Send notification only when the build succeeded.
+	        </para></listitem></varlistentry>
+	        <varlistentry><term>do not notify</term>
+	        <listitem><para>
+	        Do not send notification after the build.
+	        </para></listitem></varlistentry>
+	        <varlistentry><term>notify always</term>
+	        <listitem><para>
+	        Always send notification after the build.
+	        </para></listitem></varlistentry>
+        </variablelist>
+		<note><para>This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value when the schedule is being build manually.
+		</para></note>
+        </para>
+        </formalpara>
+        <anchor id="dependentschedule" />
+        <formalpara>
+        <title>Dependent schedules</title>
+        <para>
+        Select the schedules dependent on the current schedule.
+        If scheduleA depends on scheduleB, Luntbuild will trigger the build of scheduleB
+        before triggering the build in scheduleA. Schedule dependency might be used to define
+        project dependencies.
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Dependency triggering strategy</title>
+        <para>
+        Choose the dependency triggering strategy defining when the current schedule is triggered.
+        Following strategies are available:
+        <variablelist>
+	        <varlistentry><term>trigger schedules this schedule depends on</term>
+	        <listitem><para>
+	        Trigger schedules the current schedule depends on.
+	        Triggering of these schedules will happen before the current schedule is triggered.
+	        For example, if the current schedule uses several components built in other schedules,
+	        you can use this strategy to make sure that all components used by this schedule are up to date.
+	        </para></listitem>
+	        </varlistentry>
+	        <varlistentry><term>trigger schedules that depends on this schedule</term>
+	        <listitem><para>
+	        Trigger schedules that depends on the current schedule. Triggering of these schedules will happen
+	        after the current schedule is triggered. For example, if the current schedule builds a component
+	        that is used by other schedules, you can use this strategy to make sure that
+	        all components are up to date before starting the schedules that use this component.
+	        </para></listitem>
+	        </varlistentry>
+	        <varlistentry><term>trigger all dependent schedules</term>
+	        <listitem><para>
+	        This is the combination of the above two strategies, that is,
+	        it triggers the schedules current schedule depends on before actually triggering current schedule,
+	        and then it triggers the schedules that depends on the current schedule after triggering the current schedule.
+	        </para></listitem>
+	        </varlistentry>
+	        <varlistentry><term>do not trigger any dependent schedules</term>
+	        <listitem><para>
+	        Do not trigger neither the schedules the current schedule depends on, nor the schedules that depends on the current schedule.
+	        </para></listitem>
+	        </varlistentry>
+        </variablelist>
+		<note><para>
+		This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value when the schedule is being build manually.
+		</para></note>
+        </para>
+        </formalpara>
+        <formalpara>
+        <title>Build cleanup strategy</title>
+        <para>
+        Select the build cleanup strategy for this schedule.
+        <simplelist>
+        <member><emphasis>do not cleanup builds automatically</emphasis>: Builds can be deleted only manually.</member>
+        <member><emphasis>keep builds by day</emphasis>: Keep builds for specified number of days.</member>
+        <member><emphasis>keep builds by count</emphasis>: Keep specified number of builds.</member>
+        </simplelist>
+        </para>
+        </formalpara>
+    <note><para>
+    If a build for the given project is currently running and a new build for the
+    same project starts (either automatically or manually), the build is placed into
+    the pending builds queue for the given schedule. A queue of pending builds is displayed on the
+    project's Schedule tab page.
+    </para></note>
+</chapter>
+
+<chapter id="loginmap">
+<title>Defining Login Mapping for a Project</title>
+<para>
+This page shows the mapping from VCS login to the user of the current project.
+When Luntbuild retrieves the list of VCS users who have recently checked code into the repository,
+it will use this mapping to identify corresponding users and send them notification, if requested.
+If the particular VCS login is not mapped, it will automatically map to the user with the same name.
+<screenshot>
+<screeninfo>Login Mapping Tab</screeninfo>
+<mediaobject>
+    <imageobject><imagedata fileref="images/login-mapping.jpg" format="JPG" /> </imageobject>
+<textobject> <phrase>Login Mapping Tab</phrase> </textobject>
+</mediaobject>
+</screenshot>
+    <variablelist>
+        <varlistentry>
+        <term>VCS login</term>
+        <listitem><para>
+        Enter the login name for the Version Control System of the current project.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>User</term>
+        <listitem><para>
+        Select the user you want to map to the current VCS login.
+        </para></listitem>
+        </varlistentry>
+   	</variablelist>
+</para>
+</chapter>
+
+<chapter id="antbuild">
+<title>Creating/Modifying project's Ant Builder</title>
+<para>
+As introduced in chapter <link linkend="builders"> </link>, you need to provide a build file, which will be used
+by Ant to build your project. This build file is a regular Ant build file. Before your build file is executed,
+Luntbuild will pre-define the following properties:
+</para>
+    <variablelist>
+        <varlistentry>
+        <term>buildVersion</term>
+        <listitem><para>
+        This property contains the current version of this build.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>buildDate</term>
+        <listitem><para>
+        This property contains the build time/date of this build.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>artifactsDir</term>
+        <listitem><para>
+        This property specifies the artifacts/publishing directory for the current build.
+        You should generate all your final build artifacts to directory defined by property "artifactsDir",
+        or its subdirectories. Luntbuild only stores the information about this build under this directory.
+        You can then export your internal artifacts of this build as follows:
+        <programlisting>
+        <![CDATA[
+		<zip basedir="stage" destfile="${artifactsDir}/${buildVersion}.zip"/>
+        ]]>
+        </programlisting>
+        </para></listitem>
+        </varlistentry>
+   	</variablelist>
+    <para>
+	These properties are not only useful when writing the Ant build file, but also useful when you run your application.
+	For example, you can show the build version number in your application's About dialog.
+	To achieve this, you should write these properties into a file which will be packaged
+	in your application's distribution. You can insert the following lines inside a package target of your Ant build file:
+    <programlisting>
+    <![CDATA[
+	<propertyfile file="stage/buildInfo.properties">
+	<entry key="buildVersion" value="${buildVersion}"/>
+	<entry key="buildDate" value="${buildDate}"/>
+	</propertyfile>
+    ]]>
+    </programlisting>
+	Although Luntbuild pre-defines the above properties before it runs Ant,
+	you are encouraged to specify the default values for those properties at the beginning of your build file, such as:
+    <programlisting>
+    <![CDATA[
+	<property name="buildVersion" value="luntbuild-1.0"/>
+	<property name="artifactsDir" value="distribute"/>
+	<property name="buildDate" value=""/>
+    ]]>
+    </programlisting>
+	<note><para>
+	You do not need to redirect any generated outputs or errors from the Ant build file to your log file.
+	Just let Ant to output them to stdout or stderr. Luntbuild will capture them and write them
+	into the prepared log file and publish the log file on the build's artifactsDir.
+	</para></note>
+    </para>
+</chapter>
+
+<chapter id="mavenbuild">
+<title>Creating/Modifying Project's Maven Builder</title>
+<para>
+As introduced in chapter <link linkend="builders"> </link>, you need to provide Maven a build goal, which will be used
+by Maven to build your project. Before your Maven goal is executed,
+Luntbuild will pre-define the following properties:
+</para>
+    <variablelist>
+        <varlistentry>
+        <term>buildVersion</term>
+        <listitem><para>
+        This property contains the current version of this build.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>buildDate</term>
+        <listitem><para>
+        This property contains the build time/date of this build.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>artifactsDir</term>
+        <listitem><para>
+        This property specifies the artifacts/publishing directory for the current build.
+        You should generate all your final build artifacts to directory defined by property "artifactsDir",
+        or its subdirectories. Luntbuild only stores the information about this build under this directory.
+        You can then export your internal artifacts of this build as follows:
+        <programlisting>
+        <![CDATA[
+		<zip basedir="stage" destfile="${artifactsDir}/${buildVersion}.zip"/>
+        ]]>
+        </programlisting>
+        </para></listitem>
+        </varlistentry>
+   	</variablelist>
+</chapter>
+	
+<chapter id="builds">
+<title>Snapshot of all Build schedules</title>
+<screenshot>
+<screeninfo>Luntbuild Build Schedules</screeninfo>
+<mediaobject>
+    <imageobject><imagedata fileref="images/build-schedules.jpg" format="JPG" /> </imageobject>
+<textobject> <phrase>Luntbuild Build Schedules</phrase> </textobject>
+</mediaobject>
+</screenshot>
+<para>
+This page shows all build schedules configured in Luntbuild.
+The "Project" field identifies a project this build schedule belongs to.
+The "Schedule" field specifies a schedule this build uses.
+The "When to trigger" field specifies the condition that causes the build schedule to start execution.
+The "Latest build" field specifies the most recent build instance for this build schedule.
+The last field contains two icons. The rightmost icon
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/history_builds.gif" format="GIF" /> </imageobject>
+</inlinemediaobject>
+gives access to all history build instances for this build schedule.
+Icon just left to the "history builds" icon is "run manually icon
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/start_build.gif" format="GIF" /> </imageobject>
+</inlinemediaobject>
+. You can start the build manually by clicking on this icon. When the "manually" started build
+is running a "stop" icon
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/stop_sign.gif" format="GIF" /> </imageobject>
+</inlinemediaobject>
+appears. You can stop the "manually" started build, by clicking on this icon.
+</para>
+<para>
+    Following is an example of all build schedules with some of the builds currently running:
+<screenshot>
+<screeninfo>Luntbuild Running Build Schedules</screeninfo>
+<mediaobject>
+    <imageobject><imagedata fileref="images/builds-run.jpg" format="JPG" /> </imageobject>
+<textobject> <phrase>Luntbuild Running Build Schedules</phrase> </textobject>
+</mediaobject>
+</screenshot>
+</para>
+<para>
+There is a search link icon
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/search.gif" format="GIF" /> </imageobject>
+</inlinemediaobject>
+on the right top side of this page. You can follow this link to find particular builds,
+and you can perform operations on the found builds, such as you can delete the listed builds.
+</para>
+<para>
+Icon to the left of the schedule indicates the execution status of the schedule.
+The schedule execution status is different from the build status. It indicates whether or not
+the schedule has been successfully triggered. Trigger of the schedule may or may not generate a new build,
+it depends on the current build strategy and repository changes. The schedule execution status
+may "fail" while the build succeeds, for example, due to an error while sending the notification mail.
+On the other side the schedule execution status may be "successful" although the build failed,
+because the schedule has been successfully triggered, and the  build itself failed.
+Details about execution of a schedule can be found in the system log, which can be accessed
+using the "system log" link at the top of every page.
+</para>
+<para>
+There are two types of build, <emphasis>clean</emphasis> build and <emphasis>incremental</emphasis> build.
+To perform a <emphasis>clean</emphasis> build,
+Luntbuild first purges the project work directory, and then performs a full checkout of the project's VCS modules.
+To perform an <emphasis>incremental</emphasis> build, Luntbuild only updates source code checked out by previous build(s).
+The intermediate build files (e.g. .class files) are not purged before the new build.
+An incremental build is fast, but it might be less reliable.
+For example, if someone have deleted a file from Version Control System,
+this may not get reflected in an incremental build.
+</para>
+<para>
+There are four build strategies,
+<emphasis>build when necessary</emphasis>, <emphasis>build always if failed</emphasis>,
+<emphasis>build always</emphasis>, and <emphasis>do not build</emphasis>.
+<variablelist>
+    <varlistentry>
+    <term>build when necessary</term>
+    <listitem><para>
+    Performs build only when there are any changes detected since the last build for this schedule.
+    Changes since the last build exist if the following conditions are met:
+    <orderedlist numeration="arabic">
+    	<listitem><para>
+    	Current build is the first build for the current schedule.
+    	</para></listitem>
+    	<listitem><para>
+    	The VCS setting has changed since last build.
+    	</para></listitem>
+    	<listitem><para>
+    	If the VCS adaptor is Clearcase UCM adaptor and "what to build" property is set to a value other than "latest",
+    	changes exist if related baselines have changed. For example, if "what to build" is set to "recommended baselines"
+    	and the Clearcase admin has recommended different set of baselines since the last build,
+    	changes exist, causing the execution of the next build.
+    	</para></listitem>
+    	<listitem><para>
+    	Head revisions of the project files (or directories) have changed in the repository,
+    	and the current project VCS setting uses HEAD revisions.
+    	</para></listitem>
+    </orderedlist>
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>build always if failed</term>
+    <listitem><para>
+    Always performs the build, if the last build has failed. However, if the last build is successful,
+    the next build will only be performed, when there are any changes detected since the last build of this schedule.
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>build always</term>
+    <listitem><para>
+    Always performs the build at the specified schedule trigger time regardless of the status of the last build,
+    or changes in the repository.
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>do not build</term>
+    <listitem><para>
+    Does not perform the build in any circumstances. This strategy can be used to stop the schedule.
+    </para></listitem>
+    </varlistentry>
+</variablelist>
+<note><para>The build strategy is only used when the trigger type of the schedule is not "manually".</para></note>
+</para>
+<para>
+History builds for each schedule can be accessed by clicking the icon
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/history_builds.gif" format="GIF" /> </imageobject>
+</inlinemediaobject>
+"history builds" on the right side of the schedule row.
+The list of all builds for the given schedule will display.
+You can access detailed information about a particular build by following the version hyperlink for that build.
+This will display a page:
+<screenshot>
+<screeninfo>List of builds for a schedule</screeninfo>
+<mediaobject>
+    <imageobject><imagedata fileref="images/history-builds.jpg" format="JPG" /> </imageobject>
+<textobject> <phrase>List of builds for a schedule</phrase> </textobject>
+</mediaobject>
+</screenshot>
+In the "Build artifacts" area of this page, you can download artifacts for this particular build.
+You can also create a new directory as well as upload new artifacts.
+This can be useful for example if you want to supply patches for the specific build.
+You can also access the build log for this build. This log file can help you to diagnose
+any problems in case the build failed. The revision log records file or directory changes
+in the repository between previous build and this build.
+If you select to "label build" when generating this build,
+the "rebuild" icon
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/rebuild.gif" format="GIF" /> </imageobject>
+</inlinemediaobject>
+with a link at the top area of this page will display.
+If you follow this link, you will be able to rebuild this build later.
+The rebuild process will use exactly the same VCS setting as when the build has been initially built.
+The exact rebuild VCS setting will be written into the build log when you perform a rebuild.
+You can return Build Schedules page by clicking on the "Builds" tab.
+</para>
+<para>
+You can search "history builds" form the Build Schedules or History Builds page by clicking on
+the "search build icon"
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/search.gif" format="GIF" /></imageobject>
+</inlinemediaobject>. The following page will display
+<screenshot>
+<screeninfo>Search for the builds</screeninfo>
+<mediaobject>
+    <imageobject><imagedata fileref="images/search-builds.jpg" format="JPG" /> </imageobject>
+<textobject> <phrase>Search for the builds</phrase> </textobject>
+</mediaobject>
+</screenshot>
+that will allow you to specify following search criteria:
+<variablelist>
+    <varlistentry>
+    <term>Version</term>
+    <listitem><para>
+   	Specify the version of the matching builds. If &quot;exact match&quot; is checked,
+   	Luntbuild will search the build with the version exactly matching the specified value.
+   	Otherwise Luntbuild will search all the builds with the version that starts with the specified value.
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>Status</term>
+    <listitem><para>
+    Specify the build status of the matching builds. One of the options is available:
+    <simplelist>
+    <member>all status</member>
+    <member>successful</member>
+    <member>failed</member>
+    <member>running</member>
+    </simplelist>
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>From</term>
+    <listitem><para>
+    Search the builds generated after the specified date. The date format should be "yyyy-MM-dd", for example, "2004-9-2".
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>To</term>
+    <listitem><para>
+    Search the builds generated before the specified date. The date format should be "yyyy-MM-dd", for example, "2004-9-2".
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>Schedule</term>
+    <listitem><para>
+    Specify the schedules to search the builds in.
+    </para></listitem>
+    </varlistentry>
+</variablelist>
+The page containing a list of the "history builds" matching the specified criteria will display.
+</para>
+<para>
+You can delete the displayed list of builds by clicking in on icon
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/delete.gif" format="GIF" /> </imageobject>
+</inlinemediaobject>.
+</para>
+<para>
+You can move (or promote) the displayed list of builds  by clicking in on icon
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/move.gif" format="GIF" /> </imageobject>
+</inlinemediaobject>,
+which will display "Move builds" page. On this page you can select a "Destination schedule" to move
+the displayed builds to. Specify the destination schedule for these builds. The move function enables you:
+<orderedlist numeration="arabic">
+    <listitem><para>To save the builds before deleting a schedule or project.</para></listitem>
+    <listitem><para>To promote important builds. For example, we can promote a particular build from
+    the &quot;nightly&quot; schedule to the &quot;release&quot; schedule, to mark it as an external release.
+    </para></listitem>
+</orderedlist>
+</para>
+</chapter>
+
+<chapter id="projects">
+<title>Snapshot of all Projects</title>
+<screenshot>
+<screeninfo>Luntbuild Projects Page</screeninfo>
+<mediaobject>
+    <imageobject><imagedata fileref="images/projects.jpg" format="JPG" /> </imageobject>
+<textobject> <phrase>Luntbuild Projects Page</phrase> </textobject>
+</mediaobject>
+</screenshot>
+<para>
+This page shows all the projects currently configured in the system.
+A project can be created by entering the Version Control System(s) information, Builder(s) information and Schedule(s) information for a project.
+A project might be cloned (created a copy of project by clicking on icon
+<inlinemediaobject>
+    <imageobject><imagedata fileref="images/delete.gif" format="GIF" /> </imageobject>
+</inlinemediaobject>.
+This is useful for creating projects that are similar to existing projects.
+</para>
+</chapter>
+
+<chapter id="remote">
+<title>Using Luntbuild External API</title>
+<para>
+Luntbuild provides a suite of remoting API with the following abilities:
+<orderedlist numeration="arabic">
+    <listitem><para>Trigger a build in any build schedule.</para></listitem>
+    <listitem><para>Configure properties of projects, as well as global properties.</para></listitem>
+    <listitem><para>Search builds and get a build information such as its artifacts url, etc.</para></listitem>
+</orderedlist>
+By utilizing the Hessian web service protocol, this API is very easy to use.
+Basically two jar files needs to be included in the classpath,
+<emphasis>hessian-3.0.8.jar</emphasis> and <emphasis>luntbuild-api.jar</emphasis>.
+They can be found in the "remoting" directory. There are also some examples to demonstrate usage of the API. 
+The provided TriggerBuild example can be used to implement a real-time Continuous Integration,
+that is, whenever a checkin is made into the repository, Luntbuild can trigger immediate build.
+We create a sample Cvs repository to show how to do this:
+<orderedlist numeration="arabic">
+    <listitem><para>
+    Create a manually triggered schedule in a project you will use to implement real-time continuous integration.
+    To get the build fast, you can configure the build to build incrementally.
+    </para></listitem>
+    <listitem><para>
+    Checkout "loginfo" file under CVSROOT directory of your cvs repository, and append a line like this:
+    <programlisting>
+	testcvs cmd /c d:/lunt/cvs/lunt/luntbuild/remoting/samples/trigger_build.bat
+	</programlisting>
+		<note><para>Before editing, this file should be checked out first using your cvs client, just like you edit
+ 		other files in your cvs repository.</para></note>
+	where <emphasis>testcvs</emphasis> should be replaced with the directory path of your Cvs repository.
+	All checkins under this path will trigger the trigger_build.bat command.
+	The file trigger_build.bat resides in the "remoting/samples" directory.
+	Of course, you can copy the related files (the remoting API jar files, the TriggerBuild.class file,
+	and the trigger_build.bat file) to any other machine as long as JDK1.4 or higher are installed.
+	The path to trigger_build.bat need to be changed to fit your environment.
+	Contents of trigger_build.bat should be changed to reflect proper classpaths, your Luntbuild server url,
+	your desired project, and build schedule. On Unix platform, you can create the trigger_build.sh script
+	easily based on the contents of the file trigger_build.bat.
+    </para></listitem>
+    <listitem><para>
+    Check in the "loginfo" file. From now on, the checkins under your configured path will trigger
+    the trigger_build command, which will result in a build you have configured above.
+    </para></listitem>
+</orderedlist>
+<note><para>
+Any other Version Control System that can trigger an external command on checkin can use this method
+to implement real-time Continuous Integration.
+</para></note>
+</para>
+</chapter>
+
+<chapter id="debug">
+<title>Debugging Build Problems</title>
+<para>
+If you encounter a problem during the build of your project, first check the build log of the failed build.
+By default, Luntbuild will only write log of informational, warning, and error messages.
+You can edit a project information and set "Log level" property to "verbose".
+Luntbuild logs are written to "luntbuild installation directory"/logs directory.
+These logs include information about modification detection, and other information not related to any specific build.
+You may need to look at these logs to diagnose problems such as scheduled or manual build that did not
+execute for unknown reason etc. The most recent log file can be viewed using "system log" link at the top of every page.
+However, for older log files, you will need to go to the logs directory.
+</para>
+</chapter>
+
+<chapter id="security">
+<title>Luntbuild Security</title>
+<para>
+Luntbuild has build-in security for user authentication and authorization handling.
+To be independent of the servlet container (application server) Luntbuild is installed in,
+all configuration is done inside the Luntbuild application itself.
+</para>
+<section><title>General security concept overview.</title>
+<para>
+Only authenticated users are allowed access to Luntbuild.
+Luntbuild functions are assigned following basic roles:
+<simplelist>
+<member>site admin</member>
+<member>project admin</member>
+<member>project builder</member>
+<member>project viewer</member>
+<member>role description</member>
+</simplelist>
+<variablelist>
+    <varlistentry>
+    <term>site admin</term>
+    <listitem><para>
+    This role is intended to represent the root user. A user with an assigned role site-admin has unrestricted
+    access to all of the Luntbuild's functionality. Following are the tasks the site admin is allowed to execute:
+	<simplelist>
+	<member>user management</member>
+	<member>global property management</member>
+	<member>create projects</member>
+	<member>manage schedules</member>
+	<member>assign site-admin role to different users</member>
+	<member>assign project admin role to different users</member>
+	<member>inspect system log</member>
+	</simplelist>
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>project admin</term>
+    <listitem><para>
+    This role covers functionality for project management. Following are the tasks the project admin is allowed to execute:
+	<simplelist>
+	<member>modify project settings</member>
+	<member>manage VCS modules</member>
+	<member>manage builds</member>
+	<member>assign users to project internal roles</member>
+	</simplelist>
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>project builder</term>
+    <listitem><para>
+    This role is restricted to managing the build related tasks.
+    Following are the tasks the project builder is allowed to execute:
+	<simplelist>
+	<member>manually trigger builds</member>
+	<member>assign build schedules</member>
+	<member>manage build results</member>
+	</simplelist>
+    </para></listitem>
+    </varlistentry>
+    <varlistentry>
+    <term>project viewer</term>
+    <listitem><para>
+    This is the most restrictive role. Following are the tasks the project viewer is allowed to execute:
+	<simplelist>
+	<member>view build results</member>
+	<member>view build log</member>
+	<member>download build artifacts</member>
+	</simplelist>
+    </para></listitem>
+    </varlistentry>
+</variablelist>
+</para>
+</section>
+<section><title>How to configure security for Luntbuild.</title>
+<para>
+Security for Luntbuild is based on two security providers. 
+One security provider is configured by modifying the configuration file located
+for example in &lt;your app. server&gt;/webapps/luntbuild/WEB-INFO/applicationContext.xml.
+For security reasons, you should consider changing the site admin password.
+Look for the section <emphasis>inMemoryAuthenticationDAO</emphasis>, and change the default
+site admin password to different value:
+    <programlisting>
+    <![CDATA[
+	<bean id="inMemoryAuthenticationDAO" class="net.sf.acegisecurity.providers.dao.memory.InMemoryDaoImpl">
+		<property name="userMap">
+			<value>
+				<!-- this is the build-in site admin user - please change the password for security reasons.
+				     However, name of the user, and its role should not be changed! -->
+					luntbuild=luntbuild,ROLE_SITE_ADMIN,ROLE_AUTHENTICATED
+					dummy=dummy,ROLE_AUTHENTICATED
+			</value>
+		</property>
+	</bean>
+    ]]>
+    </programlisting>
+    <note><para>You can also change the site admin password in the installer.</para></note>
+The user dummy is a user with just minimal privileges. This user is only used for testing.
+
+All other users should be created by using Users tab page, see chapter <link linkend="adduser">Adding Luntbuild Users</link>
+for details. 
+
+The second security provider is database based and has to be configured in the Project page
+to define project related roles. See chapter <link linkend="firstproject">Creating a Project</link> for details.
+</para>
+</section>
+</chapter>
+
+<chapter id="administration">
+<title>Data export and import.</title>
+<para>
+Data of Luntbuild (projects, schedules, etc.) can be exported or imported using "Administration" tab.
+</para>
+<section><title>Data export.</title>
+	<para>
+		You can specify the path of the file you want to export to, and click on the "Export" button. Data will be exported.
+        The exported data is in XML format, and can be edited (carefully 8-), and you can import the exported data
+        to other Luntbuild installations. If relative path is specified,
+        the file will be located relative to the Luntbuild installation directory.
+        We do recommend to specify the absolute path to the file to be able to locate the file easily.
+		<note><para>
+			File specified here will be created on Luntbuild server, NOT on the machine running web browser.
+		</para></note>
+		<note><para>
+		This operation may take a long time if there are many builds in the system. We strongly suggest to remove
+ 		non-necessary builds in order to speed up this process and to speed up the import using this export file.
+		</para></note>
+	</para>
+</section>
+<section><title>Data import.</title>
+	<para>
+		You can specify the path of the file you want to import from, and click on the "Import" button.
+        Data will be imported.
+		<note><para>
+		This operation can only be performed on an empty database. It may takes a long time depending on the size
+        of the file being imported.
+		</para></note>
+	</para>
+</section>
+<section><title>Data migration by using export and import.</title>
+	<para>
+	Data migration can be done easily by using export and import. For example, you currently have Luntbuild
+    running on HSQLDB database for some time, and you want to switch to MySQL for some reason.
+    You can do the following steps to perform the transition:
+		<orderedlist>
+			<listitem><para>Start Luntbuild running on HSQLDB, and export data to a file, let's say data.xml.</para></listitem>
+			<listitem><para>Stop Luntbuild, edit applicationContext.xml file to switch to use MySQL.</para></listitem>
+			<listitem><para>Start Luntbuild, and import data.xml into the system.</para></listitem>
+			<listitem><para>You are done!</para></listitem>
+		</orderedlist>
+	</para>
+</section>
+</chapter>
+
+<appendix id="buildognl">
+<title>OGNL Expressions supported for a Build</title>
+<variablelist>
+    <varlistentry><term>build.version</term>
+    <listitem><para>
+    Build version
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.artifactsDir</term>
+    <listitem><para>
+    Build artifacts directory, subdirectory of the build.publishDir.
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.publishDir</term>
+    <listitem><para>
+    Build publish directory.
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.junitHtmlReportDir</term>
+    <listitem><para>
+    JUnit tests Html reports directory
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.schedule.name</term>
+    <listitem><para>
+    Build schedule name.
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.schedule.description</term>
+    <listitem><para>
+    Build schedule description.
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.schedule.workingDir</term>
+    <listitem><para>
+    Build schedule work directory.
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.schedule.vcsModified</term>
+    <listitem><para>
+    Was VCS modified?
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.schedule.dependencyNewer</term>
+    <listitem><para>
+    Is dependent schedule newer?
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.schedule.project.name</term>
+    <listitem><para>
+    Build project name.
+    </para></listitem>
+    </varlistentry>
+    <varlistentry><term>build.schedule.project.description</term>
+    <listitem><para>
+    Build project description.
+    </para></listitem>
+    </varlistentry>
+</variablelist>
+<para>
+Here are some examples to show the format of the OGNL expressions:
+</para>
+<orderedlist numeration="arabic">
+    <listitem><para>
+        <emphasis>build.schedule.vcsModified</emphasis> - this expression will evaluate to true if the repository
+        content of the current build changes
+    </para></listitem>
+    <listitem><para>
+        <emphasis>build.schedule.project["testcvs"].vcsModified</emphasis> - this expression
+        will evaluate to true if the repository content of the "development" view
+	    of the "testcvs" project changes.
+    </para></listitem>
+    <listitem><para>
+        <emphasis>ant("/path/to/command.xml", "targetA") == 0</emphasis> - this expression
+        will evaluate to true if execution of targetA of ant script file /path/to/command.xml
+        returns <emphasis>success</emphasis>.
+        <note><para>
+            Special characters such as '\', '"', should be escaped with '\', just like in Java strings.
+            The Ant file path will be assumed relative to current project work directory,
+            if it is not an absolute path. If the target is "" or null, the default target will be assumed.
+        </para></note>
+    </para></listitem>
+    <listitem><para>
+        <emphasis>execute("/path/to/command.sh") == 0</emphasis> - this expression will evaluate
+        to true if the return code of the execution of the specified command is 0.
+        <note><para>
+            Special characters such as '\', '"', should be escaped with '\', just like in Java strings.
+        </para></note>
+    </para></listitem>
+</orderedlist>
+<para>
+	The above expressions can be prefixed with '!' to inverse the value,
+	for example <emphasis>!modified</emphasis> will be true when there are no modifications
+	in the repository of the current project.
+</para>
+<para>
+	The above expressions can be joined with "and", and "or". For example, the expression:
+	<emphasis>modified or execute("/path/to/command.sh")==0</emphasis> will be true,
+	if repository content of the current project changes, or execution of the specified command returns 0.
+</para>
+<para>
+    The above expressions can be prefixed with '!' to negate the value,
+    for example "!modified" will evaluate to true when there are no modifications
+    in the repository of current view.  The above expressions can also be joined with "and", "or".
+    For example, the expression
+    <emphasis>modified or execute("/path/to/command.sh")==0</emphasis> will evaluate to true
+    if the repository content of the current view changes, or execution of the specified command returns 0.
+</para>
+<para>
+Please go to
+<ulink url="http://www.ognl.org"><citetitle>http://www.ognl.org</citetitle></ulink>
+to learn more about general grammar of an OGNL expression.
+</para>
+</appendix>
+</book>
