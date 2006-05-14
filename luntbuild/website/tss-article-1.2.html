@@ -1,0 +1,71 @@
+<html>
+<head>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
+<script type="text/javascript">_uacct = "UA-125290-1";urchinTracker();</script>
+</head>
+<body>
+<p>Luntbuild is a build automation and build management system that attempts to be more than just a daily
+build or continuous integration tool. Luntbuild uses the concepts of a project, Version Control System (VCS) adaptor,
+and schedule to automate and manage builds. The project is a "real world" project, and corresponds
+to a set of particular source repositories. The VCS adaptor is a group of versioned directories or files,
+usually defined by a path into the VCS repository with a particular branch or label.
+</p>
+<p>Luntbuild documentation is available <a href="http://luntbuild.sourceforge.net/manual12/guide/index.html">here</a>.
+<br>Luntbuild demo movie is available <a href="http://luntbuild.sourceforge.net/luntbuild-demo.html">here</a>.
+<br>You can download and try Luntbuild from <a href="http://sourceforge.net/project/showfiles.php?group_id=113344&package_id=122604">Sourceforge site</a>.
+</p>
+<p>
+You may ask why Luntbuild, while there are already many good build automation tools such as Cruise Control, Anthill,
+and others. Our answer is:
+<br>
+Luntbuild aims at not only being build automation, but also build management system. Executed builds can be categorized,
+promoted, searched, patched, deleted, etc. This is very important for a nightly builds or Continuous Integration builds,
+which generate many builds over time. Luntbuild utilizes the project/schedule concept to easily provide build support
+for parallel development. No configuration files, all jobs are done using web interface.
+You can set your Luntbuild system in less than 30 minutes. 
+</p>
+<p>
+Luntbuild 1.2 introduces following new features:
+<ul>
+<li>Maven builder support
+<li>Command shell builder support
+<li>ACL based Security (thanks Johannes Plachy)
+<li>Project/schedule dependency
+<li>Ability to stop running build
+<li>Ability to clone/copy a project
+<li>Ability to associate different builders with different schedules
+<li>Ability to configure "build cleanup strategy" which gives user the option to only keep a specified number of builds, or to keep specified build days for particular schedules
+<li>Easier way to specify properties for Ant and Maven builder, separated properties in its own text area
+<li>Ability to define multiple builders, VCS adaptors, and schedules for  a project
+<li>New File system based Vcs adaptor
+<li>New Vcs Aadaptor for AccuRev (thanks Jason Carreira)
+<li>Quiet period can be set before check out code for build 
+<li>Luntbuild data can be exported to an XML file or imported from an XML file
+<li>Ability to notify about build status using Jabber (thanks Johannes Plachy)
+<li>More supported servlet containers, application servers: Tomcat, Jetty, Resin, JBoss, JOnAS, SunOne
+<li>New notification strategy: "Notify when build status changed"
+<li>User password encryption
+<li>Hide password from log
+<li>Display summary of [http://junit.org JUnit] test results on build page
+<li>Upgraded Hsql/Spring and some other 3rd party libraries
+<li>For HSQLDB, changed build table definition to be a cached table in HSQL database. This way, rows of build table will be swapped to disk when they become too large
+<li>New User's Guide and FAQ documentation
+<li>New Luntbuild GUI based installer
+<li>Started <a href="http://luntbuild.sourceforge.net/cgi-bin/moin.cgi/FrontPage">Luntbuild Project Wiki</a>
+</ul>
+<p>
+Luntbuild supports following application servers/servlet containers:
+<ul>
+<li>Tomcat 4.x
+<li>Tomcat 5.5
+<li>Jetty 4.2.23
+<li>Jetty 5.1.12
+<li>Resin 3.0.12
+<li>JBoss 4.0.1RC2
+<li>JBoss 3.2.7
+<li>JOnAS 4.3.3
+<li>SunOne 6.1
+</ul>
+Luntbuild may work with other application servers/servlet containers but it is not tested with them.
+</body>
+</html>

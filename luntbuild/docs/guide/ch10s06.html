@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting Subversion connection information.</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch10.html" title="Chapter 10. Creating Version Control System (VCS) Adaptor for the Project"><link rel="prev" href="ch10s05.html" title="Setting Perforce connection information."><link rel="next" href="ch10s07.html" title="Setting Clearcase UCM connection information."></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting Subversion connection information.</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s05.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 10. Creating Version Control System (VCS) Adaptor for the Project</th><td width="20%" align="right"> <a accesskey="n" href="ch10s07.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id4766387"></a>Setting Subversion connection information.</h2></div></div></div><p>
+	In order to use this adaptor, Subversion client software should be installed on your build machine.
+	You can download subversion from <a href="http://subversion.tigris.org/" target="_top">http://subversion.tigris.org</a>.
+</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+	Please keep time of the build server machine in sync with the Subversion server machine
+	to allow build server to detect repository changes in Subversion server more accurately.
+	</p></td></tr></table></div><p>
+	Here is the list of properties for this adaptor:
+    </p><div class="variablelist"><dl><dt><span class="term">Repository url base</span></dt><dd><p>
+        The base part of Subversion url, for example, you can enter "svn://buildmachine.foobar.com/",
+        or "file:///c:/svn_repository", or "svn://buildmachine.foobar.com/myproject/othersubdirectory", etc.
+        Other definitions such as tags directory, branches directory, or modules are relative to this base url.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>If you are using https:// schema, you should make sure that svn server certificate has been
+        accepted permanently by your build machine.</p></td></tr></table></div></dd><dt><span class="term">Directory for trunk</span></dt><dd><p>
+        Directory used to hold trunk for this url base. This directory is relative to the url base.
+        Leave it blank, if you didn't define any trunk directory in the above url base.
+        </p></dd><dt><span class="term">Directory for branches</span></dt><dd><p>
+        Directory used to hold branches for this url base. This directory is relative to the url base.
+        If left blank, "branches" will be used as the default value.
+        </p></dd><dt><span class="term">Directory for tags</span></dt><dd><p>
+        Directory used to hold tags for this url base. This directory is relative to the url base.
+        If left blank, "tags" will be used as the default value.
+        </p></dd><dt><span class="term">Username</span></dt><dd><p>
+        User name to use to login to Subversion.
+        </p></dd><dt><span class="term">Password</span></dt><dd><p>
+        Password to use to login to Subversion.
+        </p></dd><dt><span class="term">Svn executable path</span></dt><dd><p>
+		The directory path, where your svn executable file resides in.
+		It should be specified here, if it does not exist in the system path.
+		</p></dd><dt><span class="term">Quiet period</span></dt><dd><p>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </p></dd></dl></div><p>
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s05.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html"><img src="../images/up.gif" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s07.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Setting Perforce connection information. </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Setting Clearcase UCM connection information.</td></tr></table></div></body></html>

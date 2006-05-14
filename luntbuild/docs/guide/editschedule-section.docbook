@@ -1,0 +1,88 @@
+<section><title>Edit Schedule.</title>
+<para>
+	Schedules are used to initiate/trigger builds either non-interactively or manually.
+</para>
+<para id="buildworkdir">
+    Each build needs a work directory to checkout the artifacts from VCS repository. Following are
+    the rules that Luntbuild uses to construct work directory:
+    <orderedlist numeration="arabic">
+    <listitem><para>
+        Main Luntbuild <emphasis>work directory</emphasis> is used as a root
+        of all Luntbuild projects.
+    </para></listitem>
+    <listitem><para>
+        Each schedule allows you to define its work directory. By default, this directory is a subdirectory
+ 		named using the project name under Luntbuild's top level work directory.
+    </para></listitem>
+    <listitem><para>
+        VCS modules contain source path that is appended after the schedule work directory.
+    </para></listitem>
+    </orderedlist>
+</para>
+<para>
+    For example if Luntbuild's work directory is <emphasis>/luntbuild-install-dir/work</emphasis>,
+    project name is <emphasis>myproject</emphasis>,
+    schedule subdirectory is <emphasis>myscheduleworkdir</emphasis>, and VCS source path is <emphasis>source</emphasis>,
+    then absolute path of the build's work directory for given schedule is
+    <emphasis>/luntbuild-install-dir/work/myproject/myscheduleworkdir/source</emphasis>.
+</para>
+<para>
+    Why is this important? Because of following reasons:
+    <simplelist>
+        <member>
+            The build's work directory can be shared between multiple schedules of the same project. In this case
+            the builds of those schedules use the same work directory, thus saving the disk space.
+            Luntbuild guarantees that builds that share the same work directory cannot be
+            executed at the same time. If first build using the shared work directory starts,
+            all additional builds that share the same work directory are entered to the pending
+            build queue, and they are executed only after currently executing build finishes.
+        </member>
+        <member>
+            If the build's work directory is not shared with other schedules of the same project,
+            contents of the VCS modules for the given project is checked multiple times (to multiple
+            work directories), thus consuming more disk space and possibly taking more time
+            to checkout the contents of the VCS modules. Advantage of this approach is, that builds
+            using different work directories (for the same project) can be executed in parallel.
+        </member>
+    </simplelist>
+</para>
+<para id="buildpublishdir">
+Each build also uses its publish directory to store the build artifacts like build log and revision log.
+Following are the rules that Luntbuild uses to construct publish directory:
+    <orderedlist numeration="arabic">
+    <listitem><para>
+        Main Luntbuild <emphasis>publish directory</emphasis> is used as a root
+        of all Luntbuild projects.
+    </para></listitem>
+    <listitem><para>
+        Project name is used to define subdirectory in the main <emphasis>publish directory</emphasis>.
+    </para></listitem>
+    <listitem><para>
+        Schedule name is used to define subdirectory in the project subdirectory.
+    </para></listitem>
+    <listitem><para>
+        Build version string is used to create subdirectory in the schedule subdirectory. This subdirectory
+        contains build log <emphasis>build_log.txt, build_log.html, build_log.xml</emphasis>
+        and revision log <emphasis>revision_log.txt, revision_log.html, revision_log.xml</emphasis>,
+        and two subdirectories <emphasis>artifacts</emphasis> and <emphasis>junit_html_report</emphasis>.
+        Subdirectory <emphasis>artifacts</emphasis> can be used by you to store any other additional artifacts,
+        subdirectories <emphasis>junit_html_report</emphasis> is used to store results of JUnit testing.
+    </para></listitem>
+    </orderedlist>
+</para>
+<para>
+    For example if Luntbuild's publish directory is <emphasis>/luntbuild-install-dir/publish</emphasis>,
+    project name is <emphasis>myproject</emphasis>,
+    schedule name is <emphasis>myschedule</emphasis>, and current build version is <emphasis>myapp-1.2.0</emphasis>,
+    then absolute path of the build's publish directory for given schedule is
+    <emphasis>/luntbuild-install-dir/publish/myproject/myschedule/myapp-1.2.0</emphasis>.
+</para>
+<para>To create a schedule, click on Schedules Tab, and click on New Schedule icon in the upper right corner of the tab's frame.</para>
+<screenshot>
+<screeninfo>Schedules Editor Tab</screeninfo>
+<mediaobject>
+    <imageobject><imagedata fileref="images/schedule-editor.jpg" format="JPG" /> </imageobject>
+<textobject> <phrase>Schedules Editor Tab</phrase> </textobject>
+</mediaobject>
+</screenshot>
+</section>
