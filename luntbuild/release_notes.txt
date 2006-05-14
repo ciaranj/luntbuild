@@ -1,0 +1,64 @@
+==============================================
+luntbuild-1.1 Release Notes
+==============================================
+
+1. Changes since version 1.0.2
+
+1) Build notifications can be configured to send to users who
+   has checked in since last build
+2) Build notifications can be sent to MSN messenger besides 
+   email.
+3) Remoting API added, so that functionalities such as 
+   triggering build, modify project/view properties, search 
+   builds, get build information can be accessed 
+   programmatically
+4) A composite vcs adaptor has been added to support build 
+   from mutiple repositories of same of different vcs types
+5) Build can be configured to run based on user defined 
+   conditions, such as repository modified, execution result of 
+   an external command, etc.
+6) Build success judgement can be customerized, for 
+   example, based on return code of ant command, or 
+   success/fail pattern occurred in the build log
+7) Reserved values of "what to build" property of UCM 
+   clearcase adaptor are now surrounded with '<' and '>', for 
+   example "<latest baselines>" will represents to build 
+   against all latest baselines, while "latest baselines" will 
+   simply represents to build against the baseline 
+   named "latest baselines". 
+8) "next build version" property of a view are now enhanced 
+   to support more flexible versioning strategies, such as 
+   including build date, build iterations, etc.
+9) "is cygwin cvs" property been added for cvs adaptor to 
+   get luntbuild works with cygwin cvs correctly.
+10) Extra options can be set for base or UCM clearcase 
+    adaptor to control behavious such as end of line modes 
+    for checkouted text files, etc.
+11) "convert EOL" property been added for starteam adaptor 
+    to control end of line modes for checkouted text files. 
+12) "line end" property been added for perforce adaptor to
+    control end of line modes for checkouted text files. 
+13) Fix the bug that luntbuild can not work with cvs-1.1
+
+2. Upgrade from version 1.0, 1.0.1 or 1.0.2
+
+1) Copy all files under <luntbuild_install_dir>/db and save to 
+   somewhere else.
+2) Follow installation instructions in readme.txt. 
+3) Stop luntbuild web application, copy back previously saved 
+   db files to <luntbuild_install_dir>/db directory and override 
+   existing files. 
+4) Start up luntbuild web application
+5) Re-saves every build schedule. This can be done simply by
+   editing and saving the build schedule.
+6) Edit every view's "next build version" property, and get it 
+   quoted with quotations.
+7) If you are using UCM clearcase,  and if you configure some 
+   view to build with "latest", "latest 
+   baselines", "recommended baselines", or "foundation 
+   baselines",  you should surround these values with '<' 
+   and '>'. That is, "latest" becomes "<latest>", "latest 
+   baselines" becomes "<latest baselines>", "foundation 
+   baselines" becomes "<foundation baselines>", 
+   and "recommended baselines" becomes "<recommended 
+   baselines>". 
