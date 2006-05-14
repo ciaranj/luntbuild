@@ -1,0 +1,153 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+<!--
+.style1 {color: #00FF00}
+.style2 {color: #FF0000}
+-->
+</style>
+</head>
+<span jwcid="$content$">
+<table width="100%"  border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td height="13" align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="iconTable">
+      <tr>
+        <td>&nbsp;</td>
+		<span jwcid="@Conditional" condition="ognl:action!=null && action=='viewBuild' && getComponent('buildViewerComponent').rebuildable && isPrjAdministrable(getComponent('buildViewerComponent').build.schedule.project.id)">
+        <td width="25"><a jwcid="@DirectLink" listener="ognl:getComponent('buildViewerComponent').listeners.rebuild" href="#"><img src="images/rebuild.gif" alt="rebuild" width="16" height="16" border="0"></a></td>
+		</span>
+		<span jwcid="@Conditional" condition="ognl:action!=null && action=='viewBuild' && isPrjAdministrable(getComponent('buildViewerComponent').build.schedule.project.id)">
+        <td width="25"><a jwcid="@DirectLink" listener="ognl:listeners.deleteBuild" href="#"><img src="images/delete.gif" alt="delete this build" width="18" height="18" border="0"></a></td>
+        <td width="25"><a jwcid="@DirectLink" listener="ognl:listeners.moveBuild" href="#"><img src="images/move.gif" alt="move this build" width="18" height="18" border="0"></a></td>
+		</span>
+		<span jwcid="@Conditional" condition="ognl:action!=null && action=='listBuilds' && getComponent('buildListComponent').numTotalBuilds != 0">
+        <td width="25"><a jwcid="@DirectLink" listener="ognl:listeners.deleteBuilds" href="#"><img src="images/delete.gif" alt="delete found builds" width="18" height="18" border="0"></a></td>
+        <td width="25"><a jwcid="@DirectLink" listener="ognl:listeners.moveBuilds" href="#"><img src="images/move.gif" alt="move found builds" width="18" height="18" border="0"></a></td>
+		</span>
+        <td width="25"><a jwcid="@DirectLink" listener="ognl:listeners.searchBuild" href="#"><img src="images/search.png" alt="search builds" width="18" height="16" border="0"></a></td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td align="left" valign="top"> 
+	  <span jwcid="@contrib:Choose">
+	<span jwcid="@contrib:When" condition="ognl:action != null">
+		<span jwcid="@RenderBlock" block="ognl:getComponent(action)"/>
+	</span>
+	<span jwcid="@contrib:Otherwise">
+	<table width="100%"  border="0" cellpadding="0" cellspacing="0">
+	  <tr align="left">
+		<td colspan="7" class="centerTableDescriptionRow" scope="col"><img src="images/guide.gif" width="58" height="45" border="0" class="centerTableDescriptionRowIcon">This page shows build information for all projects. Status of a schedule and build 
+		   is denoted using icon: <span class="style1">GREEN</span> icon means success, the animation gear icon means building,
+		  and <span class="style2">RED</span>		  icon means build failed. Schedule status is different from build status, and it means whether or not the schedule has been successfully triggered. Trigger of the schedule may or may not generate a new build, it depends on the current build strategy and repository changes. The system log and build log contain detail information about the execution of a schedule. </td>
+	  </tr>
+	  <tr class="dataTableTitleRow">
+		<td width="16%" align="left" valign="top" scope="col">Project</td>
+		<td width="18%" align="left" valign="top" scope="col">Schedule</td>
+		<td width="18%" align="left" valign="top" scope="col">When to trigger</td>
+		<td align="left" valign="top" scope="col">Latest build </td>
+		<td width="4%" scope="col">&nbsp;</td>
+		<td width="4%" scope="col">&nbsp;</td>
+		<td width="4%" scope="col">&nbsp;</td>
+	  </tr>
+	  <span jwcid="@Foreach" source="ognl:schedules" value="ognl:schedule" index="ognl:scheduleIndex">
+	  <tr>
+		<td align="left" valign="top" class="ognl:rowClass" jwcid="@Any">
+			<a href="#" jwcid="@DirectLink" listener="ognl:listeners.gotoProject" parameters="ognl:schedule.project.id">
+			<span jwcid="@Insert" value="ognl:schedule.project.name">luntbuild</span>
+			</a>
+		</td>
+		<td align="left" valign="top" class="ognl:rowClass" jwcid="@Any">
+		<img jwcid="@Any" src="ognl:scheduleStatusGif" width="20" height="20" align="absmiddle"/>
+			<a href="#" jwcid="@DirectLink" listener="ognl:listeners.gotoSchedule" parameters="ognl:schedule.project.id" anchor="ognl:schedule.id">
+			<span jwcid="@Insert" value="ognl:schedule.name">nightly</span>
+			</a>
+		</td>
+		<td align="left" valign="top" class="ognl:rowClass" jwcid="@Any">
+		<span jwcid="@Conditional" condition="ognl:schedule.trigger!=null">
+			<span jwcid="@Conditional" condition="ognl:schedule.trigger.getClass().getName() =='org.quartz.SimpleTrigger'">
+				<span jwcid="@Insert" value="ognl:'every '+schedule.trigger.repeatInterval/60000+' minutes'"/>
+			</span>
+			<span jwcid="@Conditional" condition="ognl:schedule.trigger.getClass().getName()=='org.quartz.CronTrigger'">
+				<span jwcid="@Insert" value="ognl:'at '+schedule.trigger.cronExpression"/>
+			</span>
+		</span>
+		<span jwcid="@Conditional" condition="ognl:schedule.trigger==null">
+		manually
+		</span>		
+		</td>
+		<td align="left" valign="top" class="ognl:rowClass" jwcid="@Any">
+		<img jwcid="@Any" src="ognl:lastBuildStatusGif" width="20" height="20" align="absmiddle"/>
+		<span jwcid="@Conditional" condition="ognl:lastBuild != null">
+				<a jwcid="@DirectLink" listener="ognl:listeners.viewBuild" parameters="ognl:lastBuild.id" href="#">
+				<span jwcid="@Insert" value="ognl:lastBuild.version">luntbuild1.0</span>
+				</a>
+		<span jwcid="@Conditional" condition="ognl:lastBuild.endDate != null"> [<span jwcid="@Insert" value="ognl:lastBuildEndDate">2004/1/1 13:00</span>]</span>
+		</span>
+		<span jwcid="@Conditional" condition="ognl:lastBuild == null">
+		no builds yet
+		</span>
+		</td>
+		<td align="center" valign="top" class="ognl:rowClass" jwcid="@Any">
+			<span jwcid="@Conditional" condition="ognl:isPrjBuildable(schedule.project.id) and schedule.currentThread!=null">
+				<a jwcid="@DirectLink" listener="ognl:listeners.killRunningBuild" parameters="ognl:schedule.id" href="#">
+				<img src="images/stop_sign.gif" width="18" height="18" border="0" align="absmiddle" alt="kill running build">
+				</a>
+			</span>
+			<span jwcid="@Conditional" condition="ognl:!isPrjBuildable(schedule.project.id) or schedule.currentThread==null">&nbsp;</span>
+<!--
+			&nbsp;
+-->
+		</td>
+		<td align="center" valign="top" class="ognl:rowClass" jwcid="@Any">
+			<span jwcid="@Conditional" condition="ognl:isPrjBuildable(schedule.project.id)">
+			<a jwcid="@DirectLink" listener="ognl:listeners.build" parameters="ognl:schedule.id" href="#">
+			<img src="images/start_build.gif" width="18" height="18" border="0" align="absmiddle" alt="trigger manually">
+			</a>
+			</span>
+			<span jwcid="@Conditional" condition="ognl:!isPrjBuildable(schedule.project.id)">&nbsp;</span>
+		</td>
+		<td align="center" valign="top" class="ognl:rowClass" jwcid="@Any">
+			<a jwcid="@DirectLink" listener="ognl:listeners.listBuilds" parameters="ognl:schedule.id" href="#" >
+			<img src="images/history_builds.gif" alt="history builds" width="18" height="18" border="0" align="absmiddle">
+			</a>
+		</td>
+	  </tr>
+	  </span>
+	</table>
+</span>
+      </span></td>
+  </tr>
+</table>
+
+<span jwcid="moveBuilds@Block">
+<span jwcid="moveBuildsComponent@MoveBuilds"/>
+</span>
+<span jwcid="searchBuilds@Block">
+<span jwcid="searchBuildsComponent@SearchBuilds"/>
+</span>
+<span jwcid="listBuilds@Block">
+<span jwcid="buildListComponent@BuildList"/>
+</span>
+<span jwcid="viewBuild@Block">
+<span jwcid="buildViewerComponent@BuildViewer"/>
+</span>
+<span jwcid="deleteBuilds@Block">
+<table width="100%" height="100%"  border="0" cellspacing="0">
+  <tr>
+    <td height="500" align="center" valign="middle">
+	<span jwcid="@luntbuild:YesNoBox" msg="Do you really want to delete these builds? Deletion may take some time, please wait patiently if you choose to delete." okListener="ognl:listeners.confirmDeleteBuilds" cancelListener="ognl:listeners.cancelDeleteBuilds"/>
+	</td>
+  </tr>
+</table>
+</span>
+<span jwcid="deleteBuild@Block">
+<table width="100%" height="100%"  border="0" cellspacing="0">
+  <tr>
+    <td height="500" align="center" valign="middle">
+	<span jwcid="@luntbuild:YesNoBox" msg="Do you really want to delete this build? Deletion may take some time, please wait patiently if you choose to delete." okListener="ognl:listeners.confirmDeleteBuild" cancelListener="ognl:listeners.cancelDeleteBuild"/>
+	</td>
+  </tr>
+</table>
+</span>
+</span>

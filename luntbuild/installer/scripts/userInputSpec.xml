@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<userInput>
+    <panel order="0">
+        <field type="title" align="left" bold="yes" txt="Customize the web application." id="input.title"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+        <field type="text" variable="sessionTimout">
+            <spec txt="Session Timeout [min]:" id="input.timout" size="6" set="30"/>
+        </field>
+        <field type="space"/>
+        <field type="text" variable="luntbuildPassword">
+            <spec txt="Luntbuild Account Password:" id="input.lpassword" size="30" set="luntbuild"/>
+        </field>
+        <field type="space"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+        <field type="search" variable="appServerWebapps">
+            <description align="left" txt="Application server web applications install directory." id="input.webapps"/>
+            <spec txt="Path to war deploy dir:" type="directory" result="directory" size="30" set="">
+                <choice value="/usr/local/tomcat/webapps" os="unix" />
+                <choice value="/usr/local/jetty-4.2.23/webapps" os="unix" />
+                <choice value="/usr/local/jetty-5.1.2/webapps" os="unix" />
+                <choice value="/usr/local/jboss-3.2.7/server/default/deploy" os="unix" />
+                <choice value="/usr/local/jboss-4.0.1RC2/server/default/deploy" os="unix" />
+                <choice value="/usr/local/resin-3.0.12/webapps" os="unix" />
+                <choice value="C:\Program Files\Tomcat 5.5\webapps" os="windows" />
+                <choice value="C:\jetty-4.2.23\webapps" os="windows" />
+                <choice value="C:\jetty-5.1.2\webapps" os="windows" />
+                <choice value="C:\jboss-3.2.7\server\default\deploy" os="windows" />
+                <choice value="C:\jboss-4.0.1RC2\server\default\deploy" os="windows" />
+                <choice value="C:\resin-3.0.12\webapps" os="windows" />
+            </spec>
+        </field>
+    </panel>
+</userInput>
