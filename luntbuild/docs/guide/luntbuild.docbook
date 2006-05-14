@@ -1,0 +1,580 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" >
+<book>
+
+<bookinfo>
+  <title>Luntbuild - Build Automation and Management User's Guide</title>
+  <copyright><year>2005</year><holder>Luntbuild</holder></copyright>
+</bookinfo>
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>
+    Luntbuild is a build automation and management tool based on the popular
+    <ulink url="http://ant.apache.org"><citetitle>Apache Ant</citetitle></ulink>.
+    With Luntbuild, daily build and continuous integration
+    can be setup easily. Refer to the following articles for benefits of daily builds and
+    continuous integration if you are not familiar with them:
+</para>
+<itemizedlist>
+   <para><ulink url="http://www.martinfowler.com/articles/continuousIntegration.html">
+   <citetitle>Continuous Integration</citetitle>
+   </ulink></para>
+   <para><ulink url="http://www.joelonsoftware.com/articles/fog0000000023.html">
+   <citetitle>Daily Builds Are Your Friend</citetitle>
+   </ulink></para>
+</itemizedlist>
+<para>While Luntbuild team would appreciate if you choose Luntbuild as your tool of choice for your
+    continuous integration process, we realize, there are more tools available, and it is up to you
+    to make decision, which tool to use. Very nice comparison of continuous integration tools is available in 
+    <ulink url="http://damagecontrol.codehaus.org/Continuous+Integration+Server+Feature+Matrix">
+        <emphasis>Continuous Integration Server Feature Matrix.</emphasis>
+    </ulink>
+</para>
+<para>Basic unit of work in Luntbuild is a Build. Build execution is triggered either by schedule or
+    it can be started manually. A build in Luntbuild performs following steps:</para>
+<orderedlist numeration="arabic">
+    <listitem><para>Checks out source codes from version control systems.</para></listitem>
+    <listitem><para>Sets a label on current source code based on current build version.</para></listitem>
+    <listitem><para>Runs an Ant build script in the source tree.</para></listitem>
+    <listitem><para>Runs an Ant post build script in the source tree.</para></listitem>
+    <listitem><para>Publishes the build log and other build artifacts.</para></listitem>
+</orderedlist>
+<para>
+    Build configuration, monitoring, and access the build artifacts are all done through a web interface.
+    Your development and testing team will have a central area to access build information.
+</para>
+</chapter>
+
+<chapter id="install">
+<title>Luntbuild Installation</title>
+<note>
+    This chapter describes a clean/&quot;from scratch&quot; Luntbuild installation.
+    For upgrades, please refer to the Release Notes.
+</note>
+<orderedlist numeration="arabic">
+    <listitem><para>
+        Download source or binary distribution from
+        <ulink url="http://www.luntsys.com/luntbuild/download.html">
+            http://www.luntsys.com/luntbuild/download.html
+        </ulink>
+    </para></listitem>
+    <listitem><para>
+        Go to step 6 if you've downloaded the binary distribution.
+        Otherwise, continue next to compile the source distribution.
+    </para></listitem>
+    <listitem><para>
+        Make sure you have JDK1.4 or JDK1.5 installed.
+        Go to <ulink url="http://java.sun.com">http://java.sun.com</ulink> to download and install Java.
+    </para></listitem>
+    <listitem><para>
+        Make sure you have Apache Ant installed.
+        Go to <ulink url="http://ant.apache.org">http://ant.apache.org</ulink>  to download and install Ant.
+    </para></listitem>
+    <listitem><para>
+        Extract the source distribution into a directory, suppose &quot;/luntbuild-src&quot;.
+        Change to &quot;/luntbuild-src/build&quot; directory.
+        Run build.bat on Windows platform, or run &quot;sh build.sh&quot; on Unix or Linux platform.
+        <note>
+            Starteam adaptor will not get built by default. If you want to get Starteam adaptor built, 
+            you need to put Starteam SDK jar file (starteam60.jar for Starteam 6.0, which ships with the Starteam
+            client installation) and put it into &quot;/luntbuild-src/lib&quot; directory before you start the build.
+        </note>
+    </para></listitem>
+    <listitem><para>
+        After build finishes go to /luntbuild-src/distribute directory, you should see binary distribution
+        zip file luntbuild-1.2.zip.
+    </para></listitem>
+    <listitem><para>
+        Extract the binary distribution to a directory, suppose &quot;/luntbuild&quot;.
+    </para></listitem>
+    <listitem><para>
+        Make sure you have Tomcat4 or Tomcat5 installed on your system.
+        You can get Tomcat at <ulink url="http://jakarta.apache.org/tomcat/index.html">http://jakarta.apache.org/tomcat/index.html</ulink>,
+        Let's suppose that Tomcat has been installed in the directory &quot;/tomcat&quot;,
+        and let's suppose you can access Tomcat at http://build-server.foobar.com.
+        <note>
+            On Windows platform, you should not start Tomcat in NT service mode, it need to be run foreground.
+            ??? Does it still applies???
+        </note>
+    </para></listitem>
+    <listitem><para>
+        Copy /luntbuild/web/luntbuild.war to /tomcat/webapps/.
+        Start Tomcat and luntbuild.war should be automatically extracted in directory
+        /tomcat/webapps/luntbuild/....
+    </para></listitem>
+    <listitem><para>
+        Edit the file /tomcat/webapps/luntbuild/WEB-INFO/web.xml, change value of the 
+        context parameter &quot;installDir&quot; of the installation directory for luntbuild,
+        that is /luntbuild in this case:
+        <programlisting>
+        <![CDATA[
+	<context-param>
+		<param-name>installDir</param-name>
+		<!-- change this for production environment !! -->
+		<param-value>D:/luntbuild</param-value>
+		<description>luntbuild installation directory</description>				
+	</context-param>
+        ]]>
+        </programlisting>
+        <note>
+            On Unix platforms, please make sure the Tomcat process have full read/write access
+            to the luntbuild installation directory.
+        </note>
+    </para></listitem>
+    <listitem><para>
+        Install version control system (VCS) client of your choice (if you already did not do so).
+        If you are using:
+        <variablelist>
+        <varlistentry>
+        <term>Visual Source Safe</term>
+        <listitem><para>
+            Download from <ulink url="http://download.microsoft.com">http://download.microsoft.com</ulink>.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>CVS</term>
+        <listitem><para>
+            Install appropriate Cvs client based on your platform from
+            <ulink url="http://www.cvshome.org">http://www.cvshome.org</ulink> or
+            <ulink url="http://www.cvsnt.org">http://www.cvsnt.org</ulink> if you are using Windows platform.
+            Make sure the cvs executable is in the system path.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Subversion</term>
+        <listitem><para>
+            Subversion client software should be installed on your build machine,
+            and the svn executable should be in the system path.
+            You can download subversion at <ulink url="http://subversion.tigris.org/">http://subversion.tigris.org</ulink>.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Starteam</term>
+        <listitem><para>
+            Support for Starteam needs the StarTeam API which is only available to licensed users of StarTeam.
+            You must have starteam-sdk.jar (or starteam60.jar for Starteam6.0) ant put it into
+            /tomcat/webapps/luntbuild/WEB-INFO/lib directory. Normally this jar file will be available as one
+            of the runtime files after you install Starteam client software.
+            Please go to <ulink url="http://www.borland.com">http://www.borland.com</ulink> for licensing information.
+            <note>
+                For Windows platform, the above step is not sufficient, you will need to have
+                a full installation of Starteam SDK runtime (which will install some runtime dlls
+                and put them in the Windows system path).
+                Normally this is part of Starteam client installation.
+            </note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Perforce</term>
+        <listitem><para>
+            You should have Perforce client installed on the build machine.
+            Make sure the p4 command line executable is in the system path.
+            Contact <ulink url="http://www.perforce.com">http://www.perforce.com</ulink> for licensing information.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Base Clearcase or Clearcase UCM</term>
+        <listitem><para>
+            You should have Clearcase client installed on the build machine.
+            Make sure the cleartool command line executable is in the system path.
+            Also you should make sure that the account running Tomcat is able to access
+            your Clearcase server and that it can make snapshot views.
+        </para></listitem>
+        </varlistentry>
+        </variablelist> 
+    </para></listitem>
+    <listitem><para>
+        For security configuration please see <link linkend="security">Chapter about
+        Security</link>. If you did not modify the security configuration, use
+        username <emphasis>luntbuild</emphasis> and password <emphasis>luntbuild</emphasis>
+        as login credentials for initial Luntbuild login.
+    </para></listitem>
+    <listitem><para>
+        Restart Tomcat, start the web browser, and point it to http://build-server.foobar.com/luntbuild/app,
+        and you will get Luntbuild login page. (The first access to Luntbuild login web page will take
+        a few seconds, please be patient 8-).
+    </para></listitem>
+</orderedlist>
+</chapter>
+
+<chapter id="login">
+<title>Login to Luntbuild</title>
+<para>
+    And now is the exciting time to login into Luntbuild for the first time. The Luntbuild login page:
+    <screenshot>
+    <screeninfo>Luntbuild Login Page</screeninfo>
+    <mediaobject>
+        <imageobject><imagedata fileref="images/login.jpg" format="JPG" /> </imageobject>
+    <textobject> <phrase>Luntbuild Login Page</phrase> </textobject>
+    </mediaobject>
+    </screenshot> 
+    asks you to enter a <emphasis>name</emphasis> and <emphasis>password</emphasis>. Use luntbuild/luntbuild
+    for name/password or if you modified the security configuration use the name and password
+    you have specified in web.xml configuration file.
+</para>
+<para>
+    Login page contains two icons in upper right corner of the screen. Those two icons are present on all Luntbuild
+    pages. The icon  
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/help.gif" format="GIF" /> </imageobject>
+    </inlinemediaobject>
+    is a link to this Luntbuild User's Guide.
+    The icon 
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/home.gif" format="GIF" /> </imageobject>
+    </inlinemediaobject>
+    is a link to the Luntbuild web site.
+</para>
+<para>
+    Enter the name and password and click the Login button (or press Enter) to login to Luntbuild.
+</para>
+</chapter>
+
+<chapter id="homepage">
+<title>Luntbuild Home Page</title>
+<para>
+    After you login, Luntbuild Home page will be displayed:
+    <screenshot>
+    <screeninfo>Luntbuild Home Page</screeninfo>
+    <mediaobject>
+        <imageobject><imagedata fileref="images/homepage.jpg" format="JPG" /> </imageobject>
+    <textobject> <phrase>Luntbuild Home Page</phrase> </textobject>
+    </mediaobject>
+    </screenshot>
+There are four tabs on Home page:
+<orderedlist numeration="arabic">
+    <listitem><para><link linkend="builds"><emphasis>builds</emphasis></link> - shows all Luntbuild builds</para></listitem>
+    <listitem><para><link linkend="projects"><emphasis>projects</emphasis></link> - shows all Luntbuild projects</para></listitem>
+    <listitem><para><link linkend="adduser"><emphasis>users</emphasis></link> - shows all Luntbuild users</para></listitem>
+    <listitem><para><link linkend="properties"><emphasis>properties</emphasis></link> - shows general Luntbuild properties</para></listitem>
+</orderedlist>
+Just click on the tab and appropriate tab page will display.
+</para>
+<para>
+Top area of the page contains navigation area
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/navigation.jpg" format="JPG" /> </imageobject>
+    </inlinemediaobject>
+that will help you to navigate quickly throughout the different pages of Luntbuild.
+For example, when you are creating a new project (by clicking New icon on Project tab page,
+you can jump quickly to Home page by clicking Home link in the navigation area.
+</para>
+<para>TODO system log</para>
+<para>TODO refresh</para>
+<para>TODO logout</para>
+</chapter>
+
+<chapter id="properties">
+<title>Setting General Luntbuild Properties</title>
+<para>
+   Properties listed in this tab are applied to all projects in Luntbuild.
+   General Luntbuild Properties are explained in detail here:
+   <variablelist>
+        <varlistentry>
+        <term>Url to access luntbuild servlet</term>
+        <listitem><para>
+          The servlet url should be specified correctly here so it can be
+          used in email notification. Normally this value should be 
+          http://&lt;server&gt;:&lt;port&gt;/luntbuild/app, where &lt;server&gt; is your 
+          build server name or ip address, and &lt;port&gt; is the port number 
+          you use to access Luntbuild. If this property is left empty, Luntbuild will 
+          use default value http://&lt;server_ip&gt;:8080/luntbuild/app, where &lt;server_ip&gt; 
+          is the actual ip address of the build server.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Working directory</term>
+        <listitem><para>
+            You can optionally specify Luntbuild working directory.
+            Working directory is the directory, where Luntbuild checks out artifacts
+            from the version control system and performs a build.
+            If not specified, Luntbuild uses the <emphasis>work</emphasis> sub-directory of Luntbuild
+            installation directory. 
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Publish directory</term>
+        <listitem><para>
+            You can optionally specify Luntbuild publish directory.
+            Publish directory is the directory, where Luntbuild publishes the output of the build process
+            like the build log, and other build artifacts.
+            If not specified, Luntbuild uses the <emphasis>publishDir</emphasis> sub-directory of Luntbuild
+            installation directory. 
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>SMTP host - Set email related properties here if you want to notify user through email</term>
+        <listitem><para>             
+            You can optionally specify the SMTP mail host Luntbuild can use to send email notification.
+            If this property is not specified, Luntbuild will use localhost as the default value.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>SMTP user</term>
+        <listitem><para>
+            This property is optional. If the SMTP host needs authentication, you should provide the user name here.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>SMTP password</term>
+        <listitem><para>
+            This property is optional. If the SMTP host needs authentication, you should provide the password here.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Email address of sender</term>
+        <listitem><para>
+            This property is optional. If specified, luntbuild will use this email as
+            the sender address for email notifications.
+            Otherwise, the sender address will be <emphasis>luntbuild@&lt;hostname&gt;</emphasis>
+            where &lt;hostname&gt; is the host name of the build machine.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Luntbuild MSN account - Set MSN messenger related properties here if you want to notify user through MSN messenger</term>
+        <listitem><para>
+            Luntbuild need a MSN messenger account in order to send out build notification messages.
+            For example <emphasis>luntbuild@hotmail.com</emphasis>.
+            <note>Connecting through proxy is not currently supported.</note>
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Luntbuild MSN password</term>
+        <listitem><para>
+            Password for the above MSN account.
+        </para></listitem>
+        </varlistentry>
+   </variablelist>
+</para>
+
+</chapter>
+
+<chapter id="adduser">
+<title>Adding Luntbuild Users</title>
+<para>
+    Before you start using Luntbuild in a team with multiple members, or even if you are the only one
+    using Luntbuild, it is good idea to create Luntbuild user(s) and give them appropriate privileges.
+    User will be be notified of a build status and they will be authorized to access different parts
+    of Luntbuild.
+</para>
+<para>
+    To create a Luntbuild user, click on users tab and fill following information:
+</para>
+   <variablelist>
+        <varlistentry>
+        <term>Name</term>
+        <listitem><para>
+            Provide a unique name to identify this user. This property is used for ???presentation??? and user login.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Full name</term>
+        <listitem><para>
+            ???Where is this used???
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Password</term>
+        <listitem><para>
+            Provide an initial password (can be changed later by the user).
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>User is 'site admin'</term>
+        <listitem><para>
+            Check to assign user 'site admin' privileges. Assign this privilege with care! 
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Email</term>
+        <listitem><para>
+            Email address of this user.
+        </para></listitem>
+        </varlistentry>
+        <varlistentry>
+        <term>Msn account</term>
+        <listitem><para>
+            The MSN messenger account for this user, for example "foobar@hotmail.com".
+        </para></listitem>
+        </varlistentry>
+   </variablelist>
+</chapter>
+
+<chapter id="firstproject">
+<title>Creating a Project</title>
+<para>
+<itemizedlist>
+<para>Click on Project Tab.</para>
+<para>Click on New Project icon in upper right corner of the tab's frame.</para>
+<orderedlist numeration="arabic">
+   <listitem><para>Name your project, keep in mind that project work directory will be in subdirectory named
+   as your project in Luntbuild main work directory.</para></listitem>
+   <listitem><para>Specify project description.</para></listitem>
+   <listitem><para>Specify string for next build version, keep in mind the name will be used
+   as subdirectory in the publish directory.</para></listitem>
+   <listitem><para>Select project admins (previously created using Users tab).</para></listitem>
+   <listitem><para>Select project builders.</para></listitem>
+   <listitem><para>Select project viewers.</para></listitem>
+   <listitem><para>Select notification methods.</para></listitem>
+   <listitem><para>Select notification users.</para></listitem>
+   <listitem><para>Select log level.</para></listitem>
+</orderedlist>
+</itemizedlist>
+</para>
+</chapter>
+
+<chapter id="builder">
+<title>Creating the Project Builder(s)</title>
+<para>
+<itemizedlist>
+<para>Click on Builders tab.</para>
+<!--
+       <br>
+   2) &quot;Command to run ant&quot;<br> 
+   <br>
+  This property is optional. By using this property, you can set the default JDK, JVM options, ant, ant options for all projects in the system. For example, you can input:<br>
+   <br>
+  /j2sdk1.4.2_04/bin/java
+-classpath /apache-ant-1.6.1/lib/ant-launcher.jar -Dant.home=/apache-ant-1.6.1 org.apache.tools.ant.launch.Launcher  -verbose <br>
+<br> 
+By this way, all your projects will be built with jdk1.4 and ant1.6 if not individually specified in the view settings, and verbose information about the build process will be written to log which may helps diagnostic some build problem. NOTE: you should embrace paths with white spaces in quote for this property, for example:<br>
+<br> 
+&quot;C:\program files\java\jdk1.5\bin\java&quot; -classpath c:\apache-ant-1.6.1\lib\ant-launcher.jar -Dant.home=c:\apache-ant-1.6.1 org.apache.tools.ant.launch.Launcher <br>
+<br>
+NOTE: for ant options, you should not specify the option &quot;-buildfile&quot; and &quot;-logfile&quot; which will be used by luntbuild. Other options are all allowed.<br>
+<br>
+<br>
+3) &quot;Environment file&quot;<br>
+<br> 
+This property is optional. By specifying a environment file, you can set some OS specific environment variables before building every project in this system. Environment variables should be specified in this file with the &quot;name = value&quot; format, just like define a java property file. If you specify the environment file, it should be found in the checked out source tree for every view and every project(except specified in view specific settings). The path for the environment file is relative to the working directory for related view. For example if you input: testcvs/build/env.properties. And suppose we have configured a project &quot;testcvs&quot;, and under this project, we configured a view &quot;development&quot; with module &quot;testcvs&quot;. When building this view, luntbuild will first checkout module &quot;testcvs&quot; into the working directory of this view, then it will try to read the environment variables from file &lt;view_working_directory&gt;/testcvs/build/env.properties. If it does not exist, the build will fails. <br>
+<br>
+    
+    -->
+<para>Click on New Builder icon in upper right corner of the tab's frame.</para>
+    <itemizedlist>
+        <para>Select ant builder.</para>
+        <para>Modify command to run ant if needed (using -Ddebug=_debug, using -v).</para>
+        <para>Set build script path (might be build.xml, build.xml ant configuration file
+        in the top level project directory).</para>
+        <para>Set build target(s), consider using ${build.schedule.name} to use targets based
+        on name of the currently executed schedule variable.</para>
+        <para>Set build success condition (default is OK).</para>
+    </itemizedlist>
+</itemizedlist>
+</para>
+</chapter>
+
+<chapter id="vcsadaptor">
+<title>Creating Version Control System (VCS) Adaptor for the Project</title>
+<para>
+<itemizedlist>
+<para>Select Vcs Adaptors tab.</para>
+<para>Click on New Vcs Adaptor icon in upper right corner of the tab's frame.</para>
+<para>Select version control system.</para>
+</itemizedlist>
+</para>
+<section><title>Setting Perforce connection information.</title>
+<para>
+<itemizedlist>
+    <para>perforce port</para>
+    <para>user name</para>
+    <para>password</para>
+    <para>line end (default is OK)</para>
+</itemizedlist>
+</para>
+</section>
+</chapter>
+
+<chapter id="vcsmodule">
+<title>Creating VCS Module(s)</title>
+<para>
+Click on New Module icon in upper right corner of the Modules frame.
+</para>
+<section><title>Setting Perforce module information.</title>
+<para>
+    <itemizedlist>
+        <para>Depot path</para>
+        <para>label</para>
+        <para>Client path</para>
+    </itemizedlist>
+</para>
+</section>
+</chapter>
+
+<chapter id="schedule">
+<title>Creating Build Schedule(s) for the Project</title>
+<!--
+   By clicking the &quot;schedules&quot; tab, you can view all configured schedules in the system, and can create new schedule and delete existing schedule in the system. Luntbuild uses an open source project <a href="http://www.opensymphony.com/quartz/">http://www.opensymphony.com/quartz/ </a> for its scheduling system. There are three type of triggers for you to select when creating a new schedule, respectively &quot;manual&quot;, &quot;org.quartz.SimpleTrigger&quot;, and &quot;org.quartz.CronTrigger&quot;. Schedule using manual trigger can only be triggered manually. &quot;org.quartz.SimpleTrigger&quot; can be used to configure a schedule which repeats at a given interval. And &quot;org.quartz.CronTrigger&quot; can be used to configure a schedule behaves like a Unix cron job. <br>
+   <br>
+   Schedules are not only used to perform builds non-interactively, but can also be seen as build categories. Builds can be moved between these categories as you wish. For example, you can create a manual schedule named by &quot;release builds&quot;, attach it to proper views. And later you can promote particular &quot;nightly&quot; builds into &quot;release builds&quot; category. By this way, you can keep track of all released builds. Of course, builds can also be manually triggered in the &quot;release builds&quot; category. <br>
+   <br>
+    -->
+<para>Click on Schedules Tab.</para>
+<para>Click on New Schedule icon in upper right corner of the tab's frame.</para>
+<para>
+<itemizedlist>
+    <para>name</para>
+    <para>description</para>
+    <para>trigger type</para>
+    <para>cron expression</para>
+    <para>build type</para>
+    <para>post-build strategy</para>
+    <para>label strategy</para>
+    <para>notify strategy</para>
+</itemizedlist>
+</para>
+</chapter>
+
+<chapter id="antbuild">
+<title>Creating/Modifying Project's Ant build configuration file</title>
+</chapter>
+
+<chapter id="mavenbuild">
+<title>Creating/Modifying Project's Maven build configuration file</title>
+</chapter>
+
+<chapter id="runbuild">
+<title>Running a Schedule for the particular Build manually</title>
+</chapter>
+
+    <chapter id="otherbuild">
+<title>Wrapping existing Makefile or Shell script</title>
+<para>
+    Writing ant build file to wrap existing makefile or build script
+</para>
+</chapter>
+
+<chapter id="builds">
+<title>Snapshot of all build schedules</title>
+<!--
+ <p>1. Builds tab <br>
+   <br>
+   <a href="#figure3.1">Figure3.1</a> gives a snapshot of the builds tab. This page shows a gross information of all build schedules configured in the system. Luntbuild comes with some pre-configured projects which you can delete them later. The &quot;project&quot; field denotes which project this build schedule belongs. The &quot;view&quot; field denotes which view this build schedule belongs. The &quot;schedule&quot; field denotes which schedule this build schedule uses. The &quot;build strategy&quot; field denotes the build strategy used for this schedule. The notion of &quot;project&quot;, &quot;view&quot;, &quot;schedule&quot; and &quot;build strategy&quot;  will be explained in later sections. The &quot;Latest build&quot; field denotes the most recent build instance for this build schedule. And the last field denotes all history build instances under this build schedule. There is a search link at left area of this page, you can follow this link to find particular builds, and you can perform some operations upon these found builds, such as delete builds. </p>
+-->
+</chapter>
+
+<chapter id="projects">
+<title>Snapshot of all Projects</title>
+<!--
+       <br>
+   This page shows all projects currently configured in the system. A project can be created by inputing the version control system information for this project. After a project has been created, you can create one or more views under this project. Generally a project can be seen as a category of products using the same version control system, and a view can be seen as  special version of product attached to different branches or labels in the version control system, such as maintenance view for old codes, development view for all latest codes, or some bug fix view. <br>
+   <br>
+    
+    -->
+</chapter>
+
+    <chapter id="remote">
+<title>Using Luntbuild External API</title>
+</chapter>
+
+<chapter id="debug">
+<title>Debugging Build Problems</title>
+</chapter>
+
+<chapter id="security">
+<title>Luntbuild Security</title>
+</chapter>
+
+</book>

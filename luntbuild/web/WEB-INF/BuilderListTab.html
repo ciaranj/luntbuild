@@ -1,0 +1,109 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+</head>
+<span jwcid="$content$"> <span jwcid="@contrib:Choose"> <span jwcid="@contrib:When" condition="ognl:page.projectId != 0"> 
+<table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+  <tr> 
+    <td align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0"> 
+        <tr class="iconTable"> 
+          <td class="iconTable">&nbsp;</td> 
+          <td width="25" class="iconTable"><a jwcid="@DirectLink" listener="ognl:listeners.createBuilder" href="#"><img src="images/new.png" alt="new builder" width="18" height="18" border="0" align="middle"></a></td>
+        </tr> 
+      </table></td> 
+  </tr> 
+  <tr> 
+    <td align="center" valign="top"> 
+	<span jwcid="@contrib:Choose"> 
+	<span jwcid="@contrib:When" condition="ognl:action != null">
+	<span jwcid="@RenderBlock" block="ognl:getComponent(action)"/>
+	</span> 
+	<span jwcid="@contrib:Otherwise"> 
+	<span jwcid="@Conditional" condition="ognl:page.project.builderList.size()==0"> 
+      <table width="100%" height="100"  border="0" cellspacing="0"> 
+        <tr> 
+          <td height="100" align="center"><p><img src="images/sigh.gif" width="32" height="32"></p> 
+            <p><strong>No builders defined! </strong></p></td> 
+        </tr> 
+      </table> 
+      </span> 
+	
+      <table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+      <span jwcid="@Conditional" condition="ognl:isAuthorized(page.project.id,'ROLE_SITE_ADMIN,LUNTBUILD_PRJ_ADMIN')">	
+        <span jwcid="@Foreach" source="ognl:page.project.builderList" value="ognl:builder" index="ognl:builderIndex">
+        <tr> 
+          <td jwcid="@Any" colspan="4" align="center" valign="top" class="ognl:builderCssClass">
+		  <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="builderTable">
+              <tr> 
+                <td width="682" align="center" class="subIconTable"> <a name="ognl:builderIndex" id="ognl:builderIndex" jwcid="@Any"/> <img src="ognl:'images/' + builder.iconName" height="18" align="absmiddle" jwcid="@Any"/> <span jwcid="@Insert" value="ognl:builder.displayName">ant builder</span></td>
+                <td width="25" align="center" valign="middle" class="subIconTable">&nbsp;  </td> 
+                <td width="25" align="center" valign="middle" class="subIconTable">&nbsp;  </td> 
+                <td width="25" align="center" valign="middle" class="subIconTable"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.editBuilder" parameters="ognl:builderIndex"><img src="images/edit.gif" alt="edit" width="18" height="18" border="0"></a></td>
+                <td width="25" align="center" valign="middle" class="subIconTable"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.deleteBuilder" parameters="ognl:builderIndex"><img src="images/delete.gif" alt="delete" width="18" height="18" border="0"></a></td>
+              </tr> 
+              <tr> 
+				<span jwcid="@Conditional" condition="ognl:cssIndex = 0"></span>
+                <td height="0" colspan="5" valign="top"><table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+				  <span jwcid="@Foreach" source="ognl:builder.properties" value="ognl:property">
+				  <tr>
+				    <td jwcid="@Any" class="ognl:propertyNameCssClass" width="25%" align="left" valign="top"><img src="images/property.gif" width="12" height="11"> 
+				    <span jwcid="@Insert" value="ognl:property.displayName">field name</span>
+				    </td>
+				    <td jwcid="@Any" class="ognl:propertyValueCssClass" align="left" valign="top">
+				    	<span jwcid="@Conditional" condition="ognl:property.secret">*****</span>
+				    	<span jwcid="@Conditional" condition="ognl:property.secret">
+				    	</span>
+				    	<span jwcid="@Conditional" condition="ognl:!property.secret">
+				    	<span jwcid="@Conditional" condition="ognl:!property.multiLine">
+				    	<span jwcid="@Insert" value="ognl:property.value">field name</span>
+				    	</span>
+				    	<span jwcid="@Conditional" condition="ognl:property.multiLine">
+				    	<span jwcid="@InsertText" value="ognl:property.value">field value</span>
+				    	</span>
+				    	</span>
+			    	</td>
+				  </tr>				  
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+				  </span>
+                  </table></td> 
+              </tr> 
+            </table></td> 
+        </tr> 
+        </span> 
+        </span> 
+		<span jwcid="@Conditional" condition="ognl:! isAuthorized(page.project.id,'ROLE_SITE_ADMIN,LUNTBUILD_PRJ_ADMIN')">
+		 <tr>
+           <td align="left" valign="top" class="propertyEditorName2"><img src="images/error.gif" width="18" height="18" align="absmiddle"> You are not authorized to access this page </td>
+      	</tr>		
+		</span>                 
+      </table> 
+      </span> </span> </td> 
+  </tr> 
+</table> 
+</span> <span jwcid="@contrib:Otherwise"> 
+<table width="100%" height="100%"  border="0" cellspacing="0"> 
+  <tr> 
+    <td height="18" align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0"> 
+        <tr class="iconTable"> 
+          <td class="iconTable">&nbsp;</td> 
+        </tr> 
+      </table></td> 
+  </tr> 
+  <tr> 
+    <td height="400" align="center" valign="middle"> <span jwcid="@luntbuild:MsgBox" msg="Please input basic information for new project first!" listener="ognl:listeners.gotoBasicTab"/> </td> 
+  </tr> 
+</table> 
+</span> </span>
+
+<span jwcid="editBuilder@Block">
+<span jwcid="builderEditorComponent@BuilderEditor"/>
+</span>
+
+<span jwcid="deleteBuilder@Block">
+<table width="100%" height="100%"  border="0" cellspacing="0"> 
+  <tr> 
+    <td height="500" align="center" valign="middle"> <span jwcid="@luntbuild:YesNoBox" msg="Do you really want to delete this builder?" okListener="ognl:listeners.confirmDeleteBuilder" cancelListener="ognl:listeners.cancelDeleteBuilder"/> </td>
+  </tr> 
+</table> 
+</span>
+
+</span>

@@ -1,0 +1,76 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+</head>
+<span jwcid="$content$"> 
+  <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+<form jwcid="@Form" name="form" method="post">
+    <tr align="center" bordercolor="#EAEDF4" bgcolor="#FFFFE6"> 
+      <td colspan="4" bgcolor="#EAEDF4" scope="col"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="propertyEditorTitle"> 
+          <tr> 
+            <td align="center">Rebuild</td> 
+          </tr> 
+          <span jwcid="@Conditional" condition="ognl:errorMsg != null">
+          <tr> 
+            <td colspan="4" align="left" valign="top" class="errorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td> 
+          </tr> 
+          </span> 
+      </table></td> 
+    </tr> 
+    <tr>
+      <td width="20%" align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName1" scope="col"><img src="images/postbuild_strategy.gif" width="16" height="16" align="absmiddle"> post-build strategy</td>
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue1" scope="col">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:postbuildStrategySelectionModel" value="ognl:postbuildStrategy">
+        </select>
+        <br>
+        <strong>do not post-build</strong>: do not execute post-build script after build.<br>
+		<strong>post-build when success</strong>: execute post-build script only when build is successful. <br>
+        <strong>post-build when failed</strong>: execute post-build script only when build is failed. <br>
+        <strong>post-build always</strong>: always execute post-build script after build.
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName2" scope="col"><img src="images/notify.gif" width="19" height="16" align="absmiddle"> notify strategy</td>
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue2" scope="col">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:notifyStrategySelectionModel" value="ognl:notifyStrategy">
+        </select>
+        <br>
+    Choose the notify strategy for this schedule. There are three strategy, repectively:<br>
+    <span class="ognl:propertyValueCssClass"><strong>notify when status changed</strong>: send notification when status of current build changes against last build. That is, notification will be sent when current build succeeds and last build fails, or current build fails and last build succeeds. </span><br>
+    <strong>notify when failed</strong>: send  notification only when build failed. <br>
+    <strong>notify when success</strong>: send notification only when build success. <br>
+    <strong>do not notify</strong>: do not send notification after build.<br>
+    <strong>notify always</strong>: always send notification after build.</td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName1" scope="col"><img src="images/time.gif" width="17" height="14" align="absmiddle"> when to build</td>
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue1" scope="col">
+		<span jwcid="@contrib:Choose">
+		<span jwcid="@contrib:When" condition="ognl: buildTiming == @com.luntsys.luntbuild.remoting.Constants@BUILD_TIMING_AFTER">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" submitOnChange="ognl:true">
+        </select>
+        <input name="textfield" type="text" class="inputBox" value="ognl:buildTime" jwcid="@TextField"/>
+        minutes
+		</span>
+		<span jwcid="@contrib:When" condition="ognl: buildTiming == @com.luntsys.luntbuild.remoting.Constants@BUILD_TIMING_AT">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" submitOnChange="ognl:true">
+        </select>
+        <input name="textfield" type="text" class="inputBox" value="ognl:buildTime" jwcid="@TextField"/>
+        (specify a time with hh:mm format)
+		</span>
+		<span jwcid="@contrib:Otherwise">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" submitOnChange="ognl:true">
+        </select>
+		</span>
+		</span>
+	  </td>
+    </tr>
+    <tr>
+      <td height="29" colspan="2" align="right" class="propertyEditorTail2" scope="col">
+          <input type="submit" jwcid="@Submit" listener="ognl:listeners.save" name="Submit" label=" save " value=" save "/>      </td>
+      <td width="4%" align="right" class="propertyEditorTail2" scope="col">&nbsp;</td>
+      <td width="60%" align="left" class="propertyEditorTail2" scope="col">
+        <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="cancel" value="cancel"/>        </td>
+    </tr>
+</form>
+</table>
+</span>

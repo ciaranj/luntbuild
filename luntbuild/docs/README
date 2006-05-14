@@ -1,0 +1,30 @@
+
+Documention is created in DocBook format, see http://docbook.org/
+
+Html is generated using command:
+
+cd luntbuild-doc/guide
+xsltproc --nonet luntbuild-html.xsl luntbuild.docbook
+
+cd luntbuild-doc/faq
+xsltproc --nonet luntbuild-html.xsl faqs.docbook
+
+
+Pdf is generated using command:
+
+cd luntbuild-doc/guide
+xsltproc --nonet luntbuild-pdf.xsl luntbuild.docbook
+
+cd luntbuild-doc/faq
+xsltproc --nonet luntbuild-pdf.xsl faqs.docbook
+
+
+XSLT processor, where to get it.
+
+On cygwin (http://www.cygwin.com) it is part of the cygwin docbook package:
+
+The XSLT C library, DocBook XML DTD 4.2, XSL stylesheets for the DocBook XML DTD
+
+On Linux you will need The XSLT C library package:
+
+See: http://linux.about.com/library/cmd/blcmdl1_xsltproc.htm

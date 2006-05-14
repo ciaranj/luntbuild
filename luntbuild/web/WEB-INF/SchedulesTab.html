@@ -1,0 +1,228 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+</head>
+<span jwcid="$content$"> <span jwcid="@contrib:Choose"> <span jwcid="@contrib:When" condition="ognl:page.projectId != 0"> 
+<table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+  <tr> 
+    <td align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0"> 
+        <tr class="iconTable"> 
+          <td class="iconTable">&nbsp;</td>
+          <td width="25" class="iconTable"><a jwcid="@DirectLink" listener="ognl:listeners.createSchedule" href="#"><img src="images/time.gif" alt="schedule build" width="17" height="14" border="0" align="middle"></a></td>
+        </tr> 
+      </table></td> 
+  </tr> 
+  <tr>
+    <td align="center" valign="top"> <span jwcid="@contrib:Choose"> 
+	<span jwcid="@contrib:When" condition="ognl:action != null">
+	<span jwcid="@RenderBlock" block="ognl:getComponent(action)"/> </span>
+	<span jwcid="@contrib:Otherwise"> 
+	<span jwcid="@Conditional" condition="ognl:page.project.schedules.size()==0"> 
+      <table width="100%" height="100"  border="0" cellspacing="0"> 
+        <tr> 
+          <td height="100" align="center"><p><img src="images/sigh.gif" width="32" height="32"></p> 
+            <p><strong>No schedules defined! </strong></p></td> 
+        </tr> 
+      </table> 
+      </span> 
+	
+      <table width="100%"  border="0" cellpadding="0" cellspacing="0">
+      <span jwcid="@Conditional" condition="ognl:isAuthorized(page.project.id,'ROLE_SITE_ADMIN,LUNTBUILD_PRJ_ADMIN')"> 
+        <span jwcid="@Foreach" source="ognl:schedules" value="ognl:schedule" index="ognl:scheduleIndex">
+        <tr> 
+          <td jwcid="@Any" colspan="4" align="center" valign="top" class="ognl:scheduleCssClass"><table width="100%"  border="0" cellpadding="0" cellspacing="0" class="scheduleTable"> 
+              <tr class="subIconTable"> 
+                <td width="682" align="center" class="subIconTable"> <a name="ognl:schedule.id" id="ognl:schedule.id" jwcid="@Any"/> <span jwcid="@Insert" value="ognl:schedule.name">nightly</span> </td>
+                <td width="25" align="center" valign="middle" class="subIconTable"> <a jwcid="@DirectLink" listener="ognl:listeners.build" parameters="ognl:schedule.id" href="#"><img src="images/start_build.gif" alt="build manually" width="18" height="18" border="0"></a> </td>
+                <td width="25" align="center" valign="middle" class="subIconTable"> <a jwcid="@DirectLink" listener="ognl:listeners.listBuilds" parameters="ognl:schedule.id" href="#"><img src="images/history_builds.gif" alt="history builds" width="18" height="18" border="0"></a> </td>
+                <td width="25" align="center" valign="middle" class="subIconTable"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.editSchedule" parameters="ognl:schedule.id"><img src="images/edit.gif" alt="edit" width="18" height="18" border="0"></a></td>
+                <td width="25" align="center" valign="middle" class="subIconTable"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.deleteSchedule" parameters="ognl:schedule.id"><img src="images/delete.gif" alt="delete" width="18" height="18" border="0"></a></td>
+              </tr> 
+              <tr> 
+				<span jwcid="@Conditional" condition="ognl:cssIndex = 0"></span>
+                <td height="0" colspan="5" valign="top"><table width="100%"  border="0" cellpadding="0" cellspacing="0">
+				  <tr>
+				    <td jwcid="@Any" width="25%" align="left" valign="top" bgcolor="#F0F0F0" class="ognl:propertyNameCssClass"> <img src="images/description.gif" width="18" height="14" align="absmiddle"> description </td>
+				    <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"> <span jwcid="@InsertText" value="ognl:schedule.description">the nightly schedule</span></td>
+				  </tr>				
+     				<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+					<span jwcid="@Conditional" condition="ognl:schedule.trigger==null">
+					  <tr>
+						<td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"> <img src="images/trigger.gif" width="21" height="18" align="absmiddle"> trigger type: </td>
+						<td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">manual</td>
+					  </tr>
+     				<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+					</span>
+					<span jwcid="@Conditional" condition="ognl:schedule.trigger != null">
+						<span jwcid="@Conditional" condition="ognl:schedule.trigger.getClass().getName() == 'org.quartz.SimpleTrigger'">
+							  <tr>
+								<td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"> <img src="images/trigger.gif" width="21" height="18" align="absmiddle"> trigger type: </td>
+								<td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">simple</td>
+							  </tr>
+							<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+							  <tr>
+								<td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/interval.gif" width="16" height="14" align="absmiddle"> repeat interval(minutes): </td>
+								<td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"> <span jwcid="@Insert" value="ognl:schedule.trigger.repeatInterval/60000">60</span></td>
+							  </tr>
+							<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+						</span>
+						<span jwcid="@Conditional" condition="ognl:schedule.trigger.getClass().getName() == 'org.quartz.CronTrigger'">
+							  <tr>
+								<td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"> <img src="images/trigger.gif" width="21" height="18" align="absmiddle"> trigger type: </td>
+								<td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">cron</td>
+							  </tr>
+							<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+							  <tr>
+								<td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/time.gif" width="17" height="14" align="absmiddle"> cron expression: </td>
+								<td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"> <span jwcid="@Insert" value="ognl:schedule.trigger.cronExpression">0 0 1 * * ?</span></td>
+							  </tr>
+							<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+						</span>
+					</span>
+                    <tr>
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"><img src="images/status.gif" width="21" height="18" align="absmiddle"> execution status</td> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass"> <img jwcid="@Any" src="ognl:scheduleStatusGif" width="20" height="20" align="absmiddle"/> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.remoting.Constants@getScheduleStatusText(schedule.status)">success</span> at <span jwcid="@Insert" value="ognl:scheduleStatusDate">2004/1/1</span> </td> 
+                    </tr> 
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    <tr> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"><img src="images/build_type.gif" width="16" height="16" align="absmiddle"> build type</td> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass"> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.remoting.Constants@getBuildTypeText(schedule.buildType)">clean</span></td> 
+                    </tr>
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    <span jwcid="@Conditional" condition="ognl:schedule.trigger != null">
+                    <tr> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"><img src="images/build_strategy.gif" width="16" height="16" align="absmiddle"> build strategy</td> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass">
+                      <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.remoting.Constants@getBuildStrategyText(schedule.buildStrategy)">build when necessary</span>
+                      </td>
+                    </tr>
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    </span>
+                    <tr> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"><img src="images/postbuild_strategy.gif" width="16" height="16" align="absmiddle"> post-build strategy</td> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass"> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.remoting.Constants@getPostbuildStrategyText(schedule.postbuildStrategy)">execute post-build script when success</span> </td> 
+                    </tr> 
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    <tr> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"><img src="images/label.gif" width="18" height="18" align="absmiddle"> label strategy</td> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass"> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.remoting.Constants@getLabelStrategyText(schedule.labelStrategy)">label when success</span> </td> 
+                    </tr> 
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    <tr> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"><img src="images/notify.gif" width="19" height="16" align="absmiddle"> notify strategy</td> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass"> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.remoting.Constants@getNotifyStrategyText(schedule.labelStrategy)">notify when failed</span></td> 
+                    </tr>                      
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    <tr> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"> <img src="images/build.gif" width="16" height="16" align="absmiddle"> lastest build</td> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass"> <span jwcid="@Conditional" condition="ognl:lastBuild != null"> <img jwcid="@Any" src="ognl:lastBuildStatusGif" width="20" height="20" align="absmiddle"/> <a jwcid="@DirectLink" listener="ognl:listeners.viewBuild" parameters="ognl:lastBuild.id" href="#"> <span jwcid="@Insert" value="ognl:lastBuild.version">v1.0</span> </a> <span jwcid="@Insert" value="ognl:lastBuildStatusDescription">success at 2004/1/1</span> </span> <span jwcid="@Conditional" condition="ognl:lastBuild == null"> no builds yet </span> </td>
+                    </tr> 
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    <span jwcid="@Conditional" condition="ognl:lastSuccessBuild != null"> 
+                    <tr> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"> <img src="images/success.gif" width="16" height="16" align="absmiddle"> last success build</td> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass"> <a jwcid="@DirectLink" listener="ognl:listeners.viewBuild" parameters="ognl:lastSuccessBuild.id" href="#"> <span jwcid="@InsertText" value="ognl:lastSuccessBuild.version">v1.0</span> </a> at <span jwcid="@Insert" value="ognl:lastSuccessBuildEndDate">2004/1/1</span> </td>
+                    </tr> 
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    </span> <span jwcid="@Conditional" condition="ognl:runningBuild != null"> 
+                    <tr> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"> <img src="images/running.gif" width="18" height="18" align="absmiddle"> current running build</td> 
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass"> <a jwcid="@DirectLink" listener="ognl:listeners.viewBuild" parameters="ognl:runningBuild.id" href="#"> <span jwcid="@InsertText" value="ognl:runningBuild.version">v1.0</span> </a> at <span jwcid="@Insert" value="ognl:runningBuildStartDate">2004/1/1</span> </td> 
+                    </tr> 
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    </span> <span jwcid="@Conditional" condition="ognl:loadManualBuildTriggers()"> 
+                    <tr> 
+                      <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/manually.gif" width="17" height="18" align="absmiddle"> scheduled manual builds</td> 
+                      <td jwcid="@Any" align="center" class="ognl:propertyValueCssClass"> <table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+                          <tr> 
+                            <td width="11%" align="left" valign="top"><strong>build type</strong></td>
+                            <td width="24%" align="left" valign="top"><strong>post-build strategy</strong></td> 
+                            <td width="20%" align="left" valign="top"><strong>label strategy</strong></td> 
+                            <td width="20%" align="left" valign="top"><strong>notify strategy</strong></td>
+                            <td width="21%" align="left" valign="top"><strong>when to build</strong></td> 
+                            <td width="4%">&nbsp;</td> 
+                          </tr> 
+                          <span jwcid="@Foreach" source="ognl:manualBuildTriggers" value="ognl:manualBuildTrigger"> 
+                          <tr> 
+                            <td align="left" valign="top"><span jwcid="@Insert" value="ognl:manualBuildType">clean</span></td> 
+                            <td align="left" valign="top"><span jwcid="@Insert" value="ognl:manualBuildPostbuildStrategy">do not post-build</span></td>
+                            <td align="left" valign="top"><span jwcid="@Insert" value="ognl:manualBuildLabelStrategy">label successful builds</span></td> 
+                            <td align="left" valign="top"><span jwcid="@Insert" value="ognl:manualBuildNotifyStrategy">notify when failed</span></td>
+                            <td align="left" valign="top"><span jwcid="@Insert" value="ognl:manualBuildTriggerStartTime">2004/4/1 13:00 </span></td> 
+                            <td align="center" valign="top"> <a jwcid="@DirectLink" listener="ognl:listeners.deleteManualBuildTrigger" parameters="ognl:{manualBuildTrigger.name, triggerDeleteCount}" href="#"> <img src="images/delete.gif" alt="delete" width="18" height="18" border="0"></a> </td> 
+                          </tr> 
+                          </span> 
+                        </table></td> 
+                    </tr> 
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    </span> <span jwcid="@Conditional" condition="ognl:loadRebuilds()"> 
+                    <tr> 
+                      <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/rebuild.gif" width="16" height="16" align="absmiddle"> scheduled rebuilds</td> 
+                      <td jwcid="@Any" align="center" class="ognl:propertyValueCssClass"> <table width="100%"  border="0" cellpadding="0" cellspacing="0"> 
+                          <tr> 
+                            <td width="22%" align="left" valign="top"><strong>version</strong></td> 
+                            <td width="24%" align="left" valign="top"><strong>post-build strategy </strong></td>
+                            <td width="24%" align="left" valign="top"><strong>notify strategy</strong></td>
+                            <td width="24%" align="left" valign="top"><strong>when to build</strong></td> 
+                            <td width="6%">&nbsp;</td> 
+                          </tr> 
+                          <span jwcid="@Foreach" source="ognl:rebuilds.keys" value="ognl:rebuildTrigger"> 
+                          <tr> 
+                            <td align="left" valign="top"> <a jwcid="@DirectLink" listener="ognl:listeners.viewBuild" parameters="ognl:rebuilds.get(rebuildTrigger).id"> <span jwcid="@InsertText" value="ognl:rebuilds.get(rebuildTrigger).version">v1.0</span> </a> </td> 
+                            <td align="left" valign="top"><span jwcid="@Insert" value="ognl:rebuildPostbuildStrategy">do not post-build</span></td>
+                            <td align="left" valign="top"><span jwcid="@Insert" value="ognl:rebuildNotifyStrategy">notify when failed</span></td>
+                            <td align="left" valign="top"><span jwcid="@Insert" value="ognl:rebuildTriggerStartTime">2004/4/1 13:00 </span></td> 
+                            <td align="center" valign="top"> <a jwcid="@DirectLink" listener="ognl:listeners.deleteRebuildTrigger" parameters="ognl:{rebuildTrigger.name, triggerDeleteCount}" href="#"> <img src="images/delete.gif" alt="delete" width="18" height="18" border="0"></a> </td> 
+                          </tr> 
+                          </span> 
+                        </table></td> 
+                    </tr> 
+					<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+                    </span> 
+                  </table></td> 
+              </tr> 
+            </table></td> 
+        </tr> 
+        </span> 
+        
+        </span> 
+		<span jwcid="@Conditional" condition="ognl:! isAuthorized(page.project.id,'ROLE_SITE_ADMIN,LUNTBUILD_PRJ_ADMIN')">
+		 <tr>
+           <td align="left" valign="top" class="propertyEditorName2"><img src="images/error.gif" width="18" height="18" align="absmiddle"> You are not authorized to access this page </td>
+      	</tr>		
+		</span>                 
+        
+      </table> 
+      </span> </span> </td> 
+  </tr> 
+</table> 
+</span> <span jwcid="@contrib:Otherwise"> 
+<table width="100%" height="100%"  border="0" cellspacing="0"> 
+  <tr> 
+    <td height="18" align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0"> 
+        <tr class="iconTable"> 
+          <td class="iconTable">&nbsp;</td> 
+        </tr> 
+      </table></td> 
+  </tr> 
+  <tr> 
+    <td height="400" align="center" valign="middle"> <span jwcid="@luntbuild:MsgBox" msg="Please input basic information for new project first!" listener="ognl:listeners.gotoBasicTab"/> </td> 
+  </tr> 
+</table> 
+</span> </span>
+
+<span jwcid="editSchedule@Block">
+<span jwcid="scheduleEditorComponent@ScheduleEditor"/>
+</span>
+
+<span jwcid="deleteSchedule@Block">
+<table width="100%" height="100%"  border="0" cellspacing="0"> 
+  <tr> 
+    <td height="500" align="center" valign="middle"> <span jwcid="@luntbuild:YesNoBox" msg="Do you really want to delete this schedule? Schedule deletion may take some time, please wait patiently if you choose to do so" okListener="ognl:listeners.confirmDeleteSchedule" cancelListener="ognl:listeners.cancelDeleteSchedule"/> </td> 
+  </tr> 
+</table> 
+</span>
+
+<span jwcid="buildManually@Block">
+<span jwcid="manualBuildEditorComponent@ManualBuildEditor"/>
+</span>
+</span>

@@ -1,0 +1,108 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+</head>
+<span jwcid="$content$"> 
+<table width="100%"  border="0" cellpadding="0" cellspacing="0">
+  <tr> 
+    <td align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0"> 
+        <tr class="iconTable"> 
+          <td class="iconTable">&nbsp;</td> 
+          <span jwcid="@Conditional" condition="ognl:isAuthorized(page.project.id,'ROLE_SITE_ADMIN,LUNTBUILD_PRJ_ADMIN')">
+          <td width="25" class="iconTable"><a title="modify project properties" jwcid="@DirectLink" listener="ognl:listeners.edit" href="#" title="edit" ><img src="images/edit.gif" width="18" height="18" border="0" align="top"></a></td>
+          </span>
+        </tr> 
+    </table></td> 
+  </tr> 
+  <tr>
+    <td align="center" valign="top" bordercolor="1">
+    	<span jwcid="@contrib:Choose">
+    		<span jwcid="@contrib:When" condition="ognl:action != null">
+    			<span jwcid="@RenderBlock" block="ognl:getComponent(action)"/>
+    		</span>
+    		<span jwcid="@contrib:Otherwise">
+				<table width="100%"  border="0" cellpadding="0" cellspacing="0">
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = 0"></span>
+				  <tr>
+				    <td jwcid="@Any" width="25%" align="left" valign="top" bgcolor="#F0F0F0" class="ognl:propertyNameCssClass"><img src="images/name.gif" width="18" height="14" align="absmiddle"> name</td>
+			        <td jwcid="@Any" width="76%" align="left" valign="top" class="ognl:propertyValueCssClass">
+					<span jwcid="@Insert" value="ognl:page.project.name">luntbuild</span>					</td>
+				  </tr>
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+				  <tr>
+				    <td width="24%" align="left" valign="top" bgcolor="#F0F0F0" class="propertyListName1"><img src="images/description.gif" width="18" height="14" align="absmiddle"> description</td>
+			        <td align="left" valign="top" class="propertyListValue1"> <span jwcid="@InsertText" value="ognl:page.project.description">the luntbuild project </span> </td>
+				  </tr>
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+				  <tr>
+				    <td jwcid="@Any" width="24%" align="left" valign="top" bgcolor="#F0F0F0" class="ognl:propertyNameCssClass">					<img src="images/number.gif" width="18" height="18" align="absmiddle"> next build version</td>
+			        <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"> <span jwcid="@InsertText" value="ognl:page.project.nextVersion">1.0</span></td>
+				  </tr>
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+				  <tr>
+                    <td jwcid="@Any" align="left" valign="top" bgcolor="#F0F0F0" class="ognl:propertyNameCssClass"> <img src="images/condition.gif" width="16" height="16" align="absmiddle"> build necessary condition </td>
+                    <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><span jwcid="@InsertText" value="ognl:page.project.buildNecessaryCondition"> </span></td>
+			      </tr>
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+   				  <tr>
+                    <td jwcid="@Any" align="left" valign="top" bgcolor="#F0F0F0" class="ognl:propertyNameCssClass"> <img src="images/user.gif" width="16" height="16" align="absmiddle" class="propertyIcon"> project admins </td>
+                    <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">
+					<span jwcid="@Foreach" source="ognl:adminUsers" value="ognl:user" index="ognl:userIndex">
+					<span jwcid="@Conditional" condition="ognl:userIndex != 0">, </span>
+					<a href="#" jwcid="@DirectLink" listener="ognl:listeners.gotoUser" parameters="ognl:user.id"><span jwcid="@Insert" value="ognl:user.name">alvin</span></a>					
+					</span>
+					</td>
+			      </tr>
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+   				  <tr>
+                    <td jwcid="@Any" align="left" valign="top" bgcolor="#F0F0F0" class="ognl:propertyNameCssClass"> <img src="images/user.gif" width="16" height="16" align="absmiddle" class="propertyIcon"> project builders</td>
+                    <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">
+					<span jwcid="@Foreach" source="ognl:buildUsers" value="ognl:user" index="ognl:userIndex">
+					<span jwcid="@Conditional" condition="ognl:userIndex != 0">, </span>
+					<a href="#" jwcid="@DirectLink" listener="ognl:listeners.gotoUser" parameters="ognl:user.id"><span jwcid="@Insert" value="ognl:user.name">alvin</span></a>					
+					</span>
+					</td>
+			      </tr>
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+   				  <tr>
+                    <td jwcid="@Any" align="left" valign="top" bgcolor="#F0F0F0" class="ognl:propertyNameCssClass"> <img src="images/user.gif" width="16" height="16" align="absmiddle" class="propertyIcon"> project viewers </td>
+                    <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">
+					<span jwcid="@Foreach" source="ognl:viewUsers" value="ognl:user" index="ognl:userIndex">
+					<span jwcid="@Conditional" condition="ognl:userIndex != 0">, </span>
+					<a href="#" jwcid="@DirectLink" listener="ognl:listeners.gotoUser" parameters="ognl:user.id"><span jwcid="@Insert" value="ognl:user.name">alvin</span></a>					
+					</span>
+					</td>
+			      </tr>
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+				  <tr>
+                      <td jwcid="@Any" align="left" class="ognl:propertyNameCssClass"><img src="images/notify.gif" width="19" height="16" align="absmiddle">  notification methods</td>
+                      <td jwcid="@Any" align="left" class="ognl:propertyValueCssClass">
+					  <span jwcid="@Foreach" source="ognl:notifierInstances" value="ognl:notifier" index="ognl:notifierIndex">
+					  <span jwcid="@Conditional" condition="ognl:notifierIndex!=0">, </span>
+					  <span jwcid="@Insert" value="ognl:notifier.displayName">email</span>
+					  </span>
+					  </td> 
+                  </tr>
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+   				  <tr>
+                    <td jwcid="@Any" align="left" valign="top" bgcolor="#F0F0F0" class="ognl:propertyNameCssClass"> <img src="images/user.gif" width="16" height="16" align="absmiddle" class="propertyIcon">  notification users </td>
+                    <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">
+					<span jwcid="@Foreach" source="ognl:notificationUsers" value="ognl:user" index="ognl:userIndex">
+					<span jwcid="@Conditional" condition="ognl:userIndex != 0">, </span>
+					<span jwcid="@Conditional" condition="ognl:user.id != @com.luntsys.luntbuild.db.User@USER_CHECKIN_ID"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.gotoUser" parameters="ognl:user.id"><span jwcid="@Insert" value="ognl:user.name">alvin</span></a></span>
+					<span jwcid="@Conditional" condition="ognl:user.id == @com.luntsys.luntbuild.db.User@USER_CHECKIN_ID"><span jwcid="@Insert" value="ognl:user.name">users who checkin recently</span></span>
+					</span>
+					</td>
+			      </tr>
+				  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+				  <tr>
+				    <td jwcid="@Any" width="24%" align="left" valign="top" bgcolor="#F0F0F0" class="ognl:propertyNameCssClass">				<img src="images/log.gif" width="18" height="18" align="absmiddle"> log level </td>
+			        <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"> <span jwcid="@InsertText" value="ognl:@com.luntsys.luntbuild.remoting.Constants@getLogLevelText(page.project.logLevel)">normal</span></td>
+				  </tr>
+			</table>
+    </span>	  </span>    </td>
+  </tr>
+</table>
+<span jwcid="editProject@Block">
+	<span jwcid="@ProjectBasicEditor"/>
+</span>
+</span>

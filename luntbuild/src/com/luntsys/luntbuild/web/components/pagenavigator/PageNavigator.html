@@ -1,0 +1,10 @@
+<table  border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>Page <span jwcid="@Insert" value="ognl:currentPage">1</span>/<span jwcid="@Insert" value="ognl:totalPages">1</span>
+      <a jwcid="@DirectLink" listener="ognl:listeners.firstPage" parameters="ognl:navigateCount" disabled="ognl:currentPage <= 1" href="#"><img src="images/first_page.gif" alt="first" width="15" height="11" border="0" align="absmiddle"></a>
+      <a jwcid="@DirectLink" listener="ognl:listeners.previousPage" parameters="ognl:navigateCount" disabled="ognl:currentPage <= 1" href="#"><img src="images/previous_page.gif" alt="previous" width="11" height="11" border="0" align="absmiddle"></a>
+      <a jwcid="@DirectLink" listener="ognl:listeners.nextPage" parameters="ognl:navigateCount" disabled="ognl:currentPage >= totalPages" href="#"><img src="images/next_page.gif" alt="next" width="11" height="11" border="0" align="absmiddle"></a>
+      <a jwcid="@DirectLink" listener="ognl:listeners.lastPage" parameters="ognl:navigateCount" disabled="ognl:currentPage >= totalPages" href="#"><img src="images/last_page.gif" alt="last" width="15" height="11" border="0" align="absmiddle"></a>
+</td>
+  </tr>
+</table>

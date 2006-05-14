@@ -1,0 +1,43 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+-->
+</style>
+</head>
+<span jwcid="$content$"> 
+<table width="100%"  border="0" cellspacing="0" cellpadding="0">
+<form jwcid="@Form" name="form" method="post">
+    <tr align="center" bordercolor="#EAEDF4" bgcolor="#FFFFE6"> 
+      <td colspan="4" bgcolor="#EAEDF4" scope="col"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="propertyEditorTitle"> 
+          <tr> 
+            <td align="center">Move builds</td> 
+          </tr> 
+          <span jwcid="@Conditional" condition="ognl:errorMsg != null"> 
+          <tr> 
+            <td colspan="4" align="left" valign="top" class="errorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td>
+          </tr> 
+          </span> 
+      </table></td> 
+    </tr> 
+    <tr>
+      <td width="20%" valign="top" bgcolor="#FFFFFF" class="propertyEditorName1" scope="col">
+      <img src="images/time.gif" width="17" height="14" align="absmiddle"> destination schedule</td>
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue1" scope="col">
+	<select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:schedulesModel" value="ognl:scheduleId">
+    </select>
+	<br>
+	Specify the destination schedule for these builds. The move function is designed for two purpose:<br>
+	1. To reserve builds before delete a schedule, or project <br>
+	2. To promote important builds. For example, we can promote a particular build from the &quot;nightly&quot; schedule to the &quot;release&quot; schedule, to mark it as an formal external release. </td>
+    </tr>
+    <tr>
+      <td height="29" align="right" class="propertyEditorTail2" scope="col"></td>
+      <td width="17%" height="29" align="right" class="propertyEditorTail2" scope="col">
+          <input type="submit" jwcid="@Submit" listener="ognl:listeners.move" name="Submit" label="move" value="move"/>      </td>
+      <td width="4%" align="right" class="propertyEditorTail2" scope="col">&nbsp;</td>
+      <td width="58%" align="left" class="propertyEditorTail2" scope="col">          <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="cancel" value="cancel"/>      </td>
+    </tr>
+</form>
+</table>
+</span>

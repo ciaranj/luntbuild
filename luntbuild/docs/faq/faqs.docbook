@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+  "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" >
+<book>
+
+<bookinfo>
+  <title>LuntBuild - Build Automation and Management FAQ</title>
+  <copyright><year>2005</year><holder>Luntbuild</holder></copyright>
+</bookinfo>
+
+  <qandaset><title>General FAQ</title>
+    <qandaentry>
+      <question>
+        <para>How do you run different targets for a particular schedule of your project?</para>
+      </question>
+      <answer>
+        <para>
+        If you need to run different targets for a particular schedule of your project,
+        it is good idea to name the schedule with the same name as the name of the target
+        to be executed in your main build script file and use variable ${build.schedule.name}
+        as a build target.  This can be done for instance:
+        </para>
+        <orderedlist numeration="arabic">
+            <listitem>
+                <para>Define your ant builder, and set the target to be ${build.schedule.name},
+                 in this way, Luntbuild will call Ant with schedule name as targets.</para>
+            </listitem>
+            <listitem>
+                <para>In your ant build file, add targets for different schedule names,
+                    ie. "nightly", "hourly", "release".
+                </para>
+            </listitem>
+        </orderedlist>
+      </answer>
+    </qandaentry>
+    <qandaentry>
+      <question>
+        <para>How do you run multiple targets for a particular build of your project?</para>
+      </question>
+      <answer>
+        <para>
+        If you need to execute multiple targets (like > ant setup init dist package) just
+        put them in your build file (for ant):
+        </para>
+        <para>
+            <programlisting>
+            <![CDATA[
+            <target name="nightly" depends="setup init dist package"/>
+            ]]>
+            </programlisting>
+        </para>
+      </answer>    
+    </qandaentry>
+    <qandaentry>
+      <question>
+        <para>How to you define top location of your Ant target execution?</para>
+      </question>
+      <answer>
+        <para>
+        If you are using JNI or your application configuration depends on relative location of the files,
+        you might have a problem running the application using Luntbuild. To resolve the issue,
+        define env. variable with the top directory of your application,
+        and use this variable to define location(s) in the configuration of your application.
+        Then define the same environment variable in the appropriate Luntbuild builder.
+        </para>
+      </answer>    
+    </qandaentry>
+    <qandaentry>
+      <question>
+        <para>How do you create a new Project, Build, Schedule ...?</para>
+      </question>
+      <answer>
+        <para>
+        To create a new Project, Build, Schedule etc., look in upper right corner, just below
+        the Tabs for an icon
+        <inlinemediaobject>
+            <imageobject><imagedata fileref="images/new.jpg" format="JPG" /> </imageobject>
+        </inlinemediaobject>. The icon is quite small and for first time user it is hard to
+        find. But as soon as you get used to look for it in all the tabs/pages, the small icon
+        makes for nice and compact user interface.
+        </para>
+      </answer>    
+    </qandaentry>
+    <qandaentry>
+      <question>
+        <para>My favorite VCS doesn't work wit Luntbuild?</para>
+      </question>
+      <answer>
+        <para>
+            Make sure that external VCS application like cvs or p4 is in your default path
+            when you are starting Luntbuild.
+        </para>
+      </answer>    
+    </qandaentry>
+  </qandaset>
+  <qandaset><title>Perforce FAQ</title>
+    <qandaentry>
+      <question>
+        <para>How do you set up Perforce client spec if multiple users use Luntbuild?</para>
+      </question>
+      <answer>
+        <para>
+            <itemizedlist>
+            <para>I set up Luntbuild work directory to /opt/builds.</para>
+            <para>I name my project mybuilds-myproject.</para>
+            <para>I specify client path in p4 clientspec to //myspec/..., 
+            and I got build going in //opt/builds/mybuilds-myproject.</para>
+            <para>I set up build file to build.xml.</para>
+            </itemizedlist>
+        </para>
+      </answer>    
+    </qandaentry>
+    <qandaentry>
+      <question>
+        <para>How do you pass properties to Ant?</para>
+      </question>
+      <answer>
+        <para>
+            For example, lets assume, you have Ant target checkc, which requires property -Dargs.
+            You can pass arguments to Ant by naming schedule name as "checkc -Dargs=MyTest".
+        </para>
+      </answer>    
+    </qandaentry>
+  </qandaset>
+  <qandaset><title>Development FAQ</title>
+      <qandaentry>
+      <question>
+        <para>Building Luntbuild in Eclipse</para>
+      </question>
+      <answer>
+        <para>
+        The one problem I had with building Luntbuild source code using default Eclipse build
+        is that starteam.jar is optional. This is checked in Ant &lt;luntbuild&gt;/build/build.xml and
+        src. files that use StarTeam VCS are build conditionally based on the presence of starteam.jar. 
+        I have started building Luntbuild from cmd. line using ant, that works.  
+        But doing it directly from Eclipse is more convenient, so I use External Tools,
+        I create Ant Build configuration, point it to &lt;luntbuild&gt;/build/build.xml and
+        select clean package targets (make sure to put them in the right order).
+        Then I use this External Tools target to re-build Luntbuild. 
+        If you want to use Eclipse default build facilities for Luntbuild project, here is another, possibly
+        better option:
+        <itemizedlist>
+        <para>Go to Luntbuild Eclipse project Properties</para>
+        <para>Select Builders</para>
+        <para>Create a new Builder (name it for example Luntbuild Builder)</para>
+        <para>Select Ant Build, define workspace location, base directory, pick target "package"</para>
+        <para>Save Luntbuild Builder, unselect Java Builder, and move Luntbuild Builder up</para>
+        </itemizedlist>
+        Now you should be able to run Luntbuild build using std. Eclipse build facilities.
+        Output from the is displayed in Console view.
+        </para>
+      </answer>    
+    </qandaentry>
+  </qandaset>
+  
+</book>

@@ -1,0 +1,45 @@
+==============================================
+luntbuild-1.2 Release Notes
+==============================================
+
+1. Changes since version 1.1.1
+------------------------------
+
+1) basic security implementation
+2) modified db scheme to reflect new features ( please see upgrading sections if this is not a clean install!)
+3) File system adaptor
+4) Notify strategy "notify when status changed"
+5) Re-factoring, removes view concept
+6) Maven builder
+
+......
+
+
+2. Upgrade from version 1.1.1
+-----------------------------
+
+1) Stop luntbuild web application, copy back previously saved
+   db files to <luntbuild_install_dir>/db directory and override
+   existing files.
+2) Copy all files under <luntbuild_install_dir>/db and save to
+   somewhere else.
+3) Database migration:
+        As the db scheme has changed it is necessary to migrate
+        your existing database to use the most recent luntbuild version
+
+   .) change to <luntbuild_install_dir>/dbmigration
+   .) depending on the platform you are running on choose the script to execute
+        run-db-script.cmd <dbscript.sql> for windows
+        run-db-script.sh <dbscript.sql> for linux/unix/solaris
+
+   .) execute this script with the following as described below
+
+        run-db-script.sh luntbuild-1.1.1-to-1.2.sql
+
+      this will create a backup of your existing database and execute some
+      sql statements to update the table structure.
+
+      after successfull migration you can manually delete the created backup.
+
+4) Follow installation instructions in readme.txt.
+   

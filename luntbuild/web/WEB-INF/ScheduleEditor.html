@@ -1,0 +1,163 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+</head>
+<span jwcid="$content$">
+  <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+<form jwcid="@Form" name="form" listener="ognl:listeners.changeTriggerType" method="post">
+    <tr align="center" bordercolor="#EAEDF4" bgcolor="#FFFFE6"> 
+      <td colspan="4" bgcolor="#EAEDF4" scope="col"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="propertyEditorTitle">
+      	  <span jwcid="@Conditional" condition="ognl:scheduleIdToEdit == 0">
+          <tr> 
+            <td align="center">Creating new schedule(Field marked with * is required)</td>
+          </tr>
+          </span>
+          <span jwcid="@Conditional" condition="ognl:scheduleIdToEdit != 0">
+          <tr>
+            <td align="center">Editing schedule "<span jwcid="@Insert" value="ognl:scheduleToEdit.name">nightly</span>"(Field marked with * is required)</td>
+          </tr>
+          </span>
+          <span jwcid="@Conditional" condition="ognl:errorMsg != null">
+          <tr> 
+            <td colspan="4" align="left" valign="top" class="errorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td> 
+          </tr> 
+          </span> 
+        </table></td> 
+    </tr> 
+	<span jwcid="@Conditional" condition="ognl:cssIndex = 0"></span>
+	<span jwcid="@Conditional" condition="ognl:scheduleIdToEdit == 0">
+    <tr> 
+      <td width="20%" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col" jwcid="@Any"><img src="images/name.gif" width="18" height="14" align="absmiddle"> name</td> 
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> 
+          <input class="inputBox" value="ognl:scheduleToEdit.name" jwcid="@TextField"/>
+          *<br>
+          Provide a name for this schedule. This name will be used to identify this schedule, and can not be changed later.</td>
+    </tr> 
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+	</span>
+    <tr> 
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/description.gif" width="18" height="14" align="absmiddle"> description</td> 
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <textarea cols="75" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:scheduleToEdit.description"/>
+      <br>
+      Provide a description for this schedule </td> 
+    </tr> 
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr> 
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/trigger.gif" width="21" height="18" align="absmiddle"> trigger type</td> 
+      <td jwcid="@Any" colspan="3" align="left" valign="top" bordercolor="#FFFFFF" class="ognl:propertyValueCssClass" scope="col"> <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:triggerTypeSelectionModel" value="ognl:triggerType" submitOnChange="ognl:true">
+      </select> 
+        <br>
+        Select the trigger type for this schedule. &quot;manual&quot; means build in this schedule can only be triggered manually. &quot;simple&quot; can be used to configure a periodically trigger, and &quot;cron&quot; can be used to configure a cron-like trigger. Refer to <a href="http://www.opensymphony.com/quartz/">http://www.opensymphony.com/quartz/</a> for detail information<br>
+about quartz</td> 
+    </tr> 
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <span jwcid="@Conditional" condition="ognl:scheduleToEdit.trigger!=null">
+    <span jwcid="@contrib:Choose">
+    <span jwcid="@contrib:When" condition="ognl:scheduleToEdit.trigger.getClass().getName() =='org.quartz.SimpleTrigger'">
+    <tr> 
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/interval.gif" width="16" height="14" align="absmiddle"> repeat interval(minutes)</td> 
+      <td jwcid="@Any" colspan="3" align="left" valign="top" bordercolor="#FFFFFF" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:repeatInterval" jwcid="@TextField"/> 
+        *<br>
+        Set the repeat interval for this schedule
+	  </td> 
+    </tr> 
+    </span>
+    <span jwcid="@contrib:Otherwise">
+    <tr> 
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/time.gif" width="17" height="14" align="absmiddle"> cron expression</td> 
+      <td jwcid="@Any" colspan="3" align="left" valign="top" bordercolor="#FFFFFF" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:cronExpression" jwcid="@TextField"/> 
+        *<br>
+        Set the cron expression for this schedule, the format is &lt;seconds&gt; &lt;minutes&gt; &lt;hours&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt;. For example, 0 0 1 * * ? stands for 1:00am every day. For details of the format, refer to <a href="http://www.opensymphony.com/quartz/tutorial.html#cronTriggers">http://www.opensymphony.com/quartz/tutorial.html#cronTriggers</a>
+	  </td> 
+    </tr> 
+    </span>
+    </span>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+	</span> 
+    <tr>
+      <td jwcid="@Any" class="ognl:propertyNameCssClass" align="left" valign="top" scope="col"><img src="images/build_type.gif" width="16" height="16" align="absmiddle"> build type</td>
+      <td jwcid="@Any" class="ognl:propertyValueCssClass" colspan="3" align="left" valign="top" scope="col">
+      <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:buildTypeSelectionModel" value="ognl:scheduleToEdit.buildType">
+      </select>
+      <br>
+      Select the build type for this schedule, clean build can be more reliable,
+      but maybe slower. Increment build can be quicker, but less reliable. Suggest
+	  all important schedules such as nightly, release should be clean build, and 
+      for very frequent schedules such as hourly development build, can be increment.<br>      <br>
+      NOTE: This setting will only take effect when the build is not trigged manually. For manual builds, this value will  be shown as the default value when schedule a manual build. </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <span jwcid="@Conditional" condition="ognl:scheduleToEdit.trigger != null">
+    <tr>
+      <td jwcid="@Any" class="ognl:propertyNameCssClass" align="left" valign="top" scope="col"><img src="images/build_strategy.gif" width="16" height="16" align="absmiddle"> build strategy</td>
+      <td jwcid="@Any" class="ognl:propertyValueCssClass" colspan="3" align="left" valign="top" scope="col">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:buildStrategySelectionModel" value="ognl:scheduleToEdit.buildStrategy">
+        </select>
+        <br>
+    Select the build strategy for this schedule. There are three strategy, respectively:<br>
+	<strong>build when necessary</strong>: only performs the build when necessary. A build is necessary when "build necessary condition" of the project evaluates to true<br>
+    <strong>build always if failed</strong>: always performs the build when previous build in this schedule fails,
+    regards of value of the "build necessary condition" of the project. However, if last build succeeds, "build when necessary" strategy will be followed<br>
+    <strong>build always</strong>: always perform the build at specified time, even there is no any changes
+    in the repository.<br>
+    <strong>do not build</strong>: never perform the build, this can be used to pause this schedule.
+    <br>
+    <br>
+    NOTE: This setting will only take effect when the build is not trigged manually.</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    </span>
+	<tr>
+      <td jwcid="@Any" class="ognl:propertyNameCssClass" align="left" valign="top" scope="col"><img src="images/postbuild_strategy.gif" width="16" height="16" align="absmiddle"> post-build strategy</td>
+      <td jwcid="@Any" class="ognl:propertyValueCssClass" colspan="3" align="left" valign="top" scope="col">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:postbuildStrategySelectionModel" value="ognl:scheduleToEdit.postbuildStrategy">
+        </select>
+        <br>
+		<strong>do not post-build</strong>: do not execute post-build script after build.<br>
+        <strong>post-build when success</strong>: execute post-build script only when build is successful. <br>
+        <strong>post-build when failed</strong>: execute post-build script only when build is failed. <br>
+        <strong>post-build always</strong>: always execute post-build script after build.<br>        
+    <br>
+    NOTE: This setting will only take effect when the build is not trigged manually. For manual builds, this value will be shown as the default value when schedule a manual build.</td>
+    </tr>	
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr>
+      <td jwcid="@Any" class="ognl:propertyNameCssClass" align="left" valign="top" scope="col"><img src="images/label.gif" width="18" height="18" align="absmiddle"> label strategy:</td>
+      <td jwcid="@Any" class="ognl:propertyValueCssClass" colspan="3" align="left" valign="top" scope="col">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:labelStrategySelectionModel" value="ognl:scheduleToEdit.labelStrategy">
+        </select>
+        <br>
+        Choose the label strategy for this schedule. There are three strategy, repectively:<br>
+        <strong>label successful builds</strong>: label the repository only for successful builds. <br>
+        <strong>do not label</strong>: do not label the repository after build.<br>
+        <strong>label always</strong>: always label the repository after build.<br>        <br>
+        NOTE1: if a build is not get labeled when it is initially built, it will not be rebuildable later <br>
+        NOTE2: This setting will only take effect when the build is not trigged manually. For manual builds, this value will be shown as the default value when schedule a manual build.</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr>
+      <td jwcid="@Any" class="ognl:propertyNameCssClass" align="left" valign="top" scope="col"><img src="images/notify.gif" width="19" height="16" align="absmiddle"> notify strategy</td>
+      <td colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col" jwcid="@Any">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:notifyStrategySelectionModel" value="ognl:scheduleToEdit.notifyStrategy">
+        </select>
+        <br>
+    Choose the notify strategy for this schedule. There are three strategy, repectively:<br>
+    <strong>notify when status changed</strong>: send notification when status of current build changes against last build. That is, notification will be sent when current build succeeds and last build fails, or current build fails and last build succeeds. <br>
+    <strong>notify when failed</strong>: send  notification only when build failed. <br>
+    <strong>notify when success</strong>: send  notification only when build success. <br>
+    <strong>do not notify</strong>: do not send notification after build.<br>
+    <strong>notify always</strong>: always send notification after build.<br>
+    <br>
+    NOTE: This setting will only take effect when the build is not trigged manually. For manual builds, this value will be shown as the default value when schedule a manual build.</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr>
+      <td jwcid="@Any" class="ognl:propertyTailCssClass" scope="col"></td>
+      <td jwcid="@Any" class="ognl:propertyTailCssClass" width="22%" height="29" align="right" scope="col">
+        <input name="Submit" type="submit" value=" save " jwcid="@Submit" listener="ognl:listeners.save" label=" save "/>        </td>
+      <td jwcid="@Any" class="ognl:propertyTailCssClass" width="2%" align="right" scope="col">&nbsp;</td>
+      <td jwcid="@Any" class="ognl:propertyTailCssClass" width="53%" align="left" scope="col">
+        <input name="Cancel" type="submit" id="Cancel" value="cancel" jwcid="@Submit" listener="ognl:listeners.cancel" label="cancel"/>        </td>
+    </tr>
+</form>
+</table>
+</span>

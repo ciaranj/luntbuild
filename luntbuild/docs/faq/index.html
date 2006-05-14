@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>LuntBuild - Build Automation and Management FAQ</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="LuntBuild - Build Automation and Management FAQ"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">LuntBuild - Build Automation and Management FAQ</th></tr></table><hr></div><div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a name="id4648620"></a>LuntBuild - Build Automation and Management FAQ</h1></div><div><p class="copyright">Copyright © 2005 Luntbuild</p></div></div><hr></div><div class="qandaset"><h2 class="title">General FAQ</h2><dl><dt>1. <a href="index.html#id4707672">How do you run different targets for a particular schedule of your project?</a></dt><dt>2. <a href="index.html#id4708584">How do you run multiple targets for a particular build of your project?</a></dt><dt>3. <a href="index.html#id4708619">How to you define top location of your Ant target execution?</a></dt><dt>4. <a href="index.html#id4708905">How do you create a new Project, Build, Schedule ...?</a></dt><dt>5. <a href="index.html#id4708944">My favorite VCS doesn't work wit Luntbuild?</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4707672"></a><a name="id4707675"></a><b>1.</b></td><td align="left" valign="top"><p>How do you run different targets for a particular schedule of your project?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+        If you need to run different targets for a particular schedule of your project,
+        it is good idea to name the schedule with the same name as the name of the target
+        to be executed in your main build script file and use variable ${build.schedule.name}
+        as a build target.  This can be done for instance:
+        </p><div class="orderedlist"><ol type="1"><li><p>Define your ant builder, and set the target to be ${build.schedule.name},
+                 in this way, Luntbuild will call Ant with schedule name as targets.</p></li><li><p>In your ant build file, add targets for different schedule names,
+                    ie. "nightly", "hourly", "release".
+                </p></li></ol></div></td></tr><tr class="question"><td align="left" valign="top"><a name="id4708584"></a><a name="id4708586"></a><b>2.</b></td><td align="left" valign="top"><p>How do you run multiple targets for a particular build of your project?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+        If you need to execute multiple targets (like &gt; ant setup init dist package) just
+        put them in your build file (for ant):
+        </p><p>
+            </p><pre class="programlisting">
+            
+            &lt;target name="nightly" depends="setup init dist package"/&gt;
+            
+            </pre><p>
+        </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4708619"></a><a name="id4708621"></a><b>3.</b></td><td align="left" valign="top"><p>How to you define top location of your Ant target execution?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+        If you are using JNI or your application configuration depends on relative location of the files,
+        you might have a problem running the application using Luntbuild. To resolve the issue,
+        define env. variable with the top directory of your application,
+        and use this variable to define location(s) in the configuration of your application.
+        Then define the same environment variable in the appropriate Luntbuild builder.
+        </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4708905"></a><a name="id4708908"></a><b>4.</b></td><td align="left" valign="top"><p>How do you create a new Project, Build, Schedule ...?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+        To create a new Project, Build, Schedule etc., look in upper right corner, just below
+        the Tabs for an icon
+        <span class="inlinemediaobject"><img src="images/new.jpg"></span>. The icon is quite small and for first time user it is hard to
+        find. But as soon as you get used to look for it in all the tabs/pages, the small icon
+        makes for nice and compact user interface.
+        </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4708944"></a><a name="id4708946"></a><b>5.</b></td><td align="left" valign="top"><p>My favorite VCS doesn't work wit Luntbuild?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+            Make sure that external VCS application like cvs or p4 is in your default path
+            when you are starting Luntbuild.
+        </p></td></tr></tbody></table></div><div class="qandaset"><h2 class="title">Perforce FAQ</h2><dl><dt>1. <a href="index.html#id4708970">How do you set up Perforce client spec if multiple users use Luntbuild?</a></dt><dt>2. <a href="index.html#id4709010">How do you pass properties to Ant?</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4708970"></a><a name="id4708973"></a><b>1.</b></td><td align="left" valign="top"><p>How do you set up Perforce client spec if multiple users use Luntbuild?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+            </p><div class="itemizedlist"><p>I set up Luntbuild work directory to /opt/builds.</p><p>I name my project mybuilds-myproject.</p><p>I specify client path in p4 clientspec to //myspec/..., 
+            and I got build going in //opt/builds/mybuilds-myproject.</p><p>I set up build file to build.xml.</p><ul type="disc"></ul></div><p>
+        </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4709010"></a><a name="id4709012"></a><b>2.</b></td><td align="left" valign="top"><p>How do you pass properties to Ant?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+            For example, lets assume, you have Ant target checkc, which requires property -Dargs.
+            You can pass arguments to Ant by naming schedule name as "checkc -Dargs=MyTest".
+        </p></td></tr></tbody></table></div><div class="qandaset"><h2 class="title">Development FAQ</h2><dl><dt>1. <a href="index.html#id4707911">Building Luntbuild in Eclipse</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4707911"></a><a name="id4707913"></a><b>1.</b></td><td align="left" valign="top"><p>Building Luntbuild in Eclipse</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+        The one problem I had with building Luntbuild source code using default Eclipse build
+        is that starteam.jar is optional. This is checked in Ant &lt;luntbuild&gt;/build/build.xml and
+        src. files that use StarTeam VCS are build conditionally based on the presence of starteam.jar. 
+        I have started building Luntbuild from cmd. line using ant, that works.  
+        But doing it directly from Eclipse is more convenient, so I use External Tools,
+        I create Ant Build configuration, point it to &lt;luntbuild&gt;/build/build.xml and
+        select clean package targets (make sure to put them in the right order).
+        Then I use this External Tools target to re-build Luntbuild. 
+        If you want to use Eclipse default build facilities for Luntbuild project, here is another, possibly
+        better option:
+        </p><div class="itemizedlist"><p>Go to Luntbuild Eclipse project Properties</p><p>Select Builders</p><p>Create a new Builder (name it for example Luntbuild Builder)</p><p>Select Ant Build, define workspace location, base directory, pick target "package"</p><p>Save Luntbuild Builder, unselect Java Builder, and move Luntbuild Builder up</p><ul type="disc"></ul></div><p>
+        Now you should be able to run Luntbuild build using std. Eclipse build facilities.
+        Output from the is displayed in Console view.
+        </p></td></tr></tbody></table></div></div><div class="navfooter"><hr></div></body></html>

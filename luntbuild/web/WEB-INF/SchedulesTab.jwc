@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification
+      PUBLIC "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+      "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification
+	class="com.luntsys.luntbuild.web.SchedulesTab"
+	allow-informal-parameters="no">
+
+	<property-specification name="action" type="java.lang.String" persistent="yes" />
+	<property-specification name="scheduleIdToDelete" type="long" persistent="yes"/>
+	<property-specification name="scheduleIndex" type="int"/>
+	<property-specification name="rebuilds" type="java.util.Map"/>
+	<property-specification name="manualBuildTriggers" type="java.util.List"/>
+	<property-specification name="manualBuildTrigger" type="org.quartz.Trigger"/>
+	<property-specification name="rebuildTrigger" type="org.quartz.Trigger"/>
+	<property-specification name="lastBuild" type="com.luntsys.luntbuild.db.Build"/>
+	<property-specification name="lastSuccessBuild" type="com.luntsys.luntbuild.db.Build"/>
+	<property-specification name="runningBuild" type="com.luntsys.luntbuild.db.Build"/>
+	<property-specification name="cssIndex" type="int"/>
+	<property-specification name="triggerDeleteCount" type="int" persistent="yes" initial-value="0" />
+
+</component-specification>

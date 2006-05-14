@@ -1,0 +1,135 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+-->
+</style>
+</head>
+<span jwcid="$content$"> 
+<table width="100%"  border="0" cellspacing="0" cellpadding="0"> 
+  <form jwcid="@Form" name="form" method="post"> 
+    <tr align="center" bordercolor="#EAEDF4" bgcolor="#FFFFE6"> 
+      <td colspan="4" bgcolor="#EAEDF4" scope="col"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="propertyEditorTitle">
+      	  <span jwcid="@Conditional" condition="ognl:page.projectId == 0">
+          <tr> 
+            <td align="center">Creating new project(Field marked with * is required)</td>
+          </tr>
+          </span>
+          <span jwcid="@Conditional" condition="ognl:page.projectId != 0">
+          <tr>
+            <td align="center">Editing project "<span jwcid="@Insert" value="ognl:page.project.name">luntbuild</span>"(Field marked with a * is required)</td>
+          </tr>
+          </span>
+          <span jwcid="@Conditional" condition="ognl:errorMsg != null">
+          <tr> 
+            <td colspan="4" align="left" valign="top" class="errorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td> 
+          </tr> 
+          </span> 
+        </table></td> 
+    </tr> 
+	<span jwcid="@Conditional" condition="ognl:cssIndex = 0"></span>
+	<span jwcid="@Conditional" condition="ognl:page.projectId == 0">
+    <tr>
+      <td jwcid="@Any" width="20%" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/name.gif" width="18" height="14" align="absmiddle"> name</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:page.project.name" jwcid="@TextField"/>
+        *<br>
+        Provide a name to identify this project. This name will be used to identify this project, and can not be changed later.</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+	</span>
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/description.gif" width="18" height="14" align="absmiddle"> description</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <textarea cols="75" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:page.project.description"/>
+        <br>
+        Provide a description for this project.</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+	<tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/number.gif" width="18" height="18" align="absmiddle"> next build version</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:page.project.nextVersion" size="75" jwcid="@TextField" rows="10"/>
+        * <br> 
+        Next build version for this project. The version increments as the following:<br>
+        luntbuild-1.0 will be increased to luntbuild-1.1<br>
+        luntbuild-1.9 will be increased to luntbuild-1.10<br>
+        luntbuild-1.5(1000) will be increased to luntbuild-1.5(1001)<br>
+        <br>
+        Also you can insert variables(encapsulated in ${...}) to the version string to make it more flexible. For example,
+        the version string can be defined as: <br>
+        luntbuild-${year}-${month}-${dayOfMonth}.${dayOfMonth.iteration} <br>
+        In this way, the actual version string for a build will
+        include the build date and iterations for that date. For details, please refer to the <a href="manual/index.html#nextBuildVersion">user manual</a>.
+      </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+	<tr> 
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/condition.gif" width="16" height="16" align="absmiddle"> build necessary condition </td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:page.project.buildNecessaryCondition" size="75" jwcid="@TextField"/>      <br>
+        The build necessary condition is an ognl expression  used to determine if build of current project is necessary. If left empty, the &quot;modified&quot; value will be assumed. Refer to <a href="manual/index.html#buildNecessaryCondition">user manual</a> for detailed information. </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col">
+      <img src="images/user.gif" width="16" height="16" align="absmiddle"> project admins</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+	  <span jwcid="@contrib:Palette" model="ognl:adminUserSelectionModel" selected="ognl:adminUsers" rows="8" tableClass="ognl:paletteCssClass"></span>
+        Select users who should be assigned the role 'project admin'.
+	  </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col">
+      <img src="images/user.gif" width="16" height="16" align="absmiddle"> project builders</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+	  <span jwcid="@contrib:Palette" model="ognl:buildUserSelectionModel" selected="ognl:buildUsers" rows="8" tableClass="ognl:paletteCssClass"></span>
+        Select users who should be assigned the role 'project builders'.
+	  </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col">
+      <img src="images/user.gif" width="16" height="16" align="absmiddle"> project viewers</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+	  <span jwcid="@contrib:Palette" model="ognl:viewUserSelectionModel" selected="ognl:viewUsers" rows="8" tableClass="ognl:paletteCssClass"></span>
+        Select users who should be assigned the role 'project viewers'.
+	  </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+	<tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/notify.gif" width="19" height="16" align="absmiddle"> notification methods</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> 
+	  <span jwcid="@contrib:Palette" model="ognl:notifierSelectionModel" selected="ognl:notifierClasses" rows="5" tableClass="ognl:paletteCssClass"></span>
+        Select notification methods for build of this project.
+	  </td> 
+    </tr>	
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr> 
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/user.gif" width="16" height="16" align="absmiddle"> notification users</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> 
+	  <span jwcid="@contrib:Palette" model="ognl:userSelectionModel" selected="ognl:notificationUsers" rows="8" tableClass="ognl:paletteCssClass"></span>
+        Select users who will get notified for build of this project.
+	  </td> 
+    </tr> 
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/log.gif" width="18" height="18" align="absmiddle"> log level </td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+      <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:logLevelSelectionModel" value="ognl:page.project.logLevel">
+      </select>      <br>        
+      Select log level for this project. 
+	  </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"></span>
+    <tr>
+      <td jwcid="@Any" class="ognl:propertyEditorTailCssClass" height="29" align="right" scope="col">&nbsp; </td> 
+      <td jwcid="@Any" class="ognl:propertyEditorTailCssClass" width="24%" height="29" align="right" scope="col"> <div align="right"> 
+          <input type="submit" jwcid="@Submit" listener="ognl:listeners.save" name="Submit" label=" save " value=" save "/> 
+        </div></td> 
+      <td jwcid="@Any" class="ognl:propertyEditorTailCssClass" width="3%" align="right" scope="col">&nbsp;</td> 
+      <td jwcid="@Any" class="ognl:propertyEditorTailCssClass" width="52%" align="right" scope="col"><div align="left"> 
+        <div align="left"> 
+          <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="cancel" value="cancel"/> 
+        </div></td> 
+    </tr> 
+  </form> 
+</table>
+</span>

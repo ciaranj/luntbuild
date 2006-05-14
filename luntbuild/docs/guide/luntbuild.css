@@ -1,0 +1,19 @@
+a, body, div, table, td 
+{ 
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+body {
+	margin: 5px;
+	background-color: #EEEEEE;
+	border: 0px none;
+	padding: 2px;
+    color: #336699;
+}
+a:link {
+	color: #0000B4;
+	text-decoration: none;
+}
+a:visited {
+	color: #B300B3;
+	text-decoration: none;
+}

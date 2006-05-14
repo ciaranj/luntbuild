@@ -1,0 +1,108 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 2. Luntbuild Installation</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="prev" href="ch01.html" title="Chapter 1. Introduction"><link rel="next" href="ch03.html" title="Chapter 3. Login to Luntbuild"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 2. Luntbuild Installation</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch03.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="install"></a>Chapter 2. Luntbuild Installation</h2></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top">
+    This chapter describes a clean/"from scratch" Luntbuild installation.
+    For upgrades, please refer to the Release Notes.
+</td></tr></table></div><div class="orderedlist"><ol type="1"><li><p>
+        Download source or binary distribution from
+        <a href="http://www.luntsys.com/luntbuild/download.html" target="_top">
+            http://www.luntsys.com/luntbuild/download.html
+        </a>
+    </p></li><li><p>
+        Go to step 6 if you've downloaded the binary distribution.
+        Otherwise, continue next to compile the source distribution.
+    </p></li><li><p>
+        Make sure you have JDK1.4 or JDK1.5 installed.
+        Go to <a href="http://java.sun.com" target="_top">http://java.sun.com</a> to download and install Java.
+    </p></li><li><p>
+        Make sure you have Apache Ant installed.
+        Go to <a href="http://ant.apache.org" target="_top">http://ant.apache.org</a>  to download and install Ant.
+    </p></li><li><p>
+        Extract the source distribution into a directory, suppose "/luntbuild-src".
+        Change to "/luntbuild-src/build" directory.
+        Run build.bat on Windows platform, or run "sh build.sh" on Unix or Linux platform.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top">
+            Starteam adaptor will not get built by default. If you want to get Starteam adaptor built, 
+            you need to put Starteam SDK jar file (starteam60.jar for Starteam 6.0, which ships with the Starteam
+            client installation) and put it into "/luntbuild-src/lib" directory before you start the build.
+        </td></tr></table></div><p>
+    </p></li><li><p>
+        After build finishes go to /luntbuild-src/distribute directory, you should see binary distribution
+        zip file luntbuild-1.2.zip.
+    </p></li><li><p>
+        Extract the binary distribution to a directory, suppose "/luntbuild".
+    </p></li><li><p>
+        Make sure you have Tomcat4 or Tomcat5 installed on your system.
+        You can get Tomcat at <a href="http://jakarta.apache.org/tomcat/index.html" target="_top">http://jakarta.apache.org/tomcat/index.html</a>,
+        Let's suppose that Tomcat has been installed in the directory "/tomcat",
+        and let's suppose you can access Tomcat at http://build-server.foobar.com.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top">
+            On Windows platform, you should not start Tomcat in NT service mode, it need to be run foreground.
+            ??? Does it still applies???
+        </td></tr></table></div><p>
+    </p></li><li><p>
+        Copy /luntbuild/web/luntbuild.war to /tomcat/webapps/.
+        Start Tomcat and luntbuild.war should be automatically extracted in directory
+        /tomcat/webapps/luntbuild/....
+    </p></li><li><p>
+        Edit the file /tomcat/webapps/luntbuild/WEB-INFO/web.xml, change value of the 
+        context parameter "installDir" of the installation directory for luntbuild,
+        that is /luntbuild in this case:
+        </p><pre class="programlisting">
+        
+	&lt;context-param&gt;
+		&lt;param-name&gt;installDir&lt;/param-name&gt;
+		&lt;!-- change this for production environment !! --&gt;
+		&lt;param-value&gt;D:/luntbuild&lt;/param-value&gt;
+		&lt;description&gt;luntbuild installation directory&lt;/description&gt;				
+	&lt;/context-param&gt;
+        
+        </pre><p>
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top">
+            On Unix platforms, please make sure the Tomcat process have full read/write access
+            to the luntbuild installation directory.
+        </td></tr></table></div><p>
+    </p></li><li><p>
+        Install version control system (VCS) client of your choice (if you already did not do so).
+        If you are using:
+        </p><div class="variablelist"><dl><dt><span class="term">Visual Source Safe</span></dt><dd><p>
+            Download from <a href="http://download.microsoft.com" target="_top">http://download.microsoft.com</a>.
+        </p></dd><dt><span class="term">CVS</span></dt><dd><p>
+            Install appropriate Cvs client based on your platform from
+            <a href="http://www.cvshome.org" target="_top">http://www.cvshome.org</a> or
+            <a href="http://www.cvsnt.org" target="_top">http://www.cvsnt.org</a> if you are using Windows platform.
+            Make sure the cvs executable is in the system path.
+        </p></dd><dt><span class="term">Subversion</span></dt><dd><p>
+            Subversion client software should be installed on your build machine,
+            and the svn executable should be in the system path.
+            You can download subversion at <a href="http://subversion.tigris.org/" target="_top">http://subversion.tigris.org</a>.
+        </p></dd><dt><span class="term">Starteam</span></dt><dd><p>
+            Support for Starteam needs the StarTeam API which is only available to licensed users of StarTeam.
+            You must have starteam-sdk.jar (or starteam60.jar for Starteam6.0) ant put it into
+            /tomcat/webapps/luntbuild/WEB-INFO/lib directory. Normally this jar file will be available as one
+            of the runtime files after you install Starteam client software.
+            Please go to <a href="http://www.borland.com" target="_top">http://www.borland.com</a> for licensing information.
+            </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top">
+                For Windows platform, the above step is not sufficient, you will need to have
+                a full installation of Starteam SDK runtime (which will install some runtime dlls
+                and put them in the Windows system path).
+                Normally this is part of Starteam client installation.
+            </td></tr></table></div><p>
+        </p></dd><dt><span class="term">Perforce</span></dt><dd><p>
+            You should have Perforce client installed on the build machine.
+            Make sure the p4 command line executable is in the system path.
+            Contact <a href="http://www.perforce.com" target="_top">http://www.perforce.com</a> for licensing information.
+        </p></dd><dt><span class="term">Base Clearcase or Clearcase UCM</span></dt><dd><p>
+            You should have Clearcase client installed on the build machine.
+            Make sure the cleartool command line executable is in the system path.
+            Also you should make sure that the account running Tomcat is able to access
+            your Clearcase server and that it can make snapshot views.
+        </p></dd></dl></div><p> 
+    </p></li><li><p>
+        For security configuration please see <a href="ch20.html" title="Chapter 20. Luntbuild Security">Chapter about
+        Security</a>. If you did not modify the security configuration, use
+        username <span class="emphasis"><em>luntbuild</em></span> and password <span class="emphasis"><em>luntbuild</em></span>
+        as login credentials for initial Luntbuild login.
+    </p></li><li><p>
+        Restart Tomcat, start the web browser, and point it to http://build-server.foobar.com/luntbuild/app,
+        and you will get Luntbuild login page. (The first access to Luntbuild login web page will take
+        a few seconds, please be patient 8-).
+    </p></li></ol></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ch03.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 1. Introduction </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Chapter 3. Login to Luntbuild</td></tr></table></div></body></html>
