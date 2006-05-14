@@ -1,0 +1,82 @@
+<head>
+<link href="file:///D|/lunt/cvs/lunt/luntbuild/src/com/luntsys/luntbuild/web/components/border/luntbuild.css" rel="stylesheet" type="text/css"/>
+</head>
+<span jwcid="$content$"> 
+  <table width="100%"  border="0" cellpadding="0" cellspacing="0">
+    <tr>
+    <td height="13" align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="iconTable"> 
+        <tr> 
+          <td>&nbsp;</td> 
+          <td width="25">&nbsp;</td> 
+        </tr> 
+      </table></td> 
+    </tr>
+    <tr>
+      <td>
+        <table width="100%"  border="0" cellpadding="0" cellspacing="0">
+		<form jwcid="@Form" listener="ognl:listeners.update" name="form" method="post">
+          <tr>
+            <td width="20%" align="left" valign="top" class="propertyEditorName2"><img src="images/url.gif" width="18" height="18" align="absmiddle"> Url to access luntbuild servlet </td>
+            <td width="80%" align="left" valign="top" class="propertyEditorValue2"><p>
+                <input name="textfield3" type="text" class="inputBox" value="ognl:properties.servletUrl" size="75" jwcid="@TextField"/>
+                <br>
+        The servlet url should be specified correctly here in order to construct urls used in the notification message correct. Normally this value should be http://&lt;server&gt;:&lt;port&gt;/luntbuild/app, where &lt;server&gt; stands for your build server name or ip address, and &lt;port&gt; stands for the port number you used to access luntbuild. If this property is left empty, luntbuild will default this value to be &quot;http://&lt;server_ip&gt;:8080/luntbuild/app&quot;, where &lt;server_ip&gt; stands for the ip address of the build server. </p></td>
+          </tr>
+          <tr>
+            <td width="20%" align="left" valign="top" class="propertyEditorName1"><img src="images/command.gif" width="18" height="18" align="absmiddle"> Command to run ant</td>
+            <td width="80%" align="left" valign="top" class="propertyEditorValue1"><textarea name="textarea" cols="80" rows="6" class="inputBox" type="area" value="ognl:properties.antCommand" jwcid="@TextArea"/>
+                <br>
+      You can optionally specify your own ant command to build all projects configured for this build system . For example, <br>
+            <br>
+&quot;C:\j2sdk1.4.2_04\bin\java&quot; -classpath &quot;D:\lunt\cvs\lunt\luntbuild\ant\lib\ant-launcher.jar&quot; &quot;-Dant.home=D:\lunt\cvs\lunt\luntbuild\ant&quot; org.apache.tools.ant.launch.Launcher<br>
+      <br>
+      By this way, you can specify your own jdk, ant, jvm options or ant options to run ant. However, this can be overrided by view-specific ant command if you specify in the view basic information page.</td>
+          </tr>
+          <tr>
+            <td width="20%" align="left" valign="top" class="propertyEditorName2"><img src="images/file.gif" width="16" height="16" align="absmiddle"> Environment file</td>
+            <td width="80%" align="left" valign="top" class="propertyEditorValue2"><input name="textfield" type="text" class="inputBox" value="ognl:properties.envFile" size="75" jwcid="@TextField"/>
+                <br>
+      You can optionally specify a environment file. It will be assumed to be relative to the view working directory when this path is not an absoulte path. Luntbuild will scan this file and setup the environment variables indicated by properties contained in this file before performing build for every projects configured in this build system. However, this can be overrided by view-specific environment file if you 
+      specify in the view basic information page. </td>
+          </tr>
+          <tr>
+            <td width="20%" align="left" valign="top" class="propertyEditorName1"><img src="images/folder.gif" width="16" height="16" align="absmiddle"> Working directory </td>
+            <td width="80%" align="left" valign="top" class="propertyEditorValue1"><input name="textfield" type="text" class="inputBox" value="ognl:properties.workingDir" size="75" jwcid="@TextField"/>
+                <br>
+      You can optionally specify a working directory for the build system. Working directory is the directory where luntbuild used to hold checkouted artifacts from the version control system. If not specified, luntbuild will use the &quot;work&quot; directory under the luntbuild installation directory. </td>
+          </tr>
+          <tr>
+            <td align="left" valign="top" class="propertyEditorName2"><img src="images/folder.gif" width="16" height="16" align="absmiddle"> Publish directory </td>
+            <td align="left" valign="top" class="propertyEditorValue2"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.publishDir" size="75" jwcid="@TextField"/>
+                <br>
+      You can optionally specify a publish directory for the build system. Publish directory is the directory where luntbuild used to hold the output of the build process, thus the build log, and build artifacts, etc.</td>
+          </tr>
+          <span jwcid="@Conditional" condition="ognl:cssIndex = 0"/>
+		  <span jwcid="@Foreach" source="ognl:notifierInstances" value="ognl:currentNotifier">
+		  <tr>
+		  	<td jwcid="@Any" align="left" valign="top" class="ognl:notifierTitleCssClass" colspan="2">
+			<img src="images/hint.gif" width="19" height="19" align="absmiddle"> <span jwcid="@InsertText" value="ognl:notifierTitle">Set email related properties here if you want to notify user by email</span>
+			</td>
+		  </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>		
+   	  	  <span jwcid="@Foreach" source="ognl:currentNotifier.systemLevelProperties" value="ognl:currentProperty">
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/property.gif" width="12" height="11" align="absmiddle"> <span jwcid="@Insert" value="ognl:currentProperty.displayName">SMTP host</span></td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:currentProperty.value[properties]" size="75" jwcid="@TextField" hidden="ognl:currentProperty.secret"/>
+                <br>
+      <span jwcid="@InsertText" value="ognl:currentProperty.description">You can optionally specify the SMTP mail host used by luntbuild to send email. If this property is not specified, luntbuild will use localhost as the default value. </span></td>
+          </tr>				
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>				  				
+    	  </span>	
+		  </span>
+          <tr>
+            <td jwcid="@Any" class="ognl:tailCssClass">&nbsp;</td>
+            <td jwcid="@Any" align="left" class="ognl:tailCssClass">
+			<input name="Submit" type="submit" value="update" jwcid="@Submit" label="update"/></td>
+          </tr>
+		</form>
+        </table>
+      </td>
+    </tr>
+  </table>
+</span>
