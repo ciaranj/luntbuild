@@ -1,0 +1,442 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping package="com.luntsys.luntbuild.db" >
+
+	<class name="Property" table="PROPERTY">
+		<id name="name" type="string" column="NAME">
+			<generator class="assigned"/>
+		</id>
+		<property name="value" type="string" column="VALUE"/>
+	</class>
+
+	<class name="Project" table="PROJECT" >
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<property name="name" column="NAME"/>
+		<property name="description" column="DESCRIPTION"/>
+				
+		<!-- serialized form of the version control system attached to this project -->
+		<property name="vcs" type="serializable" column="VCS"/>
+		<set name="views" table="VIEW" inverse="true" cascade="delete"
+			lazy="true" >
+			<key column="FK_PROJECT_ID"/>
+			<one-to-many class="View"/>
+		</set>
+		<set name="vcsLogins" table="VCS_LOGIN" cascade="delete" inverse="true"
+			lazy="true" >
+			<key column="FK_PROJECT_ID"/>
+			<one-to-many class="VcsLogin"/>
+		</set>
+		
+		<!-- bi-directional one-to-many association to RolesMapping -->
+		<!-- all-delete-orphan -->
+	    <set
+	        name="rolesMappings"
+	        lazy="true"
+	        inverse="true"
+	        
+			cascade="all-delete-orphan">
+			
+	        <meta attribute="field-description">
+	           @hibernate.set
+	            lazy="true"
+	            inverse="true"
+	            cascade="delete"
+	
+	           @hibernate.collection-key
+	            column="FK_PROJECT_ID"
+	
+	           @hibernate.collection-one-to-many
+	            class="com.luntsys.luntbuild.db.RolesMapping"
+	        </meta>
+	        
+	        <key>
+	            <column name="FK_PROJECT_ID" />
+	        </key>
+	        <one-to-many class="RolesMapping"/>
+	    </set>		
+		
+	</class>
+
+	<class name="View" table="VIEW">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<property name="name" column="NAME"/>
+		<property name="description" column="DESCRIPTION"/>
+		<property name="buildSuccessCondition" column="BUILD_SUCCESS_CONDITION"/>
+		<property name="buildNecessaryCondition" column="BUILD_NECESSARY_CONDITION"/>
+		<property name="buildFilePath" column="BUILD_FILE_PATH"/>
+		<property name="buildTarget" column="BUILD_TARGET"/>
+		<property name="postbuildFilePath" column="POSTBUILD_FILE_PATH"/>
+		<property name="postbuildTarget" column="POSTBUILD_TARGET"/> 
+		<property name="nextVersion" column="NEXT_VERSION"/>
+		<property name="versionVariableValues" column="VERSION_VARIABLE_VALUES" type="serializable" />
+		<property name="antCommand" column="ANT_COMMAND"/>
+		<property name="envFilePath" column="ENV_FILE_PATH"/>
+		<!-- serialized form of the version control system attached to this view -->
+		<property name="vcs" type="serializable" column="VCS"/>
+
+		<property name="notifiers" column="NOTIFIERS" type="serializable" />
+
+		<many-to-one name="project" class="Project" column="FK_PROJECT_ID"
+			outer-join="true" not-null="true"/>
+		<map name="buildSchedules" table="BUILD_SCHEDULE" cascade="delete"
+			inverse="true" lazy="true" >
+			<key column="FK_VIEW_ID"/>
+			<index-many-to-many class="Schedule" column="FK_SCHEDULE_ID"/>
+			<one-to-many class="BuildSchedule"/>
+		</map>
+		<map name="notificationConfigs" table="NOTIFICATION_CONFIG" cascade="all"
+			inverse="true" lazy="true" >
+			<key column="FK_VIEW_ID"/>
+			<index-many-to-many class="User" column="FK_USER_ID"/>
+			<one-to-many class="NotificationConfig"/>
+		</map>
+		<map name="basicViewConfigs" table="VIEW_COMPOSITION_CONFIG" cascade="all"
+			inverse="true" lazy="true">
+			<key column="FK_COMPOSITE_VIEW_ID"/>
+			<index-many-to-many class="View" column="FK_BASIC_VIEW_ID"/>
+			<one-to-many class="ViewCompositionConfig"/>
+		</map>
+		<map name="compositeViewConfigs" table="VIEW_COMPOSITION_CONFIG"
+			cascade="delete" inverse="true" lazy="true">
+			<key column="FK_BASIC_VIEW_ID"/>
+			<index-many-to-many class="View" column="FK_COMPOSITE_VIEW_ID"/>
+			<one-to-many class="ViewCompositionConfig"/>
+		</map>
+	</class>
+
+	<class name="Schedule" table="SCHEDULE">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<property name="name" column="NAME"/>
+		<property name="description" column="DESCRIPTION"/>
+		<!-- the serialized form of a Quartz trigger to represents the time schedule(refer
+		 to http://www.opensymphony.com/quartz/)
+		 The schedule can only be triggered manually -->
+		<property name="trigger" type="serializable" column="TRIGGER"/>
+		<map name="buildSchedules" table="BUILD_SCHEDULE" cascade="delete"
+			inverse="true" lazy="true" >
+			<key column="FK_SCHEDULE_ID"/>
+			<index-many-to-many class="View" column="FK_VIEW_ID"/>
+			<one-to-many class="BuildSchedule"/>
+		</map>
+	</class>
+
+	<class name="VcsLogin" table="VCS_LOGIN">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<many-to-one name="project" class="Project" outer-join="true"
+			not-null="true">
+			<column name="FK_PROJECT_ID" unique-key="PROJECT_LOGIN" />
+		</many-to-one>
+		<property name="login" not-null="true">
+			<column name="LOGIN" unique-key="PROJECT_LOGIN"/>
+		</property>
+		<many-to-one name="user" class="User" outer-join="true" not-null="true">
+			<column name="FK_USER_ID"/>
+		</many-to-one>
+		
+	</class>
+
+	<class name="NotificationConfig" table="NOTIFICATION_CONFIG">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<many-to-one name="view" class="View" outer-join="true" not-null="true">
+			<column name="FK_VIEW_ID" unique-key="VIEW_USER"/>
+		</many-to-one>
+		<many-to-one name="user" class="User" outer-join="true" not-null="true">
+			<column name="FK_USER_ID" unique-key="VIEW_USER"/>
+		</many-to-one>
+	</class>
+
+	<class name="ViewCompositionConfig" table="VIEW_COMPOSITION_CONFIG">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<many-to-one name="compositeView" class="View" outer-join="true" not-null="true">
+			<column name="FK_COMPOSITE_VIEW_ID" unique-key="COMPOSITE_BASIC"/>
+		</many-to-one>
+		<many-to-one name="basicView" class="View" outer-join="true" not-null="true">
+			<column name="FK_BASIC_VIEW_ID" unique-key="COMPOSITE_BASIC"/>
+		</many-to-one>
+	</class>
+
+	<class name="BuildSchedule" table="BUILD_SCHEDULE">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<many-to-one name="view" class="View" outer-join="true" not-null="true">
+			<column name="FK_VIEW_ID" unique-key="VIEW_SCHEDULE" />
+		</many-to-one>
+		<many-to-one name="schedule" class="Schedule" outer-join="true"
+			not-null="true">
+			<column name="FK_SCHEDULE_ID" unique-key="VIEW_SCHEDULE" />
+		</many-to-one>
+		<property name="cleanBuild" column="CLEAN_BUILD"/>
+		<property name="buildStrategy" column="BUILD_STRATEGY"/>
+		<property name="labelStrategy" column="LABEL_STRATEGY"/>
+		<property name="notifyStrategy" column="NOTIFY_STRATEGY"/>
+		<property name="postbuildStrategy" column="POSTBUILD_STRATEGY"/>
+		<property name="status" column="STATUS"/>
+		<property name="statusDate" column="STATUS_DATE"/>
+		<set name="builds" table="BUILD" inverse="true" cascade="delete"
+			lazy="true">
+			<key column="FK_BUILD_SCHEDULE_ID"/>
+			<one-to-many class="Build"/>
+		</set>
+	</class>
+
+	<class name="Build" table="BUILD">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<property name="status" column="STATUS"/>
+		<property name="version" column="VERSION"/>
+		<property name="labelStrategy" column="LABEL_STRATEGY"/>
+		<property name="postbuildStrategy" column="POSTBUILD_STRATEGY"/>
+		<property name="haveLabelOnHead" column="HAVE_LABEL_ON_HEAD"/>
+		<property name="cleanBuild" column="CLEAN_BUILD"/>
+		<property name="startDate" column="START_DATE"/>
+		<property name="endDate" column="END_DATE"/>
+		<property name="rebuild" column="REBUILD"/>
+		<!-- serialized form of the version control system attached to this build -->
+		<property name="vcs" type="serializable" column="VCS"/>
+		<many-to-one name="buildSchedule" class="BuildSchedule"
+			column="FK_BUILD_SCHEDULE_ID" outer-join="true" not-null="true"/>
+	</class>
+
+	<class name="User" table="USER">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<property name="name" column="NAME"/>
+		<property name="password" column="PASSWORD"/>
+		<property name="contacts" column="CONTACTS" type="serializable" />
+		
+		 <property
+		        name="loginname"
+		        type="java.lang.String"
+		        column="LOGINNAME"
+		        length="45"
+		    >
+		        <meta attribute="field-description">
+		           @hibernate.property
+		            column="LOGINNAME"
+		            length="45"
+		        </meta>    
+		    </property>		
+		
+		<property
+	        name="siteadmin"
+	        type="boolean"
+	        column="SITEADMIN"
+	    >
+	        <meta attribute="field-description">
+	           @hibernate.property
+	            column="SITEADMIN"
+	        </meta>    
+	    </property>		
+	    
+		<set name="vcsLogins" table="VCS_LOGIN" cascade="delete" inverse="true"
+			lazy="true" >
+			<key column="FK_USER_ID"/>
+			<one-to-many class="VcsLogin"/>
+		</set>
+		<map name="notificationConfigs" table="NOTIFICATION_CONFIG" cascade="delete"
+			inverse="true" lazy="true" >
+			<key column="FK_USER_ID"/>
+			<index-many-to-many class="View" column="FK_VIEW_ID"/>
+			<one-to-many class="NotificationConfig"/>
+		</map>
+	<!-- bi-directional one-to-many association to RolesMapping -->
+	    <set
+	        name="rolesMappings"
+	        lazy="false"
+	        inverse="true"
+			cascade="delete"
+	    >
+	        <meta attribute="field-description">
+	           @hibernate.set
+	            lazy="false"
+	            inverse="true"
+	            cascade="delete"
+	
+	           @hibernate.collection-key
+	            column="FK_USER_ID"
+	
+	           @hibernate.collection-one-to-many
+	            class="com.luntsys.luntbuild.db.RolesMapping"
+	        </meta>
+	        <key>
+	            <column name="FK_USER_ID" />
+	        </key>
+	        <one-to-many 
+	            class="RolesMapping"
+	        />
+	    </set>		
+	</class>
+	
+<class 
+    name="Role" 
+    table="ROLE"
+    mutable="false"
+>
+    <meta attribute="class-description" inherit="false">
+       @hibernate.class
+        table="ROLE"
+        mutable="false"
+    </meta>
+
+    <id
+        name="id"
+        type="long"
+        column="ID"
+    >
+        <meta attribute="field-description">
+           @hibernate.id
+            generator-class="increment"
+            type="long"
+            column="ID"
+
+        </meta>
+        <generator class="increment" />
+    </id>
+
+    <property
+        name="name"
+        type="java.lang.String"
+        column="NAME"
+        length="255"
+    >
+        <meta attribute="field-description">
+           @hibernate.property
+            column="NAME"
+            length="255"
+        </meta>    
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to RolesMapping -->
+    <set
+        name="rolesMappings"
+        lazy="false"
+        inverse="true"
+		cascade="delete"
+    >
+        <meta attribute="field-description">
+           @hibernate.set
+            lazy="false"
+            inverse="true"
+            cascade="delete"
+
+           @hibernate.collection-key
+            column="FK_ROLE_ID"
+
+           @hibernate.collection-one-to-many
+            class="com.luntsys.luntbuild.db.RolesMapping"
+        </meta>
+        <key>
+            <column name="FK_ROLE_ID" />
+        </key>
+        <one-to-many 
+            class="RolesMapping"
+        />
+    </set>
+
+</class>	
+	
+	
+<class 
+    name="RolesMapping" 
+    table="ROLES_MAPPING"
+>
+    <meta attribute="class-description" inherit="false">
+       @hibernate.class
+        table="ROLES_MAPPING"
+    </meta>
+
+    <id
+        name="id"
+        type="long"
+        column="ID"
+        unsaved-value="0"
+    >
+        <meta attribute="field-description">
+           @hibernate.id
+            generator-class="increment"
+            type="long"
+            column="ID"
+
+        </meta>
+        <generator class="increment" />
+    </id>
+
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to User -->
+    <many-to-one
+        name="user"
+        class="User"
+        not-null="true"
+    >
+        <meta attribute="field-description">
+           @hibernate.many-to-one
+            not-null="true"
+           @hibernate.column name="FK_USER_ID"         
+        </meta>
+        <column name="FK_USER_ID" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Project -->
+    <many-to-one
+        name="project"
+        class="Project"
+        not-null="true"
+    >
+        <meta attribute="field-description">
+           @hibernate.many-to-one
+            not-null="true"
+           @hibernate.column name="FK_PROJECT_ID"         
+        </meta>
+        <column name="FK_PROJECT_ID" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Role -->
+    <many-to-one
+        name="role"
+        class="Role"
+        not-null="true"
+    >
+        <meta attribute="field-description">
+           @hibernate.many-to-one
+            not-null="true"
+           @hibernate.column name="FK_ROLE_ID"         
+        </meta>
+        <column name="FK_ROLE_ID" />
+    </many-to-one>
+
+</class>	
+	
+	
+	
+	
+	
+	
+	
+</hibernate-mapping>

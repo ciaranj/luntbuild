@@ -1,0 +1,124 @@
+This product includes software developed by
+the Apache Software Foundation (http://www.apache.org).
+
+This product includes software developed by the Spring Framework
+Project (http://www.springframework.org)
+
+This product includes hibernate2.1 which is licensed under LGPL. Source
+codes for hibernate are not included within this distribution but can be
+get at http://www.hibernate.org
+
+This product includes Hypersonic SQL.
+
+This product includes codes from cruisecontrol-2.1.1, which is developed by
+ThoughtWorks, Inc (http://www.thoughtworks.com)
+
+This product includes ACEGI Security System for Spring ( http://acegisecurity.sourceforge.net )
+
+The following third party libraries are used by and distributed with this product,
+licenses of some of them are put in 3rdparty_licenses directory
+
+* ant.jar
+* ant-nodeps.jar
+* ant-starteam.jar
+- Ant 1.6.1 (http://ant.apache.org)
+
+* bsf-2.3.0.jar
+- bean scripting framework (http://jakarta.apache.org/bsf/)
+
+* commons-beanutils-1.6.1.jar
+- Commons BeanUtils 1.6.1 (http://jakarta.apache.org/commons/beanutils/)
+
+* commons-codec-1.2.jar
+- Commons codec 1.2 (http://jakarta.apache.org/commons/codec/)
+
+* commons-collections-2.1.jar
+- Commons collections 2.1 (http://jakarta.apache.org/commons/collections/)
+
+* commons-digester-1.5.jar
+- Commons digester 1.5 (http://jakarta.apache.org/commons/digest/)
+
+* commons-lang-1.0.jar
+- Commons lang 1.0 (http://jakarta.apache.org/commons/lang/)
+
+* commons-logging-1.0.2.jar
+- Commons logging 1.0.2 (http://jakarta.apache.org/commons/logging/)
+
+* commons-dbcp-1.1.jar
+- commons database connection pooling (http://jakarta.apache.org/commons/dbcp/)
+
+* commons-fileupload-1.0.jar
+- commons file upload (http://jakarta.apache.org/commons/fileupload/)
+
+* commons-pool-1.1.jar
+- commons pool (http://jakarta.apache.org/commons/pool/)
+
+* jakarta-oro-2.0.6.jar
+- jakarta oro 2.0.6 (http://jakarta.apache.org/oro/)
+
+* log4j-1.2.8.jar
+- apache log4j 1.2.8 (http://logging.apache.org/log4j/)
+
+* tapestry-3.0.jar
+* tapestry-contrib-3.0.jar
+- jakarta tapestry 3.0 (http://jakarta.apache.org/tapestry/)
+
+* servlet-api.jar
+- servlet api 2.4 (http://jakarta.apache.org/tomcat/)
+
+* aopalliance.jar
+- AOP Alliance 1.0 (http://aopalliance.sourceforge.net)
+
+* spring.jar
+- spring framework 1.0 (http://www.springframework.org)
+
+* hibernate.jar
+- hibernate 2.1 (http://www.hibernate.org)
+
+* cglib-2.0-rc2.jar
+- cglib 2.0 rc2 (http://cglib.sourceforge.net/)
+
+* dom4j-1.4.jar
+- dom4j 1.4 (http://www.dom4j.org)
+
+* odmg-3.0.jar
+- odmg 3.0 (http://www.odmg.org)
+
+* xalan-2.4.0.jar
+- xalan 2.4.0 (http://xml.apache.org/xalan-j/)
+
+* xerces-2.4.0.jar
+- xerces 2.4.0 (http://xml.apache.org/xerces2-j/index.html)
+
+* xml-apis.jar
+- xml apis (http://xml.apache.org/xerces2-j/index.html)
+
+* hsqldb.jar
+- hsqldb 1.7.1 (http://hsqldb.sf.net)
+
+* quartz.jar
+- quartz 1.4.1 (http://www.opensymphony.com/quartz/)
+
+* ognl-2.6.3.jar
+- ognl 2.6.3 (http://www.ognl.org/)
+
+* javassist-2.5.1.jar
+- java assist 2.5.1(http://www.csg.is.titech.ac.jp/~chiba/javassist/)
+
+* org.sadun.util.jar
+- sadun utils (http://sourceforge.net/projects/sadun-util/)
+
+* jta.jar
+- java transaction api (http://java.sun.com/products/jta/)
+
+* connector.jar
+- java connector api (http://java.sun.com/j2ee/connector/)
+
+* ehcache-0.6.jar
+- ehcache (http://ehcache.sf.net)
+
+* hessian-3.0.8.jar
+- hessian (http://www.caucho.com/hessian/)
+
+* msnm.jar
+- msnm lib 1.2.0b1 (http://sourceforge.net/projects/jmsn/)

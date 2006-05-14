@@ -1,0 +1,110 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+-->
+</style>
+</head>
+<span jwcid="$content$">
+<table width="100%"  border="0" cellspacing="0" cellpadding="0"> 
+  <form jwcid="@Form" listener="ognl:listeners.changeVcsAdaptor" name="form" method="post"> 
+    <tr align="center" bordercolor="#EAEDF4" bgcolor="#FFFFE6"> 
+      <td colspan="4" bgcolor="#EAEDF4" scope="col"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="propertyEditorTitle"> 
+          <tr> 
+            <td align="center">Editing project basic information(Field marked with a * is required)</td> 
+          </tr> 
+          <span jwcid="@Conditional" condition="ognl:errorMsg != null">
+          <tr> 
+            <td colspan="4" align="left" valign="top" class="errorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td> 
+          </tr> 
+          </span> 
+        </table></td> 
+    </tr> 
+    <tr>
+      <td width="18%" align="left" valign="top" class="propertyEditorName1" scope="col"><img src="images/name.gif" width="18" height="14" align="absmiddle"> name</td> 
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue1" scope="col"> <input class="inputBox" value="ognl:page.project.name" jwcid="@TextField"/> 
+        *<br> 
+        Provide a name to identify this project.</td> 
+    </tr> 
+    <tr>
+      <td align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName2" scope="col"><img src="images/description.gif" width="18" height="14" align="absmiddle"> description</td> 
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue2" scope="col"> <textarea cols="75" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:page.project.description"/> 
+        <br> 
+        Give a description for this project. This property is optional. </td> 
+    </tr>  
+
+	<tr>
+	  	<td jwcid="@Any" align="left" valign="top" class="ognl:notifierTitleCssClass" colspan="4">
+		<img src="images/hint.gif" width="19" height="19" align="absmiddle"> 
+		&nbsp;Version control settings for project
+		</td>
+   </tr>    
+
+
+    <tr> 
+      <td align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName2" scope="col"><img src="images/vcs.gif" width="16" height="14" align="absmiddle"> version control system</td> 
+      <td colspan="3" align="left" valign="top" bordercolor="#FFFFFF" class="propertyEditorValue2" scope="col"> <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:vcsAdaptorSelectionModel" value="ognl:vcsAdaptor" submitOnChange="ognl:true"> 
+      </select> 
+        *<br> 
+      Select the version control system for this project</td> 
+    </tr> 
+    
+    <span jwcid="@Foreach" source="ognl:page.project.vcs.projectLevelProperties" value="ognl:vcsProjectLevelProperty" index="ognl:propertyIndex"> 
+    <tr> 
+      <td align="left" valign="top" class="ognl:propertyNameCssClass" jwcid="@Any"><img src="images/property.gif" width="12" height="11" align="absmiddle"> <span jwcid="@Insert" value="ognl:vcsProjectLevelProperty.displayName">cvs root</span></td> 
+      <td colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" jwcid="@Any"> <span jwcid="@Conditional" condition="ognl:vcsProjectLevelProperty.secret"> 
+        <input class="inputBox" value="ognl:vcsProjectLevelProperty.value" size="75" jwcid="@TextField" hidden="ognl:true"/> 
+        </span> <span jwcid="@Conditional" condition="ognl:!vcsProjectLevelProperty.secret"> <span jwcid="@Conditional" condition="ognl:!vcsProjectLevelProperty.multiLine"> 
+        <input class="inputBox" value="ognl:vcsProjectLevelProperty.value" size="75" jwcid="@TextField"/> 
+        </span> <span jwcid="@Conditional" condition="ognl:vcsProjectLevelProperty.multiLine"> 
+        <textarea cols="70" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:vcsProjectLevelProperty.value"/> 
+        </span> </span> <span jwcid="@Conditional" condition="ognl:vcsProjectLevelProperty.required">*</span><br> 
+        <span jwcid="@InsertText" value="ognl:vcsProjectLevelProperty.description">property description</span> </td> 
+    </tr> 
+    </span> 
+    
+	<tr>
+	  	<td jwcid="@Any" align="left" valign="top" class="ognl:notifierTitle2CssClass" colspan="4">
+		<img src="images/hint.gif" width="19" height="19" align="absmiddle"> 
+		&nbsp;Set security roles for project
+		</td>
+   </tr>    
+    <tr> 
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:getPaletteFieldCssClass('1')" scope="col">
+      <img src="images/user.gif" width="16" height="16" align="absmiddle"> project admins</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:getPaletteFieldCssClass('1')" scope="col"> 
+	  <span jwcid="@contrib:Palette" model="ognl:adminUserSelectionModel" selected="ognl:adminUsers" rows="8" tableClass="ognl:getPaletteCssClass('1')"></span>
+        Select users who should be assigned the role 'project admin'. 
+	  </td> 
+    </tr> 
+    <tr> 
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:getPaletteFieldCssClass('2')" scope="col">
+      <img src="images/user.gif" width="16" height="16" align="absmiddle"> project builders</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:getPaletteFieldCssClass('2')" scope="col"> 
+	  <span jwcid="@contrib:Palette" model="ognl:buildUserSelectionModel" selected="ognl:buildUsers" rows="8" tableClass="ognl:getPaletteCssClass('2')"></span>
+        Select users who should be assigned the role 'project builders'. 
+	  </td> 
+    </tr> 
+    <tr> 
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:getPaletteFieldCssClass('1')" scope="col">
+      <img src="images/user.gif" width="16" height="16" align="absmiddle"> project viewers</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:getPaletteFieldCssClass('1')" scope="col"> 
+	  <span jwcid="@contrib:Palette" model="ognl:viewUserSelectionModel" selected="ognl:viewUsers" rows="8" tableClass="ognl:getPaletteCssClass('3')"></span>
+        Select users who should be assigned the role 'project viewers'. 
+	  </td> 
+    </tr> 
+       
+    <tr> 
+      <td jwcid="@Any" align="right" class="ognl:propertyEditorTailCssClass" scope="col">&nbsp; </td> 
+      <td jwcid="@Any" width="25%" align="right" scope="col" class="ognl:propertyEditorTailCssClass"> <div align="right"> 
+          <input type="submit" jwcid="@Submit" listener="ognl:listeners.save" name="Submit" label=" save " value=" save "/> 
+        </div></td> 
+      <td jwcid="@Any" width="4%" align="right" class="ognl:propertyEditorTailCssClass" scope="col">&nbsp;</td> 
+      <td jwcid="@Any" width="53%" align="right" class="ognl:propertyEditorTailCssClass" scope="col"><div align="left"> 
+        <div align="left"> 
+          <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="cancel" value="cancel"/> 
+        </div></td> 
+    </tr> 
+  </form> 
+</table> 
+</span> 

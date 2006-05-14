@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification
+      PUBLIC "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+      "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification
+	class="com.luntsys.luntbuild.web.UsersTab"
+	allow-informal-parameters="no">
+
+	<property-specification name="users" type="java.util.List"/>
+	<property-specification name="currentUser" type="com.luntsys.luntbuild.db.User"/>
+	<property-specification name="currentUserIndex" type="int"/>
+	<property-specification name="currentAction" type="java.lang.String"/>
+	<property-specification name="userToBeDelete" type="com.luntsys.luntbuild.db.User" persistent="yes"/>
+	<property-specification name="currentNotifier" type="com.luntsys.luntbuild.notifiers.Notifier"/> 
+
+</component-specification>

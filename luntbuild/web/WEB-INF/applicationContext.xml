@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+        "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- ========================= GENERAL DEFINITIONS ========================= -->
+
+    <!-- ========================= PERSISTENCE DEFINITIONS ========================= -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName">
+			<value>org.hsqldb.jdbcDriver</value>
+		</property>
+		<property name="url">
+			<value>${hsqlUrl}</value>
+		</property>
+		<property name="username">
+			<value>sa</value>
+		</property>
+		<property name="password">
+			<value></value>
+		</property>
+		<property name="maxWait">
+			<value>30000</value>
+		</property>
+		<property name="maxIdle">
+			<value>1</value>
+		</property>
+		<property name="maxActive">
+			<value>1</value>
+		</property>
+	</bean>
+
+	<bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate.LocalSessionFactoryBean">
+		<property name="mappingResources">
+			<list>
+				<value>com/luntsys/luntbuild/db/luntbuild.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">net.sf.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource"/>
+		</property>
+		<property name="schemaUpdate">
+			<value>true</value>
+		</property>
+	</bean>
+
+	<bean id="hibernateInterceptor" class="org.springframework.orm.hibernate.HibernateInterceptor">
+		<property name="sessionFactory">
+			<ref bean="hibernateSessionFactory"/>
+		</property>
+	</bean>
+
+	<bean id="hibernateTransactionManager"
+		class="org.springframework.orm.hibernate.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref bean="hibernateSessionFactory"/>
+		</property>
+	</bean>
+
+	<bean id="hibernateTransactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager">
+			<ref bean="hibernateTransactionManager"/>
+		</property>
+		<property name="transactionAttributeSource">
+			<value>
+				com.luntsys.luntbuild.dao.Dao.get*=PROPAGATION_SUPPORTS
+				com.luntsys.luntbuild.dao.Dao.load*=PROPAGATION_SUPPORTS
+				com.luntsys.luntbuild.dao.Dao.search*=PROPAGATION_SUPPORTS
+				com.luntsys.luntbuild.dao.Dao.*=PROPAGATION_REQUIRED
+			</value>
+		</property>
+	</bean>
+
+    <bean id="daoTarget" class="com.luntsys.luntbuild.dao.HibernateDao">
+         <property name="sessionFactory">
+            <ref bean="hibernateSessionFactory"/>
+        </property>
+	</bean>
+
+	<bean id="dao" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>com.luntsys.luntbuild.dao.Dao</value>
+		</property>
+		<property name="target">
+			<ref local="daoTarget"/>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>hibernateInterceptor</value>
+				<value>hibernateTransactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- ========================= BUSINESS DEFINITIONS ========================= -->
+	<!-- the quartz scheduler service used to get builds scheduling information, and schedule builds -->
+	<bean id="schedService" class="com.luntsys.luntbuild.services.SchedService"/>
+
+	<!-- the general service provided by luntbuild system, it can be used to provide web services
+	for remote systems who wants to interact with this sytem -->
+	<bean id="luntbuildService" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>com.luntsys.luntbuild.remoting.ILuntbuild</value>
+		</property>
+		<property name="target">
+			<ref local="luntbuildServiceTarget"/>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>exceptionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="luntbuildServiceTarget" class="com.luntsys.luntbuild.services.LuntbuildService"/>
+
+	<bean id="exceptionInterceptor" class="com.luntsys.luntbuild.interceptors.ExceptionInterceptor"/>
+
+
+<!-- ACEGI -->
+
+<!-- =================== SECURITY BEANS YOU SHOULD CHANGE ================== -->
+	
+	<!-- If you replace this bean with say JdbcDaoImpl, just ensure your replacement
+	     has the same bean id (authenticationDao) -->
+	<bean id="inMemoryAuthenticationDAO" class="net.sf.acegisecurity.providers.dao.memory.InMemoryDaoImpl">
+  		<property name="userMap">
+			<value>
+				<!-- this is the default site admin username,password - please change for security reasons! -->
+				luntbuild=luntbuild,ROLE_AUTHENTICATED,ROLE_SITE_ADMIN
+				<!-- this is stupid user ( just for testing) which might login but should not be able to access anything  -->
+				dummy=dummy,ROLE_AUTHENTICATED
+			</value>
+		</property>
+	</bean>
+
+
+	<!-- Note the order that entries are placed against the objectDefinitionSource is critical.
+	     The FilterSecurityInterceptor will work from the top of the list down to the FIRST pattern that matches the request URL.
+	     Accordingly, you should place MOST SPECIFIC (ie a/b/c/d.*) expressions first, with LEAST SPECIFIC (ie a/.*) expressions last -->
+	<bean id="filterInvocationInterceptor" class="net.sf.acegisecurity.intercept.web.FilterSecurityInterceptor">
+    	<property name="authenticationManager"><ref local="authenticationManager"/></property>
+    	<property name="accessDecisionManager"><ref local="accessDecisionManager"/></property>
+ 		<property name="objectDefinitionSource">
+ 		<!-- 			    PATTERN_TYPE_APACHE_ANT -->
+			<value>
+			    CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+				\A/app*\Z=ROLE_AUTHENTICATED
+				\A/app*.*\Z=ROLE_AUTHENTICATED
+			</value>
+		</property>
+	</bean>
+		
+
+	<!-- =================== SECURITY BEANS YOU WILL RARELY (IF EVER) CHANGE ================== -->
+	
+	<!-- luntbuild internal RDBMS based authentication DAO --> 
+	<bean id="luntbuildAuthenticationDAO" class="com.luntsys.luntbuild.security.provider.ApplicationInternalDAO">
+	</bean>
+	
+	<!-- provider for declared user-roles -->
+	<bean id="daoAuthenticationProvider" class="net.sf.acegisecurity.providers.dao.DaoAuthenticationProvider">
+     	<property name="authenticationDao"><ref local="inMemoryAuthenticationDAO"/></property>
+     	<!-- property name="userCache"><ref local="userCache"/></property -->
+	</bean>
+
+	<!-- luntbuild internal provider for RDBMD based user-roles -->
+	<bean id="luntbuildAuthenticationProvider" class="net.sf.acegisecurity.providers.dao.DaoAuthenticationProvider">
+     	<property name="authenticationDao"><ref local="luntbuildAuthenticationDAO"/></property>
+     	<property name="userCache"><ref local="userCache"/></property>
+	</bean>
+	
+	<bean id="userCache" class="net.sf.acegisecurity.providers.dao.cache.EhCacheBasedUserCache">
+		<property name="minutesToIdle"><value>5</value></property>
+	</bean>
+
+	<!-- luntbuild internal provider manager which asks ALL providers instead of just the first -->
+	<bean id="authenticationManager" class="com.luntsys.luntbuild.security.provider.ProviderManager">
+		<property name="providers">
+		  <list>
+		  	<!-- authentication provider which uses declarative security -->
+		    <ref local="daoAuthenticationProvider"/>
+		    
+		    <!-- authentication provider which validates users again internal db -->
+		    <ref local="luntbuildAuthenticationProvider"/>
+		  </list>
+		</property>
+	</bean>
+
+	<bean id="roleVoter" class="net.sf.acegisecurity.vote.RoleVoter"/>
+
+	<bean id="accessDecisionManager" class="net.sf.acegisecurity.vote.AffirmativeBased">
+   		<property name="allowIfAllAbstainDecisions"><value>false</value></property>
+		<property name="decisionVoters">
+		  <list>
+		    <ref local="roleVoter"/>
+		  </list>
+		</property>
+	</bean>
+	
+   <!-- An access decision voter that reads LUNTBUILD_* configuration settings -->
+   <bean id="luntbuildSecurityVoter" class="com.luntsys.luntbuild.security.LuntbuildSecurityVoter"/>
+
+   <!-- An access decision manager used by the business objects -->
+   <bean id="businessAccessDecisionManager" class="net.sf.acegisecurity.vote.AffirmativeBased">
+      <property name="allowIfAllAbstainDecisions"><value>false</value></property>
+      <property name="decisionVoters">
+         <list>
+            <ref local="roleVoter"/>
+            <ref local="luntbuildSecurityVoter"/>
+         </list>
+      </property>
+   </bean>
+	
+<!--
+   <bean id="basicProcessingFilter" class="net.sf.acegisecurity.ui.basicauth.BasicProcessingFilter">
+      <property name="authenticationManager"><ref local="authenticationManager"/></property>
+      <property name="authenticationEntryPoint"><ref local="basicProcessingFilterEntryPoint"/></property>
+   </bean>
+
+   <bean id="basicProcessingFilterEntryPoint" class="net.sf.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint">
+      <property name="realmName"><value>Contacts Realm</value></property>
+   </bean>
+-->
+	<bean id="authenticationProcessingFilter" class="net.sf.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
+		<property name="authenticationManager"><ref local="authenticationManager"/></property>
+		<property name="authenticationFailureUrl"><value>/login-error.jsp</value></property>
+		<property name="defaultTargetUrl"><value>/app</value></property>
+		<property name="filterProcessesUrl"><value>/j_acegi_security_check</value></property>
+	</bean>
+
+	<bean id="securityEnforcementFilter" class="net.sf.acegisecurity.intercept.web.SecurityEnforcementFilter">
+		<property name="filterSecurityInterceptor"><ref local="filterInvocationInterceptor"/></property>
+		<property name="authenticationEntryPoint"><ref local="authenticationProcessingFilterEntryPoint"/></property>
+	</bean>
+
+	<bean id="authenticationProcessingFilterEntryPoint" class="net.sf.acegisecurity.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+		<property name="loginFormUrl"><value>/luntbuildogin.jsp</value></property>
+		<property name="forceHttps"><value>false</value></property>
+	</bean>
+
+	<bean id="autoIntegrationFilter" class="net.sf.acegisecurity.ui.AutoIntegrationFilter" />
+
+ </beans>

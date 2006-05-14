@@ -1,0 +1,69 @@
+<head>
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+-->
+</style>
+</head>
+<span jwcid="$content$">
+  <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+      
+<!-- span jwcid="@Conditional" condition="ognl:isAuthorized('ROLE_SITE_ADMIN')" -->      
+<form jwcid="@Form" name="form" method="post">
+    <tr align="center" bordercolor="#EAEDF4" bgcolor="#FFFFE6"> 
+      <td colspan="4" bgcolor="#EAEDF4" scope="col"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="propertyEditorTitle"> 
+          <tr> 
+            <td align="center">	  
+	  <span jwcid="@Conditional" condition="ognl:loginMappingTab.loginToBeEdit == null">
+		Creating new vcs login mapping entry
+	  </span>
+	  <span jwcid="@Conditional" condition="ognl:loginMappingTab.loginToBeEdit!= null">
+	  	Editing mapping entry for vcs login "<span jwcid="@Insert" value="ognl:loginMappingTab.loginToBeEdit">robin</span>"
+	  </span>
+	  </td> 
+          </tr> 
+          <span jwcid="@Conditional" condition="ognl:errorMsg != null">
+          <tr> 
+            <td colspan="4" align="left" valign="top" class="errorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td> 
+          </tr> 
+          </span> 
+        </table></td> 
+    </tr>
+    <span jwcid="@Conditional" condition="ognl:cssIndex = 0"/>
+	<span jwcid="@Conditional" condition="ognl:loginMappingTab.loginToBeEdit == null">
+    <tr>
+      <td jwcid="@Any" class="ognl:propertyNameCssClass" height="32" align="left" valign="top" scope="col"><img src="images/user.gif" width="16" height="16" align="absmiddle"> vcs login </td>
+      <td jwcid="@Any" class="ognl:propertyValueCssClass" colspan="3" align="left" valign="top" scope="col">
+	  <input class="inputBox" jwcid="@TextField" value="ognl:login" size="50"/>
+	  <br>
+      Input a login name in the version control system of current project. </td>
+    </tr>
+    <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+	</span>
+    <tr>
+      <td jwcid="@Any" width="23%" height="32" align="left" valign="top" class="ognl:propertyNameCssClass" scope="col"><img src="images/user.gif" width="16" height="16" align="absmiddle"> user </td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+	  <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:userSelectionModel" value="ognl:user">
+      </select>
+       <br>
+	  Select the user you want to map current vcs login to.</td>
+    </tr>
+    <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+    <tr>
+      <td jwcid="@Any" class="ognl:propertyTailCssClass" height="29" scope="col"></td>
+      <td jwcid="@Any" class="ognl:propertyTailCssClass" width="22%" height="29" align="right" scope="col">
+        <input name="Submit" type="submit" value=" save " jwcid="@Submit" listener="ognl:listeners.save" label=" save "/>        </td>
+      <td jwcid="@Any" class="ognl:propertyTailCssClass" width="2%" align="right" scope="col">&nbsp;</td>
+      <td jwcid="@Any" class="ognl:propertyTailCssClass" width="53%" align="left" scope="col">
+        <input name="Cancel" type="submit" id="Cancel" value="cancel" jwcid="@Submit" listener="ognl:listeners.cancel" label="cancel"/>        </td>
+    </tr>
+</form>
+</span>
+<span jwcid="@Conditional" condition="ognl:! isAuthorized('ROLE_SITE_ADMIN')">
+  <tr>
+       <td align="left" valign="top" class="propertyEditorName2"><img src="images/error.gif" width="18" height="18" align="absmiddle"> You are not authorized to access this page </td>
+  </tr>    
+<-- /span -->
+
+</table>
+</span>
