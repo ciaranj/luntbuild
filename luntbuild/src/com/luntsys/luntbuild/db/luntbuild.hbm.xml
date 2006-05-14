@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping package="com.luntsys.luntbuild.db" >
+
+	<class name="Property" table="PROPERTY">
+		<id name="name" type="string" column="NAME">
+			<generator class="assigned"/>
+		</id>
+		<property name="value" type="string" column="VALUE"/>
+	</class>
+
+	<class name="Project" table="PROJECT" >
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<property name="name">
+			<column name="NAME"/>
+		</property>
+
+		<property name="description">
+			<column name="DESCRIPTION"/>
+		</property>
+
+		<!-- serialized form of the version control system-->
+		<property name="vcs" type="serializable" column="VCS"/>
+
+		<set name="views" table="VIEW" inverse="true" cascade="all" lazy="true" >
+			<key column="FK_PROJECT_ID"/>
+			<one-to-many class="View"/>
+		</set>
+	</class>
+
+	<class name="View" table="VIEW">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<property name="name">
+			<column name="NAME"/>
+		</property>
+
+		<property name="description">
+			<column name="DESCRIPTION"/>
+		</property>
+
+		<property name="buildFilePath">
+			<column name="BUILD_FILE_PATH"/>
+		</property>
+
+		<property name="buildInfoPath">
+			<column name="BUILD_INFO_PATH"/>
+		</property>
+
+		<property name="nextVersion">
+			<column name="NEXT_VERSION"/>
+		</property>
+
+		<property name="antCommand">
+			<column name="ANT_COMMAND"/>
+		</property>
+
+		<property name="envFilePath">
+			<column name="ENV_FILE_PATH"/>
+		</property>
+
+		<many-to-one name="project" class="Project" column="FK_PROJECT_ID" outer-join="true" not-null="true"/>
+
+		<map name="modules" table="MODULE" cascade="all" lazy="true" >
+			<key column="FK_VIEW_ID"/>
+			<index type="string" column="MODULE"/>
+			<composite-element class="Snapshot">
+				<property name="branch" column="BRANCH"/>
+				<property name="label" column="LABEL"/>
+			</composite-element>
+		</map>
+
+		<map name="buildSchedules" table="BUILD_SCHEDULE" cascade="all" inverse="true" lazy="true" >
+			<key column="FK_VIEW_ID"/>
+			<index-many-to-many class="Schedule" column="FK_SCHEDULE_ID"/>
+			<one-to-many class="BuildSchedule"/>
+		</map>
+	</class>
+
+	<class name="Schedule" table="SCHEDULE">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<property name="name" column="NAME"/>
+		<property name="description" column="DESCRIPTION"/>
+
+		<!-- the serialized form of a Quartz trigger to represents the time schedule(refer to http://www.opensymphony.com/quartz/)-->
+		<property name="trigger" type="serializable" column="TRIGGER"/>
+
+		<map name="buildSchedules" table="BUILD_SCHEDULE" cascade="all" inverse="true" lazy="true" >
+			<key column="FK_SCHEDULE_ID"/>
+			<index-many-to-many class="View" column="FK_VIEW_ID"/> 
+			<one-to-many class="BuildSchedule"/>
+		</map>
+	</class>
+
+	<class name="BuildSchedule" table="BUILD_SCHEDULE">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<many-to-one name="view" class="View" outer-join="true" not-null="true">
+			<column name="FK_VIEW_ID" unique-key="VIEW_SCHEDULE"/>
+ 		</many-to-one>
+
+		<many-to-one name="schedule" class="Schedule" outer-join="true" not-null="true">
+			<column name="FK_SCHEDULE_ID" unique-key="VIEW_SCHEDULE"/>
+ 		</many-to-one>
+
+		<property name="cleanBuild" column="CLEAN_BUILD"/>
+
+		<set name="builds" table="BUILD" inverse="true" cascade="all" lazy="true">
+			<key column="FK_BUILD_SCHEDULE_ID"/>
+			<one-to-many class="Build"/>
+		</set>
+	</class>
+
+	<class name="Build" table="BUILD">
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<property name="status" column="STATUS"/>
+
+		<property name="version" column="VERSION"/>
+
+		<property name="startDate" column="START_DATE"/>
+
+		<property name="endDate" column="END_DATE"/>
+
+		<property name="rebuild" column="REBUILD"/>
+
+		<many-to-one name="buildSchedule" class="BuildSchedule" column="FK_BUILD_SCHEDULE_ID" outer-join="true" not-null="true"/>
+	</class>
+
+</hibernate-mapping>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification
+      PUBLIC "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+      "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification
+	class="com.luntsys.luntbuild.web.ProjectPage">
+    <description>luntbuild project page</description>
+
+	<property-specification name="project" type="com.luntsys.luntbuild.db.Project" persistent="yes" />
+
+</page-specification>

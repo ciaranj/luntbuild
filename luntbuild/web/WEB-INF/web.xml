@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+      PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+      "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+    <display-name>luntbuild</display-name>
+	<description>to perform auto-build tasks</description>
+
+	<servlet>
+        <servlet-name>luntbuild</servlet-name>
+		<servlet-class>com.luntsys.luntbuild.LuntBuildServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+		<init-param>
+			<param-name>installDir</param-name>
+			<param-value>D:/luntbuild</param-value>
+		</init-param>
+    </servlet>
+
+	<servlet-mapping>
+        <servlet-name>luntbuild</servlet-name>
+        <url-pattern>/app</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+       <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+	
+</web-app>

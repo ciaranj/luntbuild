@@ -1,0 +1,13 @@
+<!-- $Id: luntbuild.library 2 2004-07-01 23:13:35Z yjshen $ -->
+<!DOCTYPE library-specification PUBLIC 
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+	
+<library-specification>
+	<component-type type="Border" specification-path="components/border/Border.jwc"/>
+	<component-type type="RenderComponent" specification-path="components/rendercomponent/RenderComponent.jwc"/>
+	<component-type type="TabControl" specification-path="components/tabcontrol/TabControl.jwc"/>
+	<component-type type="MsgBox" specification-path="components/msgbox/MsgBox.jwc"/>
+	<component-type type="YesNoBox" specification-path="components/yesnobox/YesNoBox.jwc"/>
+	<component-type type="PageNavigator" specification-path="components/pagenavigator/PageNavigator.jwc"/>
+</library-specification>

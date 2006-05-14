@@ -1,0 +1,29 @@
+<span jwcid="@Conditional" condition="ognl:!tabs.keys.isEmpty">
+<table width="100%"  border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td height="25" colspan="2" bgcolor="#FFFFFF">
+    <table width="100%" height="100%"  border="0" cellpadding="2" cellspacing="0" bordercolor="#FFFFFF">
+      <tr bordercolor="#FFFFFF">
+      <span jwcid="@Foreach" source="ognl:tabs.values" value="ognl:currentTab">
+        <td width="5" bgcolor="#FFFFFF"></td>
+        <td jwcid="@Any" width="112" align="center" bgcolor="ognl:tabColor">
+        <a jwcid="@DirectLink" listener="ognl:listeners.selectTab" parameters="ognl:currentTab.id">
+        <span jwcid="@Insert" value="ognl:currentTab.tabName">tab page</span>
+        </a>
+        </td>
+      </span>
+      <td width="652" bgcolor="#FFFFFF">&nbsp;</td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr bgcolor="#CCCCCC">
+    <td height="10" colspan="2"></td>
+  </tr>
+  <tr bgcolor="#0033FF">
+    <td width="9" height="202" bgcolor="#CCCCCC"></td>
+    <td width="980" align="center" bgcolor="#FFFFFF">
+		<span jwcid="@RenderComponent" component="ognl:selectedTab">Tab page body goes here</span>
+	</td>
+  </tr>
+</table>
+</span>

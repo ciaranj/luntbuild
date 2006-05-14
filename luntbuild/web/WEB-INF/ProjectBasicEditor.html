@@ -1,0 +1,117 @@
+<head jwcid="$remove$">
+	<link rel="stylesheet" href="../../src/com/luntsys/luntbuild/web/components/border/style.css"/>
+</head>
+<form jwcid="@Form" listener="ognl:listeners.changeVcsAdaptor" name="form" method="post">
+  <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+    <tr bordercolor="#EAEDF4" bgcolor="#FFFFE6">
+      <td height="18" colspan="5" bgcolor="#EAEDF4" scope="col"><div align="center">Editing basic information(Field marked with a * is required)</div></td>
+    </tr>
+    <tr bordercolor="#EAEDF4" bgcolor="#FFFFFF">
+      <td height="13" colspan="5" scope="col"><div align="center">
+        <hr size="1" noshade>
+      </div></td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:errorMsg != null">
+    <tr bordercolor="#EAEDF4" bgcolor="#FFFFFF">
+      <td height="13" colspan="5" scope="col"><div align="center">
+        <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="8%" bgcolor="#FF0000"><img src="images/error.gif" width="50" height="50"></td>
+            <td width="92%" bgcolor="#FF0000"><h2>
+			<span jwcid="@Insert" value="ognl:errorMsg">Error message</span>
+			</h2></td>
+          </tr>
+        </table>
+	</div></td>
+    </tr>
+    <tr bordercolor="#EAEDF4" bgcolor="#FFFFFF">
+      <td height="13" colspan="5" scope="col"><div align="center">
+          <hr size="1" noshade>
+      </div></td>
+    </tr>
+	</span>
+    <tr>
+      <td valign="top" bgcolor="#FFFFFF" scope="col"><div align="right">Name</div></td>
+      <td width="1%" bgcolor="#FFFFFF" scope="col"></td>
+      <td colspan="3" align="left" valign="top" scope="col"><div align="left">
+        <input jwcid="@TextField" value="ognl:page.project.name"/>
+      *</div></td>
+    </tr>
+    <tr>
+      <td align="right" valign="top" bgcolor="#FFFFFF" scope="col">description:</td>
+      <td bgcolor="#FFFFFF" scope="col"></td>
+      <td colspan="3" align="left" valign="top" scope="col">
+	  <textarea jwcid="@TextArea" value="ognl:page.project.description" cols="75" rows="10"/>
+	  </td>
+    </tr>
+    <tr>
+      <td height="0" colspan="5" valign="top" bgcolor="#FFFFFF" scope="col"><div align="right"></div>        <div align="left">
+          <hr size="1" noshade>
+      </div></td>
+    </tr>
+    <tr>
+      <td align="right" valign="top" bgcolor="#FFFFFF" scope="col">version control system:</td>
+      <td bgcolor="#FFFFFF" scope="col"></td>
+      <td colspan="3" align="left" valign="top" bordercolor="#FFFFFF" scope="col">
+	  <select jwcid="@PropertySelection" model="ognl:page.global.vcsAdaptors" value="ognl:vcsAdaptor" submitOnChange="ognl:true" name="select">
+      </select>
+	  *</td>
+    </tr>
+	<tr>
+      <td align="right" valign="top" bgcolor="#FFFFFF" scope="col"></td>
+      <td bgcolor="#FFFFFF" scope="col"></td>
+      <td colspan="3" align="left" valign="top" bordercolor="#FFFFFF" scope="col">
+	  Select the version control system for this project</td>
+    </tr>
+	<tr>
+      <td height="0" colspan="5" valign="top" bgcolor="#FFFFFF" scope="col"><div align="right"></div>        <div align="left">
+          <hr size="1" noshade>
+      </div></td>
+    </tr>	
+	<span jwcid="@Foreach" source="ognl:page.vcsAdaptorProperties" value="ognl:vcsAdaptorProperty">
+    <tr>
+      <td width="22%" align="right" valign="top" bgcolor="#FFFFFF" scope="col">
+	  <span jwcid="@Insert" value="ognl:vcsAdaptorProperty.displayName">cvs root:</span>:
+	  </td>
+      <td bgcolor="#FFFFFF" scope="col"></td>
+      <td colspan="3" align="left" valign="top" bordercolor="#FFFFFF" scope="col">
+      <span jwcid="@Conditional" condition="ognl:vcsAdaptorProperty.secret">
+		  <input value="ognl:vcsAdaptorProperty.value" size="75" jwcid="@TextField" hidden="ognl:true"/>
+	  </span>
+	  <span jwcid="@Conditional" condition="ognl:!vcsAdaptorProperty.secret">
+		  <input value="ognl:vcsAdaptorProperty.value" size="75" jwcid="@TextField"/>
+	  </span>
+	  <span jwcid="@Conditional" condition="ognl:!vcsAdaptorProperty.optional">*</span>
+	  </td>
+    </tr>
+    <tr>
+      <td width="22%" align="right" valign="top" bgcolor="#FFFFFF" scope="col">
+	  </td>
+      <td bgcolor="#FFFFFF" scope="col"></td>
+      <td colspan="3" align="left" valign="top" bordercolor="#FFFFFF" scope="col">
+	  <span jwcid="@InsertText" value="ognl:vcsAdaptorProperty.description">description</span>
+	  </td>
+    </tr>
+    <tr>
+      <td height="0" colspan="5" valign="top" bgcolor="#FFFFFF" scope="col"><div align="right"></div>        <div align="left">
+          <hr size="1" noshade>
+      </div></td>
+    </tr>
+	</span>
+    <tr>
+      <td height="29" align="right" scope="col"><a jwcid="@DirectLink" listener="ognl:listeners.save" href="#">
+        <label> </label>
+        </a></td>
+      <td align="right" scope="col">&nbsp;</td>
+      <td width="32%" height="29" align="right" scope="col">
+        <div align="right">
+          <input type="submit" jwcid="@Submit" listener="ognl:listeners.save" name="Submit" label=" save " value=" save "/>
+        </div></td>
+      <td width="2%" align="right" scope="col">&nbsp;</td>
+      <td width="43%" align="right" scope="col"><div align="left">
+        <div align="left">
+          <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="cancel" value="cancel"/>
+        </div></td>
+    </tr>
+</table>
+</form>

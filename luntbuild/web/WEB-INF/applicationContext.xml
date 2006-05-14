@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+        "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- ========================= GENERAL DEFINITIONS ========================= -->
+
+    <!-- ========================= PERSISTENCE DEFINITIONS ========================= -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName">
+			<value>org.hsqldb.jdbcDriver</value>
+		</property>
+		<property name="url">
+			<value>${hsqlUrl}</value>
+		</property>
+		<property name="username">
+			<value>sa</value>
+		</property>
+		<property name="password">
+			<value></value>
+		</property>
+		<property name="maxWait">
+			<value>3000</value>
+		</property>
+		<property name="maxIdle">
+			<value>1</value>
+		</property>
+		<property name="maxActive">
+			<value>1</value>
+		</property>
+	</bean>
+
+	<bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate.LocalSessionFactoryBean">
+		<property name="mappingResources">
+			<list>
+				<value>com/luntsys/luntbuild/db/luntbuild.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">net.sf.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource"/>
+		</property>
+		<property name="schemaUpdate">
+			<value>true</value>
+		</property>
+	</bean>
+
+	<bean id="hibernateInterceptor" class="org.springframework.orm.hibernate.HibernateInterceptor">
+		<property name="sessionFactory">
+			<ref bean="hibernateSessionFactory"/>
+		</property>
+	</bean>
+
+    <bean id="daoTarget" class="com.luntsys.luntbuild.dao.HibernateDao">
+         <property name="sessionFactory">
+            <ref bean="hibernateSessionFactory"/>
+        </property>
+	</bean>
+
+	<bean id="dao" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces">
+			<value>com.luntsys.luntbuild.dao.Dao</value>
+		</property>
+		<property name="target">
+			<ref local="daoTarget"/>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>hibernateInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- ========================= BUSINESS DEFINITIONS ========================= -->
+	<bean id="service" class="com.luntsys.luntbuild.services.Service"/>
+ 
+ </beans>
