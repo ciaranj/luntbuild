@@ -1,0 +1,85 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+-->
+</style>
+</head>
+<span jwcid="$content$">
+  <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+<form jwcid="@Form" name="form" method="post">
+    <tr align="center" bordercolor="#EAEDF4" bgcolor="#FFFFE6"> 
+      <td colspan="4" bgcolor="#EAEDF4" scope="col"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="propertyEditorTitle"> 
+          <tr> 
+            <td align="center">Search for the builds</td> 
+          </tr> 
+          <span jwcid="@Conditional" condition="ognl:errorMsg != null">
+          <tr> 
+            <td colspan="4" align="left" valign="top" class="errorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td> 
+          </tr> 
+          </span> 
+      </table></td> 
+    </tr> 
+    <tr>
+      <td width="20%" align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName1" scope="col">
+      <img src="images/number.gif" width="18" height="18" align="absmiddle"> version
+      </td>
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue1" scope="col">    
+	  <input class="inputBox" value="ognl:searchCriteria.version" size="50" jwcid="@TextField"/>
+	  exact match
+	  <input name="checkbox" type="checkbox" class="inputBox" value="checkbox" jwcid="@Checkbox" selected="ognl:searchCriteria.exactMatch"/>
+	  <br>
+	  Specify the version of the matching builds. If &quot;exact match&quot; is checked, Luntbuild will search the build with the version exactly matching the specified value. Otherwise Luntbuid will search all the builds with the version that starts with the specified value. </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName2" scope="col">
+        <img src="images/status.gif" width="21" height="18" align="absmiddle"> status</td>
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue2" scope="col">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:buildStatusModel" value="ognl:buildStatus">
+        </select>
+        <br>
+        Specify the build status of the matching builds. </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName1" scope="col">
+        <img src="images/date.gif" width="16" height="14" align="absmiddle"> from</td>
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue1" scope="col"><input class="inputBox" value="ognl:searchCriteria.from" size="50" error="ognl:fromError" jwcid="@DatePicker" format="yyyy-MM-dd"/>
+      <br>
+      Search the builds generated after the specified date. The date format should be &quot;yyyy-MM-dd&quot;, for example, &quot;2004-9-2&quot;. </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName2" scope="col">
+        <img src="images/date.gif" width="16" height="14" align="absmiddle"> to</td>
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue2" scope="col">
+        <input class="inputBox" value="ognl:searchCriteria.to" size="50" error="ognl:toError" jwcid="@DatePicker" format="yyyy-MM-dd"/>
+        <br>
+      Search the builds generated before the specified date. The date format should be &quot;yyyy-MM-dd&quot;, for example, &quot;2004-9-2&quot;. </td>
+    </tr>
+    <tr>
+      <td align="left" valign="top" bgcolor="#FFFFFF" class="propertyEditorName1" scope="col">
+        <img src="images/time.gif" width="17" height="14" align="absmiddle"> schedule</td>
+      <td colspan="3" align="left" valign="top" class="propertyEditorValue1" scope="col">
+<!--
+	<select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:schedulesModel" value="ognl:scheduleId">
+    </select>
+-->
+	<select jwcid="@Select" multiple="ognl:true" size="5">
+		<span jwcid="@Foreach" source="ognl:schedules" value="ognl:schedule">
+			<option jwcid="@Option" selected="ognl:schedule.selected" label="ognl:schedule.project.name+'/'+schedule.name"/>
+		</span>
+	</select>
+	<br>
+	Specify the schedules to search the builds in. </td>
+    </tr>
+    <tr>
+      <td align="right" class="propertyEditorTail2" scope="col"></td>
+      <td width="20%" height="29" align="right" class="propertyEditorTail2" scope="col">
+        <input type="submit" jwcid="@Submit" listener="ognl:listeners.search" name="Submit" label="Search " value="search "/>       </td>
+      <td width="3%" align="right" class="propertyEditorTail2" scope="col">&nbsp;</td>
+      <td width="55%" align="left" class="propertyEditorTail2" scope="col"><div align="left">
+        <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="Cancel" value="cancel"/>        </td>
+    </tr>
+</form>
+</table>
+</span>

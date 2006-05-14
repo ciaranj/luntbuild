@@ -1,0 +1,39 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Running Luntbuild in standalone mode</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch02.html" title="Chapter 2. Installing Luntbuild"><link rel="prev" href="ch02s04.html" title="Upgrading from previous versions of Luntbuild"><link rel="next" href="ch02s06.html" title="Backing up Luntbuild data"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Running Luntbuild in standalone mode</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s04.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 2. Installing Luntbuild</th><td width="20%" align="right"> <a accesskey="n" href="ch02s06.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="standalone"></a>Running Luntbuild in standalone mode</h2></div></div></div><p>
+You do not need servlet container or application server to run Luntbuild.
+Luntbuild comes with <span class="emphasis"><em>build-in</em></span> servlet conatainer based on
+<a href="http://jetty.mortbay.org/jetty/" target="_top">Jetty</a>, a 100% Java HTTP Server and Servlet Container.
+Standalone Luntbuild launcher accepts three arguments:
+     </p><table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>hostname</em></span> - name of the Luntbuild host machine</td></tr><tr><td><span class="emphasis"><em>port</em></span> - port number for servlet container</td></tr><tr><td><span class="emphasis"><em>stop port</em></span> - port number to use to stop launcher (optional, defaults to port+1)</td></tr></table><p>
+    </p><p>
+Standalone Luntbuild stopper  accepts two arguments:
+     </p><table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>hostname</em></span> - name of the Luntbuild host machine</td></tr><tr><td><span class="emphasis"><em>stop port</em></span> - port number to use to stop launcher (optional, defaults to port+1)</td></tr></table><p>
+</p><p>
+You can run standalone Luntbuild launcher from the command line:
+</p><pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; bin/luntbuild.sh localhost 8888
+</pre><p>
+or alternatively
+</p><pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; java -jar luntbuild-standalone.jar localhost 8888
+</pre><p>
+</p><p>
+To stop the standalone Luntbuild, you can use:
+</p><pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; bin/stop-luntbuild.sh localhost 8889
+</pre><p>
+or alternatively
+</p><pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; java -cp luntbuild-standalone.jar com.luntsys.luntbuild.StandaloneStopper localhost 8889
+</pre><p>
+</p><p>
+While we sure you have several options, we suggest the excellent
+<a href="http://wrapper.tanukisoftware.org/doc/english/introduction.html" target="_top">Java Service Wrapper</a>
+to run standalone Luntbuild.
+You'll get a clean, cross-platform way to start/stop/restart your services. On Unix,
+you'll get an init-style script, and on Windows you'll be able to
+integrate your app as a system service if you like.
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s04.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html"><img src="../images/up.gif" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="ch02s06.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Upgrading from previous versions of Luntbuild </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Backing up Luntbuild data</td></tr></table></div></body></html>

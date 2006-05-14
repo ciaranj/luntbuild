@@ -1,0 +1,24 @@
+<project name="luntclipse" default="zip-source" basedir=".">
+    <property name="artifactsDir" value="${basedir}/distribute"/>
+    <property name="buildVersion" value="1.3beta"/>
+    <property name="fileVersion" value="1.3.beta"/>
+
+    <target name="zip-source" depends="clean" description="Builds Luntbuild source zip distribution">
+        <mkdir dir="${artifactsDir}"/>
+        <zip basedir="."
+            excludes=".settings/**,bin/**,classes/**,website/**,.classpath,.project,*.zip, distribute/**"
+            destfile="${artifactsDir}/luntclipse-${fileVersion}-source.zip"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${artifactsDir}"></delete>
+    </target>
+
+    <target name="weekly.source" depends="zip-source">
+        <CBRelease file="${artifactsDir}/luntclipse-${fileVersion}-source.zip"
+            todir="/Downloads/Weekly" tofile="luntclipse-${fileVersion}-source.zip"
+            description="Development source snapshot of Luntclipse version: ${fileVersion}"
+        />
+    </target>
+
+</project>

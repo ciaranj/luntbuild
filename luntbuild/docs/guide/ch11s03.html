@@ -1,0 +1,29 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting Perforce module information.</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch11.html" title="Chapter 11. Creating VCS Module(s)"><link rel="prev" href="ch11s02.html" title="Setting Cvs module information."><link rel="next" href="ch11s04.html" title="Setting Subversion module information."></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting Perforce module information.</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11s02.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 11. Creating VCS Module(s)</th><td width="20%" align="right"> <a accesskey="n" href="ch11s04.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id4768823"></a>Setting Perforce module information.</h2></div></div></div><div class="variablelist"><dl><dt><span class="term">Depot path</span></dt><dd><p>
+        Specify the Perforce depot side path, such as "//depot/testperforce/...".
+        </p></dd><dt><span class="term">Label</span></dt><dd><p>
+        Specify the label for the above depot path. This property is optional.
+        When empty, the latest version (head) of the above depot path will be retrieved.
+        </p></dd><dt><span class="term">Client path</span></dt><dd><p>
+        Specify the client side path, such as "//myclient/testperforce/...".
+        </p></dd></dl></div><p>
+    </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+        To exclude files or directories, create a separate module for each exclusion and precede
+        the Depot path property with a minus (-) sign, as follows:
+        </p><pre class="programlisting">
+    Depot path:  -//depot.side
+    Client path: //client.side
+        </pre><p>
+    </p></td></tr></table></div><p>
+    </p><p>
+	The module definition for Perforce maps a repository "Depot path" to "Client path".
+	Luntbuild also supports Perforce "Label" property.
+	"Depot path" represents a path in Perforce repository, such as "//depot/testperforce/...".
+	"Client path" represents a client path (where the contents of the depot path is checked out),
+	such as "//myclient/testperforce/...".
+	"Label" is a Perforce label, used if you want to retrieve a particular snapshot of given "Depot path",
+	or it can be left empty to retrieve the head version of "Depot path".
+	The client path defined in "Client path" does not need to exist.
+	Luntbuild will create the path if it does not exist.
+	The user specified in Perforce connection information at the project level should
+	have enough access rights to create and edit Perforce client specification.
+    </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11s02.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="ch11.html"><img src="../images/up.gif" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="ch11s04.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Setting Cvs module information. </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Setting Subversion module information.</td></tr></table></div></body></html>
