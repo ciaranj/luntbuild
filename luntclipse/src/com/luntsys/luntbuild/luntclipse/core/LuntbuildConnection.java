@@ -73,7 +73,7 @@ import com.luntsys.luntbuild.luntclipse.preferences.PreferenceHelper;
  * class provides support for HTTP request to Luntbuild system.
  *
  * @author 	 Roman Pichlík, Lubos Pochman
- * @version  $Revision: 432 $
+ * @version  $Revision: 1.14 $
  * @since 	 0.0.1
  */
 public class LuntbuildConnection {
@@ -205,6 +205,9 @@ public class LuntbuildConnection {
         //Provide custom retry handler is necessary
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
                 new DefaultHttpMethodRetryHandler(0, false));
+        int timeout = PreferenceHelper.getConnectionTimeout();
+        this.client.getParams().setParameter("http.socket.timeout", new Integer(timeout * 1000));
+        this.client.getParams().setParameter("http.connection.timeout", new Integer(timeout * 1000));
 
         for (int i = 0; i < numRetries; i++) {
             try{

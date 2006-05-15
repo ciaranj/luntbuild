@@ -25,6 +25,7 @@ public class PreferenceHelper {
     public static final String P_REFRESH_TIME = "P_REFRESH_TIME";
     public static final String P_LUNTBILD_VERSION = "P_LUNTBILD_VERSION";
     public static final String P_LUNTBUILD_NUM_RETRIES = "P_LUNTBUILD_NUM_RETRIES";
+    public static final String P_LUNTBUILD_CONNECTION_TIMEOUT = "P_LUNTBUILD_CONNECTION_TIMEOUT";
 
 
     /** Returns list of stored connections
@@ -132,5 +133,13 @@ public class PreferenceHelper {
     public static int getNumRetries() {
         IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
         return store.getInt(P_LUNTBUILD_NUM_RETRIES);
+    }
+
+    /**
+     * @return connection timeout in seconds
+     */
+    public static int getConnectionTimeout() {
+        IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
+        return store.getInt(P_LUNTBUILD_CONNECTION_TIMEOUT);
     }
 }

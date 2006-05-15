@@ -22,7 +22,7 @@ import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
  *
  *
  * @author 	 Roman Pichlík
- * @version  $Revision: 378 $
+ * @version  $Revision: 1.5 $
  * @since 	 0.0.1
  *
  */
@@ -50,6 +50,10 @@ public class LuntclipsePreferencePage
 	public void createFieldEditors() {
         addField(
                 new StringFieldEditor(PreferenceHelper.P_LUNTBUILD_NUM_RETRIES, "Retries on Login:", 5,
+                        getFieldEditorParent()));
+        addField(
+                new StringFieldEditor(PreferenceHelper.P_LUNTBUILD_CONNECTION_TIMEOUT,
+                        "Connection timeout (in sec):", 10,
                         getFieldEditorParent()));
 	}
 

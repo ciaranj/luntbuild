@@ -1,4 +1,4 @@
-/* $Header$
+/* $Header: /cvsroot/luntbuild/luntclipse/src/com/luntsys/luntbuild/luntclipse/views/LuntbuildView.java,v 1.12 2006/01/20 15:59:36 lubosp Exp $
  *
  * Copyright (c) 2004 - 2005 A.S.E.I. s.r.o.
  */
@@ -45,7 +45,7 @@ import com.luntsys.luntbuild.luntclipse.preferences.PreferenceHelper;
  * Luntbuild.
  *
  * @author 	 Roman Pichlík
- * @version  $Revision: 428 $
+ * @version  $Revision: 1.12 $
  * @since 	 0.0.1
  *
  */
@@ -292,6 +292,8 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
 
         if (view == null) return;
         PreferenceHelper.removeConnection(data);
+        view.stopRefreshJob();
+        view.setRefreshJob(null);
         view.remove();
         this.m_folder.redraw();
         viewers.remove(view);
@@ -303,6 +305,8 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
     public void deleteAllConnections() {
         for (Iterator iter = viewers.iterator(); iter.hasNext();) {
             LuntbuildViewer viewer = (LuntbuildViewer) iter.next();
+            viewer.stopRefreshJob();
+            viewer.setRefreshJob(null);
             viewer.remove();
         }
         PreferenceHelper.removeAllConnections();

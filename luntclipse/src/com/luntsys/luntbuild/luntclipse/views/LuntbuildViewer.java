@@ -792,7 +792,7 @@ public class LuntbuildViewer {
      * reorder the elements provided by its content provider.
      *
      * @author   Roman Pichlík
-     * @version  $Revision: 432 $
+     * @version  $Revision: 1.14 $
      * @since    0.0.1
      */
     private class ProjectsViewSorter extends ViewerSorter {
@@ -858,7 +858,7 @@ public class LuntbuildViewer {
      * providing objects representing build info to the view.
      *
      * @author   Lubos Pochman
-     * @version  $Revision: 432 $
+     * @version  $Revision: 1.14 $
      * @since    0.0.1
      */
     private class ProjectsViewContentProvider implements ITreeContentProvider {
@@ -979,7 +979,7 @@ public class LuntbuildViewer {
     /**
      * This class provides labels for luntbuild view.
      * @author   Roman Pichlík
-     * @version  $Revision: 432 $
+     * @version  $Revision: 1.14 $
      * @since    0.0.1
      */
     private class ProjectsViewLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -1174,7 +1174,7 @@ public class LuntbuildViewer {
      * providing objects representing build info to the view.
      *
      * @author   Lubos Pochman
-     * @version  $Revision: 432 $
+     * @version  $Revision: 1.14 $
      * @since    0.0.1
      */
     public class BuildsViewContentProvider implements IStructuredContentProvider {
@@ -1233,7 +1233,7 @@ public class LuntbuildViewer {
     /**
      * This class provides labels for luntbuild view.
      * @author   Roman Pichlík
-     * @version  $Revision: 432 $
+     * @version  $Revision: 1.14 $
      * @since    0.0.1
      */
     private class BuildsViewLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -1264,6 +1264,7 @@ public class LuntbuildViewer {
                 return result;
             if(obj instanceof BuildMessenger){
                 BuildMessenger messenger = (BuildMessenger)obj;
+                if (messenger.getScheduleName().trim().length() == 0) return result;
                 switch (index) {
                 case 0:
                     result = messenger.getProjectName();
@@ -1304,6 +1305,7 @@ public class LuntbuildViewer {
             }
             if (obj instanceof BuildMessenger) {
                 BuildMessenger messenger = (BuildMessenger)obj;
+                if (messenger.getScheduleName().trim().length() == 0) return image;
                 if(index == 3 && this.luntbuild.isDataAvailable()){
                     switch(messenger.getBuildStatus()){
                     case Constants.BUILD_STATUS_FAILED:

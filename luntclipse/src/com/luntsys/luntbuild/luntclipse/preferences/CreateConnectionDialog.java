@@ -207,8 +207,6 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         else if (buttonId == IDialogConstants.OK_ID) {
             validateConnectionData();
             if (this.connectionData == null) {
-                setReturnCode(SWT.CANCEL);
-                close();
                 return;
             }
             if (LuntbuildView.mainView.nameExists(this.connectionData.getName())) {
@@ -217,8 +215,6 @@ public class CreateConnectionDialog extends TitleAreaDialog {
                         "Luntbuild Connection Exists",
                         "Luntbuild connection " + this.connectionData.getName() + " already exists!\n" +
                         "Please choose different name!");
-                return;
-            } else if (this.connectionData == null) {
                 return;
             }
             setReturnCode(SWT.OK);
