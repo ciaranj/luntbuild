@@ -231,6 +231,11 @@
         <property name="ldapCanViewProject" value="@ldapCanViewProject@"/>
         <property name="ldapCanBuildProject" value="@ldapCanBuildProject@"/>
         <property name="ldapEmailAttrName" value="@ldapEmailAttrName@"/>
+        <!--
+        <property name="ldapUrl" value=""/>
+        <property name="ldapPrefix" value=""/>
+        <property name="ldapSuffix" value=""/>
+	-->
 	</bean>
 
 	<!-- =================== SECURITY BEANS YOU WILL RARELY (IF EVER) CHANGE ================== -->
