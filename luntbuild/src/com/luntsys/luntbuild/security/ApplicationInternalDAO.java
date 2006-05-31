@@ -64,6 +64,9 @@ public class ApplicationInternalDAO implements AuthenticationDao {
     private String ldapCanBuildProject;
     private String ldapCreateLuntbuildUser;
     private String ldapEmailAttrName;
+    private String ldapUrl;
+    private String ldapPrefix;
+    private String ldapSuffix;
 
     private static transient final Log logger = LogFactory.getLog(ApplicationInternalDAO.class);
 
@@ -260,6 +263,48 @@ public class ApplicationInternalDAO implements AuthenticationDao {
      */
     public final void setLdapEmailAttrName(String ldapEmailAttrName) {
         this.ldapEmailAttrName = ldapEmailAttrName;
+    }
+
+    /**
+     * @return Returns the ldapUrl.
+     */
+    public final String getLdapUrl() {
+        return this.ldapUrl;
+    }
+
+    /**
+     * @param ldapUrl The ldapUrl to set.
+     */
+    public final void setLdapUrl(String ldapUrl) {
+        this.ldapUrl = ldapUrl;
+    }
+
+    /**
+     * @return Returns the ldapPrefix.
+     */
+    public final String getLdapPrefix() {
+        return this.ldapPrefix;
+    }
+
+    /**
+     * @param ldapPrefix The ldapPrefix to set.
+     */
+    public final void setLdapPrefix(String ldapPrefix) {
+        this.ldapPrefix = ldapPrefix;
+    }
+
+    /**
+     * @return Returns the ldapSuffix.
+     */
+    public final String getLdapSuffix() {
+        return this.ldapSuffix;
+    }
+
+    /**
+     * @param ldapSuffix The ldapSuffix to set.
+     */
+    public final void setLdapSuffix(String ldapSuffix) {
+        this.ldapSuffix = ldapSuffix;
     }
 
     /**

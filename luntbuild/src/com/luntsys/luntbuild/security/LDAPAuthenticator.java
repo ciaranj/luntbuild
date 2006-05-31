@@ -3,8 +3,6 @@ package com.luntsys.luntbuild.security;
 import javax.naming.*;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
@@ -23,6 +21,11 @@ import java.util.Hashtable;
  */
 public class LDAPAuthenticator {
 
+    private static final String DEFAULT_HOST = "localhost";
+    private static final int DEFAULT_PORT = 389;
+    private static final String DEFAULT_LDAP_AUTH = "simple";
+    private static final String DEFAULT_LDAP_UID = "uid";
+
     private static Log logger = LogFactory.getLog(LDAPAuthenticator.class);
 
     private String host = null;
@@ -30,12 +33,16 @@ public class LDAPAuthenticator {
     private String userDN = null;
     private String ldapAuth = null;
     private String ldapUid = null;
+    private String ldapUrl = null;
+    private String ldapPrefix = null;
+    private String ldapSuffix = null;
+    private String referral = null;
 
     /**
      *
      */
     public LDAPAuthenticator () {
-        this (null, 389, null, "simple", "uid=");
+        this (DEFAULT_HOST, DEFAULT_PORT, "", DEFAULT_LDAP_AUTH, DEFAULT_LDAP_UID);
     }
 
     /**
@@ -43,7 +50,7 @@ public class LDAPAuthenticator {
      * @param userDN
      */
     public LDAPAuthenticator (String host, String userDN){
-        this(host, 389, userDN, "simple", "uid=");
+        this(host, DEFAULT_PORT, userDN, DEFAULT_LDAP_AUTH, DEFAULT_LDAP_UID);
     }
 
     /**
@@ -54,31 +61,43 @@ public class LDAPAuthenticator {
      * @param ldapUid
      */
     public LDAPAuthenticator (String host, int port, String userDN, String ldapAuth, String ldapUid){
+        this(host, port, userDN, ldapAuth, ldapUid, null, ldapUid + '=', ',' + userDN);
+    }
+
+    /**
+     * @param host
+     * @param port
+     * @param userDN
+     * @param ldapAuth
+     * @param ldapUid
+     * @param ldapUrl
+     * @param ldapPrefix
+     * @param ldapSuffix
+     */
+    public LDAPAuthenticator (String host, int port, String userDN, String ldapAuth, String ldapUid, String ldapUrl, String ldapPrefix, String ldapSuffix){
         setHost(host);
         setUserDN(userDN);
         setPort(port);
         setLdapAuth(ldapAuth);
         setLdapUid(ldapUid);
+        setLdapUrl(ldapUrl);
+        setLdapPrefix(ldapPrefix);
+        setLdapSuffix(ldapSuffix);
     }
 
     private Hashtable createContextEnv(String user, String password) {
         Hashtable env = new Hashtable();
 
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-        env.put(Context.PROVIDER_URL, "ldap://" + host + ":" + port);
+        env.put(Context.PROVIDER_URL, getLdapUrl());
 
         env.put(Context.SECURITY_AUTHENTICATION, this.ldapAuth);
-        env.put(Context.SECURITY_PRINCIPAL, this.ldapUid + "=" + user + "," + this.userDN);
+        env.put(Context.SECURITY_PRINCIPAL, this.ldapPrefix + user + this.ldapSuffix);
         env.put(Context.SECURITY_CREDENTIALS, password);
 
-        return env;
-    }
-
-    private Hashtable CreateDirContextEnv() {
-        Hashtable env = new Hashtable();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-        env.put(Context.PROVIDER_URL, "ldap://" + host + ":" + port);
-
+        if (this.referral != null) {
+            env.put(Context.REFERRAL, this.referral);
+        }
         return env;
     }
 
@@ -89,6 +108,12 @@ public class LDAPAuthenticator {
      */
     public boolean authenticate (String user, String password) {
         Hashtable env = createContextEnv(user, password);
+
+        if (logger.isDebugEnabled()) {
+            Hashtable newEnv = new Hashtable(env);
+            newEnv.put(Context.SECURITY_CREDENTIALS, "*****");
+            logger.debug("Logging in with env: " + newEnv);
+        }
 
         /* Connect to LDAP server, if connection is made, user is authenticated */
         try {
@@ -120,7 +145,7 @@ public class LDAPAuthenticator {
      * @return email or null
      */
     public String lookupEmail(String user, String password, String emailAttrName) {
-        Hashtable env = CreateDirContextEnv();
+        Hashtable env = createContextEnv(user, password);
 
         /* Connect to LDAP server, if connection is made, user is authenticated, get email */
         String email = null;
@@ -129,24 +154,20 @@ public class LDAPAuthenticator {
             SearchControls ctls = new SearchControls();
             ctls. setReturningObjFlag (true);
             ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            Attributes matchAttrs = new BasicAttributes(true);
-            matchAttrs.put(new BasicAttribute(this.ldapUid, user));
-            matchAttrs.put(new BasicAttribute(emailAttrName));
             //Search for objects with these matching attributes
-            NamingEnumeration answer = ctx.search(this.userDN, matchAttrs);
+            NamingEnumeration answer =
+                ctx.search(this.userDN, "(&(objectclass=user)("+this.ldapUid+"="+user+"))", ctls);
             if (answer == null) return null;
             while (answer.hasMore()) {
                 SearchResult sr = (SearchResult)answer.next();
                 Attributes attrs = sr.getAttributes();
                 if (attrs == null) continue;
                 try {
-                    for (NamingEnumeration ae = attrs.getAll(); ae.hasMore();) {
-                        Attribute attrib = (Attribute)ae.next();
-                        if (attrib.getID().equals(emailAttrName)) {
-                            // Return first email
-                            for (NamingEnumeration e = attrib.getAll();e.hasMore();) {
-                                return (String)e.next();
-                            }
+                    Attribute attrib = attrs.get(emailAttrName);
+                    if (attrib.getID().equals(emailAttrName)) {
+                        // Return first email
+                        for (NamingEnumeration e = attrib.getAll();e.hasMore();) {
+                            return (String)e.next();
                         }
                     }
                 } catch (NamingException e) {
@@ -230,4 +251,63 @@ public class LDAPAuthenticator {
         this.ldapUid = ldapUid;
     }
 
+        /**
+     * @return Returns the ldapUrl.
+     */
+    public final String getLdapUrl() {
+        if (this.ldapUrl != null) {
+            return this.ldapUrl;
+        } else {
+            return "ldap://" + this.host + ":" + this.port;
+        }
+    }
+
+    /**
+     * @param ldapUrl The ldapUrl to set.
+     */
+    public final void setLdapUrl(String ldapUrl) {
+        this.ldapUrl = ldapUrl;
+    }
+
+    /**
+     * @return Returns the ldapPrefix.
+     */
+    public final String getLdapPrefix() {
+        return this.ldapPrefix;
+    }
+
+    /**
+     * @param ldapPrefix The ldapPrefix to set.
+     */
+    public final void setLdapPrefix(String ldapPrefix) {
+        this.ldapPrefix = ldapPrefix;
+    }
+
+    /**
+     * @return Returns the ldapSuffix.
+     */
+    public final String getLdapSuffix() {
+        return this.ldapSuffix;
+    }
+
+    /**
+     * @param ldapSuffix The ldapSuffix to set.
+     */
+    public final void setLdapSuffix(String ldapSuffix) {
+        this.ldapSuffix = ldapSuffix;
+    }
+
+    /**
+     * @return Returns the referral.
+     */
+    public final String getReferral() {
+        return this.referral;
+    }
+
+    /**
+     * @param referral The referral to set.
+     */
+    public final void setReferral(String referral) {
+        this.referral = referral;
+    }
 }

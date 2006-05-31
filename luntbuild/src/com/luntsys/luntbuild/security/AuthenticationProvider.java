@@ -207,10 +207,22 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
         }
         String ldapAuthentication = luntbuildAuthenticator.getLdapAuthentication();
         String ldapUserId = luntbuildAuthenticator.getLdapUserId();
+        String ldapUrl = luntbuildAuthenticator.getLdapUrl();
+        String ldapPrefix = luntbuildAuthenticator.getLdapPrefix();
+        String ldapSuffix = luntbuildAuthenticator.getLdapSuffix();
 
         // LDAP specified, use it
         LDAPAuthenticator authenticator =
             new LDAPAuthenticator(host, port, userDN, ldapAuthentication, ldapUserId);
+        if (ldapUrl != null) {
+            authenticator.setLdapUrl(ldapUrl);
+        }
+        if (ldapPrefix != null) {
+            authenticator.setLdapPrefix(ldapPrefix);
+        }
+        if (ldapSuffix != null) {
+            authenticator.setLdapSuffix(ldapSuffix);
+        }
         if (authenticator.authenticate(name, password)){
             // Load Luntbuild user if exist, or create new user
             if (doCreateLuntbuildUser) {
