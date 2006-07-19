@@ -93,17 +93,19 @@ Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properti
 (see jdbc.mysql.properties in the same directory):
 <programlisting>
 jdbc.driverClassName=com.mysql.jdbc.Driver
-jdbc.url=jdbc:postgresql://localhost:5432/luntbuild
+jdbc.url=jdbc.url=jdbc:mysql://localhost:3306/luntbuild
 jdbc.username=luntbuild
 jdbc.password=luntbuild
 hibernate.dialect=org.hibernate.dialect.MySQLDialect
 </programlisting>
 Then you have to create Luntbuild database as follows:
 <programlisting>
+> cd &lt;luntbuild-install&gt;
+mysql> grant all on luntbuild.* to sa@localhost.localdomain identified by 'mypassword';
 mysql> drop database luntbuild;
 mysql> create database luntbuild;
 mysql> use luntbuild;
-mysql> source db\mysql\luntbuild.sql:
+mysql> source db/mysql/luntbuild.sql;
 </programlisting>
 To manage MySql consider using free version of <ulink url="http://www.webyog.com/sqlyog/download_sqlyogfree.html">SQLyog</ulink>.
 If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
