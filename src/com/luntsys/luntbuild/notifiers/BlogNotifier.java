@@ -171,7 +171,7 @@ public class BlogNotifier extends TemplatedNotifier {
     public List getUserLevelProperties() {
         List properties = new ArrayList();
 
-        properties.add(new NotifierProperty() {
+        properties.add(BLOG_TYPE, new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
@@ -185,7 +185,7 @@ public class BlogNotifier extends TemplatedNotifier {
             }
         });
 
-        properties.add(new NotifierProperty() {
+        properties.add(BLOG_URL, new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
@@ -201,7 +201,7 @@ public class BlogNotifier extends TemplatedNotifier {
             }
         });
 
-        properties.add(new NotifierProperty() {
+        properties.add(BLOG_USER, new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
@@ -215,7 +215,7 @@ public class BlogNotifier extends TemplatedNotifier {
             }
         });
 
-        properties.add(new NotifierProperty() {
+        properties.add(BLOG_PASSWORD, new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
@@ -233,7 +233,7 @@ public class BlogNotifier extends TemplatedNotifier {
             }
         });
 
-        properties.add(new NotifierProperty() {
+        properties.add(BLOG_ID, new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
@@ -247,7 +247,7 @@ public class BlogNotifier extends TemplatedNotifier {
             }
         });
 
-        properties.add(new NotifierProperty() {
+        properties.add(BLOG_CATEGORY, new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }

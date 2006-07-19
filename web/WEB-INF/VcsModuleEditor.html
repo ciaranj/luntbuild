@@ -27,13 +27,22 @@
       <img src="images/property.gif" width="12" height="11" align="absmiddle"> <span jwcid="@Insert" value="ognl:property.displayName">property1</span>
       </td>
       <td jwcid="@Any" class="ognl:propertyValueCssClass" colspan="3" align="left" valign="top" scope="col">
-	  <input class="inputBox" value="ognl:property.value" size="50" jwcid="@TextField">
-	  value1</input>
-      <span jwcid="@Conditional" condition="ognl:property.required">*</span>
-      <br>
-      <span jwcid="@InsertText" value="ognl:property.description">
-      Description of property1
-      </span>
+        <span jwcid="@Conditional" condition="ognl:property.secret"> 
+          <input class="inputBox" value="ognl:property.value" size="75" jwcid="@TextField" hidden="ognl:true"/> 
+        </span>
+        <span jwcid="@Conditional" condition="ognl:!property.secret">
+	        <span jwcid="@Conditional" condition="ognl:(!property.multiLine && !property.select)"> 
+	          <input class="inputBox" value="ognl:property.value" size="75" jwcid="@TextField"/> 
+	        </span>
+	        <span jwcid="@Conditional" condition="ognl:property.multiLine"> 
+	          <textarea cols="70" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:property.value"/>
+	        </span>
+	        <span jwcid="@Conditional" condition="ognl:property.select"> 
+	          <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:property.selectionModel" value="ognl:property.value"/>
+	        </span>
+        </span>
+        <span jwcid="@Conditional" condition="ognl:property.required">*</span><br> 
+        <span jwcid="@InsertText" value="ognl:property.description">property description</span>
       </td>
     </tr>
 	</span>

@@ -400,4 +400,23 @@ public abstract class BuildViewer extends SecuritySupportComponent implements Pa
             return Builder.JUNIT_HTML_REPORT_DIR + "/junit-noframes.html";
         return null;
     }
+    
+    /** Test if file exists either as specified or in artifacts or publish directory
+     * @param fname to test
+     * @return the absolute path to the file or null
+     */
+    public String getArtifactsFile(String fname) {
+        File f = new File(fname);
+        if (f.exists() && f.isFile()) return f.getAbsolutePath();
+        if (f.isAbsolute()) return null;
+        String dir = getBuild().getArtifactsDir();
+        f = new File(dir + File.separator + fname);
+        if (f.exists() && f.isFile()) return f.getAbsolutePath();
+        dir = getBuild().getPublishDir();
+        f = new File(dir + File.separator + fname);
+        if (f.exists() && f.isFile()) return f.getAbsolutePath();
+        
+        return null;
+    }
+    
 }

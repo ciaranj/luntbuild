@@ -1219,6 +1219,7 @@ public class Luntbuild {
         vcsAdaptors.add(BaseClearcaseAdaptor.class);
         vcsAdaptors.add(CvsAdaptor.class);
         vcsAdaptors.add(FileSystemAdaptor.class);
+        vcsAdaptors.add(MksAdaptor.class);
         vcsAdaptors.add(PerforceAdaptor.class);
         vcsAdaptors.add(StarteamAdaptor.class);
         vcsAdaptors.add(SvnAdaptor.class);
