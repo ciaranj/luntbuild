@@ -49,9 +49,10 @@ public class CommandBuilder extends Builder {
 	static final long serialVersionUID = 1L;
 
 	/**
-	 * The command to run ant
+	 * The command to run command script
 	 */
-	private String command = " \"${build.version}\" \"${build.artifactsDir}\" \"${build.startDate}\"";
+	private String command =
+        " \"${build.version}\" \"${build.artifactsDir}\" \"${build.startDate}\" \"${build.junitHtmlReportDir}\"";
 
 	/**
 	 * The directory to run command, defaults to be current project's work directory if left empty
