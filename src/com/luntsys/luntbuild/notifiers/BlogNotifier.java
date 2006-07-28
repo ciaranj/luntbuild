@@ -171,7 +171,7 @@ public class BlogNotifier extends TemplatedNotifier {
     public List getUserLevelProperties() {
         List properties = new ArrayList();
 
-        properties.add(BLOG_TYPE, new NotifierProperty() {
+        properties.add(new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
@@ -185,7 +185,7 @@ public class BlogNotifier extends TemplatedNotifier {
             }
         });
 
-        properties.add(BLOG_URL, new NotifierProperty() {
+        properties.add(new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
@@ -201,7 +201,21 @@ public class BlogNotifier extends TemplatedNotifier {
             }
         });
 
-        properties.add(BLOG_USER, new NotifierProperty() {
+        properties.add(new NotifierProperty() {
+            public Class getNotifierClass() {
+                return BlogNotifier.class;
+            }
+
+            public String getDisplayName() {
+                return "Blog ID";
+            }
+
+            public String getDescription() {
+                return "Specify ID for your blog. Only used for blogger type.";
+            }
+        });
+
+        properties.add(new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
@@ -215,7 +229,7 @@ public class BlogNotifier extends TemplatedNotifier {
             }
         });
 
-        properties.add(BLOG_PASSWORD, new NotifierProperty() {
+        properties.add(new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
@@ -233,21 +247,7 @@ public class BlogNotifier extends TemplatedNotifier {
             }
         });
 
-        properties.add(BLOG_ID, new NotifierProperty() {
-            public Class getNotifierClass() {
-                return BlogNotifier.class;
-            }
-
-            public String getDisplayName() {
-                return "Blog ID";
-            }
-
-            public String getDescription() {
-                return "Specify ID for your blog. Only used for blogger type.";
-            }
-        });
-
-        properties.add(BLOG_CATEGORY, new NotifierProperty() {
+        properties.add(new NotifierProperty() {
             public Class getNotifierClass() {
                 return BlogNotifier.class;
             }
