@@ -493,7 +493,7 @@ public class SvnAdaptor extends Vcs {
                                 revisions.setFileModified(true);
                             }
 
-                            logs.add("");
+                            logs.add(logEntry.getMessage());
                         }
                     }
                 };
