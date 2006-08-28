@@ -43,8 +43,20 @@ public class BaseClearcaseAdaptorFacade extends VcsFacade {
 	private String mkviewExtraOpts;
 
 	private String cleartoolDir;
+    
+    private String formatParams;
 
-	/**
+    private String viewTag;
+    
+	public String getFormatParams() {
+        return formatParams;
+    }
+
+    public void setFormatParams(String formatParams) {
+        this.formatParams = formatParams;
+    }
+
+    /**
 	 * Get view storage location.This is a project level vcs property. It will be used as -stgloc option
 	 * when creating clearcase views.
 	 * @return view storage location
@@ -140,4 +152,12 @@ public class BaseClearcaseAdaptorFacade extends VcsFacade {
 	public void setCleartoolDir(String cleartoolDir) {
 		this.cleartoolDir = cleartoolDir;
 	}
+
+    public String getViewTag() {
+        return viewTag;
+    }
+
+    public void setViewTag(String viewTag) {
+        this.viewTag = viewTag;
+    }
 }

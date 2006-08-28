@@ -1217,6 +1217,7 @@ public class Luntbuild {
         vcsAdaptors = new ArrayList();
         vcsAdaptors.add(AccurevAdaptor.class);
         vcsAdaptors.add(BaseClearcaseAdaptor.class);
+        vcsAdaptors.add(DynamicClearcaseAdaptor.class);
         vcsAdaptors.add(CvsAdaptor.class);
         vcsAdaptors.add(FileSystemAdaptor.class);
         vcsAdaptors.add(MksAdaptor.class);
