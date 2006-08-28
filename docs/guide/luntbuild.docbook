@@ -13,6 +13,7 @@
   <!ENTITY antbuilder-section SYSTEM "antbuilder-section.docbook">
   <!ENTITY editschedule-section SYSTEM "editschedule-section.docbook">
   <!ENTITY builds-chapter SYSTEM "builds-chapter.docbook">
+  <!ENTITY clearcaseadaptor-section SYSTEM "clearcase-section.docbook">
 ]>
 
 <book>
@@ -454,7 +455,7 @@ Fill the following information:
     The Visual Studio output scraper may be used to provide more detailed information regarding a Visual Studio build.
     To enable the scraper, make sure the command line used to trigger the build is visible in the build log.
     The scraper looks for a regular expression pattern containing the name of a .sln file followed
-    by the “\build config” parameter.  If a match is found, the following variables are available to Velocity templates:
+    by the “\build config�? parameter.  If a match is found, the following variables are available to Velocity templates:
     <simplelist>
         <member><emphasis>vs_build_solutions</emphasis>a List of MSVSSolution objects.  This list is empty if no build command line was matched.</member>
     </simplelist>
@@ -550,81 +551,7 @@ Fill the following information:
     </variablelist>
 </para>
 </section>
-<section><title>Setting Base Clearcase connection information.</title>
-<para>
-	You should have Clearcase client installed on the build machine.
-	Also you should make sure that the account running your application server or servlet container
- 	is able to access your Clearcase server and that it can make snapshot views.
-	Here is the list of properties for this adaptor:
-    <variablelist>
-        <varlistentry>
-        <term>View stgloc name</term>
-        <listitem><para>
-        Name of the Clearcase server-side view storage location which will be used as-stgloc option
-        when creating Clearcase view for the current project. Either this property or "Explicit path for view storage"
-        property should be specified.
-        </para></listitem>
-        </varlistentry>
-        <varlistentry>
-        <term>View storage path</term>
-        <listitem><para>
-        Explicit path for view storage. This property is required only when the "Clearcase view stgloc name" property is empty.
-        If specified, it will be used as -vws option instead of using the -stgloc option to create Clearcase view
-        for the current project.
-        </para>
-        <note><para>
-            This value should be a writable UNC path on Windows platform.
-        </para></note>
-        </listitem>
-        </varlistentry>
-        <varlistentry>
-        <term>Config spec</term>
-        <listitem><para>
-        Config spec used by Luntbuild to create Clearcase snapshot view for a build.
-        </para></listitem>
-        </varlistentry>
-        <varlistentry>
-        <term>Modification detection config</term>
-        <listitem><para>
-        This property will take effect if there are some LATEST versions from some branch
-        to fetch in the above config spec. It is used by Luntbuild to determine, if there are
-        any changes in the repository since the last build. This property consists of multiple entries,
-        where each entry is of the format &quot;&lt;path&gt;[:&lt;branch&gt;]&quot;.
-        &lt;path&gt; is a path inside a VOB, which should be visible by the above config spec.
-        Luntbuild will lookup any changes in any branch inside this path recursively,
-        or it will lookup changes in the specified branch, if &lt;branch&gt; is specified.
-        Multiple entries are separated by ";" or line terminator.
-        </para></listitem>
-        </varlistentry>
-        <varlistentry>
-        <term>Options for snapshot view</term>
-        <listitem><para>
-        You may optionally specify extra options for the cleartool mkview sub command
-        used by Luntbuild to create related Clearcase snapshot view for the current project.
-        Options that can be specified here are restricted to -tmode, -ptime, and -cachesize.
-        For example you can specify "-tmode insert_cr" to use Windows end of line text mode.
-        </para></listitem>
-        </varlistentry>
-		<varlistentry>
-		<term>Cleartool executable path</term>
-		<listitem><para>
-		The directory path, where your cleartool executable file resides in.
-		It should be specified here, if it does not exist in the system path.
-		</para></listitem>
-		</varlistentry>
-        <varlistentry>
-        <term>Quiet period</term>
-        <listitem><para>
-        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
-        to check out the code of this VCS for a build. This is used to avoid checking out code
-        in the middle of some other checkins. This property is optional.
-        When left empty, quiet period will not be used before checking out code to build.
-        </para></listitem>
-        </varlistentry>
-    </variablelist>
-</para>
-</section>
-
+&clearcaseadaptor-section;
 &cvsadaptor-section;
 
 <section><title>Setting File system connection information.</title>
