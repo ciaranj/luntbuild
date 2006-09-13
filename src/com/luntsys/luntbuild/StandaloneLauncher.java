@@ -137,12 +137,19 @@ class ServerStopper extends Thread {
                 final Socket client = this.mSvrSock.accept();
                 final ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
                 while (true) {
-                    final String stop = (String) ois.readObject();
-                    if (stop.equals("STOP")) {
-                        this.mServer.stop();
-                        client.close();
-                        Thread.sleep(5000);
-                        System.exit(0);
+                    String stop = null;
+                    try {
+                        stop = (String) ois.readObject();
+                        if (stop != null && stop.equals("STOP")) {
+                            this.mServer.stop();
+                            client.close();
+                            Thread.sleep(5000);
+                            System.exit(0);
+                        }
+                    } catch (IOException e) {
+                        this.logger.debug("Failed to stop!", e);
+                    } catch (Exception e) {
+                        this.logger.debug("Failed to stop!", e);
                     }
                 }
             }

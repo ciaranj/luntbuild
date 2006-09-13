@@ -118,10 +118,10 @@ public class JabberNotifier  extends TemplatedNotifier
     }
 
     /**
-     * @param jabberServerType The jabberServerType to set.
+     * @param type The jabberServerType to set.
      */
-    public void setJabberServerType(String jabberServerType) {
-        jabberServerType = Constants.getJabberServerType(new Integer(jabberServerType).intValue());
+    public void setJabberServerType(String type) {
+        jabberServerType = Constants.getJabberServerType(new Integer(type).intValue());
     }
 
     /**
@@ -131,23 +131,23 @@ public class JabberNotifier  extends TemplatedNotifier
     public void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject)
     {
         loginToJabberServer(antProject);
-        if (connection != null)
+        if (this.connection != null)
         {
 
             Iterator it = checkinUsers.iterator();
             while (it.hasNext())
             {
-                sendMessage(connection, (User) it.next(),
+                sendMessage(this.connection, (User) it.next(),
                         constructNotificationBody4CheckinUsers(build), antProject);
             }
             it = subscribeUsers.iterator();
             while (it.hasNext())
             {
-                sendMessage(connection, (User) it.next(),
+                sendMessage(this.connection, (User) it.next(),
                         constructNotificationBody(build), antProject);
             }
 
-            logoffFromJabberServer(connection, antProject);
+            logoffFromJabberServer(this.connection, antProject);
         }
     }
 
@@ -159,15 +159,15 @@ public class JabberNotifier  extends TemplatedNotifier
     {
         loginToJabberServer(antProject);
 
-        if (connection != null)
+        if (this.connection != null)
         {
             Iterator it = subscribeUsers.iterator();
             while (it.hasNext())
             {
-                sendMessage(connection, (User) it.next(), constructNotificationBody(schedule), antProject);
+                sendMessage(this.connection, (User) it.next(), constructNotificationBody(schedule), antProject);
             }
 
-            logoffFromJabberServer(connection,antProject);
+            logoffFromJabberServer(this.connection,antProject);
         }
     }
 
@@ -203,19 +203,19 @@ public class JabberNotifier  extends TemplatedNotifier
         try
         {
             if ( jabberServerType.toLowerCase().equals("ssl")) {
-                connection = new SSLXMPPConnection(jabberServer,Integer.parseInt(jabberServerPort));
-                connection.login(luntJabberAccount, jabberPasswd,
-                        "LuntBuild-" + connection.getConnectionID());
+                this.connection = new SSLXMPPConnection(jabberServer,Integer.parseInt(jabberServerPort));
+                this.connection.login(luntJabberAccount, jabberPasswd,
+                        "LuntBuild-" + this.connection.getConnectionID());
             } else if(jabberServerType.toLowerCase().equals("google")) {
-                connection = new GoogleTalkConnection();
-                connection.login(luntJabberAccount, jabberPasswd,
-                        "LuntBuild-" + connection.getConnectionID());
+                this.connection = new GoogleTalkConnection();
+                this.connection.login(luntJabberAccount, jabberPasswd,
+                        "LuntBuild-" + this.connection.getConnectionID());
             } else {
-                connection = new XMPPConnection(jabberServer,Integer.parseInt(jabberServerPort));
-                connection.login(luntJabberAccount, jabberPasswd,
-                        "LuntBuild-" + connection.getConnectionID());
+                this.connection = new XMPPConnection(jabberServer,Integer.parseInt(jabberServerPort));
+                this.connection.login(luntJabberAccount, jabberPasswd,
+                        "LuntBuild-" + this.connection.getConnectionID());
             }
-            if ( connection.isConnected() ){
+            if ( this.connection.isConnected() ){
                 antProject.log("Login to jabberserver [" + jabberServer + "] using [" + luntJabberAccount + "] succeeded",
                         Project.MSG_INFO);
             }
@@ -228,18 +228,18 @@ public class JabberNotifier  extends TemplatedNotifier
 
     }
 
-    private void logoffFromJabberServer(XMPPConnection connection, Project antProject)
+    private void logoffFromJabberServer(XMPPConnection conn, Project antProject)
     {
-        if (connection != null)
+        if (conn != null)
         {
             try { Thread.sleep(250);} catch (InterruptedException ignored){}
             // wait 1/4 a second to make sure our message(s) are all sent
-            connection.close();
-            connection = null;
+            conn.close();
+            conn = null;
         }
     }
 
-    private void sendMessage(XMPPConnection connection, User user, String notificationMessage,
+    private void sendMessage(XMPPConnection conn, User user, String notificationMessage,
             Project antProject)
     {
         String userJabberAccount =
@@ -252,16 +252,16 @@ public class JabberNotifier  extends TemplatedNotifier
          {
             antProject.log("Call Jabber account \"" + userJabberAccount + "\"...", Project.MSG_INFO);
 
-            sendNotification(connection, userJabberAccount, notificationMessage, antProject);
+            sendNotification(conn, userJabberAccount, notificationMessage, antProject);
         }
     }
 
-    private void sendNotification(XMPPConnection connection, String receiver, String message,
+    private void sendNotification(XMPPConnection conn, String receiver, String message,
             Project antProject)
     {
         try
         {
-            connection.createChat(receiver).sendMessage(message);
+            conn.createChat(receiver).sendMessage(message);
         }
         catch (XMPPException e)
         {
