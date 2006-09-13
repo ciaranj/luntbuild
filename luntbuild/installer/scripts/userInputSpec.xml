@@ -73,7 +73,7 @@
         <field type="text" variable="jdbcPort">
             <spec txt="Port:" id="input.jdbcPort" size="30" set=""/>
             <validator class="com.izforge.izpack.util.RegularExpressionValidator"
-                  txt="Invalid port">
+                  txt="Please specify apropriate DB connection port">
                 <param
                     name="pattern"
                     value="[0-9]+"
