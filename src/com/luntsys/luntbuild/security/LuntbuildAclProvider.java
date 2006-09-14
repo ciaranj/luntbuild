@@ -31,11 +31,11 @@ import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Project;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.db.VcsLogin;
-import net.sf.acegisecurity.Authentication;
-import net.sf.acegisecurity.context.SecurityContext;
-import net.sf.acegisecurity.context.SecurityContextHolder;
-import net.sf.acegisecurity.acl.AclEntry;
-import net.sf.acegisecurity.acl.AclProvider;
+import org.acegisecurity.Authentication;
+import org.acegisecurity.context.SecurityContext;
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.acl.AclEntry;
+import org.acegisecurity.acl.AclProvider;
 
 /**
  * Luntbuild specific acl provider.

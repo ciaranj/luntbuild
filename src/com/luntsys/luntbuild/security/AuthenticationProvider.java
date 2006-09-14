@@ -5,32 +5,32 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.acegisecurity.providers.dao.AbstractUserDetailsAuthenticationProvider;
-import net.sf.acegisecurity.providers.dao.AuthenticationDao;
-import net.sf.acegisecurity.providers.dao.SaltSource;
+import org.acegisecurity.providers.dao.AbstractUserDetailsAuthenticationProvider;
+import org.acegisecurity.userdetails.UserDetails;
+import org.acegisecurity.userdetails.UserDetailsService;
+import org.acegisecurity.userdetails.UsernameNotFoundException;
+import org.acegisecurity.providers.dao.SaltSource;
 
-import net.sf.acegisecurity.providers.encoding.PasswordEncoder;
-import net.sf.acegisecurity.providers.encoding.PlaintextPasswordEncoder;
+import org.acegisecurity.providers.encoding.PasswordEncoder;
+import org.acegisecurity.providers.encoding.PlaintextPasswordEncoder;
 
-import net.sf.acegisecurity.UserDetails;
-import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 
-import net.sf.acegisecurity.AuthenticationCredentialsNotFoundException;
-import net.sf.acegisecurity.AuthenticationException;
-import net.sf.acegisecurity.BadCredentialsException;
-import net.sf.acegisecurity.GrantedAuthority;
-import net.sf.acegisecurity.GrantedAuthorityImpl;
-import net.sf.acegisecurity.providers.dao.UsernameNotFoundException;
-import net.sf.acegisecurity.AuthenticationServiceException;
+import org.acegisecurity.AuthenticationCredentialsNotFoundException;
+import org.acegisecurity.AuthenticationException;
+import org.acegisecurity.BadCredentialsException;
+import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.GrantedAuthorityImpl;
+import org.acegisecurity.AuthenticationServiceException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
-import net.sf.acegisecurity.DisabledException;
-import net.sf.acegisecurity.AccountExpiredException;
-import net.sf.acegisecurity.CredentialsExpiredException;
+import org.acegisecurity.DisabledException;
+import org.acegisecurity.AccountExpiredException;
+import org.acegisecurity.CredentialsExpiredException;
 
-import net.sf.acegisecurity.Authentication;
+import org.acegisecurity.Authentication;
 import org.springframework.util.Assert;
 
 import com.luntsys.luntbuild.db.Project;
@@ -40,8 +40,8 @@ import com.luntsys.luntbuild.notifiers.EmailNotifier;
 import com.luntsys.luntbuild.notifiers.TemplatedNotifier;
 import com.luntsys.luntbuild.utility.Luntbuild;
 
-import net.sf.acegisecurity.providers.dao.UserCache;
-import net.sf.acegisecurity.providers.dao.cache.NullUserCache;
+import org.acegisecurity.providers.dao.UserCache;
+import org.acegisecurity.providers.dao.cache.NullUserCache;
 
 /**
  * LDAP Authentication Provider
@@ -53,7 +53,7 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
 
     private static transient final Log logger = LogFactory.getLog(AuthenticationProvider.class);
 
-    private AuthenticationDao authenticationDao;
+    private UserDetailsService authenticationDao;
     private PasswordEncoder passwordEncoder = new PlaintextPasswordEncoder();
     private SaltSource saltSource;
     private boolean hideUserNotFoundExceptions = true;
@@ -64,14 +64,14 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
     /**
      * @param authenticationDao
      */
-    public void setAuthenticationDao(AuthenticationDao authenticationDao) {
+    public void setAuthenticationDao(UserDetailsService authenticationDao) {
         this.authenticationDao = authenticationDao;
     }
 
     /**
      * @return authentication Dao
      */
-    public AuthenticationDao getAuthenticationDao() {
+    public UserDetailsService getAuthenticationDao() {
         return this.authenticationDao;
     }
 
@@ -321,7 +321,7 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
             authorities[ix++] = new GrantedAuthorityImpl("LUNTBUILD_PRJ_BUILDER");
 
         userdetails =
-            new net.sf.acegisecurity.providers.dao.User(name, password, true, true, true, authorities);
+            new org.acegisecurity.userdetails.User(name, password, true, true, true, authorities);
 
         return userdetails;
     }

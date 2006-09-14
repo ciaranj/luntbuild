@@ -34,7 +34,7 @@ import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.LuntbuildLogger;
 import com.luntsys.luntbuild.web.components.SecuritySupportComponent;
-import net.sf.acegisecurity.AccessDeniedException;
+import org.acegisecurity.AccessDeniedException;
 import org.apache.tapestry.ApplicationRuntimeException;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.engine.IPageLoader;

@@ -35,7 +35,7 @@ import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.NameComparator;
 import com.luntsys.luntbuild.web.components.tabcontrol.TabControl;
-import net.sf.acegisecurity.AccessDeniedException;
+import org.acegisecurity.AccessDeniedException;
 
 import org.apache.tapestry.ApplicationRuntimeException;
 import org.apache.tapestry.IRequestCycle;

@@ -1,7 +1,7 @@
 package com.luntsys.luntbuild.security;
 
-import net.sf.acegisecurity.acl.basic.AbstractBasicAclEntry;
-import net.sf.acegisecurity.acl.basic.AclObjectIdentity;
+import org.acegisecurity.acl.basic.AbstractBasicAclEntry;
+import org.acegisecurity.acl.basic.AclObjectIdentity;
 
 /**
  * luntbuild specific acl entry

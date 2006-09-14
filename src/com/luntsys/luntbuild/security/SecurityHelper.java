@@ -30,12 +30,13 @@ package com.luntsys.luntbuild.security;
 
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.db.Role;
-import net.sf.acegisecurity.*;
-import net.sf.acegisecurity.context.SecurityContext;
-import net.sf.acegisecurity.context.SecurityContextHolder;
-import net.sf.acegisecurity.providers.UsernamePasswordAuthenticationToken;
-import net.sf.acegisecurity.providers.dao.AuthenticationDao;
-import net.sf.acegisecurity.providers.dao.cache.EhCacheBasedUserCache;
+import org.acegisecurity.*;
+import org.acegisecurity.context.SecurityContext;
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+import org.acegisecurity.userdetails.UserDetails;
+import org.acegisecurity.userdetails.UserDetailsService;
+import org.acegisecurity.providers.dao.cache.EhCacheBasedUserCache;
 import net.sf.ehcache.Cache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -213,7 +214,7 @@ public class SecurityHelper
 	}
 
 	public static void runAsSiteAdmin() {
-		AuthenticationDao authDao = (AuthenticationDao) Luntbuild.appContext.getBean("inMemoryAuthenticationDAO");
+        UserDetailsService authDao = (UserDetailsService) Luntbuild.appContext.getBean("inMemoryAuthenticationDAO");
 		if (authDao == null) {
 			logger.error("Can not find bean named by \"inMemoryAuthenticationDao\" " +
 					"in the application context!");

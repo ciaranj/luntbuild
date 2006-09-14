@@ -34,7 +34,7 @@ import com.luntsys.luntbuild.facades.lb12.DataCollection;
 import com.luntsys.luntbuild.migration.MigrationManager;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
-import net.sf.acegisecurity.AccessDeniedException;
+import org.acegisecurity.AccessDeniedException;
 
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;

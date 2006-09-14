@@ -33,7 +33,7 @@ import com.luntsys.luntbuild.facades.SearchCriteria;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.web.components.tabcontrol.TabControl;
-import net.sf.acegisecurity.AccessDeniedException;
+import org.acegisecurity.AccessDeniedException;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.engine.IPageLoader;
 import org.apache.tapestry.event.PageDetachListener;

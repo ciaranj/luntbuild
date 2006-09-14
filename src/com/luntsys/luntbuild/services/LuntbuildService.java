@@ -46,6 +46,7 @@ import com.luntsys.luntbuild.db.Role;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.db.VcsLogin;
+import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.SearchCriteria;
 import com.luntsys.luntbuild.facades.lb12.ProjectFacade;
 import com.luntsys.luntbuild.facades.lb12.BuildFacade;
@@ -593,7 +594,10 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     public String[] getBuildLog(BuildFacade buildFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(buildFacade.getScheduleId());
         String version = buildFacade.getVersion();
-        File logFile = new File(Luntbuild.installDir + "/publish/" + schedule.getProject().getName() +
+        String publishDir = getSystemProperty(Constants.PUBLISH_DIR);
+        if (Luntbuild.isEmpty(publishDir))
+            publishDir = Luntbuild.installDir + "/publish";
+        File logFile = new File(publishDir + "/" + schedule.getProject().getName() +
                 "/" + schedule.getName() + "/" + version + "/" + BuildGenerator.BUILD_LOG);
 
         return getFileAsStringArray(logFile);
@@ -608,7 +612,10 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     public String[] getBuildLogHtml(BuildFacade buildFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(buildFacade.getScheduleId());
         String version = buildFacade.getVersion();
-        File logFile = new File(Luntbuild.installDir + "/publish/" + schedule.getProject().getName() +
+        String publishDir = getSystemProperty(Constants.PUBLISH_DIR);
+        if (Luntbuild.isEmpty(publishDir))
+            publishDir = Luntbuild.installDir + "/publish";
+        File logFile = new File(publishDir + "/" + schedule.getProject().getName() +
                 "/" + schedule.getName() + "/" + version + "/" + BuildGenerator.BUILD_HTML_LOG);
 
         return getFileAsStringArray(logFile);
@@ -623,7 +630,10 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     public String[] getRevisionLog(BuildFacade buildFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(buildFacade.getScheduleId());
         String version = buildFacade.getVersion();
-        File logFile = new File(Luntbuild.installDir + "/publish/" + schedule.getProject().getName() +
+        String publishDir = getSystemProperty(Constants.PUBLISH_DIR);
+        if (Luntbuild.isEmpty(publishDir))
+            publishDir = Luntbuild.installDir + "/publish";
+        File logFile = new File(publishDir + "/" + schedule.getProject().getName() +
                 "/" + schedule.getName() + "/" + version + "/" + BuildGenerator.REVISION_LOG);
 
         return getFileAsStringArray(logFile);
@@ -638,7 +648,10 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     public String[] getRevisionLogHtml(BuildFacade buildFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(buildFacade.getScheduleId());
         String version = buildFacade.getVersion();
-        File logFile = new File(Luntbuild.installDir + "/publish/" + schedule.getProject().getName() +
+        String publishDir = getSystemProperty(Constants.PUBLISH_DIR);
+        if (Luntbuild.isEmpty(publishDir))
+            publishDir = Luntbuild.installDir + "/publish";
+        File logFile = new File(publishDir + "/" + schedule.getProject().getName() +
                 "/" + schedule.getName() + "/" + version + "/" + BuildGenerator.REVISION_HTML_LOG);
 
         return getFileAsStringArray(logFile);

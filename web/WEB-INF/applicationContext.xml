@@ -149,12 +149,12 @@
 
 	<!-- If you replace this bean with say JdbcDaoImpl, just ensure your replacement
 		 has the same bean id (authenticationDao) -->
-	<bean id="inMemoryAuthenticationDAO" class="net.sf.acegisecurity.providers.dao.memory.InMemoryDaoImpl">
+	<bean id="inMemoryAuthenticationDAO" class="org.acegisecurity.userdetails.memory.InMemoryDaoImpl">
 		<property name="userMap">
 			<value>
 				<!-- this is the build-in site admin user - please change the password for security reasons. However, name of the user, and its
 				role should not be changed! -->
-					luntbuild=@luntbuildPassword@,ROLE_SITE_ADMIN,ROLE_AUTHENTICATED
+					luntbuild=${luntbuildPassword},ROLE_SITE_ADMIN,ROLE_AUTHENTICATED
 					anonymous=anonymous,LUNTBUILD_PRJ_VIEWER,ROLE_AUTHENTICATED
 			</value>
 		</property>
@@ -163,7 +163,7 @@
 	<!--
 		Security intercetor for method invocation of database operations
 	-->
-	<bean id="methodSecurityInterceptor" class="net.sf.acegisecurity.intercept.method.aopalliance.MethodSecurityInterceptor">
+	<bean id="methodSecurityInterceptor" class="org.acegisecurity.intercept.method.aopalliance.MethodSecurityInterceptor">
 		<property name="authenticationManager">
 			<ref local="authenticationManager"/>
 		</property>
@@ -203,7 +203,7 @@
 		</property>
 	</bean>
 
-	<bean id="filterInvocationInterceptor" class="net.sf.acegisecurity.intercept.web.FilterSecurityInterceptor">
+	<bean id="filterInvocationInterceptor" class="org.acegisecurity.intercept.web.FilterSecurityInterceptor">
 		<property name="authenticationManager">
 			<ref local="authenticationManager"/>
 		</property>
@@ -220,17 +220,17 @@
 
 	<!-- luntbuild internal RDBMS based authentication DAO -->
 	<bean id="luntbuildAuthenticationDAO" class="com.luntsys.luntbuild.security.ApplicationInternalDAO">
-        <property name="ldapHost" value="@ldapHost@"/>
-        <property name="ldapPort" value="@ldapPort@"/>
-        <property name="ldapUserDn" value="@ldapUserDn@"/>
-        <property name="ldapAuthentication" value="@ldapAuthentication@"/>
-        <property name="ldapUserId" value="@ldapUserId@"/>
-        <property name="ldapUseLuntbuildOnFail" value="@ldapUseLuntbuildOnFail@"/>
-        <property name="ldapCreateLuntbuildUser" value="@ldapCreateLuntbuildUser@"/>
-        <property name="ldapCanCreateProject" value="@ldapCanCreateProject@"/>
-        <property name="ldapCanViewProject" value="@ldapCanViewProject@"/>
-        <property name="ldapCanBuildProject" value="@ldapCanBuildProject@"/>
-        <property name="ldapEmailAttrName" value="@ldapEmailAttrName@"/>
+        <property name="ldapHost" value="${ldapHost}"/>
+        <property name="ldapPort" value="${ldapPort}"/>
+        <property name="ldapUserDn" value="${ldapUserDn}"/>
+        <property name="ldapAuthentication" value="${ldapAuthentication}"/>
+        <property name="ldapUserId" value="${ldapUserId}"/>
+        <property name="ldapUseLuntbuildOnFail" value="${ldapUseLuntbuildOnFail}"/>
+        <property name="ldapCreateLuntbuildUser" value="${ldapCreateLuntbuildUser}"/>
+        <property name="ldapCanCreateProject" value="${ldapCanCreateProject}"/>
+        <property name="ldapCanViewProject" value="${ldapCanViewProject}"/>
+        <property name="ldapCanBuildProject" value="${ldapCanBuildProject}"/>
+        <property name="ldapEmailAttrName" value="${ldapEmailAttrName}"/>
         <!--
         <property name="ldapUrl" value=""/>
         <property name="ldapPrefix" value=""/>
@@ -257,7 +257,7 @@
         </property>
     </bean>
 
-	<bean id="userCache" class="net.sf.acegisecurity.providers.dao.cache.EhCacheBasedUserCache">
+	<bean id="userCache" class="org.acegisecurity.providers.dao.cache.EhCacheBasedUserCache">
 		<property name="cache">
 			<ref local="userCacheBackend"/>
 		</property>
@@ -287,9 +287,9 @@
 		</property>
 	</bean>
 
-	<bean id="roleVoter" class="net.sf.acegisecurity.vote.RoleVoter"/>
+	<bean id="roleVoter" class="org.acegisecurity.vote.RoleVoter"/>
 
-	<bean id="methodAccessDecisionManager" class="net.sf.acegisecurity.vote.AffirmativeBased">
+	<bean id="methodAccessDecisionManager" class="org.acegisecurity.vote.AffirmativeBased">
 		<property name="allowIfAllAbstainDecisions">
 			<value>true</value>
 		</property>
@@ -303,7 +303,7 @@
 		</property>
 	</bean>
 
-	<bean id="urlAccessDecisionManager" class="net.sf.acegisecurity.vote.AffirmativeBased">
+	<bean id="urlAccessDecisionManager" class="org.acegisecurity.vote.AffirmativeBased">
 		<property name="allowIfAllAbstainDecisions">
 			<value>false</value>
 		</property>
@@ -314,7 +314,7 @@
 		</property>
 	</bean>
 
-	<bean id="basicProcessingFilter" class="net.sf.acegisecurity.ui.basicauth.BasicProcessingFilter">
+	<bean id="basicProcessingFilter" class="org.acegisecurity.ui.basicauth.BasicProcessingFilter">
 		<property name="authenticationManager">
 			<ref local="authenticationManager"/>
 		</property>
@@ -323,7 +323,7 @@
 		</property>
 	</bean>
 
-	<bean id="authenticationProcessingFilterEntryPoint" class="net.sf.acegisecurity.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+	<bean id="authenticationProcessingFilterEntryPoint" class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilterEntryPoint">
 		<property name="loginFormUrl">
 			<value>/luntbuild-login.jsp</value>
 		</property>
@@ -334,7 +334,7 @@
 
 	<bean id="basicProcessingFilterEntryPoint" class="com.luntsys.luntbuild.security.BasicProcessingFilterEntryPoint"/>
 
-	<bean id="authenticationProcessingFilter" class="net.sf.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
+	<bean id="authenticationProcessingFilter" class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
 		<property name="authenticationManager">
 			<ref local="authenticationManager"/>
 		</property>
@@ -349,10 +349,7 @@
 		</property>
 	</bean>
 
-	<bean id="securityEnforcementFilter" class="net.sf.acegisecurity.intercept.web.SecurityEnforcementFilter">
-		<property name="filterSecurityInterceptor">
-			<ref local="filterInvocationInterceptor"/>
-		</property>
+	<bean id="exceptionTranslationFilter" class="org.acegisecurity.ui.ExceptionTranslationFilter">
 		<property name="authenticationEntryPoint">
 			<ref local="authenticationProcessingFilterEntryPoint"/>
 		</property>
@@ -378,7 +375,7 @@
 		</property>
 	</bean>
 
-	<bean id="aclProjectReadVoter" class="net.sf.acegisecurity.vote.BasicAclEntryVoter">
+	<bean id="aclProjectReadVoter" class="org.acegisecurity.vote.BasicAclEntryVoter">
 		<property name="processConfigAttribute">
 			<value>ACL_PROJECT_READ</value>
 		</property>
@@ -397,7 +394,7 @@
 		</property>
 	</bean>
 
-	<bean id="aclProjectBuildVoter" class="net.sf.acegisecurity.vote.BasicAclEntryVoter">
+	<bean id="aclProjectBuildVoter" class="org.acegisecurity.vote.BasicAclEntryVoter">
 		<property name="processConfigAttribute">
 			<value>ACL_PROJECT_BUILD</value>
 		</property>
@@ -415,7 +412,7 @@
 		</property>
 	</bean>
 
-	<bean id="aclProjectAdminVoter" class="net.sf.acegisecurity.vote.BasicAclEntryVoter">
+	<bean id="aclProjectAdminVoter" class="org.acegisecurity.vote.BasicAclEntryVoter">
 		<property name="processConfigAttribute">
 			<value>ACL_PROJECT_ADMIN</value>
 		</property>
@@ -432,7 +429,7 @@
 		</property>
 	</bean>
 
-	<bean id="afterInvocationManager" class="net.sf.acegisecurity.afterinvocation.AfterInvocationProviderManager">
+	<bean id="afterInvocationManager" class="org.acegisecurity.afterinvocation.AfterInvocationProviderManager">
 		<property name="providers">
 			<list>
 				<ref local="afterAclRead"/>
@@ -442,7 +439,7 @@
 	</bean>
 
 	<!-- Processes AFTER_ACL_COLLECTION_READ configuration settings -->
-	<bean id="afterAclCollectionRead" class="net.sf.acegisecurity.afterinvocation.BasicAclEntryAfterInvocationCollectionFilteringProvider">
+	<bean id="afterAclCollectionRead" class="org.acegisecurity.afterinvocation.BasicAclEntryAfterInvocationCollectionFilteringProvider">
 		<property name="aclManager">
 			<ref local="aclManager"/>
 		</property>
@@ -456,7 +453,7 @@
 	</bean>
 
 	<!-- Processes AFTER_ACL_READ configuration settings -->
-	<bean id="afterAclRead" class="net.sf.acegisecurity.afterinvocation.BasicAclEntryAfterInvocationProvider">
+	<bean id="afterAclRead" class="org.acegisecurity.afterinvocation.BasicAclEntryAfterInvocationProvider">
 		<property name="aclManager">
 			<ref local="aclManager"/>
 		</property>
@@ -469,7 +466,7 @@
 		</property>
 	</bean>
 
-	<bean id="aclManager" class="net.sf.acegisecurity.acl.AclProviderManager">
+	<bean id="aclManager" class="org.acegisecurity.acl.AclProviderManager">
 		<property name="providers">
 			<list>
 				<ref local="luntbuildAclProvider"/>
@@ -479,20 +476,20 @@
 
 	<bean id="luntbuildAclProvider" class="com.luntsys.luntbuild.security.LuntbuildAclProvider"/>
 
-	<bean id="httpSessionContextIntegrationFilter" class="net.sf.acegisecurity.context.HttpSessionContextIntegrationFilter">
+	<bean id="httpSessionContextIntegrationFilter" class="org.acegisecurity.context.HttpSessionContextIntegrationFilter">
 	   <property name="context">
-	       <value>net.sf.acegisecurity.context.SecurityContextImpl</value>
+	       <value>org.acegisecurity.context.SecurityContextImpl</value>
 	   </property>
 	</bean>
 
 	<!--  Acegi 0.8.3 FilterChainProxy -->
-	<bean id="filterChainProxy" class="net.sf.acegisecurity.util.FilterChainProxy">
+	<bean id="filterChainProxy" class="org.acegisecurity.util.FilterChainProxy">
 	   <property name="filterInvocationDefinitionSource">
 	       <value>
         	   CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
-    	       \A.*.do.*=httpSessionContextIntegrationFilter,authenticationProcessingFilter,basicProcessingFilter,securityEnforcementFilter
-    	       \A/publish/.*=httpSessionContextIntegrationFilter,authenticationProcessingFilter,basicProcessingFilter,securityEnforcementFilter
-    	       \A/logs/.*=httpSessionContextIntegrationFilter,authenticationProcessingFilter,basicProcessingFilter,securityEnforcementFilter
+    	       \A.*.do.*=httpSessionContextIntegrationFilter,authenticationProcessingFilter,basicProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+    	       \A/publish/.*=httpSessionContextIntegrationFilter,authenticationProcessingFilter,basicProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+    	       \A/logs/.*=httpSessionContextIntegrationFilter,authenticationProcessingFilter,basicProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
     	   </value>
 	   </property>
 	</bean>

@@ -27,7 +27,7 @@
  */
 package com.luntsys.luntbuild;
 
-import net.sf.acegisecurity.AccessDeniedException;
+import org.acegisecurity.AccessDeniedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tapestry.IPage;

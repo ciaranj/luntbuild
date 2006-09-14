@@ -28,7 +28,7 @@
 
 package com.luntsys.luntbuild.security;
 
-import net.sf.acegisecurity.AuthenticationException;
+import org.acegisecurity.AuthenticationException;
 
 /**
  * This class integrates into the acegi framework provided

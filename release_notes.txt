@@ -10,6 +10,9 @@ luntbuild 1.3.3 Release Notes
    NOTE: Base Clearcase users will need to export and reimport their configuration as
          the old serialized versions persisted in the database are not compatible with
          the new Clearcase support.
+ * Returned back Svn adapter (SubversionExe) that uses external svn executable in addition to Svn adaptor based on JavaSvn.
+ * Updated Acegi Security to 1.0.1 from 0.9.
+ * Updated Spring to 1.2.8.
 
 ==============================================
 luntbuild 1.3.2 Release Notes
