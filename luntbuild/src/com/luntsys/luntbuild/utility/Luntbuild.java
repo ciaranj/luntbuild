@@ -46,7 +46,7 @@ import com.luntsys.luntbuild.notifiers.SametimeNotifier;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.services.IScheduler;
 import com.luntsys.luntbuild.vcs.*;
-import net.sf.acegisecurity.AuthenticationManager;
+import org.acegisecurity.AuthenticationManager;
 import ognl.Ognl;
 import ognl.OgnlException;
 import org.apache.commons.lang.StringUtils;
@@ -1224,6 +1224,7 @@ public class Luntbuild {
         vcsAdaptors.add(PerforceAdaptor.class);
         vcsAdaptors.add(StarteamAdaptor.class);
         vcsAdaptors.add(SvnAdaptor.class);
+        vcsAdaptors.add(SvnExeAdaptor.class);
         vcsAdaptors.add(UCMClearcaseAdaptor.class);
         vcsAdaptors.add(VssAdaptor.class);
     }

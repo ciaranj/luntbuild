@@ -31,12 +31,12 @@ package com.luntsys.luntbuild.security;
 import com.luntsys.luntbuild.db.RolesMapping;
 import com.luntsys.luntbuild.db.Role;
 import com.luntsys.luntbuild.utility.Luntbuild;
-import net.sf.acegisecurity.GrantedAuthority;
-import net.sf.acegisecurity.GrantedAuthorityImpl;
-import net.sf.acegisecurity.UserDetails;
-import net.sf.acegisecurity.providers.dao.AuthenticationDao;
-import net.sf.acegisecurity.providers.dao.User;
-import net.sf.acegisecurity.providers.dao.UsernameNotFoundException;
+import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.GrantedAuthorityImpl;
+import org.acegisecurity.userdetails.User;
+import org.acegisecurity.userdetails.UserDetails;
+import org.acegisecurity.userdetails.UserDetailsService;
+import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
@@ -52,7 +52,7 @@ import java.util.Iterator;
  *  *
  * @author johannes plachy
  */
-public class ApplicationInternalDAO implements AuthenticationDao {
+public class ApplicationInternalDAO implements UserDetailsService {
     private String ldapHost;
     private String ldapPort;
     private String ldapUserDn;
@@ -71,7 +71,7 @@ public class ApplicationInternalDAO implements AuthenticationDao {
     private static transient final Log logger = LogFactory.getLog(ApplicationInternalDAO.class);
 
     /**
-     * @see net.sf.acegisecurity.providers.dao.AuthenticationDao#loadUserByUsername(java.lang.String)
+     * @see org.acegisecurity.providers.dao.AuthenticationDao#loadUserByUsername(java.lang.String)
      */
     public UserDetails loadUserByUsername(String username)
     throws UsernameNotFoundException, DataAccessException {

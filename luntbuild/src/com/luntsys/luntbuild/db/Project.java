@@ -35,8 +35,8 @@ import com.luntsys.luntbuild.facades.lb12.ProjectFacade;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.*;
 import com.luntsys.luntbuild.vcs.Vcs;
-import net.sf.acegisecurity.AccessDeniedException;
-import net.sf.acegisecurity.acl.basic.AclObjectIdentity;
+import org.acegisecurity.AccessDeniedException;
+import org.acegisecurity.acl.basic.AclObjectIdentity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
