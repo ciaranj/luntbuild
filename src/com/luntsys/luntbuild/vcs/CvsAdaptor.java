@@ -406,6 +406,10 @@ public class CvsAdaptor extends Vcs {
 		return new CvsModule();
 	}
 
+    public Vcs.Module createNewModule(Vcs.Module module) {
+        return new CvsModule((CvsModule)module);
+    }
+
 	/**
 	 * Override default implementation in order to speed up quiet detection for CVS adaptor
 	 *
@@ -844,6 +848,14 @@ public class CvsAdaptor extends Vcs {
 		private String srcPath;
 		private String branch;
 		private String label;
+
+        public CvsModule() {}
+
+        public CvsModule(CvsModule module) {
+            this.srcPath = module.srcPath;
+            this.branch = module.branch;
+            this.label = module.label;
+        }
 
 		public String getSrcPath() {
 			return srcPath;

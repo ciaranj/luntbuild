@@ -254,6 +254,10 @@ public class SvnAdaptor extends Vcs {
         return new SvnModule();
     }
 
+    public Vcs.Module createNewModule(Vcs.Module module) {
+        return new SvnModule((SvnModule)module);
+    }
+
     /** Retrieve module
      * @param workingDir
      * @param module
@@ -625,6 +629,21 @@ public class SvnAdaptor extends Vcs {
         private String branch;
         private String label;
         private String destPath;
+
+        /**
+         * Constructor
+         */
+        public SvnModule() {}
+
+        /**
+         * Copy Constructor
+         */
+        public SvnModule(SvnModule module) {
+            this.srcPath = module.srcPath;
+            this.branch = module.branch;
+            this.label = module.label;
+            this.destPath = module.destPath;
+        }
 
         /**
          * @return source path

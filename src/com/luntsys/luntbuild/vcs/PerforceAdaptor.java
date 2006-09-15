@@ -194,7 +194,7 @@ public class PerforceAdaptor extends Vcs {
         p.setSelectionModel(model);
         // Add property to properties list
         properties.add(p);
-        
+
 		properties.add(new DisplayProperty() {
 			public String getDisplayName() {
 				return "Path for p4 executable";
@@ -256,7 +256,7 @@ public class PerforceAdaptor extends Vcs {
             return value;
         }
     }
-    
+
     /**
      * Setup perforce client specification based on current build information
      *
@@ -271,7 +271,7 @@ public class PerforceAdaptor extends Vcs {
         P4ClientSpec p4Client = new P4ClientSpec();
 		p4Client.setP4Dir(getP4Dir());
         initP4Cmd(p4Client, antProject);
-         
+
         // Get full view if it exist
         p4Client.setHostValue("");
         p4Client.setClientValue(getClient(schedule));
@@ -445,6 +445,10 @@ public class PerforceAdaptor extends Vcs {
         return new PerforceModule();
     }
 
+    public Module createNewModule(Module module) {
+        return new PerforceModule((PerforceModule)module);
+    }
+
     public void setPort(String port) {
         this.port = port;
     }
@@ -591,6 +595,14 @@ public class PerforceAdaptor extends Vcs {
         private String depotPath;
         private String label;
         private String clientPath;
+
+        public PerforceModule() {}
+
+        public PerforceModule(PerforceModule module) {
+            this.depotPath = module.depotPath;
+            this.label = module.label;
+            this.clientPath = module.clientPath;
+        }
 
         public List getProperties() {
             List properties = new ArrayList();

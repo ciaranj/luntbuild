@@ -241,6 +241,10 @@ public class VssAdaptor extends Vcs {
 		return new VssModule();
 	}
 
+    public Vcs.Module createNewModule(Vcs.Module module) {
+        return new VssModule((VssModule)module);
+    }
+
 	public List getVcsSpecificProperties() {
 		List properties = new ArrayList();
 		properties.add(new DisplayProperty() {
@@ -372,6 +376,14 @@ public class VssAdaptor extends Vcs {
 		private String srcPath;
 		private String label;
 		private String destPath;
+
+        public VssModule() {}
+
+        public VssModule(VssModule module) {
+            this.srcPath = module.srcPath;
+            this.label = module.label;
+            this.destPath = module.destPath;
+        }
 
 		public String getSrcPath() {
 			return srcPath;
