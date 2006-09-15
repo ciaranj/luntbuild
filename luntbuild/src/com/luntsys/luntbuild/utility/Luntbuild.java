@@ -956,6 +956,8 @@ public class Luntbuild {
                     Ognl.createDefaultContext(ognlRoot), ognlRoot, String.class);
             if (ognlValue == null)
                 ognlValue = "";
+            else if (ognlValue.equals(expression))
+                ognlValue = "";
             value = matcher.replaceFirst(ognlValue);
         }
         return value;
