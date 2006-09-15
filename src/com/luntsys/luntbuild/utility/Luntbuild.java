@@ -1256,6 +1256,13 @@ public class Luntbuild {
         notifiers.add(JabberNotifier.class);
         notifiers.add(SametimeNotifier.class);
         notifiers.add(BlogNotifier.class);
+
+        List customNotifiers = (List)appContext.getBean("customNotifiers");
+
+        if (customNotifiers != null) {
+            notifiers.addAll(customNotifiers);
+        }
+
     }
 
     private static void loadListeners(ServletContext context) {

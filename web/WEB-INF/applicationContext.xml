@@ -143,6 +143,14 @@
 
 	<bean id="exceptionInterceptor" class="com.luntsys.luntbuild.interceptors.ExceptionInterceptor"/>
 
+	<bean id="customNotifiers" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+		<list>
+			<!-- Custom Notifiers -->
+		</list>
+		</property>
+	</bean>
+
 	<!-- ACEGI -->
 
 	<!-- =================== SECURITY BEANS YOU SHOULD CHANGE ================== -->
