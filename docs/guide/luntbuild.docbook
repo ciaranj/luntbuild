@@ -455,7 +455,7 @@ Fill the following information:
     The Visual Studio output scraper may be used to provide more detailed information regarding a Visual Studio build.
     To enable the scraper, make sure the command line used to trigger the build is visible in the build log.
     The scraper looks for a regular expression pattern containing the name of a .sln file followed
-    by the “\build config�? parameter.  If a match is found, the following variables are available to Velocity templates:
+    by the “\build config�? parameter.  If a match is found, the following variables are available to Velocity templates:
     <simplelist>
         <member><emphasis>vs_build_solutions</emphasis>a List of MSVSSolution objects.  This list is empty if no build command line was matched.</member>
     </simplelist>
@@ -1489,6 +1489,9 @@ the set of builders defined here.
         was successful (root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object).
  		If left empty, the <emphasis>result==0 and logContainsLine("BUILD SUCCESSFUL")</emphasis>
 		value is assumed. When this expression evaluates to true, the build is considered successful.
+        The logContainsLine() method uses <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/String.html#matches(java.lang.String)">String.matches() method</ulink>
+        to match the each (whole line) of the build log. If the expression matches only substring of the log file line
+        the method logContainsLine() returns false!
         </para></listitem>
         </varlistentry>
     </variablelist>
@@ -1577,6 +1580,9 @@ the set of builders defined here.
         was successful (root object used for OGNL expression evaluation here is current <ulink url="../javadoc/com/luntsys/luntbuild/builders/Builder.html">Builder</ulink> object).
  		If left empty, the <emphasis>result==0 and logContainsLine("\\[INFO\\].*BUILD SUCCESSFUL.*")</emphasis>
 		value is assumed. When this expression evaluates to true, the build is considered successful.
+        The logContainsLine() method uses <ulink url="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/String.html#matches(java.lang.String)">String.matches() method</ulink>
+        to match the each (whole line) of the build log. If the expression matches only substring of the log file line
+        the method logContainsLine() returns false!
         </para></listitem>
         </varlistentry>
     </variablelist>
