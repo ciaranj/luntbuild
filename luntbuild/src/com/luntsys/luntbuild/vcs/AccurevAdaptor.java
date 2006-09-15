@@ -77,6 +77,10 @@ public class AccurevAdaptor extends Vcs {
         return new AccurevModule();
     }
 
+    public Module createNewModule(Module module) {
+        return new AccurevModule((AccurevModule)module);
+    }
+
     public List getVcsSpecificProperties() {
         List properties = new ArrayList();
 		properties.add(new DisplayProperty() {
@@ -357,6 +361,16 @@ public class AccurevAdaptor extends Vcs {
         private String backingStream;
         private String buildStream;
         private String label;
+
+        public AccurevModule() {}
+
+        public AccurevModule(AccurevModule module) {
+            this.depot = module.depot;
+            this.srcPath = module.srcPath;
+            this.backingStream = module.backingStream;
+            this.buildStream = module.buildStream;
+            this.label = module.label;
+        }
 
         public String getDepot() {
             return depot;

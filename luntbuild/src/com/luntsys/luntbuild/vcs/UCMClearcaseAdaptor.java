@@ -683,6 +683,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 		return null; // module definition not applicable for this vcs
 	}
 
+    public Module createNewModule(Module module) {
+        return null; // module definition not applicable for this vcs
+    }
+
 /*
 	public boolean isConfigModifiedComparedTo(Vcs vcs, Project antProject) {
 		return deriveBaseClearcaseAdaptor(antProject).isConfigModifiedComparedTo(vcs, antProject);

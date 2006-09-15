@@ -2,7 +2,7 @@
  * Copyright TRX Inc(c) 2006,
  *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 1.
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -21,7 +21,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
+ *
  */
 package com.luntsys.luntbuild.vcs;
 
@@ -48,9 +48,9 @@ import com.luntsys.luntbuild.utility.Revisions;
 
 /**
  * Adaptor to MKS version control system. It will be serialized by hibernate
- * 
+ *
  * @author Stefan Baramov (TRX Inc.)
- * 
+ *
  */
 public class MksAdaptor extends Vcs {
 
@@ -60,7 +60,7 @@ public class MksAdaptor extends Vcs {
 	 * Internal logger.
 	 */
 	private static final Log logger = LogFactory.getLog(MksServiceProvider.class);
-	
+
 	/**
 	 * Selection model of yes/no type.
 	 */
@@ -111,7 +111,7 @@ public class MksAdaptor extends Vcs {
 		 * and clean up.
 		 */
 		private String projectFileName;
-		
+
 		/**
 		 * The development path to be used for this module.
 		 */
@@ -137,15 +137,26 @@ public class MksAdaptor extends Vcs {
 			subproject = "";
 		}
 
+        /**
+         * Initialize a new object with its default settings.
+         */
+        public MksModule(MksModule module) {
+            this.version = module.version;
+            this.subproject = module.subproject;
+            this.projectFileName = module.projectFileName;
+            this.developmentPath = module.developmentPath;
+            this.external = module.external;
+        }
+
 		/**
 		 * @inheritDoc
-		 * 
+		 *
 		 * @see com.luntsys.luntbuild.vcs.Vcs.Module#getProperties()
 		 */
 		public List getProperties() {
-			
+
 			List properties = new ArrayList();
-			
+
 			// subproject
 			properties.add(new DisplayProperty() {
 				public String getDisplayName() {
@@ -165,7 +176,7 @@ public class MksAdaptor extends Vcs {
 					setSubproject(value);
 				}
 			});
-			
+
 			// version
 			properties.add(new DisplayProperty() {
 				public String getDisplayName() {
@@ -183,10 +194,10 @@ public class MksAdaptor extends Vcs {
 				}
 
 				public boolean isRequired() {
-					
+
 					return false;
 				}
-				
+
 				public String getValue() {
 					return getVersion();
 				}
@@ -195,8 +206,8 @@ public class MksAdaptor extends Vcs {
 					setVersion(value);
 				}
 			});
-			
-			
+
+
 			// project file name
 			properties.add(new DisplayProperty() {
 				public String getDisplayName() {
@@ -215,7 +226,7 @@ public class MksAdaptor extends Vcs {
 					setProjectFileName(value);
 				}
 			});
-			
+
 			// project development path
 			properties.add(new DisplayProperty() {
 				public String getDisplayName() {
@@ -233,13 +244,13 @@ public class MksAdaptor extends Vcs {
 				public void setValue(String value) {
 					setDevelopmentPath(value);
 				}
-				
+
 				public boolean isRequired() {
-				
+
 					return false;
 				}
 			});
-			
+
 			// external
 			DisplayProperty p = new DisplayProperty() {
 				public String getDisplayName() {
@@ -264,7 +275,7 @@ public class MksAdaptor extends Vcs {
 				public boolean isSelect() {
 					return true;
 				}
-				
+
 				public String getValue() {
 					return isExternal() ? "yes" : "no";
 				}
@@ -282,7 +293,7 @@ public class MksAdaptor extends Vcs {
 					}
 				}
 			};
-			
+
 			p.setSelectionModel(new MksYesNoSelectionModel());
 			properties.add(p);
 
@@ -292,25 +303,25 @@ public class MksAdaptor extends Vcs {
 
 		/**
 		 * @inheritDoc
-		 * 
+		 *
 		 * @see com.luntsys.luntbuild.vcs.Vcs.Module#getFacade()
 		 */
 		public ModuleFacade getFacade() {
 
 			MksModuleFacade facade = new MksModuleFacade();
-			
+
 			facade.setExternal(isExternal());
 			facade.setVersion(getVersion());
 			facade.setSubproject(getSubproject());
 			facade.setProjectFileName(getProjectFileName());
 			facade.setDevelopmentPath(getDevelopmentPath());
-			
+
 			return facade;
 		}
 
 		/**
 		 * @inheritDoc
-		 * 
+		 *
 		 * @see com.luntsys.luntbuild.vcs.Vcs.Module#setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade)
 		 */
 		public void setFacade(ModuleFacade facade) {
@@ -331,13 +342,13 @@ public class MksAdaptor extends Vcs {
 
 		/**
 		 * Returns the full project name as it should be stored in MKS repository.
-		 * 
+		 *
 		 * @return the project name based on the rootProject field of the enclosing class.
 		 */
 		public String getProject() {
-			
-			// NOTE: The separator should be the server file system separator. 
-			// However MKS API does not provide way to get the this information. 
+
+			// NOTE: The separator should be the server file system separator.
+			// However MKS API does not provide way to get the this information.
 			// So assume the server is Unix based.
 
 			return rootProject + "/" + getSubproject() + "/" + getProjectFileName();
@@ -346,7 +357,7 @@ public class MksAdaptor extends Vcs {
 		/**
 		 * Returns the complete name of the sandbox for this module based in the given working
 		 * directory.
-		 * 
+		 *
 		 * @param workingDir
 		 *        the working directory, the base for the sandbox.
 		 * @return path relative to the given working directory and ending with the project file e.g.
@@ -359,7 +370,7 @@ public class MksAdaptor extends Vcs {
 
 		/**
 		 * Returns the base directory for this moduel sandbox, based on the given working directory.
-		 * 
+		 *
 		 * @param workingDir
 		 *        the working directory becomes the base for the sandbox.
 		 * @return path based on the working directory.
@@ -368,7 +379,7 @@ public class MksAdaptor extends Vcs {
 
 			return workingDir + File.separator + getSubprojectOsDependant();
 		}
-		
+
 		public String getVersion() {
 
 			return version;
@@ -383,7 +394,7 @@ public class MksAdaptor extends Vcs {
 
 			return subproject;
 		}
-		
+
 		public String getSubprojectOsDependant() {
 			// replace all \ and / with the OS depedant direcotry separator.
 			return getSubproject().replaceAll("[/\\\\]", "\\" + File.separator);
@@ -415,22 +426,22 @@ public class MksAdaptor extends Vcs {
 		}
 
 		public String getDevelopmentPath() {
-		
+
 			return developmentPath;
 		}
-		
+
 		public void setDevelopmentPath(String developmentPath) {
-		
+
 			this.developmentPath = developmentPath;
 		}
 
 	}
-	
+
 	/**
 	 * Default hostname of the MKS server.
 	 */
 	private String defaultHostname;
-	
+
 	/**
 	 * Default port number to be used to connect to the MKS server.
 	 */
@@ -461,7 +472,7 @@ public class MksAdaptor extends Vcs {
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#getDisplayName()
 	 */
 	public String getDisplayName() {
@@ -471,7 +482,7 @@ public class MksAdaptor extends Vcs {
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#getIconName()
 	 */
 	public String getIconName() {
@@ -481,13 +492,13 @@ public class MksAdaptor extends Vcs {
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#getVcsSpecificProperties()
 	 */
 	public List getVcsSpecificProperties() {
 
 		List properties = new ArrayList();
-		
+
 		// default hostname
 		properties.add(new DisplayProperty() {
 			public String getDisplayName() {
@@ -497,7 +508,7 @@ public class MksAdaptor extends Vcs {
 			public String getDescription() {
 				return "The hostname used to connect to the MKS server. The default value stored in the client will be used, if left empty.";
 			}
-			
+
 			public String getValue() {
 				return getDefaultHostname();
 			}
@@ -505,12 +516,12 @@ public class MksAdaptor extends Vcs {
 			public void setValue(String value) {
 				setDefaultHostname(value);
 			}
-			
+
 			public boolean isRequired() {
 				return false;
 			}
 		});
-		
+
 		// default port
 		properties.add(new DisplayProperty() {
 			public String getDisplayName() {
@@ -520,7 +531,7 @@ public class MksAdaptor extends Vcs {
 			public String getDescription() {
 				return "The port used to connect to the MKS server. The default value stored in the client will be used, if left empty.";
 			}
-			
+
 			public String getValue() {
 				return Integer.toString(getDefaultPort());
 			}
@@ -533,12 +544,12 @@ public class MksAdaptor extends Vcs {
 					setDefaultPort(7001);
 				}
 			}
-			
+
 			public boolean isRequired() {
 				return false;
 			}
 		});
-		
+
 		// default username
 		properties.add(new DisplayProperty() {
 			public String getDisplayName() {
@@ -557,7 +568,7 @@ public class MksAdaptor extends Vcs {
 				setDefaultUsername(value);
 			}
 		});
-		
+
 		// default password
 		properties.add(new DisplayProperty() {
 			public String getDisplayName() {
@@ -567,7 +578,7 @@ public class MksAdaptor extends Vcs {
 			public String getDescription() {
 				return "The password used to connect to the MKS client.";
 			}
-			
+
 			public boolean isSecret() {
 				return true;
 			}
@@ -580,7 +591,7 @@ public class MksAdaptor extends Vcs {
 				setDefaultPassword(value);
 			}
 		});
-		
+
 		// project root
 		properties.add(new DisplayProperty() {
 			public String getDisplayName() {
@@ -602,19 +613,19 @@ public class MksAdaptor extends Vcs {
 				setRootProject(value);
 			}
 		});
-		
+
 		return properties;
 	}
-	
+
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#cleanupCheckout(com.luntsys.luntbuild.db.Schedule, org.apache.tools.ant.Project)
 	 */
 	public void cleanupCheckout(Schedule workingSchedule, Project antProject) {
-	
+
 		String workingDir = workingSchedule.getWorkDirRaw();
-		
+
 		final MksServiceProvider mks = new MksServiceProvider(defaultHostname, defaultPort, defaultUsername, defaultPassword);
 		try {
 			if (mks.isPartOfSandbox(workingDir) )	 {
@@ -631,7 +642,7 @@ public class MksAdaptor extends Vcs {
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#checkoutActually(com.luntsys.luntbuild.db.Build,
 	 *      org.apache.tools.ant.Project)
 	 */
@@ -645,15 +656,15 @@ public class MksAdaptor extends Vcs {
 		while (it.hasNext()) {
 
 			// clone the module since the checkout opration is long and the module can
-			// get changed in the middle. 
+			// get changed in the middle.
 			MksAdaptor.MksModule module = (MksAdaptor.MksModule) Luntbuild.cloneModule(this,
 					(Vcs.Module) it.next());
-			
+
 			// propage the version of the build to the all modules.
 			if ( Luntbuild.isEmpty(build.getVersion()) && ! module.isExternal() ) {
 				module.setVersion(build.getVersion());
 			}
-			
+
 			// retrieve the module.
 			retrieveModule(workingDir, module, project, build.isCleanBuild());
 
@@ -662,7 +673,7 @@ public class MksAdaptor extends Vcs {
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#label(com.luntsys.luntbuild.db.Build,
 	 *      org.apache.tools.ant.Project)
 	 */
@@ -686,14 +697,14 @@ public class MksAdaptor extends Vcs {
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#getRevisionsSince(java.util.Date,
 	 *      com.luntsys.luntbuild.db.Schedule, org.apache.tools.ant.Project)
 	 */
 	public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 
 		Revisions revisions = new Revisions();
-		
+
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
 
@@ -709,13 +720,13 @@ public class MksAdaptor extends Vcs {
 				retrieveModuleRevisions(revisions, sinceDate, module, antProject);
 			}
 		}
-		
+
 		return revisions;
 	}
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#createNewModule()
 	 */
 	public Module createNewModule() {
@@ -723,15 +734,25 @@ public class MksAdaptor extends Vcs {
 		return new MksModule();
 	}
 
+    /**
+     * @inheritDoc
+     *
+     * @see com.luntsys.luntbuild.vcs.Vcs#createNewModule()
+     */
+    public Module createNewModule(Module module) {
+
+        return new MksModule((MksModule)module);
+    }
+
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#saveToFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade)
 	 */
 	public void saveToFacade(VcsFacade facade) {
 
 		MksAdaptorFacade mksFacade = (MksAdaptorFacade) facade;
-		
+
 		mksFacade.setRootProject(getRootProject());
 		mksFacade.setDefaultUsername(getDefaultUsername());
 		mksFacade.setDefaultPassword(getDefaultPassword());
@@ -741,7 +762,7 @@ public class MksAdaptor extends Vcs {
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade)
 	 */
 	public void loadFromFacade(VcsFacade facade) {
@@ -749,9 +770,9 @@ public class MksAdaptor extends Vcs {
 		if (!(facade instanceof MksAdaptorFacade)) {
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
 		}
-		
+
 		MksAdaptorFacade mksFacade = (MksAdaptorFacade) facade;
-		
+
 		setRootProject(mksFacade.getRootProject());
 		setDefaultUsername(mksFacade.getDefaultUsername());
 		setDefaultPassword(mksFacade.getDefaultPassword());
@@ -761,7 +782,7 @@ public class MksAdaptor extends Vcs {
 
 	/**
 	 * @inheritDoc
-	 * 
+	 *
 	 * @see com.luntsys.luntbuild.vcs.Vcs#constructFacade()
 	 */
 	public VcsFacade constructFacade() {
@@ -769,7 +790,7 @@ public class MksAdaptor extends Vcs {
 		return new MksAdaptorFacade();
 	}
 
-	
+
 	public String getDefaultPassword() {
 
 		return defaultPassword;
@@ -801,29 +822,29 @@ public class MksAdaptor extends Vcs {
 	}
 
 	public String getDefaultHostname() {
-	
+
 		return defaultHostname;
 	}
-	
+
 	public void setDefaultHostname(String defaultHostname) {
-	
+
 		this.defaultHostname = defaultHostname;
 	}
-	
+
 	public int getDefaultPort() {
-	
+
 		return defaultPort;
 	}
-	
+
 	public void setDefaultPort(int defaultPort) {
-	
+
 		this.defaultPort = defaultPort;
 	}
 
 	/**
 	 * Retrieves a particular module by creating a sandbox, populating the sandbox and droping the
 	 * sandbox. All project.pj files will be cleaned up.
-	 * 
+	 *
 	 * @param workingDir
 	 *        the working direcotry.
 	 * @param module
@@ -848,28 +869,28 @@ public class MksAdaptor extends Vcs {
 
 		MksServiceProvider mks = new MksServiceProvider(defaultHostname, defaultPort, defaultUsername, defaultPassword);
 		try {
-			
+
 			final boolean hasSandbox = mks.isSandboxExist(sandbox);
 			final boolean hasVersion = !Luntbuild.isEmpty(module.getVersion());
-			
+
 
 			if (hasVersion) {
 				/*
 				 * The givem module has a version. The version should be matched to a particular checkpoint
 				 * (labels are not recommeded in MKS). If the checkpoint is found then create a build
 				 * sandbox with the found revision. If not create the default sandbox just to keep us going.
-				 * 
+				 *
 				 * But first drop any existing sandboxes.
 				 */
 				final String revision = mks.getProjectRevision(
 						project, Luntbuild.getLabelByVersion(module.getVersion()),
 						module.getDevelopmentPath());
-				
+
 				if (hasSandbox) {
 					logDual(antProject, "Droping sandbox: " + sandbox, Project.MSG_INFO);
 					mks.dropSandbox(sandbox);
 				}
-				
+
 				logDual(antProject, "Creating sandbox " + sandbox + ", revision: " + revision, Project.MSG_INFO);
 				mks.createSandbox(project, sandboxDir, revision, module.getDevelopmentPath());
 
@@ -897,7 +918,7 @@ public class MksAdaptor extends Vcs {
 
 				else if (!cleanBuild && hasSandbox) {
 					logDual(antProject, "Resynchronizing the existing sandbox:" + sandbox, Project.MSG_INFO);
-					
+
 					mks.resyncSandbox(sandbox, true);
 				}
 
@@ -915,7 +936,7 @@ public class MksAdaptor extends Vcs {
 
 	/**
 	 * Loads the revisions for the given module.
-	 * 
+	 *
 	 * @param revisions
 	 *        the revisions data holder.
 	 * @param sinceDate
@@ -940,11 +961,11 @@ public class MksAdaptor extends Vcs {
 			mks.release();
 		}
 	}
-	
+
 
 	/**
 	 * Checkpoints the project described with the given module.
-	 * 
+	 *
 	 * @param module
 	 *        the module.
 	 * @param checkpointDescription
@@ -967,7 +988,7 @@ public class MksAdaptor extends Vcs {
 		finally {
 			mks.release();
 		}
-		
+
 	}
 
 	private void logDual(Project antProject, String msg, int level) {
@@ -975,7 +996,7 @@ public class MksAdaptor extends Vcs {
 		// create a log in the ant log file
 		antProject.log(msg, level);
 
-		// create a log record in the system log file. 
+		// create a log record in the system log file.
 		if (level == Project.MSG_INFO) {
 			logger.info(msg);
 		}

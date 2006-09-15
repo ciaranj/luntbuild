@@ -31,8 +31,9 @@ import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.SvnModuleFacade;
+import com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade;
 import com.luntsys.luntbuild.utility.*;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.commons.lang.StringUtils;
@@ -277,7 +278,7 @@ public class SvnExeAdaptor extends Vcs {
 		// retrieve modules
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
-			SvnModule module = (SvnModule) Luntbuild.cloneModule(this, (Vcs.Module) it.next());
+			SvnExeModule module = (SvnExeModule) Luntbuild.cloneModule(this, (Vcs.Module) it.next());
 			if (build.isRebuild() && Luntbuild.isEmpty(module.getLabel()))
 				module.setLabel(Luntbuild.getLabelByVersion(build.getVersion()));
 			if (build.isRebuild() || build.isCleanBuild())
@@ -291,17 +292,21 @@ public class SvnExeAdaptor extends Vcs {
 		String workingDir = build.getSchedule().getWorkDirRaw();
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
-			SvnModule module = (SvnModule) it.next();
+            SvnExeModule module = (SvnExeModule) it.next();
 			if (Luntbuild.isEmpty(module.getLabel()))
 				labelModule(workingDir, module, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
 		}
 	}
 
 	public Vcs.Module createNewModule() {
-		return new SvnModule();
+		return new SvnExeModule();
 	}
 
-	private void retrieveModule(String workingDir, SvnModule module, Project antProject) {
+    public Vcs.Module createNewModule(Vcs.Module module) {
+        return new SvnExeModule((SvnExeModule)module);
+    }
+
+	private void retrieveModule(String workingDir, SvnExeModule module, Project antProject) {
 		String destDir;
 		if (Luntbuild.isEmpty(module.getDestPath()))
 			destDir = Luntbuild.concatPath(workingDir, module.getSrcPath());
@@ -334,7 +339,7 @@ public class SvnExeAdaptor extends Vcs {
 		}
 	}
 
-	private void labelModule(String workingDir, SvnModule module, String label, Project antProject) {
+	private void labelModule(String workingDir, SvnExeModule module, String label, Project antProject) {
 		String normalizedModule = Luntbuild.concatPath("/", module.getSrcPath());
 		String normalizedTagsDir = Luntbuild.concatPath("/", getTagsDir());
 
@@ -409,7 +414,7 @@ public class SvnExeAdaptor extends Vcs {
 				Project.MSG_INFO).execute();
 	}
 
-	private void updateModule(String workingDir, SvnModule module, Project antProject) {
+	private void updateModule(String workingDir, SvnExeModule module, Project antProject) {
 		String url = Luntbuild.concatPath(getUrlBase(), mapPathByBranchLabel(module.getSrcPath(),
 				module.getBranch(), module.getLabel()));
 
@@ -487,7 +492,7 @@ public class SvnExeAdaptor extends Vcs {
 		super.validateModules();
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
-			SvnModule module = (SvnModule) it.next();
+            SvnExeModule module = (SvnExeModule) it.next();
 			if (module.getSrcPath().indexOf('\\') != -1)
 				throw new ValidationException("Source path \"" + module.getSrcPath() + "\" should not contain character '\\'");
 		}
@@ -499,7 +504,7 @@ public class SvnExeAdaptor extends Vcs {
 		Commandline cmdLine = buildSvnExecutable();
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
-			SvnModule module = (SvnModule) it.next();
+            SvnExeModule module = (SvnExeModule) it.next();
 			if (Luntbuild.isEmpty(module.getLabel())) {
 				cmdLine.clearArgs();
 				cmdLine.createArgument().setValue("log");
@@ -658,7 +663,7 @@ public class SvnExeAdaptor extends Vcs {
 			return getTags();
 	}
 
-	public class SvnModule extends Module {
+	public class SvnExeModule extends Module {
 		/**
 		 * Keep tracks of version of this class, used when do serialization-deserialization
 		 */
@@ -668,6 +673,21 @@ public class SvnExeAdaptor extends Vcs {
 		private String branch;
 		private String label;
 		private String destPath;
+
+        /**
+         * Constructor
+         */
+        public SvnExeModule() {}
+
+        /**
+         * Copy Constructor
+         */
+        public SvnExeModule(SvnExeModule module) {
+            this.srcPath = module.srcPath;
+            this.branch = module.branch;
+            this.label = module.label;
+            this.destPath = module.destPath;
+        }
 
 		public String getSrcPath() {
 			return this.srcPath;
@@ -808,7 +828,7 @@ public class SvnExeAdaptor extends Vcs {
 		}
 
 		public com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade() {
-			SvnModuleFacade facade = new com.luntsys.luntbuild.facades.lb12.SvnModuleFacade();
+			SvnExeModuleFacade facade = new com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade();
 			facade.setBranch(getBranch());
 			facade.setDestPath(getDestPath());
 			facade.setLabel(getLabel());
@@ -817,8 +837,8 @@ public class SvnExeAdaptor extends Vcs {
 		}
 
 		public void setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade facade) {
-			if (facade instanceof com.luntsys.luntbuild.facades.lb12.SvnModuleFacade) {
-				SvnModuleFacade svnModuleFacade = (com.luntsys.luntbuild.facades.lb12.SvnModuleFacade) facade;
+			if (facade instanceof com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade) {
+				SvnExeModuleFacade svnModuleFacade = (com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade) facade;
 				setBranch(svnModuleFacade.getBranch());
 				setLabel(svnModuleFacade.getLabel());
 				setSrcPath(svnModuleFacade.getSrcPath());

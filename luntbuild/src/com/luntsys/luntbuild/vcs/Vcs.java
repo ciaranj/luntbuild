@@ -173,6 +173,13 @@ public abstract class Vcs implements Serializable, Cloneable {
 	 */
 	public abstract Module createNewModule();
 
+    /**
+     * Create a new module for current vcs
+     *
+     * @return null if modules are not applicable for current vcs
+     */
+    public abstract Module createNewModule(Module module);
+
 	/**
 	 * Get a list of change logs covered by current vcs config since
 	 * the specified date.
@@ -280,7 +287,8 @@ public abstract class Vcs implements Serializable, Cloneable {
 			}
 			for (int i=0; i<getModules().size(); i++) {
 				Module module = (Module) getModules().get(i);
-				copy.getModules().add(module.clone());
+                Module newModule = createNewModule(module);
+				copy.getModules().add(newModule);
 			}
 			return copy;
 		} catch (InstantiationException e) {
@@ -391,7 +399,7 @@ public abstract class Vcs implements Serializable, Cloneable {
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof Module){
 				Module module = (Module) obj;
-				return (getProperties() == null? module.getProperties()== null: 
+				return (getProperties() == null? module.getProperties()== null:
 					getProperties().equals(module.getProperties()));
 			}
 			return false;

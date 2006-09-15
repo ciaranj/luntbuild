@@ -1,8 +1,8 @@
 /*
  * Copyright luntsys (c) 2004-2005, Date: 2004-7-23 Time: 10:06
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright notice,
@@ -10,7 +10,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -21,7 +21,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.luntsys.luntbuild.vcs;
 
@@ -113,7 +113,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     /**
      * Allows subclasses to provide their own list of properties.
-     * 
+     *
      * @return List of DisplayProperty objects
      */
     protected abstract List getClearcaseAdaptorProperties();
@@ -428,7 +428,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     /**
      * Build the executable part of a commandline object
-     * 
+     *
      * @return
      */
     protected final Commandline buildCleartoolExecutable() {
@@ -444,7 +444,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     /**
      * Does the clearcase view represented by this vcs object exists
-     * 
+     *
      * @param antProject
      * @return
      */
@@ -466,7 +466,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     /**
      * Delete the the clearcase view represented by this vcs object
-     * 
+     *
      * @param viewPath path to snapshot view
      * @param antProject
      */
@@ -486,7 +486,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
     /**
      * Helper method that can be called to ensure a view exists and create it if
      * it doesn't.
-     * 
+     *
      * @param schedule
      * @param antProject
      */
@@ -498,7 +498,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     /**
      * Create a clearcase view represented by this vcs object
-     * 
+     *
      * @param antProject
      */
     protected final void createCcView(final Schedule schedule,
@@ -539,7 +539,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
     /**
      * Same as {{@link #getClearcaseWorkDirRaw(Schedule)}, but with
      * backslashes escaped for OGNL's benefit.
-     * 
+     *
      * @param schedule
      * @return
      * @see #getClearcaseWorkDirRaw(Schedule)
@@ -552,7 +552,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
     /**
      * Method invoked after a view is created, allowing subclasses to do some
      * post processing.
-     * 
+     *
      * @param schedule
      * @param antProject
      */
@@ -567,7 +567,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
     /**
      * Method invoked after a view's config spec has been set, allowing
      * subclasses to do some post processing.
-     * 
+     *
      * @param antProject
      * @param workingDir
      */
@@ -575,7 +575,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     /**
      * Set the config spec for specified clearcase view
-     * 
+     *
      * @param antProject
      */
     public final void setCcViewCfgSpec(final Schedule schedule,
@@ -623,7 +623,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     /**
      * Determines if a given config spec denotes some LATEST version
-     * 
+     *
      * @return
      */
     protected final boolean containLatestVersion() {
@@ -651,7 +651,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
     /**
      * Allows subclasses to do whatever prep work is necessary just before
      * invoking lshistory.
-     * 
+     *
      * @param workingSchedule
      * @param antProject
      * @param workingDir
@@ -744,6 +744,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
         return null; // module definition not applicable for current vcs
     }
 
+    public final Module createNewModule(Module module) {
+        return null; // module definition not applicable for current vcs
+    }
+
     public final void saveToFacade(
             final com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
         final BaseClearcaseAdaptorFacade baseClearcaseFacade =
@@ -783,7 +787,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     /**
      * Helper method that will invoke cleartool
-     * 
+     *
      * @param build
      * @param project
      * @param cleartoolCmd

@@ -225,7 +225,7 @@ public class StarteamAdaptor extends Vcs {
             return value;
         }
     }
-    
+
 	/**
 	 * Method may throw a BuildException to indicates a module acquisition exception
 	 *
@@ -316,6 +316,10 @@ public class StarteamAdaptor extends Vcs {
 	public Vcs.Module createNewModule() {
 		return new StarteamModule();
 	}
+
+    public Vcs.Module createNewModule(Vcs.Module module) {
+        return new StarteamModule((StarteamModule)module);
+    }
 
 	public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		Revisions revisions = new Revisions();
@@ -499,6 +503,21 @@ public class StarteamAdaptor extends Vcs {
 		private String srcPath;
 		private String label;
 		private String destPath;
+
+        /**
+         * Constructor
+         */
+        public StarteamModule() {}
+
+        /**
+         * Copy Constructor
+         */
+        public StarteamModule(StarteamModule module) {
+            this.starteamView = module.starteamView;
+            this.srcPath = module.srcPath;
+            this.label = module.label;
+            this.destPath = module.destPath;
+        }
 
 		public List getProperties() {
 			List properties = new ArrayList();
