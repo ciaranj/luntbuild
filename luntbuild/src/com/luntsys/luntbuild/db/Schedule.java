@@ -1085,10 +1085,12 @@ public class Schedule implements DependentNode {
             OgnlHelper.setTestMode(true);
             OgnlHelper.setAntProject(Luntbuild.createAntProject());
             String versionValue = Luntbuild.evaluateExpression(this, buildVersion);
-            if (versionValue.matches(".*[/\\\\:*?\"<>|$,;@].*"))
-                throw new ValidationException("version string should not contain characters: /\\:*?\"<>|$,;@");
+            if (versionValue.matches(".*[/\\\\:*?\"<>|$,;@#].*"))
+                throw new ValidationException("version string should not contain characters: /\\:*?\"<>|$,;@#");
             if (!versionValue.matches(".*[\\d].*"))
                 throw new ValidationException("version string should contain digit");
+            if (!versionValue.matches(".*[\\s].*"))
+                throw new ValidationException("version string should contain whitespace");
         } catch (Throwable e) {
             throw new ValidationException("Error parsing version string: " + buildVersion +
                     ", reason: "+ Luntbuild.getExceptionMessage(e));
