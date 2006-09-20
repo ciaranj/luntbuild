@@ -72,6 +72,7 @@
 			<parsable targetfile="$INSTALL_PATH/initialize.sh" os="unix"/>
 			<executable targetfile="$INSTALL_PATH/initialize.bat" stage="postinstall" os="windows"/>
 			<executable targetfile="$INSTALL_PATH/initialize.sh" stage="postinstall" os="unix"/>
+            <parsable targetfile="$INSTALL_PATH/initialize.sh" os="unix"/>
 		</pack>
         <pack name="Base" required="yes">
             <description>Lunbuild base installation files - required</description>
@@ -100,6 +101,10 @@
             <parsable targetfile="$INSTALL_PATH/web/WEB-INF/jdbc.oracle.properties"/>
             <parsable targetfile="$INSTALL_PATH/web/WEB-INF/jdbc.db2.properties"/>
             <parsable targetfile="$INSTALL_PATH/web/WEB-INF/applicationContext.xml"/>
+            <parsable targetfile="$INSTALL_PATH/bin/luntbuild.bat" os="windows"/>
+            <parsable targetfile="$INSTALL_PATH/bin/stop-luntbuild.bat" os="windows"/>
+            <parsable targetfile="$INSTALL_PATH/bin/luntbuild.sh" os="unix"/>
+            <parsable targetfile="$INSTALL_PATH/bin/stop-luntbuild.sh" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configure-jdbc.bat" stage="postinstall" os="windows"/>
             <executable targetfile="$INSTALL_PATH/configure-jdbc.sh" stage="postinstall" os="unix"/>
             <executable targetfile="$INSTALL_PATH/configure-war.bat" stage="postinstall" os="windows"/>
