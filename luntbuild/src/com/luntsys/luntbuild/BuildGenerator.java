@@ -643,6 +643,10 @@ public class BuildGenerator implements StatefulJob {
                 }
             }
 
+            String name = SecurityHelper.getPrincipalAsString();
+            if (name != null)
+                logger.info("User \"" + name + "\" started the build");
+
             if (build.isCleanBuild() || build.isRebuild()) {
                 String message = "Cleaning up project work directory \"" +
                 build.getSchedule().getWorkDirRaw() + "\"...";

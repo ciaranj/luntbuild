@@ -488,6 +488,9 @@
 	   <property name="context">
 	       <value>org.acegisecurity.context.SecurityContextImpl</value>
 	   </property>
+	   <property name="allowSessionCreation">
+	       <value>false</value>
+	   </property>
 	</bean>
 
 	<!--  Acegi 0.8.3 FilterChainProxy -->
