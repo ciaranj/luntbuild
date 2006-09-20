@@ -110,8 +110,16 @@ public abstract class AdministrationTab extends TabPageComponent {
 		}
 		File xmlDataFile = new File(getFilePathToImport().trim());
 		if (!xmlDataFile.exists()) {
-			setErrorMsg("Specified importing file does not exist!");
-			return;
+            if (!xmlDataFile.isAbsolute()) {
+                xmlDataFile = new File(Luntbuild.installDir + File.separator + getFilePathToImport().trim());
+                if (!xmlDataFile.exists()) {
+                    setErrorMsg("Specified importing file does not exist!");
+                    return;
+                }
+            } else {
+                setErrorMsg("Specified importing file does not exist!");
+                return;
+            }
 		}
 		setAction("import");
 	}
@@ -120,8 +128,13 @@ public abstract class AdministrationTab extends TabPageComponent {
 		ensureCurrentTab();
 		if (getFilePathToImport() == null)
 			return;
+        File f = new File(getFilePathToImport().trim());
+        if (!f.isAbsolute()) {
+            f = new File(Luntbuild.installDir + File.separator + getFilePathToImport().trim());
+            if (!f.exists()) return;
+        }
 		com.luntsys.luntbuild.facades.lb12.DataCollection dataCollection =
-				MigrationManager.importAsDataCollection12(new File(getFilePathToImport()));
+				MigrationManager.importAsDataCollection12(f);
         try {
             Luntbuild.getDao().eraseExistingData();
         } catch (Exception e) {
