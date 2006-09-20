@@ -644,8 +644,10 @@ public class BuildGenerator implements StatefulJob {
             }
 
             String name = SecurityHelper.getPrincipalAsString();
-            if (name != null)
-                logger.info("User \"" + name + "\" started the build");
+            if (name != null) {
+                logger.info("User \"" + name + "\" started the build: " + build.getSchedule().getName());
+                antProject.log("User \"" + name + "\" started the build", Project.MSG_INFO);
+            }
 
             if (build.isCleanBuild() || build.isRebuild()) {
                 String message = "Cleaning up project work directory \"" +
