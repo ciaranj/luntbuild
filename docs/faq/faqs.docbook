@@ -264,7 +264,7 @@
 			</question>
 			<answer>
 				<para>
-                You ca configure Luntbuild logging system (log4j) to send email when an error is logged
+                You can configure Luntbuild logging system (log4j) to send email when an error is logged
                 (or warning if you prefer). Just add "mail" to the log4j.rootCategory in log4j.properties
                 and add the following to log4j.properties:
                 <programlisting>
@@ -281,8 +281,32 @@ log4j.appender.Mail.layout.ConversionPattern=%d %-5p %c %x - %m%n
 				</para>
 			</answer>
 		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>
+                    How do I parse different parts of the build version?
+				</para>
+			</question>
+			<answer>
+				<para>
+                From Scott Herbert: This is how I manipulate ${buildVersion}:
+                <programlisting>
+&lt;target name=&quot;load-buildproperties&quot;&gt;
+        &lt;propertyregex property=&quot;major&quot; input=&quot;${buildVersion}&quot; regexp=&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)&quot; select=&quot;\1&quot; casesensitive=&quot;false&quot; /&gt;
+        &lt;propertyregex property=&quot;minor&quot; input=&quot;${buildVersion}&quot; regexp=&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)&quot; select=&quot;\2&quot; casesensitive=&quot;false&quot; /&gt;
+        &lt;propertyregex property=&quot;type&quot; input=&quot;${buildVersion}&quot; regexp=&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)&quot; select=&quot;\3&quot; casesensitive=&quot;false&quot; /&gt;
+        &lt;propertyregex property=&quot;number&quot; input=&quot;${buildVersion}&quot; regexp=&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)&quot; select=&quot;\4&quot; casesensitive=&quot;false&quot; /&gt;
+&lt;/target&gt;
+				</programlisting>
+                ${buildVersion} is set to "FOO 1.2.3.4" by luntbuild and this creates separate properties
+                for each version component.
+				</para>
+				<para>
+                    The &lt;propertyregex/&gt; task in from ANT Contrib ( http://ant-contrib.sf.net).
+				</para>
+			</answer>
+		</qandaentry>
 	</qandaset>
-
 
 	<qandaset>
 		<title>Application Server FAQ</title>
@@ -546,7 +570,6 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 		</qandaentry>
 	</qandaset>
 
-
 	<qandaset>
 		<title>Visual Sourcesafe FAQ</title>
 		<qandaentry>
@@ -563,6 +586,32 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 					<programlisting>
 		'd/M/yy;H:mm'
 					</programlisting>
+				</para>
+			</answer>
+		</qandaentry>
+	</qandaset>
+
+	<qandaset>
+		<title>Clearcase FAQ</title>
+		<qandaentry>
+			<question>
+				<para>I have read in the doucmentation that the UCM module does not support labeling.  To anyone
+                      using Luntbuild with UCM, how are you creating new baselines/labels when the build is successful?
+                </para>
+			</question>
+			<answer>
+				<para>
+                     From Gordon McNair: Our solution has been to have targets in our build that apply the
+                     baseline. This was set up before we started using luntbuild. So the
+                     continuous build mechanism doesn't do it directly.
+				</para>
+				<para>
+                So our build process in a nutshell is:
+					<orderedlist numeration="arabic">
+					  <listitem><para>Set the baseline on the source (promotion level "Rejected").</para></listitem>
+					  <listitem><para>Do build operations.</para></listitem>
+					  <listitem><para>Set the baseline promotion level to "Built" on successful build.</para></listitem>
+					</orderedlist>
 				</para>
 			</answer>
 		</qandaentry>
