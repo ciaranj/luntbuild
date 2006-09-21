@@ -4,7 +4,7 @@
  * Time: 21:42:21
  *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 1.
  * Redistributions of source code must retain the above copyright notice, this
@@ -12,7 +12,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,11 +23,13 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
+ *
  */
 package com.luntsys.luntbuild.dependency;
 
 import java.util.*;
+
+import com.luntsys.luntbuild.facades.Constants;
 
 /**
  * This class handles various dependency resolving for given object(s), such as resolving
@@ -48,7 +50,7 @@ public class DependencyResolver {
 	}
 
 	public void visitNodesThisNodeDependsOnRecursively(DependentNode thisNode) throws DependencyLoopException {
-		visitNodes(findNodesThisNodeDependsOnRecursively(thisNode));
+		visitNodes(findNodesThisNodeDependsOnRecursively(thisNode, false));
 	}
 
 	public void visitNodesDependsOnThisNodeRecursively(Set nodes, DependentNode thisNode) throws DependencyLoopException {
@@ -103,13 +105,22 @@ public class DependencyResolver {
 
 	public Set findNodesDependsOnThisNodeRecursively(Set nodes, DependentNode thisNode) {
 		Set nodesDependsOnThis = new HashSet(nodes);
-		nodesDependsOnThis.removeAll(findNodesThisNodeDependsOnRecursively(thisNode));
+		nodesDependsOnThis.removeAll(findNodesThisNodeDependsOnRecursively(thisNode, true));
 		nodesDependsOnThis.add(thisNode);
 		Set excludedNodes = new HashSet();
 		excludedNodes.add(thisNode);
 		DependentNode leafNode;
 		while ((leafNode = findLeafNode(nodesDependsOnThis, excludedNodes)) != null)
 			nodesDependsOnThis.remove(leafNode);
+
+        excludedNodes = new HashSet();
+        for (Iterator iter = nodesDependsOnThis.iterator(); iter.hasNext();) {
+            DependentNode node = (DependentNode) iter.next();
+            if (node.getTriggerDependencyStrategy() != Constants.TRIGGER_ALL_DEPENDENT_SCHEDULES &&
+                    node.getTriggerDependencyStrategy() != Constants.TRIGGER_SCHEDULES_DEPENDS_ON_THIS)
+                excludedNodes.add(node);
+        }
+        nodesDependsOnThis.removeAll(excludedNodes);
 		nodesDependsOnThis.remove(thisNode);
 		return nodesDependsOnThis;
 	}
@@ -126,7 +137,7 @@ public class DependencyResolver {
 		}
 	}
 
-	public Set findNodesThisNodeDependsOnRecursively(DependentNode thisNode) {
+	public Set findNodesThisNodeDependsOnRecursively(DependentNode thisNode, boolean doIgnoreStrategy) {
 		Set nodes = new HashSet();
 		nodes.add(thisNode);
 		boolean isNodeAdded = true;
@@ -138,7 +149,10 @@ public class DependencyResolver {
 				Iterator itDependent = node.getDependsOn(userData4DependsOn).iterator();
 				while (itDependent.hasNext()) {
 					DependentNode dependentNode = (DependentNode) itDependent.next();
-					if (!nodes.contains(dependentNode)) {
+					if (!nodes.contains(dependentNode) &&
+                            (doIgnoreStrategy ||
+                                    node.getTriggerDependencyStrategy() == Constants.TRIGGER_ALL_DEPENDENT_SCHEDULES ||
+                                    node.getTriggerDependencyStrategy() == Constants.TRIGGER_SCHEDULES_THIS_DEPENDS_ON)) {
 						nodes.add(dependentNode);
 						isNodeAdded = true;
 					}
