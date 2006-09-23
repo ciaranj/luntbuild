@@ -197,8 +197,8 @@ public class SecurityHelper
     }
 
 	public static boolean isPrjReadable(long prjId) {
-		return isUserInRole(prjId, "ROLE_SITE_ADMIN, ROLE_AUTHENTICATED, LUNTBUILD_PRJ_ADMIN, " +
-				"LUNTBUILD_PRJ_BUILDER, LUNTBUILD_PRJ_VIEWER");
+		return isUserInRole(prjId, "ROLE_SITE_ADMIN, ROLE_AUTHENTICATED, ROLE_ANONYMOUS, " +
+                "LUNTBUILD_PRJ_ADMIN, LUNTBUILD_PRJ_BUILDER, LUNTBUILD_PRJ_VIEWER");
 	}
 
 	public static boolean isPrjBuildable(long prjId) {

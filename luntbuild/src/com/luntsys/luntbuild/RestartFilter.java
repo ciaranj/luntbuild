@@ -33,11 +33,15 @@ import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.services.HessianService;
 
 import javax.servlet.*;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.ui.rememberme.TokenBasedRememberMeServices;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -57,17 +61,38 @@ public class RestartFilter implements Filter {
             FilterChain filterChain) throws IOException, ServletException {
 		try  {
     		HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+            HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
             servletRequest.setCharacterEncoding("UTF-8");
             servletResponse.setContentType( "text/html; charset=UTF-8" );
     		String service = httpServletRequest.getParameter("service");
-    		filterChain.doFilter(servletRequest, servletResponse);
+    		String relogin = httpServletRequest.getParameter("relogin");
 
     		// Tapestry restart service have no effect on Orion. Invalidate session here again.
     		if (service != null && service.equals("restart")) {
-    			HttpSession session = httpServletRequest.getSession(false);
-    			if (session != null)
-    				session.invalidate();
-    		}
+                if (relogin == null || !relogin.equalsIgnoreCase("no")) {
+                    String url = httpServletResponse.encodeRedirectURL("luntbuild-login.jsp");
+                    httpServletResponse.sendRedirect(url);
+                } else {
+                    filterChain.doFilter(servletRequest, servletResponse);
+                }
+            } else if(service != null && service.startsWith("reset")) {
+                // Invalidate session
+                HttpSession session = httpServletRequest.getSession(false);
+                if (session != null) session.invalidate();
+                // Invalidate remember me cookie
+                Cookie terminate =
+                    new Cookie(TokenBasedRememberMeServices.ACEGI_SECURITY_HASHED_REMEMBER_ME_COOKIE_KEY,
+                            null);
+                terminate.setMaxAge(0);
+                httpServletResponse.addCookie(terminate);
+                if (relogin == null || !relogin.equalsIgnoreCase("no")) {
+                    String url = httpServletResponse.encodeRedirectURL("luntbuild-login.jsp");
+                    httpServletResponse.sendRedirect(url);
+                } else {
+                    filterChain.doFilter(servletRequest, servletResponse);
+                }
+    		} else
+    		    filterChain.doFilter(servletRequest, servletResponse);
 		} catch (Exception e) {
 			logger.error("Exception occurred while processing http request.", e);
 

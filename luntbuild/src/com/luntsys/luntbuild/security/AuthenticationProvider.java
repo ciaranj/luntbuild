@@ -306,7 +306,7 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
 
         int authSize = 1;
         if (canCreateProject) authSize++;
-        if (canViewProject) authSize++;
+        if (canViewProject) authSize += 2;
         if (canBuildProject) authSize++;
 
         authorities = new GrantedAuthorityImpl[authSize];
@@ -315,8 +315,10 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
         authorities[ix++] = new GrantedAuthorityImpl(Role.ROLE_AUTHENTICATED);
         if (canCreateProject)
             authorities[ix++] = new GrantedAuthorityImpl("LUNTBUILD_PRJ_ADMIN_0");
-        if (canViewProject)
+        if (canViewProject) {
+            authorities[ix++] = new GrantedAuthorityImpl(Role.ROLE_ANONYMOUS);
             authorities[ix++] = new GrantedAuthorityImpl("LUNTBUILD_PRJ_VIEWER");
+        }
         if (canBuildProject)
             authorities[ix++] = new GrantedAuthorityImpl("LUNTBUILD_PRJ_BUILDER");
 

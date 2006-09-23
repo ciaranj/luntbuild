@@ -1189,6 +1189,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             role.setName(Role.ROLE_AUTHENTICATED);
             session.saveOrUpdate(role);
             role = new Role();
+            role.setName(Role.ROLE_ANONYMOUS);
+            session.saveOrUpdate(role);
+            role = new Role();
             role.setName(Role.ROLE_SITE_ADMIN);
             session.saveOrUpdate(role);
             role = new Role();

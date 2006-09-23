@@ -115,9 +115,9 @@
       -->
     <target name="war" depends="webstage">
         <delete file="stage/web/WEB-INF/web.xml"/>
+        <delete file="stage/web/WEB-INF/applicationContext.xml"/>
         <filter token="installDir" value="${luntbuild-install-dir}"/>
         <filter token="sessionTimeout" value="30"/>
-        <filter token="luntbuildPassword" value="luntbuild"/>
         <filter token="luntbuildPassword" value="luntbuild"/>
         <filter token="ldapHost" value=""/>
         <filter token="ldapPort" value=""/>
@@ -130,10 +130,10 @@
         <filter token="ldapCanViewProject" value="true"/>
         <filter token="ldapCanBuildProject" value="true"/>
         <filter token="ldapEmailAttrName" value="mail"/>
-        <copy file="web/WEB-INF/web.xml" tofile="stage/web.xml"
-            overwrite="true" filtering="true" />
         <copy file="web/WEB-INF/applicationContext.xml"
             tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/web.xml" tofile="stage/web.xml"
+            overwrite="true" filtering="true" />
         <war basedir="stage/web" destfile="stage/luntbuild.war" webxml="stage/web.xml"/>
         <delete file="stage/web.xml"/>
     </target>

@@ -3,7 +3,7 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<meta http-equiv="Refresh" content="5; URL=/luntbuild/app.do"  />
+<meta http-equiv="Refresh" content="5; URL=/luntbuild/app.do?service=restart"  />
 <title>luntbuild - make your software building manageable</title>
 <link rel="stylesheet" type="text/css" href="css/luntbuild.css" />
 <link rel="shortcut icon" href="images/favicon.ico" type="image/ico"/>
@@ -87,7 +87,9 @@
                 </tr>
                 <tr class="dataTableTitleRow">
                   <td align="left" valign="top" scope="col">
-                  <img src="images/error.gif" width="32" height="32" align="absmiddle">&nbsp;<span class="errorMsg">login failed !</span> <a HREF="/luntbuild/app.do">If you are not automatically redirected to login page, click here</a></td>
+                    <img src="images/error.gif" width="32" height="32" align="absmiddle">&nbsp;<span class="errorMsg">login failed !</span>
+                    <a HREF="/luntbuild/app.do?service=restart">If you are not automatically redirected to login page, click here</a>
+                  </td>
                   </tr>
                 </table>
               </td>
@@ -99,8 +101,9 @@
           <td height="11" class="borderBottom">&nbsp;</td>
         </tr>
         <tr bgcolor="#CCCCCC">
-          <td height="10" align="center" valign="top" bgcolor="#EEEEEE">Powered
-          by <a href="http://luntbuild.javaforge.com/">Luntbuild</a> </td>
+          <td height="10" align="center" valign="top" bgcolor="#EEEEEE">
+            Powered by <a href="http://luntbuild.javaforge.com/">Luntbuild</a>
+          </td>
         </tr>
       </table>
       </td>
