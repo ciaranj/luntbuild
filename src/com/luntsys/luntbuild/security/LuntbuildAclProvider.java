@@ -66,7 +66,7 @@ public class LuntbuildAclProvider implements AclProvider {
 			permissionMask |= LuntbuildAclEntry.PROJECT_ADMIN;
 		if (SecurityHelper.isUserInRole(project.getId(), "LUNTBUILD_PRJ_BUILDER"))
 			permissionMask |= LuntbuildAclEntry.PROJECT_BUILD;
-		if (SecurityHelper.isUserInRole(project.getId(), "LUNTBUILD_PRJ_VIEWER"))
+		if (SecurityHelper.isUserInRole(project.getId(), "ROLE_ANONYMOUS,LUNTBUILD_PRJ_VIEWER"))
 			permissionMask |= LuntbuildAclEntry.PROJECT_READ;
 		LuntbuildAclEntry aclEntry = new LuntbuildAclEntry(authentication.getPrincipal(), project, null, permissionMask);
 		context.setAuthentication(oldAuthentication);

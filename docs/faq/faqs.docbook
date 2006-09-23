@@ -251,8 +251,18 @@
 				<para>
                 Edit &lt;server&gt;/webapps/luntbuild/WEB-INF/applicationContext.xml and remove line:
                 <programlisting>
-                anonymous=anonymous,ROLE_AUTHENTICATED
+     anonymous=anonymous,ROLE_AUTHENTICATED,ROLE_ANONYMOUS
+     ....
+     &lt;bean id=&quot;anonymousProcessingFilter&quot; class=&quot;org.acegisecurity.providers.anonymous.AnonymousProcessingFilter&quot;&gt;
+         &lt;property name=&quot;key&quot;&gt;&lt;value&gt;anonymous&lt;/value&gt;&lt;/property&gt;
+         &lt;property name=&quot;userAttribute&quot;&gt;&lt;value&gt;anonymous,ROLE_ANONYMOUS&lt;/value&gt;&lt;/property&gt;
+     &lt;/bean&gt;
+
+     &lt;bean id=&quot;anonymousAuthenticationProvider&quot; class=&quot;org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider&quot;&gt;
+         &lt;property name=&quot;key&quot;&gt;&lt;value&gt;anonymous&lt;/value&gt;&lt;/property&gt;
+     &lt;/bean&gt;
 				</programlisting>
+                You have to remove anonymousProcessingFilter from filterChainProxy bean.
 				</para>
 			</answer>
 		</qandaentry>

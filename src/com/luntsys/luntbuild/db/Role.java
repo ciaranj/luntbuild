@@ -11,8 +11,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.facades.lb12.RoleFacade;
 
-/** 
- *     
+/**
+ *
 */
 public class Role implements Serializable {
 
@@ -33,6 +33,7 @@ public class Role implements Serializable {
 	//  global roles
 	public final static String ROLE_AUTHENTICATED = "ROLE_AUTHENTICATED";
 	public final static String ROLE_SITE_ADMIN = "ROLE_SITE_ADMIN";
+    public final static String ROLE_ANONYMOUS = "ROLE_ANONYMOUS";
 	// per project roles
     public final static String LUNTBUILD_PRJ_ADMIN = "LUNTBUILD_PRJ_ADMIN";
 	public final static String LUNTBUILD_PRJ_BUILDER = "LUNTBUILD_PRJ_BUILDER";

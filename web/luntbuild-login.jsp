@@ -90,7 +90,7 @@
                   <td width="624" align="left" valign="top" class="propertyEditorValue2" >
                   <input type="text" name="j_username" size="30" tabindex="2"><br>
                   Specify your username.</td>
-                  </tr>
+                </tr>
 
                 <tr>
                   <td align="left" valign="top" class="propertyEditorName1">
@@ -99,17 +99,17 @@
                   <td align="left" valign="top" class="propertyEditorValue1" >
                   <input type="password" name="j_password" size="30" tabindex="2"><br>
                   Specify your password.</td>
-                  </tr>
+                </tr>
 
                 <tr class="propertyEditorTail2">
                   <td align="left" valign="top" class="propertyEditorTail2">&nbsp;</td>
                   <td align="left" valign="top" class="propertyListName2">
                   <input type="submit" value="Login" name="submit" tabindex="3">
                   &nbsp;&nbsp;
-                  <a href="j_acegi_security_check.do?j_username=anonymous&j_password=anonymous">
-                  Login as Anonymous</a>
+                  <a href="app.do?service=reset/Home&relogin=no">Anonymous</a>
+                  <a href="app.do">Last</a>
                   </td>
-                  </tr>
+                </tr>
               </table>
               </td>
             </tr>

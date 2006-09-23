@@ -2455,7 +2455,7 @@ site admin password to different value:
             <!-- this is the build-in site admin user - please change the password for security reasons.
                  However, name of the user, and its role should not be changed! -->
                 luntbuild=luntbuild,ROLE_SITE_ADMIN,ROLE_AUTHENTICATED
-                anonymous=anonymous,ROLE_AUTHENTICATED
+                anonymous=anonymous,ROLE_AUTHENTICATED,ROLE_ANONYMOUS
         </value>
     </property>
 </bean>
