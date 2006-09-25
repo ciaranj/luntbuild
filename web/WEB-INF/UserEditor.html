@@ -51,6 +51,16 @@
 				Check this checkbox to give the rights to this user to create new project.</td>
 		  </tr>
 		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+     	  <tr>
+			  <td jwcid="@Any" width="18%" align="left" valign="top" class="ognl:propertyNameCssClass" scope="col"><img src="images/new.gif" width="18" height="18" align="absmiddle"> Existing projects Access?</td>
+			  <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+              View: <input type="checkbox" jwcid="@Checkbox" selected="ognl:canViewProject"/>
+              Build: <input type="checkbox" jwcid="@Checkbox" selected="ognl:canBuildProject"/>
+              Administer: <input type="checkbox" jwcid="@Checkbox" selected="ognl:canAdminProject"/>
+				<br>
+				Check these checkboxes to give the existing projects access rights for this user.</td>
+		  </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
 		  </span>
 
 		<tr>
@@ -82,12 +92,12 @@
 	                </span>
 			        <span jwcid="@Conditional" condition="ognl:!property.secret">
 				        <span jwcid="@Conditional" condition="ognl:(!property.multiLine && !property.select)">
-				          <input class="inputBox" value="ognl:property.value[user.contacts]" size="75" jwcid="@TextField"/> 
+				          <input class="inputBox" value="ognl:property.value[user.contacts]" size="75" jwcid="@TextField"/>
 				        </span>
-				        <span jwcid="@Conditional" condition="ognl:property.multiLine"> 
+				        <span jwcid="@Conditional" condition="ognl:property.multiLine">
 				          <textarea cols="70" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:property.value[user.contacts]"/>
 				        </span>
-				        <span jwcid="@Conditional" condition="ognl:property.select"> 
+				        <span jwcid="@Conditional" condition="ognl:property.select">
 				          <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:property.selectionModel" value="ognl:property.value"/>
 				        </span>
 			        </span>
