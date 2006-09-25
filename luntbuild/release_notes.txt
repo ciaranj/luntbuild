@@ -14,6 +14,8 @@ luntbuild 1.3.3 Release Notes
  * Updated Acegi Security to 1.0.1 from 0.9.
  * Updated Spring to 1.2.8.
  * Upgraded to Hsqldb 1.8.0.5.
+ * Redesigned anonymous login access (based on Acegi), added Remember User access
+ * Added setting access rights to existing projects when creating new user
 
 ==============================================
 luntbuild 1.3.2 Release Notes
