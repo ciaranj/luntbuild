@@ -16,7 +16,7 @@
 		<title>General FAQ</title>
 		<qandaentry>
 			<question>
-				<para>How to configure several projects to use shared stuffs, for example shared jars?</para>
+				<para>How to configure several projects to use shared artifacts, for example shared jars?</para>
 			</question>
 			<answer>
 				<orderedlist numeration="arabic">
@@ -287,6 +287,41 @@ log4j.appender.Mail.layout=org.apache.log4j.PatternLayout
 log4j.appender.Mail.layout.ConversionPattern=%d %-5p %c %x - %m%n
 				</programlisting>
 				</para>
+			</answer>
+		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>
+                    I would like to run 3 version numbers in the traditional major.minor.build style. How do I do that?
+				</para>
+			</question>
+			<answer>
+            <para>
+            <emphasis>"release" schedule increases release part of the version, while "nightly" schedule
+			increases iteration part of the version. When release part of the version changes, iteration
+			part should be reset to 1.
+            </emphasis>
+            </para>
+            <para>
+				Define the following variables for the project:
+				<simplelist>
+					<member>fixPart=foo-1.1</member>
+					<member>releasePart=1</member>
+					<member>iterationPart=0</member>
+				</simplelist>
+                </para>
+                <para>
+				Define "next build version" of "nightly" schedule as:
+<programlisting>
+${project.var["fixPart"]}.${project.var["releasePart"]}-build-${project.var["iterationPart"].increaseAsInt()}
+</programlisting>
+				Define "next build version" of "release" schedule as:
+<programlisting>
+${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), project.var["releasePart"].(increaseAsInt(), value)}
+</programlisting>
+				This way, builds in "release" schedule will get versions like: foo-1.1.1, foo-1.1.2, foo-1.1.3, ..., and builds in "nightly" schedule
+				will get versions like: foo-1.1.1 build 1, foo-1.1.1 build 2, foo-1.1.1 build3, ...., foo-1.1.2 build 1, foo-1.1.2 build2, ...
+            </para>
 			</answer>
 		</qandaentry>
 		<qandaentry>
