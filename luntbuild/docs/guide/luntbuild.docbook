@@ -1804,13 +1804,11 @@ Provide a description for this schedule.
                 <para>
 				Define "next build version" of "nightly" schedule as:
 <programlisting>
-${project.var["fixPart"]}.${project.var["releasePart"]} \
-build ${project.var["iterationPart"].increaseAsInt()}
+${project.var["fixPart"]}.${project.var["releasePart"]}-build-${project.var["iterationPart"].increaseAsInt()}
 </programlisting>
 				Define "next build version" of "release" schedule as:
 <programlisting>
-${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), \
-project.var["releasePart"].(increaseAsInt(), value)}
+${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), project.var["releasePart"].(increaseAsInt(), value)}
 </programlisting>
 				This way, builds in "release" schedule will get versions like: foo-1.1.1, foo-1.1.2, foo-1.1.3, ..., and builds in "nightly" schedule
 				will get versions like: foo-1.1.1 build 1, foo-1.1.1 build 2, foo-1.1.1 build3, ...., foo-1.1.2 build 1, foo-1.1.2 build2, ...
