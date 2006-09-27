@@ -190,11 +190,9 @@
         <property name="ldapCanViewProject" value="@ldapCanViewProject@"/>
         <property name="ldapCanBuildProject" value="@ldapCanBuildProject@"/>
         <property name="ldapEmailAttrName" value="@ldapEmailAttrName@"/>
-        <!--
-        <property name="ldapUrl" value=""/>
-        <property name="ldapPrefix" value=""/>
-        <property name="ldapSuffix" value=""/>
-	-->
+        <property name="ldapUrl" value="@ldapUrl@"/>
+        <property name="ldapPrefix" value="@ldapPrefix@"/>
+        <property name="ldapSuffix" value="@ldapSuffix@"/>
 	</bean>
 
 	<!-- provider for declared user-roles -->

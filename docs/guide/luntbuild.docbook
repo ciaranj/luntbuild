@@ -10,6 +10,7 @@
   <!ENTITY createproject-chapter SYSTEM "createproject-chapter.docbook">
   <!ENTITY cvsadaptor-section SYSTEM "cvsadaptor-section.docbook">
   <!ENTITY cvsmodule-section SYSTEM "cvsmodule-section.docbook">
+  <!ENTITY clearcaseadaptor-section SYSTEM "clearcaseadaptor-section.docbook">
   <!ENTITY antbuilder-section SYSTEM "antbuilder-section.docbook">
   <!ENTITY editschedule-section SYSTEM "editschedule-section.docbook">
   <!ENTITY builds-chapter SYSTEM "builds-chapter.docbook">
