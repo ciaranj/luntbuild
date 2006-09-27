@@ -1,0 +1,15 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Backing up Luntbuild data</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch02.html" title="Chapter 2. Installing Luntbuild"><link rel="prev" href="ch02s05.html" title="Running Luntbuild in standalone mode"><link rel="next" href="ch03.html" title="Chapter 3. Configuring Luntbuild to use database"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Backing up Luntbuild data</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch02s05.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 2. Installing Luntbuild</th><td width="20%" align="right"> <a accesskey="n" href="ch03.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="backup"></a>Backing up Luntbuild data</h2></div></div></div><p>
+    It is very good idea to backup Luntbuild data so they can be restored in case they get corrupted.
+    The backup strategy might depend on the type of the database you are using.
+</p><p>
+    The database independent way to backup Luntbuild data is to use Export function in Administation tab.
+    Unfortunatelly there is currently not an automated way to create a backup, it has to be created
+    by login as Luntbuild administrator and perform Export.
+</p><p>
+    In case your Luntbuild installation uses HSQLDB database (default) the database data is stored
+    in &lt;luntbuild install&gt;/db directory. It is highly recommended to backup this directory on
+    regular basis, if you do not want to use Export method mentioned above.
+</p><p>
+    If you are using an external database (MySql, PostgreSql), please use the database backup/restore
+    procedure, if you do not want to use Export method above.
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch02s05.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="ch02.html"><img src="../images/up.gif" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="ch03.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Running Luntbuild in standalone mode </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Chapter 3. Configuring Luntbuild to use database</td></tr></table></div></body></html>

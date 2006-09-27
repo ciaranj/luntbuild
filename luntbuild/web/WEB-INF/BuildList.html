@@ -1,0 +1,68 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+-->
+</style>
+</head>
+<span jwcid="$content$">
+<span jwcid="@Conditional" condition="ognl:components.pageNavigator.totalPages != 0">
+<table width="100%"  border="0" cellpadding="0" cellspacing="0">
+  <tr align="left" bgcolor="#D2E9FF">
+    <th colspan="7" scope="col"><table width="100%" height="26"  border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <th width="100" align="left" class="centerTableDescriptionRow" scope="col"><img src="images/builds.gif" width="80" height="40"></th>
+          <th height="100%" align="left" class="centerTableDescriptionRow" scope="col"><span jwcid="@Insert" value="ognl:numTotalBuilds">100</span> builds found</th>
+          <th width="26%" align="right" class="centerTableDescriptionRow" scope="col">
+		  <span jwcid="pageNavigator@luntbuild:PageNavigator" listener="ognl:listeners.changePage">
+		  page 1 of 10 <a href="#"><<</a> <a href="#"><</a> <a href="#">></a> <a href="#">>></a>
+		  </span>
+		  </th>
+        </tr>
+    </table></th>
+  </tr>
+  <tr class="dataTableTitleRow">
+    <td width="15%">project</td>
+    <td width="15%">schedule</td>
+    <td>Version</td>
+    <td width="13%">status</td>
+    <td width="16%">finish date </td>
+    <td width="13%" align="center">minutes used </td>
+  </tr>
+  <span jwcid="@Foreach" source="ognl:builds" value="ognl:build" index="ognl:buildIndex">
+  <tr>
+	<td jwcid="@Any" class="ognl:rowCssClass">
+		<a href="#" jwcid="@DirectLink" listener="ognl:container.listeners.gotoProject" parameters="ognl:build.schedule.project.id">
+		<span jwcid="@Insert" value="ognl:build.schedule.project.name">luntbuild</span>
+		</a>
+	</td>
+	<td jwcid="@Any" class="ognl:rowCssClass">
+		<a href="#" jwcid="@DirectLink" listener="ognl:container.listeners.gotoSchedule" parameters="ognl:build.schedule.project.id" anchor="ognl:build.schedule.id">
+		<span jwcid="@Insert" value="ognl:build.schedule.name">nightly</span>
+		</a>
+	</td>
+    <td jwcid="@Any" class="ognl:rowCssClass">
+    <a jwcid="@DirectLink" listener="ognl:container.listeners.viewBuild" parameters="ognl:build.id" href="#">
+    <span jwcid="@Insert" value="ognl:build.version">luntbuild1.0</span>
+    </a>
+    </td>
+    <td jwcid="@Any" class="ognl:rowCssClass">
+    <img jwcid="@Any" src="ognl:buildStatusGif" width="20" height="20" align="absmiddle"/> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.facades.Constants@getBuildStatusText(build.status)">success</span>
+    </td>
+    <td jwcid="@Any" class="ognl:rowCssClass"><span jwcid="@Insert" value="ognl:buildEndDate">2004.4.1 13:40 </span></td>
+    <td align="center" class="ognl:rowCssClass" jwcid="@Any"><span jwcid="@Insert" value="ognl:buildCostTime">19</span></td>
+  </tr>
+  </span>
+</table>
+</span>
+<span jwcid="@Conditional" condition="ognl:components.pageNavigator.totalPages == 0">
+<table width="100%"  border="0" cellspacing="0">
+  <tr>
+    <td height="100" align="center"><p><img src="images/sigh.gif" width="32" height="32"></p>
+    <p><strong>No builds found! </strong></p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</span>
+</span>
