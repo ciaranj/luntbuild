@@ -73,7 +73,7 @@ Fill the following information:
     The Visual Studio output scraper may be used to provide more detailed information regarding a Visual Studio build.
     To enable the scraper, make sure the command line used to trigger the build is visible in the build log.
     The scraper looks for a regular expression pattern containing the name of a .sln file followed
-    by the &#8220;\build config&#8221; parameter.  If a match is found, the following variables are available to Velocity templates:
+    by the &#8220;\build config&#65533;? parameter.  If a match is found, the following variables are available to Velocity templates:
     </p><table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>vs_build_solutions</em></span>a List of MSVSSolution objects.  This list is empty if no build command line was matched.</td></tr></table><p>
    </p><p>
     MSVSSolution contains the following properties:

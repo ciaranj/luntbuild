@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Schedule Parameters.</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch13.html" title="Chapter 13. Creating Build Schedule(s) for the Project"><link rel="prev" href="ch13.html" title="Chapter 13. Creating Build Schedule(s) for the Project"><link rel="next" href="ch14.html" title="Chapter 14. Defining Login Mapping for a Project"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Schedule Parameters.</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch13.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 13. Creating Build Schedule(s) for the Project</th><td width="20%" align="right"> <a accesskey="n" href="ch14.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id4771430"></a>Schedule Parameters.</h2></div></div></div><p><b>Name. </b>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Schedule Parameters.</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch13.html" title="Chapter 13. Creating Build Schedule(s) for the Project"><link rel="prev" href="ch13.html" title="Chapter 13. Creating Build Schedule(s) for the Project"><link rel="next" href="ch14.html" title="Chapter 14. Defining Login Mapping for a Project"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Schedule Parameters.</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch13.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 13. Creating Build Schedule(s) for the Project</th><td width="20%" align="right"> <a accesskey="n" href="ch14.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id4772382"></a>Schedule Parameters.</h2></div></div></div><p><b>Name. </b>
 Provide a name for this schedule. This name will be used to identify this schedule, and cannot be changed later.
 Keep in mind that schedule name is used as subdirectory of the project publish directory.
 </p><p><b>Description. </b>
@@ -55,13 +55,11 @@ Provide a description for this schedule.
                 </p><p>
 				Define "next build version" of "nightly" schedule as:
 </p><pre class="programlisting">
-${project.var["fixPart"]}.${project.var["releasePart"]} \
-build ${project.var["iterationPart"].increaseAsInt()}
+${project.var["fixPart"]}.${project.var["releasePart"]}-build-${project.var["iterationPart"].increaseAsInt()}
 </pre><p>
 				Define "next build version" of "release" schedule as:
 </p><pre class="programlisting">
-${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), \
-project.var["releasePart"].(increaseAsInt(), value)}
+${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), project.var["releasePart"].(increaseAsInt(), value)}
 </pre><p>
 				This way, builds in "release" schedule will get versions like: foo-1.1.1, foo-1.1.2, foo-1.1.3, ..., and builds in "nightly" schedule
 				will get versions like: foo-1.1.1 build 1, foo-1.1.1 build 2, foo-1.1.1 build3, ...., foo-1.1.2 build 1, foo-1.1.2 build2, ...
@@ -100,7 +98,7 @@ project.var["releasePart"].(increaseAsInt(), value)}
         Set the cron expression for this schedule, the format is
         &lt;seconds&gt; &lt;minutes&gt; &lt;hours&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt;.
         For example <span class="emphasis"><em>0 1 * * ?</em></span> means 1:00am every day. For details of the format,
-        refer to <a href="http://www.opensymphony.com/quartz/tutorial.html#cronTriggers" target="_top"><em class="citetitle">Cron triggers tutorial</em></a>.
+        refer to <a href="http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html" target="_top"><em class="citetitle">Cron triggers tutorial</em></a>.
         </p><p><b>Repeat interval (minutes). </b>
         Set the repeat interval for this schedule in minutes.
         </p><a name="buildNecessaryCondition"></a><p><b>Build necessary condition. </b>

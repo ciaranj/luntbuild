@@ -125,6 +125,18 @@
             <spec txt="LDAP Port:" id="input.ldapPort" size="10" set="389"/>
         </field>
 
+        <field type="text" variable="ldapUrl">
+            <spec txt="LDAP Url:" id="input.ldapUrl" size="30" set=""/>
+        </field>
+
+        <field type="text" variable="ldapPrefix">
+            <spec txt="LDAP Prefix:" id="input.ldapPrefix" size="30" set=""/>
+        </field>
+
+        <field type="text" variable="ldapSuffix">
+            <spec txt="LDAP Suffix:" id="input.ldapSuffix" size="30" set=""/>
+        </field>
+
         <field type="text" variable="ldapUserDn">
             <spec txt="LDAP UserDN:" id="input.ldapUserDn" size="30" set=""/>
         </field>

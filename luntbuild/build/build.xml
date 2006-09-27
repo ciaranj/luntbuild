@@ -121,6 +121,9 @@
         <filter token="luntbuildPassword" value="luntbuild"/>
         <filter token="ldapHost" value=""/>
         <filter token="ldapPort" value=""/>
+        <filter token="ldapUrl" value=""/>
+        <filter token="ldapPrefix" value=""/>
+        <filter token="ldapSuffix" value=""/>
         <filter token="ldapUserDn" value=""/>
         <filter token="ldapAuthentication" value="simple"/>
         <filter token="ldapUserId" value="uid"/>
@@ -272,6 +275,9 @@
 		<filter token="luntbuildPassword" value="${luntbuildPassword}"/>
         <filter token="ldapHost" value="${ldapHost}"/>
         <filter token="ldapPort" value="${ldapPort}"/>
+        <filter token="ldapUrl" value="${ldapUrl}"/>
+        <filter token="ldapPrefix" value="${ldapPrefix}"/>
+        <filter token="ldapSuffix" value="${ldapSuffix}"/>
         <filter token="ldapUserDn" value="${ldapUserDn}"/>
         <filter token="ldapAuthentication" value="${ldapAuthentication}"/>
         <filter token="ldapUserId" value="${ldapUserId}"/>
@@ -376,6 +382,9 @@
 	<target name="zip" depends="stage" description="Builds Luntbuild zip distribution">
         <filter token="ldapHost" value=""/>
         <filter token="ldapPort" value=""/>
+        <filter token="ldapUrl" value=""/>
+        <filter token="ldapPrefix" value=""/>
+        <filter token="ldapSuffix" value=""/>
         <filter token="ldapUserDn" value=""/>
         <filter token="ldapAuthentication" value="simple"/>
         <filter token="ldapUserId" value="uid"/>
