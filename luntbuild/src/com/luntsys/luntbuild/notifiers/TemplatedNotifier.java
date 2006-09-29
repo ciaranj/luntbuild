@@ -300,7 +300,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
 
     protected String constructNotificationTitle(Build build) {
         String buildDesc = build.getSchedule().getProject().getName() +
-        "/" + build.getSchedule().getName() + "/" + build.getVersion();
+        "/" + build.getSchedule().getName() + "/" + build.getVersionNoSpace();
         return "[luntbuild] build of \"" + buildDesc +
         "\" " + com.luntsys.luntbuild.facades.Constants.getBuildStatusText(build.getStatus());
     }

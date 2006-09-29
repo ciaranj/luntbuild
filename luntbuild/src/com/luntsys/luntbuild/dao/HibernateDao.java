@@ -910,7 +910,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                 Build build = (Build) it.next();
                 if (new File(build.getPublishDir()).exists())
                     Luntbuild.renameDir(build.getPublishDir(), schedule.getPublishDir() +
-                            File.separator + build.getVersion());
+                            File.separator + build.getVersionNoSpace());
                 pstmt.setLong(1, scheduleId);
                 pstmt.setLong(2, build.getId());
                 pstmt.executeUpdate();
@@ -1062,7 +1062,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             Build build = loadBuild(buildId);
             if (new File(build.getPublishDir()).exists())
                 Luntbuild.renameDir(build.getPublishDir(), schedule.getPublishDir() +
-                        File.separator + build.getVersion());
+                        File.separator + build.getVersionNoSpace());
 
             Connection connection = session.connection();
             PreparedStatement pstmt =
@@ -1495,7 +1495,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             while (it.hasNext()) {
                 Build build = (Build) it.next();
                 logger.info("Saving build: " + build.getSchedule().getProject().getName() +
-                        "/" + build.getSchedule().getName() + "/" + build.getVersion());
+                        "/" + build.getSchedule().getName() + "/" + build.getVersionNoSpace());
                 session.save(build);
             }
 

@@ -1089,8 +1089,6 @@ public class Schedule implements DependentNode {
                 throw new ValidationException("version string should not contain characters: /\\:*?\"<>|$,;@#");
             if (!versionValue.matches(".*[\\d].*"))
                 throw new ValidationException("version string should contain digit");
-            if (versionValue.matches(".*[\\s].*"))
-                throw new ValidationException("version string should not contain whitespace");
         } catch (Throwable e) {
             throw new ValidationException("Error parsing version string: " + buildVersion +
                     ", reason: "+ Luntbuild.getExceptionMessage(e));

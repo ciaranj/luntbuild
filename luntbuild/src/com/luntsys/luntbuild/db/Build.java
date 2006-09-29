@@ -164,6 +164,14 @@ public class Build {
     }
 
     /**
+     * Get version of this build
+     * @return version of this build
+     */
+    public String getVersionNoSpace() {
+        return version.replaceAll("\\s", "_");
+    }
+
+    /**
      * Set version of this build
      * @param version
      */
@@ -274,7 +282,7 @@ public class Build {
         if (ensureBuildLog())
             return servletUrl.substring(0, servletUrl.length() - 6) + "publish/" +
                 getSchedule().getProject().getName() +
-                "/" + getSchedule().getName() + "/" + getVersion() + "/" + BuildGenerator.BUILD_HTML_LOG;
+                "/" + getSchedule().getName() + "/" + getVersionNoSpace() + "/" + BuildGenerator.BUILD_HTML_LOG;
         else
             return null;
     }
@@ -308,7 +316,7 @@ public class Build {
         if (ensureRevisionLog())
             return servletUrl.substring(0, servletUrl.length() - 6) + "publish/" +
                 getSchedule().getProject().getName() + "/" + getSchedule().getName() + "/" +
-                getVersion() + "/" + BuildGenerator.REVISION_HTML_LOG;
+                getVersionNoSpace() + "/" + BuildGenerator.REVISION_HTML_LOG;
         else
             return null;
     }
@@ -409,7 +417,7 @@ public class Build {
      * @return the publish directory for current build
      */
     public String getPublishDir() {
-        String publishDir = getSchedule().getPublishDir() + File.separator + getVersion();
+        String publishDir = getSchedule().getPublishDir() + File.separator + getVersionNoSpace();
         try {
             publishDir = new File(publishDir).getCanonicalPath();
             return publishDir.replaceAll("\\\\", "\\\\\\\\"); // in order to keep back slash for ognl expression evaluation
@@ -540,7 +548,7 @@ public class Build {
     }
 
     public String toString() {
-        return getSchedule().getProject().getName() + "/" + getSchedule().getName() + "/" + getVersion();
+        return getSchedule().getProject().getName() + "/" + getSchedule().getName() + "/" + getVersionNoSpace();
     }
 
     /**
