@@ -484,7 +484,8 @@ public class Project implements AclObjectIdentity, VariableHolder {
     public boolean isVcsModified(String scheduleName) {
         Schedule s = getSchedule(scheduleName);
         Build build = Luntbuild.getDao().loadLastBuild(s);
-        return isVcsModifiedSince(build.getStartDate());
+
+        return (build == null) ? true : isVcsModifiedSince(build.getStartDate());
     }
 
 	/**
