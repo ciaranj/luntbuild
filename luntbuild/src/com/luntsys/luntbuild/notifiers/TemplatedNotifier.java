@@ -38,12 +38,14 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     public String templateBuildFile = null;
     /** Schedule template file */
     public String templateScheduleFile = null;
+    /** Subdir */
+    public String subdir = null;
 
     private Object ognlRoot = null;
     private MSVSScraper visualStudioScraper = new MSVSScraper();
 
     /** base template dir */
-    public static final String TEMPLATE_BASE_DIR = Luntbuild.installDir + "/templates";
+    public static final String TEMPLATE_BASE_DIR = Luntbuild.installDir + File.separator + "templates";
     private static final String QUOTE_FILE = "quotes.txt";
     private static final String TEMPLATE_DEF_FILE = "set-template.txt";
     private static final String DEFAULT_TEMPLATE_BUILD = "simple-build.vm";
@@ -55,12 +57,13 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      */
     public TemplatedNotifier(Class logClass, String subdir) {
         this.logger = LogFactory.getLog(logClass);
-        this.templateDir = TEMPLATE_BASE_DIR + "/" + subdir;
+        this.templateDir = TEMPLATE_BASE_DIR + File.separator + subdir;
+        this.subdir = subdir;
         setTemplateFiles();
     }
 
     private void setTemplateFiles() {
-        File f = new File(this.templateDir + "/" + TEMPLATE_DEF_FILE);
+        File f = new File(this.templateDir + File.separator + TEMPLATE_DEF_FILE);
         if (!f.exists()) {
             this.logger.error("Unable to find template definition file " + f.getPath());
             this.templateBuildFile = DEFAULT_TEMPLATE_BUILD;
@@ -92,7 +95,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      */
     private void init() throws Exception {
         Properties props = new Properties();
-        props.put("file.resource.loader.path", this.templateDir);
+        props.put("file.resource.loader.path", TEMPLATE_BASE_DIR);
         props.put("runtime.log", "velocity.log");
         Velocity.init(props);
         setTemplateFiles();
@@ -101,28 +104,14 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     /**
      * Process the template.
      */
-    private String processTemplate(Build build) throws Exception {
-    	return processTemplate(Velocity.getTemplate(this.templateBuildFile), build);
-    }
-
-    private String processTemplate(Schedule schedule) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.templateScheduleFile), schedule);
-    }
-
     private String processTemplate(Build build, VelocityContext ctx) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.templateBuildFile), build, ctx);
+        return processTemplate(Velocity.getTemplate(this.subdir + "/" + this.templateBuildFile),
+                build, ctx);
     }
 
     private String processTemplate(Schedule schedule, VelocityContext ctx) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.templateScheduleFile), schedule, ctx);
-    }
-
-    private String processTemplate(Template template, Build build) throws Exception {
-    	return processTemplate(template, build, null);
-    }
-
-    private String processTemplate(Template template, Schedule schedule) throws Exception {
-        return processTemplate(template, schedule, null);
+        return processTemplate(Velocity.getTemplate(this.subdir + "/" + this.templateScheduleFile),
+                schedule, ctx);
     }
 
     private String processTemplate(Template template, Build build, VelocityContext ctx) throws Exception {
@@ -300,7 +289,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
 
     protected String constructNotificationTitle(Build build) {
         String buildDesc = build.getSchedule().getProject().getName() +
-        "/" + build.getSchedule().getName() + "/" + build.getVersionNoSpace();
+        "/" + build.getSchedule().getName() + "/" + build.getVersion();
         return "[luntbuild] build of \"" + buildDesc +
         "\" " + com.luntsys.luntbuild.facades.Constants.getBuildStatusText(build.getStatus());
     }
@@ -410,6 +399,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         while ((readin = dis.read(buf)) > 0) {
             sbuf.append(new String(buf, 0, readin));
         }
+        dis.close();
         return sbuf.toString();
     }
 

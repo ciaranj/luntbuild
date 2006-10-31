@@ -43,6 +43,7 @@ import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.wc.*;
+import org.tmatesoft.svn.util.SVNDebugLog;
 
 import java.io.File;
 import java.util.*;
@@ -269,6 +270,8 @@ public class SvnAdaptor extends Vcs {
 
 		antProject.log("Retrieve url: " + url, Project.MSG_INFO);
 
+        initLogger(antProject);
+
         SVNUpdateClient updateClient = getClientManager().getUpdateClient();
         try {
             updateClient.doSwitch(destDir, url, SVNRevision.HEAD, true);
@@ -297,7 +300,7 @@ public class SvnAdaptor extends Vcs {
      * @param label
      * @param antProject
      */
-    public void labelModule(String workingDir, SvnModule module, String label, Project antProject) {
+    public synchronized void labelModule(String workingDir, SvnModule module, String label, Project antProject) {
         // no need to label this module cause this module is fetched from tags directory
         File dir = new File("/", module.getSrcPath());
         File tagsDir = new File("/", getTagsDir());
@@ -314,6 +317,8 @@ public class SvnAdaptor extends Vcs {
         SVNURL srcUrl = getModuleUrl(module);
 
         antProject.log("Label url: " + srcUrl, Project.MSG_INFO);
+
+        initLogger(antProject);
 
         String mapped = mapPathByLabel(module.getSrcPath(), label);
         String urlString = Luntbuild.concatPath(getUrlBase(), mapped);
@@ -472,6 +477,9 @@ public class SvnAdaptor extends Vcs {
     public Revisions getRevisionsSince(final Date sinceDate, Schedule workingSchedule, Project antProject) {
         SVNLogClient logClient = getClientManager().getLogClient();
         final Revisions revisions = new Revisions();
+
+        initLogger(antProject);
+
         Iterator it = getModules().iterator();
         while (it.hasNext()) {
             SvnModule module = (SvnModule) it.next();
@@ -615,6 +623,11 @@ public class SvnAdaptor extends Vcs {
             return getTags();
     }
 
+    private void initLogger(Project antProject) {
+        SvnCustomLogger svnLogger = new SvnCustomLogger(antProject);
+        SVNDebugLog.setLogger(svnLogger);
+    }
+
     /**
      * Svn Module
      *
@@ -637,6 +650,7 @@ public class SvnAdaptor extends Vcs {
 
         /**
          * Copy Constructor
+         * @param module
          */
         public SvnModule(SvnModule module) {
             this.srcPath = module.srcPath;
@@ -853,5 +867,6 @@ public class SvnAdaptor extends Vcs {
     public com.luntsys.luntbuild.facades.lb12.VcsFacade constructFacade() {
         return new SvnAdaptorFacade();
     }
+
 }
 
