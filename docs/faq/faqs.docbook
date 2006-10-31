@@ -710,6 +710,29 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 				</para>
 			</answer>
 		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>
+            When using Microsoft SQLServer Luntbuild fails at first. What should I do?
+                </para>
+			</question>
+			<answer>
+				<para>
+                You can try following small change in the WEB-INF/applicationContext.xml:
+					<programlisting>
+ &lt;bean id=&quot;hibernateSessionFactory&quot; class=&quot;org.springframework.orm.hibernate3.LocalSessionFactoryBean&quot;&gt;
+[...]
+  &lt;property name=&quot;schemaUpdate&quot;&gt;
+   &lt;value&gt;true&lt;/value&gt;
+  &lt;/property&gt;
+ &lt;/bean&gt;
+					</programlisting>
+
+                Setting "schemaUpdate" to true enables the session factory to create (or update)
+                the required schema according to the hibernate mapping.
+				</para>
+			</answer>
+		</qandaentry>
 	</qandaset>
 
 	<qandaset>
