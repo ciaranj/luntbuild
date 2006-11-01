@@ -44,7 +44,7 @@ A. Installation using Luntbuild installer (with GUI)
      the installer will deploy luntbuild.war for you.
 
   6) Access the Luntbuild web application and you should be able to start your
-     Luntbuild adventure, :D
+     Luntbuild adventure 8-)!
 
 B. Installation using zip distribution (without GUI)
 ----------------------------------------------------
