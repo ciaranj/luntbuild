@@ -44,9 +44,8 @@ import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.NotifierProperty;
-import com.luntsys.luntbuild.web.selectionmodels.JabberServerTypeSelection;
 
-import org.apache.tapestry.form.IPropertySelectionModel;
+import org.apache.tapestry.form.StringPropertySelectionModel;
 import org.apache.tools.ant.Project;
 import org.jivesoftware.smack.SSLXMPPConnection;
 import org.jivesoftware.smack.GoogleTalkConnection;
@@ -88,7 +87,7 @@ public class JabberNotifier  extends TemplatedNotifier
 
     private XMPPConnection connection = null;
 
-    private static String jabberServerType;
+    private static int jabberServerType = Constants.JABBER_SERVER_TYPE_NORMAL;
 
     /**
      * Constructor
@@ -114,14 +113,14 @@ public class JabberNotifier  extends TemplatedNotifier
      * @return Returns the jabberServerType.
      */
     public String getJabberServerType() {
-        return jabberServerType;
+        return Constants.getJabberServerType(jabberServerType);
     }
 
     /**
      * @param type The jabberServerType to set.
      */
     public void setJabberServerType(String type) {
-        jabberServerType = Constants.getJabberServerType(new Integer(type).intValue());
+        jabberServerType = Constants.getJabberServerTypeValue(type);
     }
 
     /**
@@ -202,11 +201,11 @@ public class JabberNotifier  extends TemplatedNotifier
 
         try
         {
-            if ( jabberServerType.toLowerCase().equals("ssl")) {
+            if ( jabberServerType == Constants.JABBER_SERVER_TYPE_SSL) {
                 this.connection = new SSLXMPPConnection(jabberServer,Integer.parseInt(jabberServerPort));
                 this.connection.login(luntJabberAccount, jabberPasswd,
                         "LuntBuild-" + this.connection.getConnectionID());
-            } else if(jabberServerType.toLowerCase().equals("google")) {
+            } else if(jabberServerType == Constants.JABBER_SERVER_TYPE_GOOGLE) {
                 this.connection = new GoogleTalkConnection();
                 this.connection.login(luntJabberAccount, jabberPasswd,
                         "LuntBuild-" + this.connection.getConnectionID());
@@ -326,10 +325,9 @@ public class JabberNotifier  extends TemplatedNotifier
                 setJabberServerType(value);
             }
         };
-        // Create selection model
-        IPropertySelectionModel model = new JabberServerTypeSelection();
         // Set selection model
-        p.setSelectionModel(model);
+        p.setSelectionModel(new StringPropertySelectionModel(
+                Constants.getJabberServerTypes()));
         // Add property to properties list
         properties.add(p);
 

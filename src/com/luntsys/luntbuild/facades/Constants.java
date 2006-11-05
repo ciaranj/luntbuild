@@ -4,7 +4,7 @@
  * Time: 16:25:02
  *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 1.
  * Redistributions of source code must retain the above copyright notice, this
@@ -12,7 +12,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,7 +23,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
+ *
  */
 package com.luntsys.luntbuild.facades;
 
@@ -150,7 +150,7 @@ public class Constants {
     public static final int JABBER_SERVER_TYPE_NORMAL = 0;
     public static final int JABBER_SERVER_TYPE_SSL = 1;
     public static final int JABBER_SERVER_TYPE_GOOGLE = 2;
-    
+
 	/**
 	 * System level property name constants
 	 */
@@ -296,7 +296,7 @@ public class Constants {
 		else
 			return "";
 	}
-    
+
     /** Return Jabber server type string.
      * @param type server type
      * @return Jabber server type string
@@ -311,4 +311,27 @@ public class Constants {
         else
             return "";
     }
+
+    /** Return Jabber server type int.
+     * @param type server type
+     * @return Jabber server type int
+     */
+    public static int getJabberServerTypeValue(String type) {
+        if (type.equalsIgnoreCase("normal"))
+            return JABBER_SERVER_TYPE_NORMAL;
+        else if (type.equalsIgnoreCase("ssl"))
+            return JABBER_SERVER_TYPE_SSL;
+        else if (type.equalsIgnoreCase("google"))
+            return JABBER_SERVER_TYPE_GOOGLE;
+        else
+            return JABBER_SERVER_TYPE_NORMAL;
+    }
+
+    /**
+     * @return array of jabber server types
+     */
+    public static String[] getJabberServerTypes() {
+        return new String[] {"normal", "ssl", "google"};
+    }
+
 }
