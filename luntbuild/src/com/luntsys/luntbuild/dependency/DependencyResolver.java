@@ -29,8 +29,6 @@ package com.luntsys.luntbuild.dependency;
 
 import java.util.*;
 
-import com.luntsys.luntbuild.facades.Constants;
-
 /**
  * This class handles various dependency resolving for given object(s), such as resolving
  * correct execution order of a set of dependency objects, etc.
@@ -50,7 +48,7 @@ public class DependencyResolver {
 	}
 
 	public void visitNodesThisNodeDependsOnRecursively(DependentNode thisNode) throws DependencyLoopException {
-		visitNodes(findNodesThisNodeDependsOnRecursively(thisNode, false));
+		visitNodes(findNodesThisNodeDependsOnRecursively(thisNode));
 	}
 
 	public void visitNodesDependsOnThisNodeRecursively(Set nodes, DependentNode thisNode) throws DependencyLoopException {
@@ -105,22 +103,13 @@ public class DependencyResolver {
 
 	public Set findNodesDependsOnThisNodeRecursively(Set nodes, DependentNode thisNode) {
 		Set nodesDependsOnThis = new HashSet(nodes);
-		nodesDependsOnThis.removeAll(findNodesThisNodeDependsOnRecursively(thisNode, true));
+		nodesDependsOnThis.removeAll(findNodesThisNodeDependsOnRecursively(thisNode));
 		nodesDependsOnThis.add(thisNode);
 		Set excludedNodes = new HashSet();
 		excludedNodes.add(thisNode);
 		DependentNode leafNode;
 		while ((leafNode = findLeafNode(nodesDependsOnThis, excludedNodes)) != null)
 			nodesDependsOnThis.remove(leafNode);
-
-        excludedNodes = new HashSet();
-        for (Iterator iter = nodesDependsOnThis.iterator(); iter.hasNext();) {
-            DependentNode node = (DependentNode) iter.next();
-            if (node.getTriggerDependencyStrategy() != Constants.TRIGGER_ALL_DEPENDENT_SCHEDULES &&
-                    node.getTriggerDependencyStrategy() != Constants.TRIGGER_SCHEDULES_DEPENDS_ON_THIS)
-                excludedNodes.add(node);
-        }
-        nodesDependsOnThis.removeAll(excludedNodes);
 		nodesDependsOnThis.remove(thisNode);
 		return nodesDependsOnThis;
 	}
@@ -137,7 +126,7 @@ public class DependencyResolver {
 		}
 	}
 
-	public Set findNodesThisNodeDependsOnRecursively(DependentNode thisNode, boolean doIgnoreStrategy) {
+	public Set findNodesThisNodeDependsOnRecursively(DependentNode thisNode) {
 		Set nodes = new HashSet();
 		nodes.add(thisNode);
 		boolean isNodeAdded = true;
@@ -149,10 +138,7 @@ public class DependencyResolver {
 				Iterator itDependent = node.getDependsOn(userData4DependsOn).iterator();
 				while (itDependent.hasNext()) {
 					DependentNode dependentNode = (DependentNode) itDependent.next();
-					if (!nodes.contains(dependentNode) &&
-                            (doIgnoreStrategy ||
-                                    node.getTriggerDependencyStrategy() == Constants.TRIGGER_ALL_DEPENDENT_SCHEDULES ||
-                                    node.getTriggerDependencyStrategy() == Constants.TRIGGER_SCHEDULES_THIS_DEPENDS_ON)) {
+					if (!nodes.contains(dependentNode)) {
 						nodes.add(dependentNode);
 						isNodeAdded = true;
 					}
