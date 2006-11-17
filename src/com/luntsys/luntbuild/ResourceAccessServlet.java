@@ -82,11 +82,11 @@ public class ResourceAccessServlet extends HttpServlet {
 
 			Build build;
 			if (buildVersion.equalsIgnoreCase(com.luntsys.luntbuild.facades.Constants.LAST_SUCCESS_BUILD))
-				build = Luntbuild.getDao().loadLastBuild(projectName, scheduleName);
+				build = Luntbuild.getDao().loadLastBuildInternal(projectName, scheduleName);
 			else if (buildVersion.equalsIgnoreCase(com.luntsys.luntbuild.facades.Constants.LAST_BUILD))
-				build = Luntbuild.getDao().loadLastBuild(projectName, scheduleName);
+				build = Luntbuild.getDao().loadLastBuildInternal(projectName, scheduleName);
 			else
-				build = Luntbuild.getDao().loadBuild(projectName, scheduleName, buildVersion);
+				build = Luntbuild.getDao().loadBuildInternal(projectName, scheduleName, buildVersion);
 
 			String pathToRequest = build.getPublishDir();
 			for (int i = 3; i < pathElements.size(); i++) {

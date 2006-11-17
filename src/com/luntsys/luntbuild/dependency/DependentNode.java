@@ -46,15 +46,4 @@ public interface DependentNode {
 	 */
 	void visit(Object userData);
 
-    /**
-     * Get dependent triggering strategy, should be one value of
-     * @return one value of
-     * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_ALL_DEPENDENT_SCHEDULES},
-     * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_NONE_DEPENDENT_SCHEDULES},
-     * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_DEPENDS_ON_THIS},
-     * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_THIS_DEPENDS_ON}
-
-     */
-    public int getTriggerDependencyStrategy();
-
 }

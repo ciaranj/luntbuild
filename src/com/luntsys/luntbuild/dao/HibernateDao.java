@@ -601,7 +601,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
      * (non-Javadoc)
      * @see com.luntsys.luntbuild.dao.Dao#loadBuild(java.lang.String, java.lang.String, java.lang.String)
      */
-    public Build loadBuild(String projectName, String scheduleName, String buildVersion) {
+    public Build loadBuildInternal(String projectName, String scheduleName, String buildVersion) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
             Query query = session.createQuery("from Build build inner join fetch build.schedule " +
@@ -621,6 +621,19 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         }
     }
 
+    /**
+     * @param projectName project
+     * @param scheduleName schedule
+     * @param buildVersion to load
+     * @return
+     *
+     * (non-Javadoc)
+     * @see com.luntsys.luntbuild.dao.Dao#loadBuild(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public Build loadBuild(String projectName, String scheduleName, String buildVersion) {
+    	return loadBuildInternal(projectName, scheduleName, buildVersion);
+    }
+    
     /**
      * @param build to delete
      *
@@ -674,7 +687,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
      * (non-Javadoc)
      * @see com.luntsys.luntbuild.dao.Dao#loadLastBuild(java.lang.String, java.lang.String)
      */
-    public Build loadLastBuild(String projectName, String scheduleName) {
+    public Build loadLastBuildInternal(String projectName, String scheduleName) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
             Query query =
@@ -697,6 +710,18 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         }
     }
 
+    /**
+     * @param projectName project
+     * @param scheduleName schedule
+     * @return last build
+     *
+     * (non-Javadoc)
+     * @see com.luntsys.luntbuild.dao.Dao#loadLastBuild(java.lang.String, java.lang.String)
+     */
+    public Build loadLastBuild(String projectName, String scheduleName) {
+    	return loadLastBuildInternal(projectName, scheduleName);
+    }
+    
     /**
      * @param projectName project
      * @param scheduleName schedule
@@ -797,7 +822,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             Query query = session.createQuery("select build from Build build " +
                     "inner join fetch build.schedule " +
                     "inner join fetch build.schedule.project " +
-                    buildHQLWhereClause(searchCriteria) + " order by build.id desc");
+                    buildHQLWhereClause(searchCriteria) +
+                    " order by build.schedule.project.name, build.schedule.name");
             fillQueryParams(query, searchCriteria);
             query.setFirstResult(start);
             if (count != 0)

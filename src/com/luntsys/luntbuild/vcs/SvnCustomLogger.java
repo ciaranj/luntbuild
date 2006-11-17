@@ -1,7 +1,7 @@
 package com.luntsys.luntbuild.vcs;
 
 import org.apache.tools.ant.Project;
-import org.tmatesoft.svn.util.SVNDebugLoggerAdapter;
+import org.tmatesoft.svn.util.SVNDebugLogAdapter;
 
 /**
  * SvnCustomLogger
@@ -12,7 +12,7 @@ import org.tmatesoft.svn.util.SVNDebugLoggerAdapter;
  * @author lubosp
  *
  */
-public class SvnCustomLogger extends SVNDebugLoggerAdapter {
+public class SvnCustomLogger extends SVNDebugLogAdapter {
 
     private transient Project antProject = null;
 

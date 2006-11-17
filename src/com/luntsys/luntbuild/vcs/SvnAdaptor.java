@@ -625,7 +625,7 @@ public class SvnAdaptor extends Vcs {
 
     private void initLogger(Project antProject) {
         SvnCustomLogger svnLogger = new SvnCustomLogger(antProject);
-        SVNDebugLog.setLogger(svnLogger);
+        SVNDebugLog.setDefaultLog(svnLogger);
     }
 
     /**
