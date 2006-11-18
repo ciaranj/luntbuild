@@ -42,11 +42,12 @@ var MENU_ITEMS = [
 	],
 	['Articles', null, null,
 		['Daily builds...', 'dailybuild_with_luntbuild.html', null],
-		['Surveillance Testing', 'http://www.soapui.org/userguide/scenarios/surveillance.html', null],
-		['Integracao continua...', 'http://josepaulopapo.blogspot.com/2006/02/integrao-contnua-e-gesto-de-builds-com.html', null],
-		['Code coverage with cobertura', 'http://www.gridshore.nl/blog/index.php?/archives/12-Code-coverage-with-cobertura-and-luntbuild.html', null],
-		['Choosing Continuous Integration', 'http://www.infoq.com/news/choosing-continuous-integration', null],
-		['Automation for the people', 'http://www-128.ibm.com/developerworks/java/library/j-ap09056/', null]
+		['Surveillance Test', 'http://www.soapui.org/userguide/scenarios/surveillance.html', null],
+		['Integracao...', 'http://josepaulopapo.blogspot.com/2006/02/integrao-contnua-e-gesto-de-builds-com.html', null],
+		['Code coverage', 'http://www.gridshore.nl/blog/index.php?/archives/12-Code-coverage-with-cobertura-and-luntbuild.html', null],
+		['Choosing CI', 'http://www.infoq.com/news/choosing-continuous-integration', null],
+		['CI Automation', 'http://www-128.ibm.com/developerworks/java/library/j-ap09056/', null],
+		['Open source CI', 'http://www.javaworld.com/javaworld/jw-11-2006/jw-1101-ci.html?fsrc=rss-index', null]
 	],
 	['Communication', null, null,
 		['Bugs', 'http://sourceforge.net/tracker/?group_id=113344&atid=664861', null],

@@ -369,8 +369,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             Query query =
                 session.createQuery("from Schedule schedule " +
                     "inner join fetch schedule.project " +
-                    "order by schedule.project.name, schedule.name");
+                    "order by schedule.name");
             List schedules = query.list();
+            Collections.sort(schedules, new ScheduleComparator());
             return schedules;
         } catch (HibernateException ex) {
             logger.error("Error in loadSchedules: ", ex);
@@ -633,7 +634,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     public Build loadBuild(String projectName, String scheduleName, String buildVersion) {
     	return loadBuildInternal(projectName, scheduleName, buildVersion);
     }
-    
+
     /**
      * @param build to delete
      *
@@ -721,7 +722,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     public Build loadLastBuild(String projectName, String scheduleName) {
     	return loadLastBuildInternal(projectName, scheduleName);
     }
-    
+
     /**
      * @param projectName project
      * @param scheduleName schedule
@@ -823,7 +824,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                     "inner join fetch build.schedule " +
                     "inner join fetch build.schedule.project " +
                     buildHQLWhereClause(searchCriteria) +
-                    " order by build.schedule.project.name, build.schedule.name");
+                    "order by build.id desc");
             fillQueryParams(query, searchCriteria);
             query.setFirstResult(start);
             if (count != 0)
@@ -1559,5 +1560,15 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             logger.error("Error in eraseExistingData: ", ex);
             throw SessionFactoryUtils.convertHibernateAccessException(ex);
         }
+    }
+
+    class ScheduleComparator implements java.util.Comparator {
+    	public int compare(Object o1, Object o2) {
+    		Schedule s1 = (Schedule) o1;
+    		Schedule s2 = (Schedule) o2;
+    		int cmp = s1.getProject().getName().compareTo(
+    				s2.getProject().getName());
+    		return (cmp == 0) ? s1.getName().compareTo(s2.getName()) : cmp;
+    	}
     }
 }
