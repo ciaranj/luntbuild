@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="application"
+         name="LuntclipseRCP"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="com.luntsys.luntbuild.luntclipse.rcp.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Perspective"
+            class="com.luntsys.luntbuild.luntclipse.rcp.Perspective"
+            id="com.luntsys.luntbuild.luntclipse.rcp.perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="View"
+            class="com.luntsys.luntbuild.luntclipse.rcp.View"
+            id="com.luntsys.luntbuild.luntclipse.rcp.view">
+      </view>
+   </extension>
+   <extension
+         id="luntclipse_rcp"
+         name="LuntclipseRCP"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="com.luntsys.luntbuild.luntclipse.rcp.application"
+            name="Luntclipse">
+         <property
+               name="appName"
+               value="BrandedRCPBrowserExample"/>
+         <property
+               name="aboutText"
+               value="Luntclipse - standalone application to access Luntbuild.&#x0A;&#x0A;For more information about Luntclipse or Luntbuild&#x0A;&#x0A;        goto http://luntbuild.javaforge.com.&#x0A;&#x0A;For Luntclipse or Luntbuild project information&#x0A;&#x0A;goto http://www.javaforge.com/proj/summary.do?proj_id=70&#x0A;&#x0A;You can follow Luntclipse or Luntbuild project news at:&#x0A;&#x0A;         http://jroller.com/page/luntbuild"/>
+         <property
+               name="windowImages"
+               value="platform:/plugin/com.luntsys.luntbuild.luntclipse/icons/luntbuild.gif"/>
+         <property
+               name="aboutImage"
+               value="images/about.gif"/>
+      </product>
+   </extension>
+
+</plugin>
