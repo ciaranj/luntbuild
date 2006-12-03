@@ -95,5 +95,9 @@
        <toc file="doc/online/luntclipse-toc.xml" />
        <toc file="doc/online/luntbuild-toc.xml" />
     </extension>
+    <extension
+          point="org.eclipse.ui.startup">
+       <startup class="com.luntsys.luntbuild.luntclipse.LuntclipseStartup"/>
+    </extension>
 
 </plugin>

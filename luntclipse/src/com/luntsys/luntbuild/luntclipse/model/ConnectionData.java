@@ -1,5 +1,6 @@
 package com.luntsys.luntbuild.luntclipse.model;
 
+
 /**
  * Luntbuild connection data
  *
@@ -13,6 +14,13 @@ public class ConnectionData {
     private String password = null;
     private String version = null;
     private String refreshTime = null;
+    public enum NotifyCondition {
+        Never,
+        BuildFinished,
+        BuildFailed,
+        BuildSucceeded
+    };
+    private NotifyCondition notifyCondition = NotifyCondition.BuildFinished;
 
     /**
      * @return Returns the name.
@@ -87,5 +95,21 @@ public class ConnectionData {
         this.refreshTime = refreshTime;
     }
 
+	/**
+	 * @return Returns the notifyCondition.
+	 */
+	public final NotifyCondition getNotifyCondition() {
+		return notifyCondition;
+	}
+	/**
+	 * @param notifyCondition The notifyCondition to set.
+	 */
+	public final void setNotifyCondition(String condition) {
+		try {
+			this.notifyCondition = NotifyCondition.valueOf(condition);
+		} catch (Exception e) {
+			this.notifyCondition = NotifyCondition.BuildFinished;
+		}
+	}
 
 }

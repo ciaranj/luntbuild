@@ -12,17 +12,14 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public abstract class RefreshJob extends Job {
     protected int delay = 0;
-    protected LuntbuildConnection connection = null;
 
     /**
      * @param name
-     * @param connection
      * @param delay
      */
-    public RefreshJob(String name, LuntbuildConnection connection, int delay) {
+    public RefreshJob(String name, int delay) {
         super(name);
         this.delay = delay;
-        this.connection = connection;
     }
 
     /**

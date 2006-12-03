@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 import com.luntsys.luntbuild.luntclipse.model.StarTeamModuleData;
 import com.luntsys.luntbuild.luntclipse.model.VcsProjectData;
 import com.luntsys.luntbuild.luntclipse.wizards.ProjectWizardPage;
@@ -304,7 +304,7 @@ public class StarTeamAdaptorGroup extends VcsAdaptorGroup {
         }
         /**
          * Return model data
-         * @return array of {@link BuildMessenger}
+         * @return array of {@link Build}
          *
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */

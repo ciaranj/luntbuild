@@ -10,7 +10,7 @@ import com.luntsys.luntbuild.facades.ILuntbuild;
 import com.luntsys.luntbuild.facades.SearchCriteria;
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
 import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildView;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildViewer;
 
@@ -50,7 +50,7 @@ public class SearchBuildsAction extends Action {
                     "Unable to connect to Luntbuild: " + con.getConnectionData().getUrl());
             return;
         }
-        BuildMessenger currentBuild = viewer.getSelectedBuild();
+        Build currentBuild = viewer.getSelectedBuild();
         if (currentBuild == null) return;
 
         SearchBuildsDialog dlg =
@@ -59,7 +59,7 @@ public class SearchBuildsAction extends Action {
         if (rc == SWT.OK) {
             SearchCriteria criteria = dlg.getSearchCriteria();
             viewer.getBuildsProvider().setCriteria(criteria);
-            viewer.refresh();
+            viewer.refresh(true);
             viewer.setTabSelection(LuntbuildViewer.BUILDS_INDEX);
         }
     }

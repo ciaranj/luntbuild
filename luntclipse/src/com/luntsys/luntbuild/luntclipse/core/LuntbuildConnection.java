@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.eclipse.core.runtime.IStatus;
 
 import com.caucho.hessian.client.HessianProxyFactory;
+import com.luntsys.luntbuild.facades.BuildParams;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.ILuntbuild;
 import com.luntsys.luntbuild.facades.SearchCriteria;
@@ -54,9 +56,10 @@ import com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.VssModuleFacade;
 import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
+import com.luntsys.luntbuild.luntclipse.core.NotificationMessage.SeverityLevel;
 import com.luntsys.luntbuild.luntclipse.model.AccuRevModuleData;
 import com.luntsys.luntbuild.luntclipse.model.BasicProjectData;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 import com.luntsys.luntbuild.luntclipse.model.BuilderProjectData;
 import com.luntsys.luntbuild.luntclipse.model.ConnectionData;
 import com.luntsys.luntbuild.luntclipse.model.CvsModuleData;
@@ -66,7 +69,9 @@ import com.luntsys.luntbuild.luntclipse.model.StarTeamModuleData;
 import com.luntsys.luntbuild.luntclipse.model.SubversionModuleData;
 import com.luntsys.luntbuild.luntclipse.model.VcsProjectData;
 import com.luntsys.luntbuild.luntclipse.model.VisualSourcesafeModuleData;
+import com.luntsys.luntbuild.luntclipse.model.ConnectionData.NotifyCondition;
 import com.luntsys.luntbuild.luntclipse.preferences.PreferenceHelper;
+import com.luntsys.luntbuild.luntclipse.views.LuntbuildViewer;
 
 /**
  * Helper class for obtains general services provided by luntbuild system. This
@@ -82,7 +87,13 @@ public class LuntbuildConnection {
     private HttpClient client = null;
     private ConnectionData connectionData = null;
     private TreeMap luntbuildData = null;
+    private Map<String, Build> previousBuilds = new HashMap<String, Build>();
+    private Build lastBuild = null;
+    private ArrayList<NotificationMessage> newMessages = new ArrayList<NotificationMessage>();
+    private ArrayList<NotificationMessage> errorMessages = null;
+    private boolean isFirstLoad = true;
 
+    private LuntbuildViewer viewer = null;
     /**
      * Create luntbuild connection
      */
@@ -124,11 +135,14 @@ public class LuntbuildConnection {
             } catch (Exception e) {
                 LuntclipsePlugin.doLog(IStatus.WARNING, IStatus.OK,
                         "Cannot login into Lutbuild! Please verify connection URL.", e);
+                this.errorMessages.add(new ErrorMessage("Cannot login into Lutbuild! Please verify connection URL."));
                 this.luntbuild = null;
             }
         } catch (MalformedURLException e) {
             LuntclipsePlugin.doLog(IStatus.ERROR, IStatus.OK,
                     "Connection request to Luntbuild uses invalid URL: " + this.connectionData.getUrl(), e);
+            this.errorMessages.add(
+            		new ErrorMessage("Connection request to Luntbuild uses invalid URL: " + this.connectionData.getUrl()));
             this.luntbuild = null;
         }
     }
@@ -223,6 +237,8 @@ public class LuntbuildConnection {
         }
         //check returned HTTP status code
         if (((Integer)result[0]).intValue() != HttpStatus.SC_OK){
+            this.errorMessages.add(
+            		new ErrorMessage("Cannot login into Lutbuild! Please verify connection URL and Luntbuild version."));
             throw new RuntimeException(
                     "Cannot login into Lutbuild! Please verify connection URL and Luntbuild version.");
         }
@@ -257,7 +273,7 @@ public class LuntbuildConnection {
     }
 
     /**
-     * Loads build data as BuildMessenger[] from Luntbuild
+     * Loads build data as Build[] from Luntbuild
      */
     public void loadBuildData() {
         if (this.luntbuild == null) connect();
@@ -267,10 +283,10 @@ public class LuntbuildConnection {
         }
 
         List buildInfoModel = new ArrayList();
-        BuildMessenger messenger;
+        Build messenger;
 
         if(this.luntbuild == null) {
-            messenger = new BuildMessenger();
+            messenger = new Build();
             messenger.setProjectName("Unable to connect to Luntbuild!");
             buildInfoModel.add(messenger);
 
@@ -283,7 +299,7 @@ public class LuntbuildConnection {
             projects = this.luntbuild.getAllProjects();
         }catch(Exception e){
             LuntclipsePlugin.doLog(IStatus.WARNING, IStatus.OK, e.getMessage(), e);
-            messenger = new BuildMessenger();
+            messenger = new Build();
             messenger.setProjectName("Unable to connect to Luntbuild!");
             buildInfoModel.add(messenger);
 
@@ -304,7 +320,11 @@ public class LuntbuildConnection {
                 projectName = ((ProjectFacade)o).getName();
             }
 
-            projectsMap.put(projectName, null);
+            try {
+            	projectsMap.put(projectName, null);
+            } catch (Exception e) {
+            	this.errorMessages.add(new ErrorMessage(projectName, e.getMessage()));
+			}
             buildInfoModel = new ArrayList();
 
             schedules = this.luntbuild.getAllSchedulesOfProject(projectName);
@@ -317,60 +337,111 @@ public class LuntbuildConnection {
                     scheduleName = ((ScheduleFacade)_o).getName();
                 }
 
-                ScheduleFacade schedule =
-                    this.luntbuild.getScheduleByName(projectName, scheduleName);
-                messenger = new BuildMessenger();
-                messenger.setProjectName(projectName);
-                messenger.setScheduleName(schedule.getName());
-                messenger.setScheduleStatus(schedule.getStatus());
-                messenger.setTriggerType(schedule.getTriggerType());
+            	try {
+	                ScheduleFacade schedule =
+	                    this.luntbuild.getScheduleByName(projectName, scheduleName);
+	                messenger = new Build();
+	                messenger.setProjectName(projectName);
+	                messenger.setScheduleName(schedule.getName());
+	                messenger.setScheduleStatus(schedule.getStatus());
+	                messenger.setTriggerType(schedule.getTriggerType());
 
-                bf = null;
-                try {
-                    if (getVersion() <=
-                        LuntclipseConstants.getVersion(LuntclipseConstants.LUNTBUILD_VERSION_12)) {
-                        bf = this.luntbuild.getLastBuild(schedule);
-                    } else {
-                        bf = this.luntbuild.getLastBuild(projectName, schedule.getName());
-                    }
-                } catch (Exception ex) {
-                    LuntclipsePlugin.doLog(IStatus.ERROR, IStatus.OK,
-                            "Cannot get last build for " + projectName + "/" + schedule.getName() +
-                            " for connection " + getConnectionData().getName(), ex);
-                    bf = null;
-                }
+	                bf = null;
+	                try {
+	                    if (getVersion() <=
+	                        LuntclipseConstants.getVersion(LuntclipseConstants.LUNTBUILD_VERSION_12)) {
+	                        bf = this.luntbuild.getLastBuild(schedule);
+	                    } else {
+	                        bf = this.luntbuild.getLastBuild(projectName, schedule.getName());
+	                    }
+	                } catch (Exception ex) {
+	                    LuntclipsePlugin.doLog(IStatus.ERROR, IStatus.OK,
+	                            "Cannot get last build for " + projectName + "/" + schedule.getName() +
+	                            " for connection " + getConnectionData().getName(), ex);
+	                    bf = null;
+	                }
 
-                if(bf != null){
-                    messenger.setLastBuildStatus(bf.getStatus());
-                    messenger.setVersion(bf.getVersion());
-                    messenger.setBuildLogUrl(bf.getBuildLogUrl());
-                    messenger.setRevisionLogUrl(bf.getRevisionLogUrl());
-                    messenger.setDetailUrl(bf.getUrl());
-                    try {
-                        messenger.setSystemLogUrl(bf.getSystemLogUrl());
-                    } catch (Exception e) {
-                        // ignore for earlier versions
-                    }
-                }
+	                if(bf != null){
+	                	boolean changed = false;
+	                	if (!this.isFirstLoad)
+	                		changed = checkNotification(projectName, scheduleName, bf);
+	                    messenger.setLastBuildStatus(bf.getStatus());
+	                    messenger.setVersion(bf.getVersion());
+	                    messenger.setBuildLogUrl(bf.getBuildLogUrl());
+	                    messenger.setRevisionLogUrl(bf.getRevisionLogUrl());
+	                    messenger.setDetailUrl(bf.getUrl());
+	                    try {
+	                        messenger.setSystemLogUrl(bf.getSystemLogUrl());
+	                    } catch (Exception e) {
+	                        // ignore for earlier versions
+	                    }
+	                    if (changed) this.lastBuild = messenger;
+	                }
 
-                Date statusDate = schedule.getStatusDate();
-                if(statusDate != null){
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-                    messenger.setStatusDate(sdf.format(statusDate));
+	                Date statusDate = schedule.getStatusDate();
+	                if(statusDate != null){
+	                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+	                    messenger.setStatusDate(sdf.format(statusDate));
+	                }
+	                this.previousBuilds.put(projectName + scheduleName, messenger);
+	                buildInfoModel.add(messenger);
+                } catch (Exception e) {
+                	this.errorMessages.add(new ErrorMessage(projectName, scheduleName, e.getMessage()));
                 }
-                buildInfoModel.add(messenger);
             }
             projectsMap.put(projectName, buildInfoModel);
         }
-
+        this.isFirstLoad = false;
         this.luntbuildData = projectsMap;
+    }
+
+    private boolean checkNotification(String projectName, String scheduleName, BuildFacade buildFacade) {
+    	Build previousBuild = getPreviousBuild(projectName, scheduleName);
+        if (previousBuild == null ||
+        		(previousBuild.getBuildStatus() == LuntclipseConstants.BUILD_RUNNING) &&
+        		 buildFacade.getStatus() != LuntclipseConstants.BUILD_RUNNING) {
+            NotificationMessage message = new NotificationMessage();
+            message.setUrl(buildFacade.getBuildLogUrl());
+            message.setDate(new Date());
+
+            message.setContent("Build \"" + projectName + " / " + scheduleName + " / " +
+            		buildFacade.getVersion() + "\" is " + LuntclipseConstants.buildStatus[buildFacade.getStatus()]);
+            message.setBuildVersion(buildFacade.getVersion());
+            if (buildFacade.getStatus() == LuntclipseConstants.BUILD_FAILED)
+                message.setSeverity(SeverityLevel.Error);
+            else
+                message.setSeverity(SeverityLevel.Info);
+            if (this.connectionData.getNotifyCondition() == NotifyCondition.BuildFinished) {
+            	this.newMessages.add(message);
+            } else if (this.connectionData.getNotifyCondition() == NotifyCondition.BuildFailed) {
+                    if (buildFacade.getStatus() == LuntclipseConstants.BUILD_FAILED)
+                    	this.newMessages.add(message);
+            } else if (this.connectionData.getNotifyCondition() == NotifyCondition.BuildSucceeded) {
+                    if (buildFacade.getStatus() == LuntclipseConstants.BUILD_SUCCESS)
+                    	this.newMessages.add(message);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private Build getPreviousBuild(String projectName, String scheduleName) {
+    	return this.previousBuilds.get(projectName + scheduleName);
+    }
+
+    public Build getLastBuild() {
+    		return this.lastBuild;
+    }
+
+    public void triggerBuild(String projectName, String scheduleName, BuildParams buildParams) {
+    	getLuntbuild().triggerBuild(projectName, scheduleName, buildParams);
     }
 
     /**
      * @param build
      * @return true if build is running
      */
-    public boolean isBuildRunning(BuildMessenger build) {
+    public boolean isBuildRunning(Build build) {
         ScheduleFacade schedule =
             this.luntbuild.getScheduleByName(build.getProjectName(), build.getScheduleName());
         BuildFacade bf = null;
@@ -385,6 +456,12 @@ public class LuntbuildConnection {
             LuntclipsePlugin.doLog(IStatus.ERROR, IStatus.OK,
                     "Cannot get last build for " + build.getProjectName() + "/" + schedule.getName() +
                     " for connection " + getConnectionData().getName(), ex);
+            this.errorMessages.add(
+            		new ErrorMessage(
+            				build.getProjectName(),
+            				schedule.getName(),
+            				build.getVersion(),
+            				"Cannot get last build for connection " + getConnectionData().getName()));
             bf = null;
         }
         return bf.getStatus() == Constants.SCHEDULE_STATUS_RUNNING;
@@ -420,6 +497,8 @@ public class LuntbuildConnection {
             LuntclipsePlugin.doLog(IStatus.INFO, IStatus.OK,
                     "Delete build not supported for Luntbuild version lower than 1.3 " +
                     "or you are not authorized to delete builds", null);
+            this.errorMessages.add(new ErrorMessage("Delete build not supported for Luntbuild version lower than 1.3 " +
+                            "or you are not authorized to delete builds"));
         }
     }
 
@@ -438,7 +517,9 @@ public class LuntbuildConnection {
             LuntclipsePlugin.doLog(IStatus.INFO, IStatus.OK,
                     "Move build not supported for Luntbuild version lower than 1.3. " +
                     "or you are not authorized to move builds", null);
-        }
+            this.errorMessages.add(new ErrorMessage("Move build not supported for Luntbuild version lower than 1.3. " +
+                    "or you are not authorized to move builds"));
+		}
     }
 
     /** Get a schedule by name for givewn project
@@ -501,6 +582,8 @@ public class LuntbuildConnection {
         try {
             return this.luntbuild.getUsers();
         } catch (Exception e) {
+            this.errorMessages.add(new ErrorMessage("Get users not supported for Luntbuild version lower than 1.3. " +
+            	"or you are not authorized to get users"));
             return new ArrayList();
         }
      }
@@ -517,7 +600,7 @@ public class LuntbuildConnection {
             List list = (List) iter.next();
             if (list == null) continue;
             for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-                BuildMessenger bm = (BuildMessenger) iterator.next();
+                Build bm = (Build) iterator.next();
                 schedules.add(bm.getProjectName() + "/" + bm.getScheduleName());
             }
         }
@@ -1260,4 +1343,45 @@ public class LuntbuildConnection {
         }
         return -1;
     }
+
+	/**
+	 * @return Returns the newMessages.
+	 */
+	public final ArrayList<NotificationMessage> getErrorMessages() {
+		if (errorMessages == null) {
+			errorMessages = new ArrayList<NotificationMessage>();
+			return new ArrayList<NotificationMessage>();
+		}
+		ArrayList<NotificationMessage> msgs = new ArrayList<NotificationMessage>(errorMessages);
+		errorMessages = new ArrayList<NotificationMessage>();
+		return msgs;
+	}
+
+	/**
+	 * @return Returns the newMessages.
+	 */
+	public final ArrayList<NotificationMessage> getNewMessages() {
+		if (newMessages == null) {
+			newMessages = new ArrayList<NotificationMessage>();
+			return new ArrayList<NotificationMessage>();
+		}
+		ArrayList<NotificationMessage> msgs = new ArrayList<NotificationMessage>(newMessages);
+		newMessages = new ArrayList<NotificationMessage>();
+		return msgs;
+	}
+
+	/**
+	 * @return Returns the viewer.
+	 */
+	public final LuntbuildViewer getViewer() {
+		return viewer;
+	}
+
+	/**
+	 * @param viewer The viewer to set.
+	 */
+	public final void setViewer(LuntbuildViewer viewer) {
+		this.viewer = viewer;
+	}
+
 }

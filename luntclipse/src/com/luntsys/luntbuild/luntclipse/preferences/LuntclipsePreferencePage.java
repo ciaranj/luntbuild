@@ -1,5 +1,6 @@
 package com.luntsys.luntbuild.luntclipse.preferences;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
@@ -55,6 +56,15 @@ public class LuntclipsePreferencePage
                 new StringFieldEditor(PreferenceHelper.P_LUNTBUILD_CONNECTION_TIMEOUT,
                         "Connection timeout (in sec):", 10,
                         getFieldEditorParent()));
+        addField(
+                new StringFieldEditor(PreferenceHelper.P_LUNTBUILD_REFRESH_TIME, "Refresh Interval (s):", 30,
+                        getFieldEditorParent()));
+        addField(
+                new BooleanFieldEditor(PreferenceHelper.P_LUNTBUILD_NOTIFY_TRAY,
+                        " Use Notify Tray (requires restart)", getFieldEditorParent()));
+        addField(
+                new BooleanFieldEditor(PreferenceHelper.P_LUNTBUILD_ALWAYS_RUN_NOTIFY_TRAY,
+                        " Run Notify Tray even if View is Hidden (requires restart)", getFieldEditorParent()));
 	}
 
 	/**
@@ -66,6 +76,7 @@ public class LuntclipsePreferencePage
 
     protected void performApply() {
         super.performOk();
+        LuntclipsePlugin.getDefault().setRefreshJobDelay();
         this.applyPerformed = true;
     }
 

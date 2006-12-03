@@ -63,6 +63,6 @@ public class PasteProjectAction extends Action {
             return;
         }
         con.createProject(project);
-        viewer.refresh();
+        viewer.refresh(true);
     }
 }

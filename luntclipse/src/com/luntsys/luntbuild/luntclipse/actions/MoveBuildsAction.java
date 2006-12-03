@@ -12,7 +12,7 @@ import com.luntsys.luntbuild.facades.ILuntbuild;
 import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
 import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildView;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildViewer;
 
@@ -71,10 +71,10 @@ public class MoveBuildsAction extends Action {
             String projectName = dlg.getProjectName();
             String scheduleName = dlg.getScheduleName();
             for (Iterator iter = selectedBuilds.iterator(); iter.hasNext();) {
-                BuildMessenger build = (BuildMessenger) iter.next();
+                Build build = (Build) iter.next();
                 con.moveBuild(build.getFacade(), projectName, scheduleName);
             }
-            viewer.refresh();
+            viewer.refresh(true);
         }
     }
 

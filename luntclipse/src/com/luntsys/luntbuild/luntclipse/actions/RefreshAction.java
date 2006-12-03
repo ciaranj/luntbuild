@@ -35,6 +35,6 @@ public class RefreshAction extends Action {
         LuntbuildViewer viewer = LuntbuildView.currentViewer;
         if (viewer == null) return;
 
-        viewer.refresh();
+        viewer.refresh(true);
     }
 }

@@ -9,7 +9,6 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -21,7 +20,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -33,10 +31,9 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IViewSite;
 
-import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
 import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 import com.luntsys.luntbuild.luntclipse.model.ConnectionData;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildView;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildViewer;
@@ -52,8 +49,11 @@ public class ManageConnectionDialog extends TitleAreaDialog {
     private IViewSite site = null;
 
     private TableViewer connViewer = null;
+    private Button buttonEdit = null;
+    private Button buttonDelete = null;
+    private Button buttonTest = null;
 
-    private ConnectionData selectedData = null;
+    private LuntbuildConnection selectedData = null;
 
     private Image image;
 
@@ -152,9 +152,31 @@ public class ManageConnectionDialog extends TitleAreaDialog {
                 }
             });
 
-        button = new Button(buttonsComp, SWT.PUSH|SWT.CENTER);
-        button.setText("Delete");
-        button.addSelectionListener(
+        this.buttonEdit = new Button(buttonsComp, SWT.PUSH|SWT.CENTER);
+        this.buttonEdit.setText("Edit...");
+        this.buttonEdit.addSelectionListener(
+            new SelectionAdapter(){
+                public void widgetSelected(SelectionEvent e){
+                    if (selectedData == null) return;
+                    CreateConnectionDialog dlg =
+                        new CreateConnectionDialog(getShell(), selectedData);
+                    int rc = dlg.open();
+                    if (rc == SWT.OK) {
+                        connViewer.refresh();
+                        PreferenceHelper.saveConnection(selectedData.getConnectionData());
+                        if (!selectedData.isConnected())
+                           MessageDialog.openWarning(
+                                    getShell(),
+                                    "Quickbuild Connection",
+                                    "Unable to connect to Quickbuild: " + selectedData.getConnectionData().getUrl());
+                    }
+                }
+            });
+        this.buttonEdit.setEnabled(false);
+
+        this.buttonDelete = new Button(buttonsComp, SWT.PUSH|SWT.CENTER);
+        this.buttonDelete.setText("Delete");
+        this.buttonDelete.addSelectionListener(
                 new SelectionAdapter(){
                     public void widgetSelected(SelectionEvent e){
                         if (selectedData == null) return;
@@ -163,7 +185,7 @@ public class ManageConnectionDialog extends TitleAreaDialog {
                             new MessageBox(getShell(),
                                     SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
                         mb.setText("Confirm Delete");
-                        mb.setMessage("Are you sure you want to delete " + selectedData.getName() + "?");
+                        mb.setMessage("Are you sure you want to delete " + selectedData.getConnectionData().getName() + "?");
                         int rc = mb.open();
                         if (rc == SWT.OK) {
                             LuntbuildView.mainView.deleteConnection(selectedData);
@@ -171,6 +193,7 @@ public class ManageConnectionDialog extends TitleAreaDialog {
                         }
                     }
                 });
+        this.buttonDelete.setEnabled(false);
 
         button = new Button(buttonsComp, SWT.PUSH|SWT.CENTER);
         button.setText("Delete All");
@@ -187,31 +210,32 @@ public class ManageConnectionDialog extends TitleAreaDialog {
                         if (rc == SWT.OK) {
                             LuntbuildView.mainView.deleteAllConnections();
                             connViewer.refresh();
+                          	 buttonEdit.setEnabled(false);
+                        	 buttonDelete.setEnabled(false);
+                        	 buttonTest.setEnabled(false);
                         }
                     }
                 });
 
-        button = new Button(buttonsComp, SWT.PUSH|SWT.CENTER);
-        button.setText("Test");
-        button.addSelectionListener(
+        this.buttonTest = new Button(buttonsComp, SWT.PUSH|SWT.CENTER);
+        this.buttonTest.setText("Test");
+        this.buttonTest.addSelectionListener(
                 new SelectionAdapter(){
                     public void widgetSelected(SelectionEvent e){
                         if (selectedData == null) return;
-                        LuntbuildConnection con = new LuntbuildConnection();
-                        con.setConnectionData(selectedData);
-                        con.connect();
-                        if (con.isConnected())
+                        if (selectedData.isConnected())
                         MessageDialog.openInformation(
                                 getShell(),
                                 "Luntbuild Connection",
-                                "Connected to Luntbuild: " + selectedData.getUrl());
+                                "Connected to Luntbuild: " + selectedData.getConnectionData().getUrl());
                         else
                         MessageDialog.openError(
                                 getShell(),
                                 "Luntbuild Connection",
-                                "Unable to connect to Luntbuild: " + selectedData.getUrl());
+                                "Unable to connect to Luntbuild: " + selectedData.getConnectionData().getUrl());
                     }
                 });
+        this.buttonTest.setEnabled(false);
 
         return composite;
     }
@@ -225,7 +249,11 @@ public class ManageConnectionDialog extends TitleAreaDialog {
                     public void widgetSelected(SelectionEvent e){
                         ISelection selection = connViewer.getSelection();
                          selectedData =
-                            (ConnectionData)((IStructuredSelection)selection).getFirstElement();
+                            (LuntbuildConnection)((IStructuredSelection)selection).getFirstElement();
+                         boolean doEnable = (selectedData != null);
+                    	 buttonEdit.setEnabled(doEnable);
+                    	 buttonDelete.setEnabled(doEnable);
+                    	 buttonTest.setEnabled(doEnable);
                     }
                 }
         );
@@ -309,7 +337,7 @@ public class ManageConnectionDialog extends TitleAreaDialog {
 
         /**
          * Return model data
-         * @return array of {@link BuildMessenger}
+         * @return array of {@link Build}
          *
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
@@ -319,7 +347,7 @@ public class ManageConnectionDialog extends TitleAreaDialog {
             ArrayList viewers = LuntbuildView.mainView.getViewers();
             for (Iterator iter = viewers.iterator(); iter.hasNext();) {
                 LuntbuildViewer viewer = (LuntbuildViewer) iter.next();
-                dataList.add(viewer.getConnection().getConnectionData());
+                dataList.add(viewer.getConnection());
             }
             return  dataList.toArray();
         }
@@ -351,7 +379,7 @@ public class ManageConnectionDialog extends TitleAreaDialog {
             if(obj instanceof Exception){
                 return (index == 0)? "An Exception has occurred! See error log." : "";
             }
-            ConnectionData data = (ConnectionData)obj;
+            ConnectionData data = ((LuntbuildConnection)obj).getConnectionData();
             switch (index) {
             case 0:
                 result = data.getName();

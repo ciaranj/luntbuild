@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ScrollBar;
 
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 
 /**
  * Refreshes running build
@@ -19,9 +19,10 @@ import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
  *
  */
 public class BuildLogRefreshJob extends RefreshJob {
+	LuntbuildConnection connection = null;
     Browser logHtmlViewer = null;
     TextViewer logTextViewer = null;
-    BuildMessenger build = null;
+    Build build = null;
 
     /**
      * @param build
@@ -29,11 +30,12 @@ public class BuildLogRefreshJob extends RefreshJob {
      * @param connection
      * @param delay
      */
-    public BuildLogRefreshJob(BuildMessenger build,
+    public BuildLogRefreshJob(Build build,
             TextViewer viewer, LuntbuildConnection connection, int delay) {
-        super("Build log refresh", connection, delay);
+        super("Build log refresh", delay);
         this.logTextViewer = viewer;
         this.build = build;
+        this.connection = connection;
     }
 
     /**
@@ -42,11 +44,12 @@ public class BuildLogRefreshJob extends RefreshJob {
      * @param connection
      * @param delay
      */
-    public BuildLogRefreshJob(BuildMessenger build, Browser viewer,
+    public BuildLogRefreshJob(Build build, Browser viewer,
             LuntbuildConnection connection, int delay) {
-        super("Build log refresh", connection, delay);
+        super("Build log refresh", delay);
         this.logHtmlViewer = viewer;
         this.build = build;
+        this.connection = connection;
     }
 
     /**

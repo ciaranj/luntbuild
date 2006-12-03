@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -50,7 +49,6 @@ import org.eclipse.ui.PlatformUI;
 
 import com.luntsys.luntbuild.facades.BuildParams;
 import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.facades.ILuntbuild;
 import com.luntsys.luntbuild.facades.SearchCriteria;
 import com.luntsys.luntbuild.facades.lb12.ScheduleFacade;
 import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
@@ -58,11 +56,10 @@ import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
 import com.luntsys.luntbuild.luntclipse.actions.TrigerBuildDialog;
 import com.luntsys.luntbuild.luntclipse.core.BuildLogRefreshJob;
 import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
-import com.luntsys.luntbuild.luntclipse.core.ProjectsRefreshJob;
+import com.luntsys.luntbuild.luntclipse.core.NotificationMessage;
 import com.luntsys.luntbuild.luntclipse.core.RefreshJob;
-import com.luntsys.luntbuild.luntclipse.core.RefreshJobRestarter;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
-import com.luntsys.luntbuild.luntclipse.model.ConnectionData;
+import com.luntsys.luntbuild.luntclipse.core.NotificationMessage.SeverityLevel;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 
 /**
  * Viewer for one Luntbuild connection.
@@ -76,26 +73,46 @@ public class LuntbuildViewer {
     public static final int PROJECTS_INDEX = 0;
     /** Builds list tab */
     public static final int BUILDS_INDEX = 1;
+    /** Message tab */
+    public static final int MESSAGE_INDEX = 2;
     /** Log tab */
-    public static final int LOG_INDEX = 2;
+    public static final int LOG_INDEX = 3;
     /** Browser log tab */
-    public static final int BROWSER_INDEX = 3;
+    public static final int BROWSER_INDEX = 4;
 
+    LuntbuildView parentView = null;
     private LuntbuildConnection connection = null;
+
     private CTabItem connTab = null;
     private CTabFolder topFolder = null;
     private TreeViewer buildViewer = null;
     private TableViewer histBuildsViewer = null;
-    private RefreshJob projectsRefreshJob = null;
+    private CTabItem messageTab = null;
+    private TableViewer messageViewer = null;
     private RefreshJob logRefreshJob = null;
     private CTabItem logsTab = null;
     private Browser logHtmlViewer = null;
     private TextViewer logTextViewer = null;
 
+    private int projectColumnSelected = 0;
+    private int scheduleColumnSelected = 0;
+    private int buildVersionSelected = 0;
+    private int buildFinishedSelected = 0;
+    private int messageDateColumnSelected = 1;
+    private int messageBuildColumnSelected = 0;
+    private int historyProjectColumnSelected = 0;
+    private int historyScheduleColumnSelected = 0;
+    private int historyBuildVersionSelected = 0;
+    private int historyBuildStatusSelected = 0;
+    private int historyBuildFinishedSelected = 0;
+    private int historyBuildDurationSelected = 0;
+
     List selectedHistoryBuilds = null;
     BuildsViewContentProvider buildsProvider = null;
-    BuildMessenger selectedBuild = null;
+    Build selectedBuild = null;
     String selectedProject = null;
+
+    ArrayList<NotificationMessage> notifyMessages = new ArrayList<NotificationMessage>();
 
     // Set column names
     private static String[] columnNames = new String[] {
@@ -116,14 +133,20 @@ public class LuntbuildViewer {
         "BUILD_BURATION"
     };
 
-    LuntbuildView parentView = null;
+    private static String[] messageColumnNames = new String[] {
+    	"MESSAGE_STATUS",
+    	"MESSAGE_DATE",
+    	"MESSAGE_BUILD",
+    	"MESSAGE_CONTENTS"
+    };
 
     /**
-     * @param conData
+     * @param connection
      * @param view
      */
-    public LuntbuildViewer(ConnectionData conData, LuntbuildView view) {
-        this.connection = new LuntbuildConnection(conData);
+    public LuntbuildViewer(LuntbuildConnection connection, LuntbuildView view) {
+        this.connection = connection;
+        this.connection.setViewer(this);
         this.parentView = view;
     }
 
@@ -132,6 +155,9 @@ public class LuntbuildViewer {
      * @param index tab index
      */
     public void create(CTabFolder parent, int index) {
+
+    	// Get connection data
+        this.connection.loadBuildData();
 
         this.connTab = new CTabItem(parent, 0 , index);
         this.topFolder = new CTabFolder(parent, SWT.NONE);
@@ -144,7 +170,7 @@ public class LuntbuildViewer {
         this.buildViewer.setUseHashlookup(true);
         this.buildViewer.setContentProvider( new ProjectsViewContentProvider(this.connection));
         this.buildViewer.setLabelProvider(new ProjectsViewLabelProvider(this.connection));
-        this.buildViewer.setSorter(new ProjectsViewSorter(ProjectsViewSorter.NAME));
+        this.buildViewer.setSorter(new ProjectsViewSorter(ProjectsViewSorter.PROJECT_NAME, true));
         this.buildViewer.setInput(parent);
         this.buildViewer.setColumnProperties(columnNames);
         this.connTab.setData(this);
@@ -158,8 +184,8 @@ public class LuntbuildViewer {
                     return;
                 }
                 Object elem = ((IStructuredSelection)selection).getFirstElement();
-                if (elem instanceof BuildMessenger) {
-                    selectedBuild = (BuildMessenger) elem;
+                if (elem instanceof Build) {
+                    selectedBuild = (Build) elem;
                     selectedProject = selectedBuild.getProjectName();
                     if (selectedProject.equals(LuntclipseConstants.gettingData)) {
                         selectedProject = null;
@@ -198,7 +224,7 @@ public class LuntbuildViewer {
         this.buildsProvider = new BuildsViewContentProvider(this.connection);
         this.histBuildsViewer.setContentProvider(this.buildsProvider);
         this.histBuildsViewer.setLabelProvider(new BuildsViewLabelProvider(this.connection));
-        this.histBuildsViewer.setSorter(new BuildsViewSorter(ProjectsViewSorter.NAME));
+        this.histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_VERSION, true));
         this.histBuildsViewer.setInput(parent);
         this.histBuildsViewer.setColumnProperties(buildsColumnNames);
         this.histBuildsViewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -209,7 +235,7 @@ public class LuntbuildViewer {
                 }
                 selectedHistoryBuilds = new ArrayList();
                 for (Iterator it = ((IStructuredSelection)selection).iterator(); it .hasNext();) {
-                    BuildMessenger elem = (BuildMessenger) it.next();
+                    Build elem = (Build) it.next();
                     selectedHistoryBuilds.add(elem);
                 }
                 LuntbuildView.mainView.enableActionButtons();
@@ -219,39 +245,35 @@ public class LuntbuildViewer {
 
         newItem = new CTabItem(this.topFolder, 0, BUILDS_INDEX);
         newItem.setText("Builds");
-        newItem.setToolTipText("This tab shows list of selected history builds.");
+        newItem.setToolTipText("Shows list of selected history builds.");
         newItem.setControl(this.histBuildsViewer.getControl());
+
+        table = createMessageTable(this.topFolder);
+        this.messageViewer = new TableViewer(table);
+        this.messageViewer.setUseHashlookup(true);
+        MessageViewContentProvider messageProvider = new MessageViewContentProvider();
+        this.messageViewer.setContentProvider(messageProvider);
+        this.messageViewer.setLabelProvider(new MessageViewLabelProvider());
+        this.messageViewer.setSorter(new MessageViewSorter(MessageViewSorter.DATE, true));
+        this.messageViewer.setInput(parent);
+        this.messageViewer.setColumnProperties(messageColumnNames);
+
+        this.messageTab = new CTabItem(this.topFolder, 0, MESSAGE_INDEX);
+        this.messageTab.setText("Messages");
+        this.messageTab.setToolTipText("Displays all Messages.");
+        this.messageTab.setControl(this.messageViewer.getControl());
 
         this.logsTab = new CTabItem(this.topFolder, 0, LOG_INDEX);
         this.logsTab.setText("Logs");
+        this.logsTab.setToolTipText("Displays build and revision logs.");
         setLogViewer(parent, this.topFolder, this.logsTab, this.connection);
 
         newItem = new CTabItem(this.topFolder, 0, BROWSER_INDEX);
         newItem.setText("Browser");
-        newItem.setToolTipText("This tab shows Luntbuild web browser.");
+        newItem.setToolTipText("Shows Luntbuild web browser.");
         setBrowser(parent, this.topFolder, newItem, this.connection);
 
-        //run refesh worker
-        int delay = 10;
-        try{
-            String refreshTime = this.connection.getConnectionData().getRefreshTime();
-            if(refreshTime != null){
-                delay = new Integer(refreshTime).intValue();
-            }
-        }catch (NumberFormatException e) {
-            //ignore it
-        }
-
-        this.projectsRefreshJob = new ProjectsRefreshJob(this.buildViewer, this.connection, delay * 1000);
-
         hookContextMenu();
-
-        try{
-            this.connection.connect();
-            this.projectsRefreshJob.schedule();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
 
     }
 
@@ -259,8 +281,7 @@ public class LuntbuildViewer {
      * Trigger build
      */
     public void triggerBuild() {
-        ILuntbuild luntbuild = this.connection.getLuntbuild();
-        if (luntbuild == null) {
+        if (!this.connection.isConnected()) {
             MessageDialog.openError(
                     getShell(),
                     "Luntbuild Connection",
@@ -275,11 +296,11 @@ public class LuntbuildViewer {
         int rc = dlg.open();
         if (rc == SWT.OK) {
             buildParams = dlg.getBuildParams();
-            this.connection.getLuntbuild().triggerBuild(
+            this.connection.triggerBuild(
                     this.selectedBuild.getProjectName(),
                     this.selectedBuild.getScheduleName(),
                     buildParams);
-            refresh();
+            refresh(true);
         }
     }
 
@@ -311,8 +332,8 @@ public class LuntbuildViewer {
                             return;
                         }
                         Object elem = ((IStructuredSelection)selection).getFirstElement();
-                        if (elem instanceof BuildMessenger) {
-                            selectedBuild = (BuildMessenger) elem;
+                        if (elem instanceof Build) {
+                            selectedBuild = (Build) elem;
                             selectedProject = selectedBuild.getProjectName();
                             if (selectedProject.equals(LuntclipseConstants.gettingData)) {
                                 selectedProject = null;
@@ -334,7 +355,8 @@ public class LuntbuildViewer {
         column.setWidth(180);
         column.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                buildViewer.setSorter(new ProjectsViewSorter(ProjectsViewSorter.NAME));
+                buildViewer.setSorter(new ProjectsViewSorter(ProjectsViewSorter.PROJECT_NAME,
+                		sortTreeDirection(ProjectsViewSorter.PROJECT_NAME)));
             }
         });
 
@@ -347,7 +369,8 @@ public class LuntbuildViewer {
         column.setWidth(100);
         column.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                buildViewer.setSorter(new ProjectsViewSorter(ProjectsViewSorter.SCHEDULE_NAME));
+                buildViewer.setSorter(new ProjectsViewSorter(ProjectsViewSorter.SCHEDULE_NAME,
+                		sortTreeDirection(ProjectsViewSorter.SCHEDULE_NAME)));
             }
         });
 
@@ -358,17 +381,59 @@ public class LuntbuildViewer {
         column = new TreeColumn(tree, SWT.LEFT, 4);
         column.setText("Latest build");
         column.setWidth(150);
+        column.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                buildViewer.setSorter(new ProjectsViewSorter(ProjectsViewSorter.BUILD_VERSION,
+                		sortTreeDirection(ProjectsViewSorter.BUILD_VERSION)));
+            }
+        });
 
         column = new TreeColumn(tree, SWT.LEFT, 5);
-        column.setText("Latest build date");
+        column.setText("Build Finished");
         column.setWidth(120);
         column.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                buildViewer.setSorter(new ProjectsViewSorter(ProjectsViewSorter.STATUS_DATE));
+                buildViewer.setSorter(new ProjectsViewSorter(ProjectsViewSorter.BUILD_FINISHED,
+                		sortTreeDirection(ProjectsViewSorter.BUILD_FINISHED)));
             }
         });
 
         return tree;
+    }
+
+    private boolean sortTreeDirection(int column) {
+    	boolean result = true;
+    	switch(column) {
+    	case ProjectsViewSorter.PROJECT_NAME:
+    		result = this.projectColumnSelected % 2 == 0;
+    		this.projectColumnSelected++;
+    		this.scheduleColumnSelected = 0;
+    		this.buildVersionSelected = 0;
+    		this.buildFinishedSelected = 0;
+    		break;
+    	case ProjectsViewSorter.SCHEDULE_NAME:
+    		result = this.scheduleColumnSelected % 2 == 0;
+    		this.scheduleColumnSelected++;
+    		this.projectColumnSelected = 0;
+    		this.buildVersionSelected = 0;
+    		this.buildFinishedSelected = 0;
+    		break;
+    	case ProjectsViewSorter.BUILD_VERSION:
+    		result = this.buildVersionSelected % 2 == 0;
+    		this.projectColumnSelected = 0;
+    		this.scheduleColumnSelected = 0;
+    		this.buildVersionSelected++;
+    		this.buildFinishedSelected = 0;
+    		break;
+    	case ProjectsViewSorter.BUILD_FINISHED:
+    		result = this.buildFinishedSelected % 2 == 0;
+    		this.projectColumnSelected = 0;
+    		this.scheduleColumnSelected = 0;
+    		this.buildVersionSelected = 0;
+    		this.buildFinishedSelected++;
+    		break;
+    	}
+    	return result;
     }
 
     private Table createTable(Composite parent) {
@@ -383,7 +448,7 @@ public class LuntbuildViewer {
                         }
                         selectedHistoryBuilds = new ArrayList();
                         for (Iterator it = ((IStructuredSelection)selection).iterator(); it .hasNext();) {
-                            BuildMessenger elem = (BuildMessenger) it.next();
+                            Build elem = (Build) it.next();
                             selectedHistoryBuilds.add(elem);
                         }
                         LuntbuildView.mainView.enableActionButtons();
@@ -394,17 +459,30 @@ public class LuntbuildViewer {
         TableColumn column = new TableColumn(table, SWT.LEFT, 0);
         column.setText("Project");
         column.setWidth(100);
+        column.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.PROJECT_NAME,
+                		sortBuildsDirection(BuildsViewSorter.PROJECT_NAME)));
+            }
+        });
 
         column = new TableColumn(table, SWT.LEFT, 1);
         column.setText("Schedule");
         column.setWidth(100);
+        column.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.SCHEDULE_NAME,
+                		sortBuildsDirection(BuildsViewSorter.SCHEDULE_NAME)));
+            }
+        });
 
         column = new TableColumn(table, SWT.LEFT, 2);
         column.setText("Version");
         column.setWidth(100);
         column.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_VERSION));
+                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_VERSION,
+                		sortBuildsDirection(BuildsViewSorter.BUILD_VERSION)));
             }
         });
 
@@ -417,7 +495,8 @@ public class LuntbuildViewer {
         column.setWidth(60);
         column.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_STATUS));
+                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_STATUS,
+                		sortBuildsDirection(BuildsViewSorter.BUILD_STATUS)));
             }
         });
 
@@ -426,7 +505,8 @@ public class LuntbuildViewer {
         column.setWidth(120);
         column.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_FINISHED));
+                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_FINISHED,
+                		sortBuildsDirection(BuildsViewSorter.BUILD_FINISHED)));
             }
         });
 
@@ -435,50 +515,140 @@ public class LuntbuildViewer {
         column.setWidth(70);
         column.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_DURATION));
+                histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_DURATION,
+                		sortBuildsDirection(BuildsViewSorter.BUILD_DURATION)));
             }
         });
 
         return table;
     }
 
-    /**
-     * This method restarts job responsible for refreshing
-     * Luntclipse view. If job is not running, it will be start.
-     */
-    public void restartRefreshJob(){
-        int delay = 10;
-        try {
-            String refreshTime = this.connection.getConnectionData().getRefreshTime();
-            if(refreshTime != null){
-                delay = new Integer(refreshTime).intValue();
+    private boolean sortBuildsDirection(int column) {
+    	boolean result = true;
+    	switch(column) {
+    	case BuildsViewSorter.PROJECT_NAME:
+    		result = this.historyProjectColumnSelected % 2 == 0;
+    		this.historyProjectColumnSelected++;
+    		this.historyScheduleColumnSelected = 0;
+    		this.historyBuildVersionSelected = 0;
+    		this.historyBuildStatusSelected = 0;
+    		this.historyBuildFinishedSelected = 0;
+    		this.historyBuildDurationSelected = 0;
+    		break;
+    	case BuildsViewSorter.SCHEDULE_NAME:
+    		result = this.historyScheduleColumnSelected % 2 == 0;
+    		this.historyScheduleColumnSelected++;
+    		this.historyProjectColumnSelected = 0;
+    		this.historyBuildVersionSelected = 0;
+    		this.historyBuildStatusSelected = 0;
+    		this.historyBuildFinishedSelected = 0;
+    		this.historyBuildDurationSelected = 0;
+    		break;
+    	case BuildsViewSorter.BUILD_VERSION:
+    		result = this.historyBuildVersionSelected % 2 == 0;
+    		this.historyBuildVersionSelected++;
+    		this.historyScheduleColumnSelected = 0;
+    		this.historyProjectColumnSelected = 0;
+    		this.historyBuildStatusSelected = 0;
+    		this.historyBuildFinishedSelected = 0;
+    		this.historyBuildDurationSelected = 0;
+    		break;
+    	case BuildsViewSorter.BUILD_STATUS:
+    		result = this.historyBuildStatusSelected % 2 == 0;
+    		this.historyBuildStatusSelected++;
+    		this.historyScheduleColumnSelected = 0;
+    		this.historyBuildVersionSelected = 0;
+    		this.historyProjectColumnSelected = 0;
+    		this.historyBuildFinishedSelected = 0;
+    		this.historyBuildDurationSelected = 0;
+    		break;
+    	case BuildsViewSorter.BUILD_FINISHED:
+    		result = this.historyBuildFinishedSelected % 2 == 0;
+    		this.historyBuildFinishedSelected++;
+    		this.historyScheduleColumnSelected = 0;
+    		this.historyBuildVersionSelected = 0;
+    		this.historyBuildStatusSelected = 0;
+    		this.historyProjectColumnSelected = 0;
+    		this.historyBuildDurationSelected = 0;
+    		break;
+    	case BuildsViewSorter.BUILD_DURATION:
+    		result = this.historyBuildDurationSelected % 2 == 0;
+    		this.historyBuildDurationSelected++;
+    		this.historyScheduleColumnSelected = 0;
+    		this.historyBuildVersionSelected = 0;
+    		this.historyBuildStatusSelected = 0;
+    		this.historyBuildFinishedSelected = 0;
+    		this.historyProjectColumnSelected = 0;
+    		break;
+    	}
+    	return result;
+    }
+
+    private Table createMessageTable(Composite parent) {
+        Table table =
+            new Table(parent, SWT.BORDER | SWT.SINGLE| SWT.FULL_SELECTION| SWT.H_SCROLL | SWT.V_SCROLL);
+        table.setHeaderVisible(true);
+
+        TableColumn column = new TableColumn(table, SWT.CENTER, 0);
+        column.setText("");
+        column.setWidth(20);
+
+        column = new TableColumn(table, SWT.LEFT, 1);
+        column.setText("Date");
+        column.setWidth(200);
+        column.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                messageViewer.setSorter(new MessageViewSorter(MessageViewSorter.DATE,
+                		sortMessageDateDirection(MessageViewSorter.DATE)));
             }
-        } catch (NumberFormatException e) {
-            //ignore it
-        }
+        });
 
-        if (this.projectsRefreshJob.getState() == Job.NONE) {
-            this.projectsRefreshJob.setDelay(delay * 1000);
-            this.projectsRefreshJob.schedule();
-        } else {
-            new RefreshJobRestarter(this.projectsRefreshJob, delay * 1000).schedule();
-        }
+        column = new TableColumn(table, SWT.LEFT, 2);
+        column.setText("Build");
+        column.setWidth(200);
+        column.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                messageViewer.setSorter(new MessageViewSorter(MessageViewSorter.BUILD,
+                		sortMessageDateDirection(MessageViewSorter.BUILD)));
+            }
+        });
+
+        column = new TableColumn(table, SWT.LEFT, 3);
+        column.setText("Message");
+        column.setWidth(300);
+
+        return table;
+    }
+
+    private boolean sortMessageDateDirection(int criteria) {
+    	boolean result = true;
+    	switch(criteria) {
+    	case MessageViewSorter.DATE:
+        	result = this.messageDateColumnSelected % 2 == 0;
+        	this.messageDateColumnSelected++;
+        	this.messageBuildColumnSelected = 0;
+        	break;
+    	case MessageViewSorter.BUILD:
+        	result = this.messageBuildColumnSelected % 2 == 0;
+        	this.messageDateColumnSelected = 1;
+        	this.messageBuildColumnSelected++;
+        	break;
+        default:
+        	break;
+    	}
+    	return result;
     }
 
     /**
-     * Stop refresh job
+     * Clear logs
      */
-    public void stopRefreshJob(){
-        if (this.projectsRefreshJob != null) this.projectsRefreshJob.cancel();
-        if (this.logRefreshJob != null) this.logRefreshJob.cancel();
+    public void clearMessages() {
+        this.notifyMessages = new ArrayList<NotificationMessage>();
+        this.messageViewer.refresh();
     }
 
-    /** Set refresh job
-     * @param job job
-     */
-    public void setRefreshJob(RefreshJob job) {
-        this.projectsRefreshJob = job;
-        this.logRefreshJob = job;
+    public ArrayList<NotificationMessage> getNotifyMessages() {
+    	return this.notifyMessages;
     }
 
     private void hookContextMenu() {
@@ -492,17 +662,6 @@ public class LuntbuildViewer {
         Menu menu = menuMgr.createContextMenu(this.buildViewer.getControl());
         this.buildViewer.getControl().setMenu(menu);
         this.parentView.getSite().registerContextMenu(menuMgr, this.buildViewer);
-
-        menuMgr = new MenuManager("#BuildsPopupMenu");
-        menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-                LuntbuildViewer.this.parentView.fillBuildsPullDown(manager);
-            }
-        });
-        menu = menuMgr.createContextMenu(this.histBuildsViewer.getControl());
-        this.histBuildsViewer.getControl().setMenu(menu);
-        this.parentView.getSite().registerContextMenu(menuMgr, this.histBuildsViewer);
     }
 
     private Object setLogViewer(Composite parent, CTabFolder folder,
@@ -562,6 +721,7 @@ public class LuntbuildViewer {
      * Remove the view.
      */
     public void remove() {
+    	this.connection.setViewer(null);
         this.connTab.dispose();
     }
 
@@ -604,10 +764,25 @@ public class LuntbuildViewer {
     /**
      * Refresh viewer
      */
-    public final void refresh() {
-        this.connection.loadBuildData();
-        this.buildViewer.refresh();
-        this.histBuildsViewer.refresh();
+    public final void refresh(boolean doLoadBuildData) {
+    	ArrayList<NotificationMessage> allMsgs = new ArrayList<NotificationMessage>();
+    	boolean hasNewMessages = false;
+    	if (doLoadBuildData) this.connection.loadBuildData();
+        ArrayList<NotificationMessage> newMessages = connection.getNewMessages();
+        allMsgs.addAll(newMessages);
+    	LuntclipsePlugin.getDefault().setNotificationState(connection, newMessages);
+    	hasNewMessages |= newMessages.size() > 0;
+    	List<NotificationMessage> msg = connection.getErrorMessages();
+        if (msg != null && msg.size() > 0) {
+        	allMsgs.addAll(msg);
+        	hasNewMessages = true;
+        }
+		if (hasNewMessages) {
+			displayMessages(allMsgs);
+	        setFocus(MESSAGE_INDEX);
+		}
+	    if (this.buildViewer != null  && !this.buildViewer.getControl().isDisposed())  this.buildViewer.refresh();
+	    if (this.histBuildsViewer != null  && !this.histBuildsViewer.getControl().isDisposed())  this.histBuildsViewer.refresh();
         LuntbuildView.mainView.enableActionButtons();
     }
 
@@ -619,18 +794,28 @@ public class LuntbuildViewer {
         ((CTabFolder)this.buildViewer.getControl().getParent()).setSelection(index);
     }
 
+    public void setFocus() {
+    	setFocus(BUILDS_INDEX);
+    }
+
+    private void setFocus(int index) {
+    	if (this.connTab == null || this.connTab.getParent() == null) return;
+    	this.connTab.getParent().setSelection(this.connTab);
+    	setTabSelection(index);
+    }
+
     /**
      * @return current/selected build info
      */
-    public BuildMessenger getSelectedBuild() {
+    public Build getSelectedBuild() {
         return this.selectedBuild;
     }
 
-    private BuildMessenger getBuildToDisplay() {
-        BuildMessenger build = null;
+    private Build getBuildToDisplay() {
+        Build build = null;
         if (this.topFolder.getSelectionIndex() == BUILDS_INDEX) {
             if (this.selectedHistoryBuilds != null && this.selectedHistoryBuilds.size() > 0)
-                build = (BuildMessenger)this.selectedHistoryBuilds.get(0);
+                build = (Build)this.selectedHistoryBuilds.get(0);
         }
         if (this.topFolder.getSelectionIndex() == PROJECTS_INDEX || build == null)
             build = getSelectedBuild();
@@ -641,7 +826,7 @@ public class LuntbuildViewer {
      * Display build log
      */
     public void displayBuildLog() {
-        BuildMessenger build = getBuildToDisplay();
+        Build build = getBuildToDisplay();
         if (build == null) return;
         String url = build.getBuildLogUrl();
         if(url == null){
@@ -710,7 +895,7 @@ public class LuntbuildViewer {
      * Display revision log
      */
     public void displayRevisionLog() {
-        BuildMessenger build = getBuildToDisplay();
+        Build build = getBuildToDisplay();
         if (build == null) return;
         String url = build.getRevisionLogUrl();
         if(url == null){
@@ -748,7 +933,7 @@ public class LuntbuildViewer {
      * Display system log
      */
     public void displaySystemLog() {
-        BuildMessenger build = getSelectedBuild();
+        Build build = getSelectedBuild();
         if (build == null) return;
         setTabSelection(LuntbuildViewer.LOG_INDEX);
         this.logsTab.setText("System Log");
@@ -780,6 +965,13 @@ public class LuntbuildViewer {
         }
     }
 
+    public void displayMessages(List<NotificationMessage> messages) {
+    	if (messages.size() == 0) return;
+    	this.notifyMessages.addAll(messages);
+        this.messageViewer.refresh();
+        setTabSelection(MESSAGE_INDEX);
+    }
+
     /**
      * @return shell
      */
@@ -797,18 +989,21 @@ public class LuntbuildViewer {
      */
     private class ProjectsViewSorter extends ViewerSorter {
         /** column index */
-        public final static int NAME = 0;
+        public final static int PROJECT_NAME = 0;
         public final static int SCHEDULE_NAME = 2;
-        public final static int STATUS_DATE = 5;
+        public final static int BUILD_VERSION = 4;
+        public final static int BUILD_FINISHED = 5;
 
         private int criteria;
+        private int direction = 1;
 
         /**
          * @param criteria
          */
-        ProjectsViewSorter(int criteria) {
+        ProjectsViewSorter(int criteria, boolean ascending) {
             super();
             this.criteria = criteria;
+            this.direction = (ascending) ? 1 : -1;
         }
 
         /**
@@ -819,37 +1014,30 @@ public class LuntbuildViewer {
                 String projectName1 = (String) o1;
                 String projectName2 = (String) o2;
                 switch (this.criteria) {
-                case NAME :
-                    return this.collator.compare(projectName1, projectName2);
+                case PROJECT_NAME :
+                    return this.collator.compare(projectName1, projectName2) * this.direction;
                 default:
                     return 0;
                 }
 
-            } else if (o1 instanceof BuildMessenger && o2 instanceof BuildMessenger) {
-                BuildMessenger m1 = (BuildMessenger) o1;
-                BuildMessenger m2 = (BuildMessenger) o2;
+            } else if (o1 instanceof Build && o2 instanceof Build) {
+                Build m1 = (Build) o1;
+                Build m2 = (Build) o2;
 
                 switch (this.criteria) {
-                    case NAME :
-                        return this.collator.compare(m1.getProjectName(), m2.getProjectName());
+                    case PROJECT_NAME :
+                        return this.collator.compare(m1.getProjectName(), m2.getProjectName()) * this.direction;
                     case SCHEDULE_NAME :
-                        return this.collator.compare(m1.getScheduleName(), m2.getScheduleName());
-                    case STATUS_DATE :
-                        return this.collator.compare(m1.getStatusDate(), m2.getStatusDate());
+                        return this.collator.compare(m1.getScheduleName(), m2.getScheduleName()) * this.direction;
+                    case BUILD_VERSION:
+                    	return this.collator.compare(m1.getVersion(), m2.getVersion()) * this.direction;
+                    case BUILD_FINISHED :
+                        return this.collator.compare(m1.getStatusDate(), m2.getStatusDate()) * this.direction;
                     default:
                         return 0;
                 }
             } else
                 return 0;
-        }
-
-        /**
-         * Returns the sort criteria of this this sorter.
-         *
-         * @return the sort criterion
-         */
-        public int getCriteria() {
-            return this.criteria;
         }
     }
 
@@ -885,7 +1073,7 @@ public class LuntbuildViewer {
               // Return the builds
               Map ldata = this.luntbuild.getLuntbuildData();
               if (ldata == null || ldata.isEmpty()) {
-                  BuildMessenger[] ret = {new BuildMessenger()};
+                  Build[] ret = {new Build()};
                   ret[0].setProjectName(LuntclipseConstants.gettingData);
                   return ret;
               }
@@ -906,8 +1094,8 @@ public class LuntbuildViewer {
            */
           public Object getParent(Object arg0) {
               // Return this build's project
-              if (arg0 instanceof BuildMessenger) {
-                  return ((BuildMessenger)arg0).getProjectName();
+              if (arg0 instanceof Build) {
+                  return ((Build)arg0).getProjectName();
               } else {
                   return null;
               }
@@ -922,7 +1110,7 @@ public class LuntbuildViewer {
            */
           public boolean hasChildren(Object arg0) {
               // Get the children
-              if (arg0 instanceof BuildMessenger) {
+              if (arg0 instanceof Build) {
                   return false;
               } else {
                   Map ldata = this.luntbuild.getLuntbuildData();
@@ -943,7 +1131,7 @@ public class LuntbuildViewer {
               // These are the root elements of the tree
               Map ldata = this.luntbuild.getLuntbuildData();
               if (ldata == null || ldata.isEmpty()) {
-                  BuildMessenger[] ret = {new BuildMessenger()};
+                  Build[] ret = {new Build()};
                   if (this.luntbuild.isConnected())
                       ret[0].setProjectName("");
                   else
@@ -1006,8 +1194,8 @@ public class LuntbuildViewer {
             if(obj instanceof String){
                 return (index == 0) ? (String)obj : "";
             }
-            if(obj instanceof BuildMessenger){
-                BuildMessenger messenger = (BuildMessenger)obj;
+            if(obj instanceof Build){
+                Build messenger = (Build)obj;
                 switch (index) {
                 case 0:
                     result = messenger.getProjectName();
@@ -1057,8 +1245,8 @@ public class LuntbuildViewer {
             if (obj instanceof String) {
                 return (index == 0) ? ir.get(LuntclipseConstants.PROJECT_IMG) : null;
             }
-            if (obj instanceof BuildMessenger) {
-                BuildMessenger messenger = (BuildMessenger)obj;
+            if (obj instanceof Build) {
+                Build messenger = (Build)obj;
                 if(index == 1 ){
                     if (!this.luntbuild.isDataAvailable()) {
                         if (!this.luntbuild.isConnected())
@@ -1120,38 +1308,46 @@ public class LuntbuildViewer {
      */
     private class BuildsViewSorter extends ViewerSorter {
         /** column index */
+        public final static int PROJECT_NAME = 0;
+        public final static int SCHEDULE_NAME = 1;
         public final static int BUILD_VERSION = 2;
         public final static int BUILD_STATUS = 4;
         public final static int BUILD_FINISHED = 5;
         public final static int BUILD_DURATION = 6;
 
         private int criteria;
+        private int direction = 1;
 
         /**
          * @param criteria
          */
-        BuildsViewSorter(int criteria) {
+        BuildsViewSorter(int criteria, boolean ascending) {
             super();
             this.criteria = criteria;
+            this.direction = (ascending) ? 1 : -1;
         }
 
         /**
          * @see org.eclipse.jface.viewers.ViewerSorter#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
          */
         public int compare(Viewer viewer, Object o1, Object o2) {
-            if (o1 instanceof BuildMessenger && o2 instanceof BuildMessenger) {
-                BuildMessenger m1 = (BuildMessenger) o1;
-                BuildMessenger m2 = (BuildMessenger) o2;
+            if (o1 instanceof Build && o2 instanceof Build) {
+                Build m1 = (Build) o1;
+                Build m2 = (Build) o2;
 
                 switch (this.criteria) {
+                case PROJECT_NAME :
+                    return this.collator.compare(m1.getProjectName(), m2.getProjectName()) * this.direction;
+                case SCHEDULE_NAME :
+                    return this.collator.compare(m1.getScheduleName(), m2.getScheduleName()) * this.direction;
                     case BUILD_VERSION :
-                        return this.collator.compare(m1.getVersion(), m2.getVersion());
+                        return this.collator.compare(m1.getVersion(), m2.getVersion()) * this.direction;
                     case BUILD_STATUS :
-                        return this.collator.compare("" + m1.getBuildStatus(), "" + m2.getBuildStatus());
+                        return this.collator.compare("" + m1.getBuildStatus(), "" + m2.getBuildStatus()) * this.direction;
                     case BUILD_FINISHED :
-                        return this.collator.compare(m1.getEndDate(), m2.getEndDate());
+                        return this.collator.compare(m1.getEndDate(), m2.getEndDate()) * this.direction;
                     case BUILD_DURATION :
-                        return this.collator.compare(m1.getDuration(), m2.getDuration());
+                        return this.collator.compare(m1.getDuration(), m2.getDuration()) * this.direction;
                     default:
                         return 0;
                 }
@@ -1204,20 +1400,20 @@ public class LuntbuildViewer {
 
         /**
          * Return model data
-         * @return array of {@link BuildMessenger}
+         * @return array of {@link Build}
          *
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
         public Object[] getElements(Object parent) {
             if (this.luntbuild == null || this.luntbuild.getLuntbuild() == null || this.criteria == null) {
-                BuildMessenger[] ret = {new BuildMessenger()};
+                Build[] ret = {new Build()};
                 ret[0].setProjectName(LuntclipseConstants.gettingData);
                 return ret;
 
             }
             List dataList = this.luntbuild.getLuntbuild().searchBuilds(this.criteria, 0, 0);
 
-            List buildsList = BuildMessenger.toMessanger(dataList, getSelectedBuild());
+            List buildsList = Build.toMessanger(dataList, getSelectedBuild());
 
             return  buildsList.toArray();
         }
@@ -1262,8 +1458,8 @@ public class LuntbuildViewer {
             }
             if (!this.luntbuild.isDataAvailable())
                 return result;
-            if(obj instanceof BuildMessenger){
-                BuildMessenger messenger = (BuildMessenger)obj;
+            if(obj instanceof Build){
+                Build messenger = (Build)obj;
                 if (messenger.getScheduleName().trim().length() == 0) return result;
                 switch (index) {
                 case 0:
@@ -1303,8 +1499,8 @@ public class LuntbuildViewer {
             if (obj instanceof String) {
                 return (index == 0) ? ir.get(LuntclipseConstants.PROJECT_IMG) : null;
             }
-            if (obj instanceof BuildMessenger) {
-                BuildMessenger messenger = (BuildMessenger)obj;
+            if (obj instanceof Build) {
+                Build messenger = (Build)obj;
                 if (messenger.getScheduleName().trim().length() == 0) return image;
                 if(index == 3 && this.luntbuild.isDataAvailable()){
                     switch(messenger.getBuildStatus()){
@@ -1314,6 +1510,152 @@ public class LuntbuildViewer {
                     default:
                         image =  ir.get(LuntclipseConstants.SUCCESS_IMG);
                         break;
+                    }
+                }
+            }
+            return image;
+        }
+
+        /**
+         * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
+         */
+        public Image getImage(Object obj) {
+            return PlatformUI.getWorkbench().
+                    getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
+        }
+    }
+
+    /**
+     * Message View Sorter is used by a structured viewer to
+     * reorder the elements provided by its content provider.
+     *
+     * @author   Lubos Pochman
+     */
+    private class MessageViewSorter extends ViewerSorter {
+
+    	public static final int DATE = 1;
+    	public static final int BUILD = 2;
+
+    	private final int criteria;
+        private final int direction;
+
+        /**
+         * @param criteria
+         * @param descending
+         */
+        MessageViewSorter(int criteria, boolean descending) {
+            super();
+            this.criteria = criteria;
+            this.direction = (descending) ? -1 : 1;
+        }
+
+        /**
+         * @see org.eclipse.jface.viewers.ViewerSorter#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+         */
+        public int compare(Viewer viewer, Object o1, Object o2) {
+            if (o1 instanceof NotificationMessage && o2 instanceof NotificationMessage) {
+            	NotificationMessage m1 = (NotificationMessage) o1;
+            	NotificationMessage m2 = (NotificationMessage) o2;
+            	switch (this.criteria) {
+            	case DATE:
+                	return m1.getDate().compareTo( m2.getDate()) * this.direction;
+            	case BUILD:
+            		return m1.getBuildVersion().compareTo(m2.getBuildVersion()) * this.direction;
+            	default:
+            		return 0;
+            	}
+            } else
+                return 0;
+        }
+    }
+
+    /**
+     * The content provider class is responsible for
+     * providing objects representing build info to the view.
+     *
+     * @author   Lubos Pochman
+     * @version  $Revision: 1.14 $
+     * @since    0.0.1
+     */
+    public class MessageViewContentProvider implements IStructuredContentProvider {
+
+        /**
+         * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+         */
+        public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+        }
+
+        /**
+         * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+         */
+        public void dispose() {
+        }
+
+        /**
+         * Return model data
+         * @return array of {@link Build}
+         *
+         * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+         */
+        public Object[] getElements(Object parent) {
+            ArrayList<NotificationMessage> messages = LuntbuildViewer.this.getNotifyMessages();
+            return messages.toArray(new NotificationMessage[messages.size()]);
+        }
+
+    }
+
+    /**
+     * This class provides data for message Quickbuild view.
+     * @author   Lubos Pochman
+     * @version  $Revision$
+     * @since    0.1
+     */
+    private class MessageViewLabelProvider extends LabelProvider implements ITableLabelProvider {
+
+        /**
+         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+         */
+        public String getColumnText(Object obj, int index) {
+            String result = "";
+            if(obj instanceof Exception){
+                return (index == 0) ? "An Exception has occurred! See error log." : "";
+            }
+            if(obj instanceof NotificationMessage) {
+            	NotificationMessage message = (NotificationMessage)obj;
+                switch (index) {
+                case 1:
+                    result = message.getDate().toString();
+                    break;
+                case 2:
+                    result = (message.getBuildVersion() == null) ? "" : message.getBuildVersion();
+                    break;
+                case 3:
+                    result = message.getContent();
+                    break;
+                default:
+                    break;
+                }
+            }
+            return result;
+        }
+
+        /**
+         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
+         */
+        public Image getColumnImage(Object obj, int index) {
+            Image image = null;
+            if(obj instanceof Exception) {
+                return null;
+            }
+            if (obj instanceof NotificationMessage) {
+            	NotificationMessage message = (NotificationMessage)obj;
+                if(index == 0) {
+                    if (message.getSeverity() == SeverityLevel.Error) {
+                        image =  LuntclipsePlugin.getDefault().failedImage;
+                    } else if (message.getSeverity() == SeverityLevel.Warning) {
+                        image =  LuntclipsePlugin.getDefault().runningImage;
+                    } else {
+                        image =  LuntclipsePlugin.getDefault().successImage;
                     }
                 }
             }

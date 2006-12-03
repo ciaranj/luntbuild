@@ -60,7 +60,7 @@ public class CreateProjectAction extends Action {
         EditProjectWizard wizard = new EditProjectWizard(con);
         WizardDialog dlg = new WizardDialog(viewer.getShell(), wizard);
         dlg.open();
-        viewer.refresh();
+        viewer.refresh(true);
     }
 
 }

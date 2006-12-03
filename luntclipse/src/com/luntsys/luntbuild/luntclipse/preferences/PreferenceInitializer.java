@@ -24,6 +24,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         store.setDefault(PreferenceHelper.P_LUNTBUILD_NUM_RETRIES, "5");
         store.setDefault(PreferenceHelper.P_LUNTBUILD_CONNECTION_TIMEOUT, "10");
+        store.setDefault(PreferenceHelper.P_LUNTBUILD_REFRESH_TIME, "30");
+        store.setDefault(PreferenceHelper.P_LUNTBUILD_NOTIFY_TRAY, true);
+        store.setDefault(PreferenceHelper.P_LUNTBUILD_ALWAYS_RUN_NOTIFY_TRAY, true);
+        store.setDefault(PreferenceHelper.P_LUNTBUILD_NOTIFY_CONNECTION, "None");
 	}
 
 }

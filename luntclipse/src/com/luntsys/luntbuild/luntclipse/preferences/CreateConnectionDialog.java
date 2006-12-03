@@ -8,8 +8,8 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -22,9 +22,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
+import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
 import com.luntsys.luntbuild.luntclipse.model.ConnectionData;
+import com.luntsys.luntbuild.luntclipse.model.ConnectionData.NotifyCondition;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildView;
 
 /**
@@ -36,12 +37,13 @@ import com.luntsys.luntbuild.luntclipse.views.LuntbuildView;
 public class CreateConnectionDialog extends TitleAreaDialog {
 
     private ConnectionData connectionData = null;
+    private LuntbuildConnection connection = null;
 
     private Text nameText;
     private Text urlText;
     private Text userText;
     private Text passwordText;
-    private Text refreshText;
+    private CCombo notifyCondition;
     private ArrayList versionButtons = new ArrayList();
 
     private Image image;
@@ -54,7 +56,16 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         super(parentShell);
         setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MAX
                 | SWT.APPLICATION_MODAL);
+    }
 
+    /**
+     * @param parentShell
+     */
+    public CreateConnectionDialog(Shell parentShell, LuntbuildConnection connection) {
+        super(parentShell);
+        setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MAX
+                | SWT.APPLICATION_MODAL);
+        this.connection = connection;
     }
 
     /**
@@ -66,12 +77,15 @@ public class CreateConnectionDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
       Control contents = super.createContents(parent);
 
-      // Set the title
-      setTitle("Create connection");
-
-      // Set the message
-      setMessage("Create connection to an existing Luntbuild instance.",
-              IMessageProvider.INFORMATION);
+      if (this.connection == null) {
+	      setTitle("Create connection");
+	      setMessage("Create connection to an existing Luntbuild instance.",
+	              IMessageProvider.INFORMATION);
+      } else {
+	      setTitle("Edit connection");
+	      setMessage("Edit connection to an existing Luntbuild instance " + this.connection.getConnectionData().getName(),
+	              IMessageProvider.INFORMATION);
+      }
 
       this.image = ImageDescriptor.createFromURL(LuntclipsePlugin.getDefault().
               getBundle().getEntry("images/guide.gif")).createImage();
@@ -110,6 +124,7 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         gdata.horizontalAlignment = GridData.FILL;
         gdata.grabExcessHorizontalSpace = true;
         this.nameText.setLayoutData(gdata);
+        if (this.connection != null) this.nameText.setText(this.connection.getConnectionData().getName());
 
         label = new Label(gridComp, SWT.NONE);
         label.setText("Luntbuild Url:");
@@ -122,6 +137,7 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         gdata.horizontalAlignment = GridData.FILL;
         gdata.grabExcessHorizontalSpace = true;
         this.urlText.setLayoutData(gdata);
+        if (this.connection != null) this.urlText.setText(this.connection.getConnectionData().getUrl());
 
         label = new Label(gridComp, SWT.NONE);
         label.setText("Luntbuild User:");
@@ -134,6 +150,7 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         gdata.horizontalAlignment = GridData.FILL;
         gdata.grabExcessHorizontalSpace = true;
         this.userText.setLayoutData(gdata);
+        if (this.connection != null) this.userText.setText(this.connection.getConnectionData().getUser());
 
         label = new Label(gridComp, SWT.NONE);
         label.setText("Luntbuild Password:");
@@ -146,18 +163,27 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         gdata.horizontalAlignment = GridData.FILL;
         gdata.grabExcessHorizontalSpace = true;
         this.passwordText.setLayoutData(gdata);
+        if (this.connection != null) this.passwordText.setText(this.connection.getConnectionData().getPassword());
 
         label = new Label(gridComp, SWT.NONE);
-        label.setText("Luntbuild refresh time (s):");
+        label.setText("Notify Condition:");
         gdata = new GridData();
         gdata.widthHint = 120;
         label.setLayoutData(gdata);
-        this.refreshText = new Text(gridComp, SWT.BORDER);
+        this.notifyCondition = new CCombo(gridComp, SWT.BORDER);
+        NotifyCondition[] condArr = NotifyCondition.values();
+        for (int i = 0; i < condArr.length; i++) {
+            String type = condArr[i].toString();
+            this.notifyCondition.add(type);
+            if (type.equals("BuildFinished")) this.notifyCondition.select(i);
+        }
         gdata = new GridData();
         gdata.widthHint = 220;
         gdata.horizontalAlignment = GridData.FILL;
         gdata.grabExcessHorizontalSpace = true;
-        this.refreshText.setLayoutData(gdata);
+        this.notifyCondition.setLayoutData(gdata);
+        if (this.connection != null)
+        	this.notifyCondition.select(this.connection.getConnectionData().getNotifyCondition().ordinal());
 
         // Create the version group
         label = new Label(gridComp, SWT.NONE);
@@ -209,7 +235,7 @@ public class CreateConnectionDialog extends TitleAreaDialog {
             if (this.connectionData == null) {
                 return;
             }
-            if (LuntbuildView.mainView.nameExists(this.connectionData.getName())) {
+            if (this.connection == null && LuntbuildView.mainView.connectionExists(this.connectionData)) {
                 MessageDialog.openWarning(
                         getShell(),
                         "Luntbuild Connection Exists",
@@ -224,7 +250,11 @@ public class CreateConnectionDialog extends TitleAreaDialog {
     }
 
     private void validateConnectionData() {
-        ConnectionData data = new ConnectionData();
+    	ConnectionData data = null;
+    	if (this.connection == null)
+    		data = new ConnectionData();
+    	else
+    		data = this.connection.getConnectionData();
 
         String name = this.nameText.getText().trim();
         if (name.length() == 0) {
@@ -241,6 +271,10 @@ public class CreateConnectionDialog extends TitleAreaDialog {
                     "Luntbuild connection url is missing!");
             this.connectionData = null;
             return;
+        }
+        if (!url.endsWith("luntbuild") || !url.endsWith("luntbuild/")) {
+        	if (!url.endsWith("/")) url += "/";
+        	url += "luntbuild";
         }
         data.setUrl(url);
 
@@ -262,20 +296,9 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         }
         data.setPassword(password);
 
-        String refresh = this.refreshText.getText().trim();
-        if (refresh.length() == 0) {
-            MessageDialog.openWarning(getShell(), "Luntbuild Connection Invalid",
-                    "Luntbuild connection refresh time invalid using default (60s)!");
-            data.setRefreshTime("60");
-        } else {
-            try{
-                 new Integer(refresh).intValue();
-                 data.setRefreshTime(refresh);
-            }catch (NumberFormatException e) {
-                MessageDialog.openWarning(getShell(), "Luntbuild Connection Invalid",
-                "Luntbuild connection refresh time invalid using default (60s)!");
-                data.setRefreshTime("60");
-            }
+        int i = this.notifyCondition.getSelectionIndex();
+        if (i >= 0) {
+        	data.setNotifyCondition(this.notifyCondition.getItem(i));
         }
 
         for (Iterator iter = this.versionButtons.iterator(); iter.hasNext();) {

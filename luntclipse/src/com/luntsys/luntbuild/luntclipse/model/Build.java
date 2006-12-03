@@ -14,7 +14,7 @@ import com.luntsys.luntbuild.facades.lb12.BuildFacade;
  * @version  $Revision: 432 $
  * @since 	 0.0.1
  */
-public class BuildMessenger{
+public class Build{
     private String projectName = "";
     private String scheduleName = "";
     private int scheduleStatus = 0;
@@ -34,10 +34,10 @@ public class BuildMessenger{
     /**
      * Default constructor
      */
-    public BuildMessenger() {
+    public Build() {
     }
 
-    private BuildMessenger(BuildMessenger toCopy) {
+    private Build(Build toCopy) {
         if (toCopy.projectName != null) this.projectName = new String(toCopy.projectName);
         if (toCopy.scheduleName != null) this.scheduleName = new String(toCopy.scheduleName);
         this.scheduleStatus = toCopy.scheduleStatus;
@@ -58,14 +58,14 @@ public class BuildMessenger{
     /**
      * @param facades
      * @param lastBuild
-     * @return list of BuildMessenger
+     * @return list of Build
      */
-    public static List toMessanger(List facades, BuildMessenger lastBuild) {
+    public static List toMessanger(List facades, Build lastBuild) {
         ArrayList msgList = new ArrayList();
 
         for (Iterator iter = facades.iterator(); iter.hasNext();) {
             BuildFacade bf = (BuildFacade) iter.next();
-            BuildMessenger messenger = new BuildMessenger(lastBuild);
+            Build messenger = new Build(lastBuild);
 
             if(bf != null){
                 messenger.setLastBuildStatus(bf.getStatus());

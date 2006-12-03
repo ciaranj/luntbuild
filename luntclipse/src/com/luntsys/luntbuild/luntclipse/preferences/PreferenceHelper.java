@@ -22,10 +22,14 @@ public class PreferenceHelper {
     public static final String P_LUNTBUILD_USER = "P_LUNTBUILD_USER";
     public static final String P_LUNTBUILD_PASSWORD = "P_LUNTBUILD_PASSWORD";
     public static final String P_LUNTBUILD_URL = "P_LUNTBUILD_URL";
-    public static final String P_REFRESH_TIME = "P_REFRESH_TIME";
-    public static final String P_LUNTBILD_VERSION = "P_LUNTBILD_VERSION";
+    public static final String P_LUNTBUILD_NOTIFY_CONDITION = "P_LUNTBUILD_NOTIFY_CONDITION";
+    public static final String P_LUNTBUILD_REFRESH_TIME = "P_REFRESH_TIME";
+    public static final String P_LUNTBUILD_VERSION = "P_LUNTBUILD_VERSION";
     public static final String P_LUNTBUILD_NUM_RETRIES = "P_LUNTBUILD_NUM_RETRIES";
     public static final String P_LUNTBUILD_CONNECTION_TIMEOUT = "P_LUNTBUILD_CONNECTION_TIMEOUT";
+    public static final String P_LUNTBUILD_NOTIFY_CONNECTION = "P_LUNTBUILD_NOTIFY_CONNECTION";
+    public static final String P_LUNTBUILD_NOTIFY_TRAY = "P_LUNTBUILD_NOTIFY_TRAY";
+    public static final String P_LUNTBUILD_ALWAYS_RUN_NOTIFY_TRAY = "P_LUNTBUILD_ALWAYS_RUN_NOTIFY_TRAY";
 
 
     /** Returns list of stored connections
@@ -59,10 +63,24 @@ public class PreferenceHelper {
         data.setUser(store.getString(P_LUNTBUILD_USER + "_" + name));
         data.setPassword(store.getString(P_LUNTBUILD_PASSWORD + "_" + name));
         data.setUrl(store.getString(P_LUNTBUILD_URL + "_" + name));
-        data.setRefreshTime(store.getString(P_REFRESH_TIME + "_" + name));
-        data.setVersion(store.getString(P_LUNTBILD_VERSION + "_" + name));
-
+        data.setVersion(store.getString(P_LUNTBUILD_VERSION + "_" + name));
+        data.setNotifyCondition(store.getString(P_LUNTBUILD_NOTIFY_CONDITION + "_" + name));
         return data;
+    }
+
+    /** Gets connection by name
+     * @param name name
+     * @return connection data
+     */
+    public static void saveConnection(ConnectionData data) {
+        IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
+        // Set connection values
+        store.setValue(P_LUNTBUILD_NAME + "_" + data.getName(), data.getName());
+        store.setValue(P_LUNTBUILD_USER + "_" + data.getName(), data.getUser());
+        store.setValue(P_LUNTBUILD_PASSWORD + "_" + data.getName(), data.getPassword());
+        store.setValue(P_LUNTBUILD_URL + "_" + data.getName(), data.getUrl());
+        store.setValue(P_LUNTBUILD_VERSION + "_" + data.getName(), data.getVersion());
+        store.setValue(P_LUNTBUILD_NOTIFY_CONDITION + "_" + data.getName(), data.getNotifyCondition().toString());
     }
 
     /** Add connection
@@ -84,8 +102,8 @@ public class PreferenceHelper {
         store.setValue(P_LUNTBUILD_USER + "_" + data.getName(), data.getUser());
         store.setValue(P_LUNTBUILD_PASSWORD + "_" + data.getName(), data.getPassword());
         store.setValue(P_LUNTBUILD_URL + "_" + data.getName(), data.getUrl());
-        store.setValue(P_REFRESH_TIME + "_" + data.getName(), data.getRefreshTime());
-        store.setValue(P_LUNTBILD_VERSION + "_" + data.getName(), data.getVersion());
+        store.setValue(P_LUNTBUILD_VERSION + "_" + data.getName(), data.getVersion());
+        store.setValue(P_LUNTBUILD_NOTIFY_CONDITION + "_" + data.getName(), data.getNotifyCondition().toString());
     }
 
     /** Remove connection
@@ -115,8 +133,8 @@ public class PreferenceHelper {
         store.setValue(P_LUNTBUILD_USER + "_" + data.getName(), "");
         store.setValue(P_LUNTBUILD_PASSWORD + "_" + data.getName(), "");
         store.setValue(P_LUNTBUILD_URL + "_" + data.getName(), "");
-        store.setValue(P_REFRESH_TIME + "_" + data.getName(), "");
-        store.setValue(P_LUNTBILD_VERSION + "_" + data.getName(), "");
+        store.setValue(P_LUNTBUILD_VERSION + "_" + data.getName(), "");
+        store.setValue(P_LUNTBUILD_NOTIFY_CONDITION + "_" + data.getName(), data.getNotifyCondition().toString());
     }
 
     /**
@@ -142,4 +160,33 @@ public class PreferenceHelper {
         IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
         return store.getInt(P_LUNTBUILD_CONNECTION_TIMEOUT);
     }
+
+    /**
+     * @return refresh time in msec
+     */
+    public static int getRefreshTime() {
+        IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
+        return store.getInt(P_LUNTBUILD_REFRESH_TIME) * 1000;
+    }
+
+    public static boolean useNotifyTray() {
+        IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
+        return store.getBoolean(P_LUNTBUILD_NOTIFY_TRAY);
+    }
+
+    public static boolean alwaysRunNotifierTray() {
+        IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
+        return store.getBoolean(P_LUNTBUILD_ALWAYS_RUN_NOTIFY_TRAY);
+    }
+
+    public static String getNotifyConfiguration() {
+        IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
+        return store.getString(P_LUNTBUILD_NOTIFY_CONNECTION);
+    }
+
+    public static void setNotifyConfiguration(String configName) {
+        IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
+        store.setValue(P_LUNTBUILD_NOTIFY_CONNECTION, configName);
+    }
+
 }

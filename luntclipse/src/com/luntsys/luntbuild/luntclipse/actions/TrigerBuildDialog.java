@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Text;
 import com.luntsys.luntbuild.facades.BuildParams;
 import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 
 /**
  * TrigerBuild Dialog
@@ -30,7 +30,7 @@ import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
 public class TrigerBuildDialog extends TitleAreaDialog {
 
     private BuildParams buildParams;
-    private BuildMessenger selectedMessenger;
+    private Build selectedMessenger;
 
     private Text buildVersion = null;
     private CCombo buildType = null;
@@ -47,7 +47,7 @@ public class TrigerBuildDialog extends TitleAreaDialog {
      * @param buildParams
      * @param selectedMessenger
      */
-    public TrigerBuildDialog(Shell parentShell, BuildParams buildParams, BuildMessenger selectedMessenger) {
+    public TrigerBuildDialog(Shell parentShell, BuildParams buildParams, Build selectedMessenger) {
         super(parentShell);
         setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.MAX
                 | SWT.APPLICATION_MODAL);

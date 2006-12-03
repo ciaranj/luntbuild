@@ -20,7 +20,7 @@ import com.luntsys.luntbuild.luntclipse.wizards.vcsadaptors.VisualSourcesafeAdap
  */
 public class LuntclipseConstants {
 
-    public static final String gettingData = "Getting data. Please wait...";
+    public static final String gettingData = "No builds yet";
 
     public static final String usersCheckedRecently = "<users who checked in code recently>";
 

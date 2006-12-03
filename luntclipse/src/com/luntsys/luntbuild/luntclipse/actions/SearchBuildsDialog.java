@@ -31,7 +31,7 @@ import com.luntsys.luntbuild.facades.SearchCriteria;
 import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
 import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 import com.luntsys.luntbuild.luntclipse.wizards.ProjectWizardPage;
 
 /**
@@ -43,7 +43,7 @@ import com.luntsys.luntbuild.luntclipse.wizards.ProjectWizardPage;
 public class SearchBuildsDialog extends TitleAreaDialog {
 
     private LuntbuildConnection connection = null;
-    private BuildMessenger currentBuild = null;
+    private Build currentBuild = null;
     private Text version = null;
     private Button exactVersion = null;
     private CCombo status = null;
@@ -70,7 +70,7 @@ public class SearchBuildsDialog extends TitleAreaDialog {
      * @param con
      * @param currentBuild
      */
-    public SearchBuildsDialog(Shell parentShell, LuntbuildConnection con, BuildMessenger currentBuild) {
+    public SearchBuildsDialog(Shell parentShell, LuntbuildConnection con, Build currentBuild) {
         super(parentShell);
         this.connection = con;
         this.currentBuild = currentBuild;

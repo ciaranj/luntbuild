@@ -1,7 +1,3 @@
-/* $Header: /cvsroot/luntbuild/luntclipse/src/com/luntsys/luntbuild/luntclipse/views/LuntbuildView.java,v 1.12 2006/01/20 15:59:36 lubosp Exp $
- *
- * Copyright (c) 2004 - 2005 A.S.E.I. s.r.o.
- */
 package com.luntsys.luntbuild.luntclipse.views;
 
 import java.util.ArrayList;
@@ -37,6 +33,7 @@ import com.luntsys.luntbuild.luntclipse.actions.RevisionLogAction;
 import com.luntsys.luntbuild.luntclipse.actions.SearchBuildsAction;
 import com.luntsys.luntbuild.luntclipse.actions.SystemLogAction;
 import com.luntsys.luntbuild.luntclipse.actions.TriggerBuildAction;
+import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
 import com.luntsys.luntbuild.luntclipse.model.ConnectionData;
 import com.luntsys.luntbuild.luntclipse.preferences.PreferenceHelper;
 
@@ -44,15 +41,16 @@ import com.luntsys.luntbuild.luntclipse.preferences.PreferenceHelper;
  * The main luntbuild view shows data obtained from remote invocation of
  * Luntbuild.
  *
- * @author 	 Roman Pichlík
- * @version  $Revision: 1.12 $
+ * @author 	 Roman Pichlík, Lubos Pochman
  * @since 	 0.0.1
  *
  */
 public class LuntbuildView extends ViewPart implements SelectionListener {
 
     /** This view  */
+	public Composite parent = null;
     public static LuntbuildView mainView = null;
+    private static ArrayList<LuntbuildViewer> viewers = null;
     private CTabFolder m_folder = null;
     private Composite focusFolder = null;
 
@@ -73,8 +71,6 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
     private PasteProjectAction pasteProjectAction = null;
     private ManageConnectionAction connectionAction = null;
 
-    private static ArrayList viewers = null;
-
     /** Current build viewer */
     public static LuntbuildViewer currentViewer = null;
 
@@ -82,7 +78,7 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
 	 * The constructor.
 	 */
 	public LuntbuildView() {
-        viewers = new ArrayList();
+        viewers = new ArrayList<LuntbuildViewer>();
         mainView = this;
 	}
 
@@ -91,18 +87,15 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
 	 * to create the buildViewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
+    	this.parent = parent;
         this.m_folder = new CTabFolder(parent, SWT.NONE);
         this.focusFolder = m_folder;
         this.m_folder.addSelectionListener(this);
 
-        int i = 0;
-        ArrayList conArr = PreferenceHelper.getConnections();
-        for (Iterator iter = conArr.iterator(); iter.hasNext();) {
-            ConnectionData con = (ConnectionData) iter.next();
-
-            LuntbuildViewer viewer = new LuntbuildViewer(con, this);
-            viewer.create(this.m_folder, i++);
-            viewers.add(viewer);
+        ArrayList<LuntbuildConnection> connections = LuntclipsePlugin.getDefault().getConnections();
+        for (LuntbuildConnection con : connections) {
+            LuntbuildViewer viewer = createViewer(con);
+            if (viewer != null) viewers.add(viewer);
         }
 
         // Set actions
@@ -123,6 +116,13 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
         this.systemLogAction = new SystemLogAction();
 
         contributeToActionBars();
+
+        if (!LuntclipsePlugin.getDefault().alwaysRunNotifier()) {
+        	LuntclipsePlugin.getDefault().createTray();
+        	LuntclipsePlugin.getDefault().createTip(parent.getShell());
+        	LuntclipsePlugin.getDefault().startRefreshJob();
+        	LuntclipsePlugin.getDefault().createTrayMenu(parent.getShell());
+        }
 	}
 
     /**
@@ -218,17 +218,19 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
      * Enable/disable toolbar buttons
      */
     public void enableActionButtons() {
-        this.triggerBuildAction.setEnabled(currentViewer != null && currentViewer.getSelectedBuild() != null);
-        this.refreshAction.setEnabled(currentViewer != null && currentViewer.getConnection().isConnected());
-        this.buildLogAction.setEnabled(currentViewer != null && currentViewer.getSelectedBuild() != null);
-        this.revisionLogAction.setEnabled(currentViewer != null && currentViewer.getSelectedBuild() != null);
-        this.systemLogAction.setEnabled(currentViewer != null && currentViewer.getSelectedBuild() != null);
-        this.cleanLogAction.setEnabled(currentViewer != null && currentViewer.getSelectedBuild() != null);
-        this.editProjectAction.setEnabled(currentViewer != null && currentViewer.getSelectedProject() != null);
-        this.deleteProjectAction.setEnabled(currentViewer != null && currentViewer.getSelectedProject() != null);
-        this.copyProjectAction.setEnabled(currentViewer != null && currentViewer.getSelectedProject() != null);
+    	boolean enable = currentViewer != null && currentViewer.getSelectedBuild() != null;
+    	this.refreshAction.setEnabled(LuntclipsePlugin.getDefault().getConnections().size() > 0);
+        this.triggerBuildAction.setEnabled(enable);
+        this.buildLogAction.setEnabled(enable);
+        this.revisionLogAction.setEnabled(enable);
+        this.systemLogAction.setEnabled(enable);
+        this.cleanLogAction.setEnabled(enable);
+        this.createProjectAction.setEnabled(LuntclipsePlugin.getDefault().getConnections().size() > 0);
+        this.editProjectAction.setEnabled(enable);
+        this.deleteProjectAction.setEnabled(enable);
+        this.copyProjectAction.setEnabled(enable);
         this.pasteProjectAction.setEnabled(LuntclipsePlugin.getProjectClipboard() != null);
-        this.searchBuildsAction.setEnabled(currentViewer != null && currentViewer.getSelectedBuild() != null);
+        this.searchBuildsAction.setEnabled(enable);
         this.moveBuildsAction.setEnabled(
                 currentViewer != null && currentViewer.getSelectedHistoryBuilds() != null &&
                 currentViewer.getSelectedHistoryBuilds().size() > 0);
@@ -242,6 +244,7 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
 	 * Passing the focus request to the buildViewer's control.
 	 */
 	public void setFocus() {
+    	this.parent.setFocus();
         this.focusFolder.setFocus();
 	}
 
@@ -250,53 +253,34 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
      */
     public void dispose() {
         try{
-            stopRefreshJob();
+        	LuntclipsePlugin.getDefault().disposeView();
         }finally{
             super.dispose();
-        }
-    }
-
-    /**
-     * Stop refresh job
-     */
-    public void stopRefreshJob() {
-        for (Iterator iter = viewers.iterator(); iter.hasNext();) {
-            LuntbuildViewer view = (LuntbuildViewer) iter.next();
-            view.stopRefreshJob();
-            view.setRefreshJob(null);
-        }
-    }
-
-    /**
-     * Restarts refresh job
-     */
-    public void restartRefreshJob() {
-        for (Iterator iter = viewers.iterator(); iter.hasNext();) {
-            LuntbuildViewer view = (LuntbuildViewer) iter.next();
-            view.restartRefreshJob();
         }
     }
 
     /** Delete connection.
      * @param data connection data
      */
-    public void deleteConnection(ConnectionData data) {
-        LuntbuildViewer view = null;
-        for (Iterator iter = viewers.iterator(); iter.hasNext();) {
-            LuntbuildViewer viewer = (LuntbuildViewer) iter.next();
-            if (viewer.getConnection().getConnectionData().getName().equals(data.getName())) {
-                view = viewer;
-                break;
-            }
-        }
-
+    public void deleteConnection(LuntbuildConnection data) {
+        LuntbuildViewer view = findViewer(data.getConnectionData());
         if (view == null) return;
-        PreferenceHelper.removeConnection(data);
-        view.stopRefreshJob();
-        view.setRefreshJob(null);
+        PreferenceHelper.removeConnection(data.getConnectionData());
         view.remove();
         this.m_folder.redraw();
         viewers.remove(view);
+        if (currentViewer == view) currentViewer = null;
+        LuntclipsePlugin.getDefault().removeConnection(data);
+        LuntclipsePlugin.getDefault().createTrayMenu(this.parent.getShell());
+    }
+
+    private LuntbuildViewer findViewer(ConnectionData data) {
+        for (Iterator iter = viewers.iterator(); iter.hasNext();) {
+        	LuntbuildViewer viewer = (LuntbuildViewer) iter.next();
+            LuntbuildConnection con = viewer.getConnection();
+			if (con.getConnectionData() == data) return viewer;
+        }
+        return null;
     }
 
     /**
@@ -305,13 +289,14 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
     public void deleteAllConnections() {
         for (Iterator iter = viewers.iterator(); iter.hasNext();) {
             LuntbuildViewer viewer = (LuntbuildViewer) iter.next();
-            viewer.stopRefreshJob();
-            viewer.setRefreshJob(null);
             viewer.remove();
         }
         PreferenceHelper.removeAllConnections();
-        viewers = new ArrayList();
+        viewers = new ArrayList<LuntbuildViewer>();
+        currentViewer = null;
         this.m_folder.redraw();
+        LuntclipsePlugin.getDefault().deleteAllConnections();
+        LuntclipsePlugin.getDefault().createTrayMenu(this.parent.getShell());
     }
 
     /** Add connection
@@ -319,22 +304,24 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
      */
     public void addConnection(ConnectionData data) {
         PreferenceHelper.addConnection(data);
-        LuntbuildViewer viewer = new LuntbuildViewer(data, this);
-        viewer.create(this.m_folder, viewers.size());
-        viewers.add(viewer);
+        LuntbuildConnection con = LuntclipsePlugin.getDefault().addConnection(data);
+        LuntbuildViewer viewer = createViewer(con);
+        if (viewer != null) viewers.add(viewer);
         this.m_folder.redraw();
     }
 
+    private LuntbuildViewer createViewer(LuntbuildConnection con) {
+    	LuntbuildViewer viewer = new LuntbuildViewer(con, this);
+        viewer.create(this.m_folder, viewers.size());
+        return viewer;
+    }
+
     /** Return true if connection exists
-     * @param name connection name
+     * @param data connection data
      * @return true if connection exists
      */
-    public boolean nameExists(String name) {
-        for (Iterator iter = viewers.iterator(); iter.hasNext();) {
-            LuntbuildViewer viewer = (LuntbuildViewer) iter.next();
-            if (viewer.getConnection().getConnectionData().getName().equals(name)) return true;
-        }
-        return false;
+    public boolean connectionExists(ConnectionData data) {
+    	return findViewer(data) != null;
     }
 
     /**

@@ -54,7 +54,7 @@ public class DeleteProjectAction extends Action {
         int rc = mb.open();
         if (rc == SWT.OK) {
             con.deleteProject(viewer.getSelectedProject());
-            viewer.refresh();
+            viewer.refresh(true);
         }
     }
 }

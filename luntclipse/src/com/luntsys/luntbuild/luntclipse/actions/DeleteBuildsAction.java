@@ -13,7 +13,7 @@ import com.luntsys.luntbuild.facades.ILuntbuild;
 import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
 import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
-import com.luntsys.luntbuild.luntclipse.model.BuildMessenger;
+import com.luntsys.luntbuild.luntclipse.model.Build;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildView;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildViewer;
 
@@ -74,10 +74,10 @@ public class DeleteBuildsAction extends Action {
         int rc = mb.open();
         if (rc == SWT.OK) {
               for (Iterator iter = selectedBuilds.iterator(); iter.hasNext();) {
-                  BuildMessenger build = (BuildMessenger) iter.next();
+                  Build build = (Build) iter.next();
                   con.deleteBuild(build.getFacade());
               }
-              viewer.refresh();
+              viewer.refresh(true);
         }
     }
 
