@@ -4,7 +4,7 @@
         <field type="title" align="left" bold="yes" txt="Customize the web application." id="input.title"/>
         <field type="divider" align="left"/>
         <field type="space"/>
-        <field type="text" variable="sessionTimout">
+        <field type="text" variable="sessionTimeout">
             <spec txt="Session Timeout [min]:" id="input.timout" size="6" set="30"/>
         </field>
         <field type="space"/>

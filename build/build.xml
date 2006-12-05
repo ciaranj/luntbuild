@@ -271,7 +271,7 @@
 		</copy>
 
 		<filter token="installDir" value="$INSTALL_PATH"/>
-		<filter token="sessionTimeout" value="${sessionTimout}"/>
+		<filter token="sessionTimeout" value="${sessionTimeout}"/>
 		<filter token="luntbuildPassword" value="${luntbuildPassword}"/>
         <filter token="ldapHost" value="${ldapHost}"/>
         <filter token="ldapPort" value="${ldapPort}"/>
