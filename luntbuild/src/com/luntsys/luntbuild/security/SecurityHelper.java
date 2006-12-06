@@ -256,11 +256,7 @@ public class SecurityHelper
 
 	public static void refreshUserCache() {
 		EhCacheBasedUserCache userCache = (EhCacheBasedUserCache) Luntbuild.appContext.getBean("userCache");
-		try {
-			Cache cache = userCache.getCache();
-			cache.removeAll();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		Cache cache = userCache.getCache();
+		cache.removeAll();
 	}
 }
