@@ -20,13 +20,6 @@
 
 	<span jwcid="@Conditional" condition="ognl:cssIndex=0"/>
 
-    <tr>
-      <td jwcid="@Any" height="29" colspan="2" align="right" class="ognl:tailCssClass" scope="col">
-          <input type="submit" jwcid="@Submit" listener="ognl:listeners.save" name="Submit" label=" Save " value=" save "/>      </td>
-      <td jwcid="@Any" width="4%" align="right" class="ognl:tailCssClass" scope="col">&nbsp;</td>
-      <td jwcid="@Any" width="60%" align="left" class="ognl:tailCssClass" scope="col">
-          <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="Cancel" value="cancel"/>        </td>
-    </tr>
 	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
 
     <tr>
