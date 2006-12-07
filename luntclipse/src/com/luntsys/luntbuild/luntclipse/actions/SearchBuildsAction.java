@@ -42,14 +42,6 @@ public class SearchBuildsAction extends Action {
         if (viewer == null) return;
 
         LuntbuildConnection con = viewer.getConnection();
-        ILuntbuild luntbuild = con.getLuntbuild();
-        if (luntbuild == null) {
-            MessageDialog.openError(
-                    viewer.getShell(),
-                    "Luntbuild Connection",
-                    "Unable to connect to Luntbuild: " + con.getConnectionData().getUrl());
-            return;
-        }
         Build currentBuild = viewer.getSelectedBuild();
         if (currentBuild == null) return;
 

@@ -38,14 +38,6 @@ public class CopyProjectAction extends Action {
         if (viewer == null) return;
 
         LuntbuildConnection con = viewer.getConnection();
-        ILuntbuild luntbuild = con.getLuntbuild();
-        if (luntbuild == null) {
-            MessageDialog.openError(
-                    viewer.getShell(),
-                    "Luntbuild Connection",
-                    "Unable to connect to Luntbuild: " + con.getConnectionData().getUrl());
-            return;
-        }
         con.copyProject(viewer.getSelectedProject());
         LuntbuildView.mainView.enableActionButtons();
     }

@@ -1405,13 +1405,13 @@ public class LuntbuildViewer {
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
         public Object[] getElements(Object parent) {
-            if (this.luntbuild == null || this.luntbuild.getLuntbuild() == null || this.criteria == null) {
+            if (this.luntbuild == null || this.criteria == null) {
                 Build[] ret = {new Build()};
                 ret[0].setProjectName(LuntclipseConstants.gettingData);
                 return ret;
 
             }
-            List dataList = this.luntbuild.getLuntbuild().searchBuilds(this.criteria, 0, 0);
+            List dataList = this.luntbuild.searchBuilds(this.criteria);
 
             List buildsList = Build.toMessanger(dataList, getSelectedBuild());
 

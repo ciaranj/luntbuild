@@ -45,14 +45,6 @@ public class DeleteBuildsAction extends Action {
         if (viewer == null) return;
 
         LuntbuildConnection con = viewer.getConnection();
-        ILuntbuild luntbuild = con.getLuntbuild();
-        if (luntbuild == null) {
-            MessageDialog.openWarning(
-                    viewer.getShell(),
-                    "Luntbuild Connection",
-                    "Unable to connect to Luntbuild: " + con.getConnectionData().getUrl());
-            return;
-        }
         if (con.getVersion() <=
             LuntclipseConstants.getVersion(LuntclipseConstants.LUNTBUILD_VERSION_122)) {
             MessageDialog.openWarning(

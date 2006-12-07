@@ -37,14 +37,6 @@ public class DeleteProjectAction extends Action {
         if (viewer == null) return;
 
         LuntbuildConnection con = viewer.getConnection();
-        ILuntbuild luntbuild = con.getLuntbuild();
-        if (luntbuild == null) {
-            MessageDialog.openError(
-                    viewer.getShell(),
-                    "Luntbuild Connection",
-                    "Unable to connect to Luntbuild: " + con.getConnectionData().getUrl());
-            return;
-        }
         // Confirm
         MessageBox mb =
             new MessageBox(viewer.getShell(),

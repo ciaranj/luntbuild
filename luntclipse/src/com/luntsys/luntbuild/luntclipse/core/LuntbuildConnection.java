@@ -90,7 +90,7 @@ public class LuntbuildConnection {
     private Map<String, Build> previousBuilds = new HashMap<String, Build>();
     private Build lastBuild = null;
     private ArrayList<NotificationMessage> newMessages = new ArrayList<NotificationMessage>();
-    private ArrayList<NotificationMessage> errorMessages = null;
+    private ArrayList<NotificationMessage> errorMessages = new ArrayList<NotificationMessage>();;
     private boolean isFirstLoad = true;
 
     private LuntbuildViewer viewer = null;
@@ -112,6 +112,8 @@ public class LuntbuildConnection {
      * Connect to luntbuild
      */
     public void connect() {
+    	if (this.luntbuild != null) return;
+
         HessianProxyFactory factory = new HessianProxyFactory();
         factory.setOverloadEnabled(true);
         factory.setUser(this.connectionData.getUser());
@@ -129,14 +131,14 @@ public class LuntbuildConnection {
                 (ILuntbuild) factory.create(ILuntbuild.class, hessianURL);
 
             //start http client
-            this.client = new HttpClient();
-            try{
-              login();
-            } catch (Exception e) {
-                LuntclipsePlugin.doLog(IStatus.WARNING, IStatus.OK,
-                        "Cannot login into Lutbuild! Please verify connection URL.", e);
-                this.errorMessages.add(new ErrorMessage("Cannot login into Lutbuild! Please verify connection URL."));
-                this.luntbuild = null;
+            if (getVersion() < LuntclipseConstants.getVersion(LuntclipseConstants.LUNTBUILD_VERSION_13)) {
+	            try{
+	              login();
+	            } catch (Exception e) {
+	                LuntclipsePlugin.doLog(IStatus.WARNING, IStatus.OK,
+	                        "Cannot login into Lutbuild! Please verify connection URL.", e);
+	                this.errorMessages.add(new ErrorMessage("Cannot login into Lutbuild! Please verify connection URL."));
+	            }
             }
         } catch (MalformedURLException e) {
             LuntclipsePlugin.doLog(IStatus.ERROR, IStatus.OK,
@@ -148,14 +150,6 @@ public class LuntbuildConnection {
     }
 
     /**
-     * Return Luntbuild remote facade.
-     * @return luntbuild general service
-     */
-    public synchronized ILuntbuild getLuntbuild() {
-        return this.luntbuild;
-    }
-
-    /**
      * Returns a array that represents a result of HTTP request.
      * @param url url
      * @return String content of url
@@ -164,7 +158,7 @@ public class LuntbuildConnection {
      */
     public String openURL(String url) throws IOException {
 
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) return new String();
 
         InputStream input = null;
@@ -190,8 +184,11 @@ public class LuntbuildConnection {
             byte[] tmpbuf = new byte[i];
             System.arraycopy(buffer, 0, tmpbuf, 0, i);
             buffer = tmpbuf;
+        } catch (Exception ex) {
+            LuntclipsePlugin.doLog(IStatus.ERROR, IStatus.OK, "Cannot access URL: " + url, ex);
+            this.errorMessages.add(new ErrorMessage("Cannot access URL: " + url));
         }finally{
-            input.close();
+            if (input != null) input.close();
         }
 
         return new String(buffer);
@@ -201,6 +198,8 @@ public class LuntbuildConnection {
      * Login to Luntbuild.
      */
     private void login() {
+        this.client = new HttpClient();
+
         String loginURL = this.connectionData.getUrl();
 
         if (getVersion() <= LuntclipseConstants.getVersion(LuntclipseConstants.LUNTBUILD_VERSION_121)) {
@@ -248,6 +247,7 @@ public class LuntbuildConnection {
      * @return true if connected to Luntbuild
      */
     public boolean isConnected() {
+        connect();
         return this.luntbuild != null;
     }
 
@@ -276,7 +276,7 @@ public class LuntbuildConnection {
      * Loads build data as Build[] from Luntbuild
      */
     public void loadBuildData() {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) {
             this.luntbuildData = null;
             return;
@@ -307,7 +307,7 @@ public class LuntbuildConnection {
             return;
         }
 
-        String projectName;
+        String projectName = "";
         List schedules;
         BuildFacade bf;
         TreeMap projectsMap = new TreeMap();
@@ -329,7 +329,7 @@ public class LuntbuildConnection {
 
             schedules = this.luntbuild.getAllSchedulesOfProject(projectName);
             for (Iterator iterator = schedules.iterator(); iterator.hasNext();) {
-                String scheduleName;
+                String scheduleName = "";
                 Object _o = iterator.next();
                 if(_o instanceof Map){
                     scheduleName = (String) ((Map)_o).get("name");
@@ -434,7 +434,15 @@ public class LuntbuildConnection {
     }
 
     public void triggerBuild(String projectName, String scheduleName, BuildParams buildParams) {
-    	getLuntbuild().triggerBuild(projectName, scheduleName, buildParams);
+        connect();
+        if (this.luntbuild == null) return;
+    	this.luntbuild.triggerBuild(projectName, scheduleName, buildParams);
+    }
+
+    public List searchBuilds(SearchCriteria criteria) {
+        connect();
+        if (this.luntbuild == null) return new ArrayList();
+    	return this.luntbuild.searchBuilds(criteria, 0, 0);
     }
 
     /**
@@ -442,6 +450,8 @@ public class LuntbuildConnection {
      * @return true if build is running
      */
     public boolean isBuildRunning(Build build) {
+        connect();
+        if (this.luntbuild == null) return false;
         ScheduleFacade schedule =
             this.luntbuild.getScheduleByName(build.getProjectName(), build.getScheduleName());
         BuildFacade bf = null;
@@ -474,7 +484,7 @@ public class LuntbuildConnection {
      * @return list of
      */
     public List searchBuilds(String projectName, String scheduleName, SearchCriteria condition) {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) return null;
 
         ScheduleFacade schedule = this.luntbuild.getScheduleByName(projectName, scheduleName);
@@ -488,7 +498,7 @@ public class LuntbuildConnection {
      * @param build to delete
      */
     public void deleteBuild(BuildFacade build) {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) return;
 
         try {
@@ -508,7 +518,7 @@ public class LuntbuildConnection {
      * @param scheduleName
      */
     public void moveBuild(BuildFacade build, String projectName, String scheduleName) {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) return;
 
         try {
@@ -528,6 +538,8 @@ public class LuntbuildConnection {
      * @return ScheduleFacade
      */
     public ScheduleFacade getScheduleFacade(String projectName, String scheduleName) {
+        connect();
+        if (this.luntbuild == null) return null;
         return this.luntbuild.getScheduleByName(projectName, scheduleName);
     }
 
@@ -537,6 +549,8 @@ public class LuntbuildConnection {
      * @return schedule id or -1
      */
     public long getScheduleId(String projectName, String scheduleName) {
+        connect();
+        if (this.luntbuild == null) return -1;
         ScheduleFacade schedule = this.luntbuild.getScheduleByName(projectName, scheduleName);
         if (schedule == null) return -1;
         return schedule.getId();
@@ -562,7 +576,7 @@ public class LuntbuildConnection {
      * @since Luntbuild 1.3
      */
     public boolean canCreateProject() {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) return false;
         try {
             return this.luntbuild.canCreateProject(this.connectionData.getUser());
@@ -577,7 +591,7 @@ public class LuntbuildConnection {
      * @since Luntbuild 1.3
      */
     public List getUsers() {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) return new ArrayList();
         try {
             return this.luntbuild.getUsers();
@@ -592,7 +606,7 @@ public class LuntbuildConnection {
      * @return string array of project/schedule
      */
     public String[] getAllSchedules() {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null || this.luntbuildData == null) return new String[] {};
 
         ArrayList schedules = new ArrayList();
@@ -613,7 +627,7 @@ public class LuntbuildConnection {
      * @return true if project name exist
      */
     public boolean projectExist(String name) {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null || this.luntbuildData == null) return false;
 
         return this.luntbuildData.containsKey(name);
@@ -627,7 +641,7 @@ public class LuntbuildConnection {
      */
     public void createProject(BasicProjectData basicData, List vcsData,
             List builderData, List scheduleData) {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) return;
 
         ProjectFacade project = null;
@@ -670,7 +684,7 @@ public class LuntbuildConnection {
      */
     public void editProject(BasicProjectData basicData, List vcsData,
             List builderData, List scheduleData) {
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) return;
         ProjectFacade project = null;
         try {
@@ -711,7 +725,7 @@ public class LuntbuildConnection {
      */
     public void deleteProject(String projectName) {
         if (projectName == null || projectName.trim().length() == 0) return;
-        if (this.luntbuild == null) connect();
+        connect();
         if (this.luntbuild == null) return;
         this.luntbuild.deleteProject(projectName);
     }
@@ -738,6 +752,8 @@ public class LuntbuildConnection {
      * @return list of BasicProjectData, VcsProjectData list, BuilderProjectData list, ScheduleProjectData list
      */
     public List getProjectData(String projectName) {
+        connect();
+        if (this.luntbuild == null) return new ArrayList();
         ProjectFacade project = null;
         try {
             project = this.luntbuild.getProjectByName(projectName);
@@ -1179,6 +1195,8 @@ public class LuntbuildConnection {
     }
 
     private void setSchedules(ProjectFacade project, List scheduleData) {
+        connect();
+        if (this.luntbuild == null) return;
         if (project == null || scheduleData == null) return;
         List allSchedules = this.luntbuild.getAllSchedules();
         ArrayList scheduleList = new ArrayList();
@@ -1242,6 +1260,8 @@ public class LuntbuildConnection {
     }
 
     private void setSchedules(String projectName, List scheduleData) {
+        connect();
+        if (this.luntbuild == null) return;
         if (projectName == null || scheduleData == null) return;
         List schedules = this.luntbuild.getAllSchedulesOfProject(projectName);
         List allSchedules = this.luntbuild.getAllSchedules();
