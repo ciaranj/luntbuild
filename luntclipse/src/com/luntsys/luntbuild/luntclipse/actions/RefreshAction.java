@@ -8,7 +8,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
-import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildView;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildViewer;
 

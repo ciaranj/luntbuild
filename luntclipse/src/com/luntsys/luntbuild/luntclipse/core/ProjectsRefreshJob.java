@@ -3,7 +3,6 @@ package com.luntsys.luntbuild.luntclipse.core;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;

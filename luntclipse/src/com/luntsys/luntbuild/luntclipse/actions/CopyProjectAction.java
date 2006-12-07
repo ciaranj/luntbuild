@@ -1,10 +1,8 @@
 package com.luntsys.luntbuild.luntclipse.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import com.luntsys.luntbuild.facades.ILuntbuild;
 import com.luntsys.luntbuild.luntclipse.LuntclipsePlugin;
 import com.luntsys.luntbuild.luntclipse.core.LuntbuildConnection;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildView;

@@ -1,7 +1,5 @@
 package com.luntsys.luntbuild.luntclipse.wizards.vcsadaptors;
 
-import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.SWT;

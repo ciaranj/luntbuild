@@ -1,6 +1,5 @@
 package com.luntsys.luntbuild.luntclipse.actions;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,8 +22,6 @@ import org.eclipse.swt.widgets.Control;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
 import com.luntsys.luntbuild.facades.SearchCriteria;

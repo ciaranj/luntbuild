@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.luntsys.luntbuild.facades.lb12.UserFacade;
 import com.luntsys.luntbuild.luntclipse.LuntclipseConstants;
 
 
