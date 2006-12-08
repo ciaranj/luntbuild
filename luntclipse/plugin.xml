@@ -3,7 +3,7 @@
 <plugin
    id="com.luntsys.luntbuild.luntclipse"
    name="Luntclipse"
-   version="1.3.0"
+   version="1.3.5"
    provider-name="Roman Dagi Pichlik, Lubos Pochman"
    class="com.luntsys.luntbuild.luntclipse.LuntclipsePlugin">
 

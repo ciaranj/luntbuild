@@ -50,13 +50,6 @@ public class LuntclipsePreferencePage
 	 */
 	public void createFieldEditors() {
         addField(
-                new StringFieldEditor(PreferenceHelper.P_LUNTBUILD_NUM_RETRIES, "Retries on Login:", 5,
-                        getFieldEditorParent()));
-        addField(
-                new StringFieldEditor(PreferenceHelper.P_LUNTBUILD_CONNECTION_TIMEOUT,
-                        "Connection timeout (in sec):", 10,
-                        getFieldEditorParent()));
-        addField(
                 new StringFieldEditor(PreferenceHelper.P_LUNTBUILD_REFRESH_TIME, "Refresh Interval (s):", 30,
                         getFieldEditorParent()));
         addField(

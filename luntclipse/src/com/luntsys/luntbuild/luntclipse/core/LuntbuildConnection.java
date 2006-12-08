@@ -209,7 +209,7 @@ public class LuntbuildConnection {
             "&j_password=" + this.connectionData.getPassword();
         }
 
-        int numRetries = PreferenceHelper.getNumRetries();
+        int numRetries = 5;
 
         //login first, we need valid session always!
         GetMethod method = new GetMethod(loginURL);
@@ -217,7 +217,7 @@ public class LuntbuildConnection {
         //Provide custom retry handler is necessary
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
                 new DefaultHttpMethodRetryHandler(0, false));
-        int timeout = PreferenceHelper.getConnectionTimeout();
+        int timeout = 10;
         this.client.getParams().setParameter("http.socket.timeout", new Integer(timeout * 1000));
         this.client.getParams().setParameter("http.connection.timeout", new Integer(timeout * 1000));
 
@@ -362,7 +362,7 @@ public class LuntbuildConnection {
 	                if(bf != null){
 	                	boolean changed = false;
 	                	if (!this.isFirstLoad)
-	                		changed = checkNotification(projectName, scheduleName, bf);
+	                		changed = checkNotification(projectName, scheduleName, schedule, bf);
 	                    messenger.setLastBuildStatus(bf.getStatus());
 	                    messenger.setVersion(bf.getVersion());
 	                    messenger.setBuildLogUrl(bf.getBuildLogUrl());
@@ -393,11 +393,11 @@ public class LuntbuildConnection {
         luntbuildData = projectsMap;
     }
 
-    private boolean checkNotification(String projectName, String scheduleName, BuildFacade buildFacade) {
+    private boolean checkNotification(String projectName, String scheduleName, ScheduleFacade scheduleFacade, BuildFacade buildFacade) {
     	Build previousBuild = getPreviousBuild(projectName, scheduleName);
         if (previousBuild == null ||
-        		(previousBuild.getBuildStatus() == LuntclipseConstants.BUILD_RUNNING) &&
-        		 buildFacade.getStatus() != LuntclipseConstants.BUILD_RUNNING) {
+        		(previousBuild.getLastBuildStatus() != buildFacade.getStatus()) ||
+        		(previousBuild.getScheduleStatus() != scheduleFacade.getStatus())) {
             NotificationMessage message = new NotificationMessage();
             message.setUrl(buildFacade.getBuildLogUrl());
             message.setDate(new Date());

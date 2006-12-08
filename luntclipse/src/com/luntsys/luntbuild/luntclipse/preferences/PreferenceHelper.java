@@ -25,8 +25,6 @@ public class PreferenceHelper {
     public static final String P_LUNTBUILD_NOTIFY_CONDITION = "P_LUNTBUILD_NOTIFY_CONDITION";
     public static final String P_LUNTBUILD_REFRESH_TIME = "P_REFRESH_TIME";
     public static final String P_LUNTBUILD_VERSION = "P_LUNTBUILD_VERSION";
-    public static final String P_LUNTBUILD_NUM_RETRIES = "P_LUNTBUILD_NUM_RETRIES";
-    public static final String P_LUNTBUILD_CONNECTION_TIMEOUT = "P_LUNTBUILD_CONNECTION_TIMEOUT";
     public static final String P_LUNTBUILD_NOTIFY_CONNECTION = "P_LUNTBUILD_NOTIFY_CONNECTION";
     public static final String P_LUNTBUILD_NOTIFY_TRAY = "P_LUNTBUILD_NOTIFY_TRAY";
     public static final String P_LUNTBUILD_ALWAYS_RUN_NOTIFY_TRAY = "P_LUNTBUILD_ALWAYS_RUN_NOTIFY_TRAY";
@@ -143,22 +141,6 @@ public class PreferenceHelper {
     public static void removeAllConnections() {
         IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
         store.setValue(P_LUNTBUILD_NAMES_LIST, "");
-    }
-
-    /**
-     * @return number of login retries
-     */
-    public static int getNumRetries() {
-        IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
-        return store.getInt(P_LUNTBUILD_NUM_RETRIES);
-    }
-
-    /**
-     * @return connection timeout in seconds
-     */
-    public static int getConnectionTimeout() {
-        IPreferenceStore store = LuntclipsePlugin.getDefault().getPreferenceStore();
-        return store.getInt(P_LUNTBUILD_CONNECTION_TIMEOUT);
     }
 
     /**

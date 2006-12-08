@@ -276,14 +276,14 @@ public class LuntclipsePlugin extends AbstractUIPlugin {
     	if (this.tray != null) {
     		Build build = (connection == null) ? null : connection.getLastBuild();
     		if (build != null) {
-    			if (build.getBuildStatus() == LuntclipseConstants.BUILD_SUCCESS)
+    			if (build.getLastBuildStatus() == LuntclipseConstants.BUILD_SUCCESS)
     				this.trayItem.setImage(successImage);
-    			else if (build.getBuildStatus() == LuntclipseConstants.BUILD_RUNNING)
+    			else if (build.getLastBuildStatus() == LuntclipseConstants.BUILD_RUNNING)
     				this.trayItem.setImage(runningImage);
-    			else if (build.getBuildStatus() == LuntclipseConstants.BUILD_FAILED)
+    			else if (build.getLastBuildStatus() == LuntclipseConstants.BUILD_FAILED)
     				this.trayItem.setImage(failedImage);
     			String msg = connection.getConnectionData().getName() + "\n";
-    			msg += build.getVersion() + "-" + LuntclipseConstants.buildStatus[build.getBuildStatus()] + "\n";
+    			msg += build.getVersion() + "-" + LuntclipseConstants.buildStatus[build.getLastBuildStatus()] + "\n";
 		    	this.trayItem.setToolTipText(msg);
     		} else {
     			this.trayItem.setImage(trayImage);
