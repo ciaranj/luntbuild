@@ -2,7 +2,7 @@
 <feature
       id="com.luntsys.luntbuild.luntclipse"
       label="Eclipse Plugin for Luntbuild"
-      version="1.3.0"
+      version="1.3.5"
       provider-name="Lubos Pochman">
 
    <description url="http://luntbuild.javaforge.com">
@@ -49,7 +49,7 @@
    </license>
 
    <url>
-      <update label="Luntclipse Javaforge update site" url="http://luntbuild.javaforge.com/luntclipse-devel/"/>
+      <update label="Luntclipse Javaforge update site" url="http://luntbuild.javaforge.com/luntclipse-release/"/>
    </url>
 
    <plugin
