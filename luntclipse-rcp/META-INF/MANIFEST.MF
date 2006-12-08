@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Luntclipse Rcp Plug-in
 Bundle-SymbolicName: com.luntsys.luntbuild.luntclipse.rcp; singleton:=true
-Bundle-Version: 1.3.0
+Bundle-Version: 1.3.5
 Bundle-Activator: com.luntsys.luntbuild.luntclipse.rcp.LuntclipseRcpPlugin
 Bundle-Vendor: Lubos Pochman
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true

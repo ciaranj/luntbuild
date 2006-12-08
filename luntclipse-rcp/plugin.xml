@@ -37,7 +37,7 @@
             name="Luntclipse">
          <property
                name="appName"
-               value="BrandedRCPBrowserExample"/>
+               value="Luntclipse"/>
          <property
                name="aboutText"
                value="Luntclipse - standalone application to access Luntbuild.&#x0A;&#x0A;For more information about Luntclipse or Luntbuild&#x0A;&#x0A;        goto http://luntbuild.javaforge.com.&#x0A;&#x0A;For Luntclipse or Luntbuild project information&#x0A;&#x0A;goto http://www.javaforge.com/proj/summary.do?proj_id=70&#x0A;&#x0A;You can follow Luntclipse or Luntbuild project news at:&#x0A;&#x0A;         http://jroller.com/page/luntbuild"/>
