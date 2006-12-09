@@ -1,0 +1,2 @@
+buildTemplate=simple-build.vm
+scheduleTemplate=simple-schedule.vm

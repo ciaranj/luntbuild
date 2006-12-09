@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<userInput>
+    <panel order="0">
+        <field type="title" align="left" bold="yes" txt="Customize the web application." id="input.title"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+        <field type="text" variable="sessionTimeout">
+            <spec txt="Session Timeout [min]:" id="input.timout" size="6" set="30"/>
+        </field>
+        <field type="space"/>
+        <field type="text" variable="luntbuildPassword">
+            <spec txt="Luntbuild Account Password:" id="input.lpassword" size="30" set="luntbuild"/>
+        </field>
+        <field type="space"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+        <field type="search" variable="appServerWebapps">
+            <description align="left" txt="Application server web applications install directory." id="input.webapps"/>
+            <spec txt="Path to war deploy dir:" type="directory" result="directory" size="30" set="">
+                <choice value="/usr/local/tomcat/webapps" os="unix" />
+                <choice value="/usr/local/jetty-4.2.23/webapps" os="unix" />
+                <choice value="/usr/local/jetty-5.1.2/webapps" os="unix" />
+                <choice value="/usr/local/jboss-3.2.7/server/default/deploy" os="unix" />
+                <choice value="/usr/local/jboss-4.0.1RC2/server/default/deploy" os="unix" />
+                <choice value="/usr/local/resin-3.0.12/webapps" os="unix" />
+                <choice value="C:\Program Files\Tomcat 5.5\webapps" os="windows" />
+                <choice value="C:\jetty-4.2.23\webapps" os="windows" />
+                <choice value="C:\jetty-5.1.2\webapps" os="windows" />
+                <choice value="C:\jboss-3.2.7\server\default\deploy" os="windows" />
+                <choice value="C:\jboss-4.0.1RC2\server\default\deploy" os="windows" />
+                <choice value="C:\resin-3.0.12\webapps" os="windows" />
+            </spec>
+        </field>
+        <field type="space"/>
+    </panel>
+
+    <panel order="1">
+        <field type="title" align="left" bold="yes" txt="Configure the database." id="input.title"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+        <field type="combo" variable="databaseType">
+            <spec txt="Database Type:" id="input.dbtype">
+                <choice processor="" txt="H2 Embedded" id="database.radio.h2-embedded" value="h2-embedded" set="true"/>
+                <choice processor="" txt="HSQLDB Embedded" id="database.radio.hsqldb" value="hsqldb"/>
+                <choice processor="" txt="H2 Client" id="database.radio.h2-cs" value="h2-cs"/>
+                <choice processor="" txt="Derby Client" id="database.radio.derby-cs" value="derby-cs"/>
+                <choice processor="" txt="MySQL" id="database.radio.mysql" value="mysql"/>
+                <choice processor="" txt="Oracle" id="database.radio.oracle" value="oracle"/>
+                <choice processor="" txt="Microsoft SQLServer" id="database.radio.sqlserver" value="sqlserver"/>
+                <choice processor="" txt="PostgreSQL" id="database.radio.postgresql" value="postgresql"/>
+                <choice processor="" txt="DB2" id="database.radio.db2" value="db2"/>
+            </spec>
+        </field>
+
+        <field type="space"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+
+        <field type="staticText"
+               align="left"
+               id="fields.unused.text"
+               txt="These fields are unused for embedded DB like HSQLDB." />
+
+        <field type="space"/>
+        <field type="space"/>
+
+        <field type="text" variable="jdbcHost">
+            <spec txt="Host:" id="input.jdbcHost" size="30" set="localhost"/>
+        </field>
+
+        <field type="space"/>
+
+        <field type="text" variable="jdbcPort">
+            <spec txt="Port:" id="input.jdbcPort" size="30" set=""/>
+            <validator class="com.izforge.izpack.util.RegularExpressionValidator"
+                  txt="Please specify apropriate DB connection port">
+                <param
+                    name="pattern"
+                    value="[0-9]+"
+                />
+              </validator>
+        </field>
+
+        <field type="space"/>
+
+        <field type="text" variable="jdbcDatabase">
+            <spec txt="Database:" id="input.jdbcDatabase" size="30" set="luntbuild"/>
+        </field>
+
+        <field type="space"/>
+
+        <field type="text" variable="jdbcUsername">
+            <spec txt="Username:" id="input.jdbcUsername" size="30" set="sa"/>
+        </field>
+
+        <field type="space"/>
+
+        <field type="password" variable="jdbcPassword">
+            <spec id="input.jdbcPassword">
+                <pwd txt="Password:" set="" size="30"/>
+            </spec>
+        </field>
+
+        <field type="space"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+
+    </panel>
+
+        <panel order="2">
+        <field type="title" align="left" bold="yes" txt="Configure LDAP authorization." id="input.title"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+
+        <field type="staticText"
+               align="left"
+               id="fields.unused.text"
+               txt="To disable LDAP, leave LDAP Host and LDAP UserDN empty." />
+
+        <field type="text" variable="ldapHost">
+            <spec txt="LDAP Host:" id="input.ldapHost" size="30" set=""/>
+        </field>
+
+        <field type="text" variable="ldapPort">
+            <spec txt="LDAP Port:" id="input.ldapPort" size="10" set="389"/>
+        </field>
+
+        <field type="text" variable="ldapUrl">
+            <spec txt="LDAP Url:" id="input.ldapUrl" size="30" set=""/>
+        </field>
+
+        <field type="text" variable="ldapPrefix">
+            <spec txt="LDAP Prefix:" id="input.ldapPrefix" size="30" set=""/>
+        </field>
+
+        <field type="text" variable="ldapSuffix">
+            <spec txt="LDAP Suffix:" id="input.ldapSuffix" size="30" set=""/>
+        </field>
+
+        <field type="text" variable="ldapUserDn">
+            <spec txt="LDAP UserDN:" id="input.ldapUserDn" size="30" set=""/>
+        </field>
+
+        <field type="space"/>
+
+        <field type="text" variable="ldapAuthentication">
+            <spec txt="LDAP Authentication:" id="input.ldapAuth" size="30" set="simple"/>
+        </field>
+
+        <field type="text" variable="ldapUserId">
+            <spec txt="LDAP User Id Attribute:" id="input.ldapUserId" size="30" set="uid"/>
+        </field>
+
+		<field type="check" variable="ldapUseLuntbuildOnFail">
+			<spec txt="Try Luntbuild Account if LDAP Fails" id="ldapcheck.1" true="true" false="false" set="true" />
+		</field>
+
+		<field type="check" variable="ldapCreateLuntbuildUser">
+			<spec txt="Create Luntbuild User" id="ldapcheck.2" true="true" false="false" set="true" />
+		</field>
+
+		<field type="check" variable="ldapCanCreateProject">
+			<spec txt="LDAP User can create project" id="ldapcheck.3" true="true" false="false" set="true" />
+		</field>
+
+		<field type="check" variable="ldapCanViewProject">
+			<spec txt="LDAP User can view projects" id="ldapcheck.4" true="true" false="false" set="true" />
+		</field>
+
+		<field type="check" variable="ldapCanBuildProject">
+			<spec txt="LDAP User can build projects" id="ldapcheck.5" true="true" false="false" set="true" />
+		</field>
+
+        <field type="text" variable="ldapEmailAttrName">
+            <spec txt="LDAP Mail Attribute:" id="input.ldapMail" size="30" set="mail"/>
+        </field>
+
+        <field type="space"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+
+    </panel>
+
+</userInput>
+

@@ -1,0 +1,14 @@
+<Project source="D:\luntbuild\docs\guide\luntbuild.docbook">
+	<PDFTask target="D:\luntbuild\docs\guide">
+		<SaxonWrapper>
+			<param name="styleDoc" value="xsl/fo.xsl"/>
+			<param name="targetDoc" value="tmp.fo"/>
+		</SaxonWrapper>
+		<FlatWrapper>
+			<param name="xpathExpression" value="//fo:flow/*//fo:block[attribute::span='all']"/>
+		</FlatWrapper>
+		<PDFFOPWrapper>
+			<param name="targetDoc" value="output.pdf"/>
+		</PDFFOPWrapper>
+	</PDFTask>
+</Project>

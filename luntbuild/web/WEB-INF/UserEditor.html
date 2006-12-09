@@ -1,0 +1,127 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+</head>
+<span jwcid="$content$">
+
+<div class="firstRowContainingTable">
+<table width="100%"  border="0" cellpadding="0" cellspacing="0" class="vcsTable">
+  <tr>
+	<td width="682" align="center" valign="middle" class="subIconTable">
+	<span jwcid="@Conditional" condition="ognl:user.id==0">Creating new user</span>
+	<span jwcid="@Conditional" condition="ognl:user.id!=0">Editing user "<span jwcid="@Insert" value="ognl:user.name">robin</span>"</span>
+	</td>
+	<td width="25" class="subIconTable">
+	<a jwcid="@DirectLink" listener="ognl:listeners.edit" href="#" title="edit" ><img src="images/edit.gif" width="18" height="18" border="0" align="top"></a>
+	</td>
+  </tr>
+  <tr>
+	<td colspan="2" valign="top">
+	  <table width="100%"  border="0" cellpadding="0" cellspacing="0">
+	  <form jwcid="@Form" name="form" method="post">
+          <span jwcid="@Conditional" condition="ognl:errorMsg != null">
+          <tr>
+            <td colspan="4" align="left" valign="top" class="userEditorErrorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td>
+          </tr>
+          </span>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = 1"/>
+		  <span jwcid="@Conditional" condition="ognl:user.id==0">
+			<tr>
+			  <td jwcid="@Any" width="18%" align="left" valign="top" class="ognl:propertyNameCssClass" scope="col"><img src="images/name.gif" width="18" height="14" align="absmiddle"> Name</td>
+			  <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:user.name" jwcid="@TextField"/>
+				*<br>
+				Provide a unique name to identify this user. This property is used for presentation and login.</td>
+			</tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+		  </span>
+
+     	  <tr>
+			  <td jwcid="@Any" width="18%" align="left" valign="top" class="ognl:propertyNameCssClass" scope="col"><img src="images/name.gif" width="18" height="14" align="absmiddle"> Full name</td>
+			  <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:user.fullname" size="40" jwcid="@TextField"/>
+				<br>
+				Full user name.</td>
+		  </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+		  <span jwcid="@Conditional" condition="ognl:isSiteAdmin()">
+     	  <tr>
+			  <td jwcid="@Any" width="18%" align="left" valign="top" class="ognl:propertyNameCssClass" scope="col"><img src="images/new.gif" width="18" height="18" align="absmiddle"> Can create project?</td>
+			  <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <input type="checkbox" jwcid="@Checkbox" selected="ognl:user.canCreateProject"/>
+				<br>
+				Check this checkbox to give the rights to this user to create new project.</td>
+		  </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+     	  <tr>
+			  <td jwcid="@Any" width="18%" align="left" valign="top" class="ognl:propertyNameCssClass" scope="col"><img src="images/new.gif" width="18" height="18" align="absmiddle"> Existing projects Access?</td>
+			  <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+              View: <input type="checkbox" jwcid="@Checkbox" selected="ognl:canViewProject"/>
+              Build: <input type="checkbox" jwcid="@Checkbox" selected="ognl:canBuildProject"/>
+              Administer: <input type="checkbox" jwcid="@Checkbox" selected="ognl:canAdminProject"/>
+				<br>
+				Check these checkboxes to give the existing projects access rights for this user.</td>
+		  </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+		  </span>
+
+		<tr>
+		  <td jwcid="@Any" width="18%" align="left" valign="top" class="ognl:propertyNameCssClass" scope="col"><img src="images/password.gif" width="18" height="14" align="absmiddle"> Password</td>
+		  <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:user.decryptedPassword" jwcid="@TextField" hidden="ognl:true"/>
+			*<br>
+			Provide a password (can be changed later by the user).</td>
+		</tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+		<tr>
+		  <td jwcid="@Any" width="18%" align="left" valign="top" class="ognl:propertyNameCssClass" scope="col"><img src="images/password.gif" width="18" height="14" align="absmiddle"> Verify Password</td>
+		  <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:user.validatedPassword" jwcid="@TextField" hidden="ognl:true"/>
+			*<br>
+			Re-type, verify the pasword.</td>
+		</tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+		<span jwcid="@Foreach" source="ognl:notifierInstances" value="ognl:notifier">
+   	  	    <span jwcid="@Foreach" source="ognl:notifier.userLevelProperties" value="ognl:property">
+		      <tr>
+		        <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col">
+                    <img src="images/property.gif" width="12" height="11" align="absmiddle">
+                    <span jwcid="@Insert" value="ognl:property.displayName">email address</span>
+                </td>
+		        <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+                   	<span jwcid="@Conditional" condition="ognl:property.secret">
+	                  <input class="inputBox" value="ognl:property.value[user.contacts]" size="75" jwcid="@TextField" hidden="ognl:true"/>
+	                </span>
+			        <span jwcid="@Conditional" condition="ognl:!property.secret">
+				        <span jwcid="@Conditional" condition="ognl:(!property.multiLine && !property.select)">
+				          <input class="inputBox" value="ognl:property.value[user.contacts]" size="75" jwcid="@TextField"/>
+				        </span>
+				        <span jwcid="@Conditional" condition="ognl:property.multiLine">
+				          <textarea cols="70" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:property.value[user.contacts]"/>
+				        </span>
+				        <span jwcid="@Conditional" condition="ognl:property.select">
+				          <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:property.selectionModel" value="ognl:property.value"/>
+				        </span>
+			        </span>
+                    <br>
+			        <span jwcid="@InsertText" value="ognl:property.description"></span>
+                </td>
+		      </tr>
+		      <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+	        </span>
+	    </span>
+    <tr>
+      <td jwcid="@Any" align="right" class="ognl:tailCssClass" scope="col">&nbsp; </td>
+      <td jwcid="@Any" width="25%" align="right" scope="col" class="ognl:tailCssClass"> <div align="right">
+          <input type="submit" jwcid="@Submit" listener="ognl:listeners.save" name="Submit" label=" Save " value=" save "/>
+      </div></td>
+      <td jwcid="@Any" width="4%" align="right" class="ognl:tailCssClass" scope="col">&nbsp;</td>
+      <td jwcid="@Any" width="53%" align="right" class="ognl:tailCssClass" scope="col"><div align="left">
+        <div align="left">
+          <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="Cancel" value="cancel"/>
+      </div></td>
+    </tr>
+  </form>
+	  </table>
+	</td>
+  </tr>
+</table>
+</div>
