@@ -38,6 +38,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -157,7 +158,12 @@ public class LuntbuildViewer {
     public void create(CTabFolder parent, int index) {
 
     	// Get connection data
-        this.connection.loadBuildData();
+        Display.getDefault().asyncExec(
+                new Runnable() {
+                    public void run(){
+                        connection.loadBuildData();
+                    }
+                });
 
         this.connTab = new CTabItem(parent, 0 , index);
         this.topFolder = new CTabFolder(parent, SWT.NONE);

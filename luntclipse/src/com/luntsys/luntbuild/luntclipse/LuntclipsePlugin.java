@@ -68,6 +68,7 @@ public class LuntclipsePlugin extends AbstractUIPlugin {
     private ArrayList<LuntbuildConnection> connections = new ArrayList<LuntbuildConnection>();
     /** Currently selected connection */
     private LuntbuildConnection selectedConnection = null;
+    private boolean doNotifyForAll = false;
 
     /** Build Refresh/Monitor job */
     private RefreshJob buildRefreshJob = null;
@@ -216,35 +217,65 @@ public class LuntclipsePlugin extends AbstractUIPlugin {
     	this.trayMenu = new Menu(shell, SWT.MENU);
 
     	for (LuntbuildConnection con : this.connections) {
-	    	MenuItem menuItem = new MenuItem(this.trayMenu, SWT.RADIO);
-	    	String configName = con.getConnectionData().getName();
-	    	menuItem.setText(configName);
-	    	menuItem.setData(con);
-	    	menuItem.addListener (SWT.Selection, new Listener () {
-	    		public void handleEvent (Event e) {
-	    			MenuItem item = (MenuItem)e.widget;
-	    			if (item == null) return;
-	    			selectedConnection = (LuntbuildConnection)item.getData();
-			    	String configName = selectedConnection.getConnectionData().getName();
-			    	PreferenceHelper.setNotifyConfiguration(configName);
-			    	setTrayIcon(selectedConnection);
-	    		}
-	    	});
-	    	if (selectedConfig.equals(configName)) {
-	    		menuItem.setSelection(true);
-	    		this.selectedConnection = con;
-	    	}
+    		addTrayMenuItem(con, selectedConfig, -1);
 		}
-    	MenuItem menuItem = new MenuItem(this.trayMenu, SWT.RADIO);
+    	addDefaultTrayMenuItems(selectedConfig);
+    }
+
+    private void addTrayMenuItem(LuntbuildConnection con, String selectedConfig, int position) {
+    	MenuItem menuItem;
+    	if (position < 0)
+    		menuItem = new MenuItem(this.trayMenu, SWT.RADIO);
+    	else
+    		menuItem = new MenuItem(this.trayMenu, SWT.RADIO, position);
+    	String configName = con.getConnectionData().getName();
+    	menuItem.setText(configName);
+    	menuItem.setData(con);
+    	menuItem.addListener (SWT.Selection, new Listener () {
+    		public void handleEvent (Event e) {
+    			MenuItem item = (MenuItem)e.widget;
+    			if (item == null) return;
+    			selectedConnection = (LuntbuildConnection)item.getData();
+    			doNotifyForAll = false;
+		    	String configName = selectedConnection.getConnectionData().getName();
+		    	PreferenceHelper.setNotifyConfiguration(configName);
+		    	setTrayIcon(selectedConnection);
+    		}
+    	});
+    	if (selectedConfig.equals(configName)) {
+    		menuItem.setSelection(true);
+    		this.selectedConnection = con;
+			doNotifyForAll = false;
+    	}
+    }
+
+    private void addDefaultTrayMenuItems(String selectedConfig) {
+    	MenuItem menuItem = new MenuItem(this.trayMenu, SWT.SEPARATOR);
+    	menuItem = new MenuItem(this.trayMenu, SWT.RADIO);
+    	menuItem.setText("All");
+    	menuItem.addListener (SWT.Selection, new Listener () {
+    		public void handleEvent (Event e) {
+    			selectedConnection = null;
+    			doNotifyForAll = true;
+		    	PreferenceHelper.setNotifyConfiguration("--All--");
+		    	setTrayIcon(null);
+    		}
+    	});
+    	if (selectedConfig.equals("--All--")) {
+    		menuItem.setSelection(true);
+			doNotifyForAll = true;
+    	}
+    	menuItem = new MenuItem(this.trayMenu, SWT.RADIO);
     	menuItem.setText("None");
     	menuItem.addListener (SWT.Selection, new Listener () {
     		public void handleEvent (Event e) {
     			selectedConnection = null;
-		    	PreferenceHelper.setNotifyConfiguration("None");
+    			doNotifyForAll = false;
+		    	PreferenceHelper.setNotifyConfiguration("--None--");
 		    	setTrayIcon(null);
     		}
     	});
-    	if (this.connections.size() == 0 ||selectedConfig.equals("None")) menuItem.setSelection(true);
+    	if (this.connections.size() == 0 || selectedConfig.equals("--None--")) menuItem.setSelection(true);
     }
 
     public void createTip(Shell shell) {
@@ -268,7 +299,7 @@ public class LuntclipsePlugin extends AbstractUIPlugin {
      * @param messages
      */
     public void setNotificationState(LuntbuildConnection connection, List<NotificationMessage> messages) {
-    	if (connection == this.selectedConnection) setTrayIcon(connection);
+    	if (connection == this.selectedConnection || doNotifyForAll) setTrayIcon(connection);
     	if (messages != null) setTooltipMessages(connection, messages);
     }
 
@@ -433,6 +464,15 @@ public class LuntclipsePlugin extends AbstractUIPlugin {
 	 * Delete all connections
 	 */
 	public void deleteAllConnections() {
+        if (this.tray != null) {
+        	String selectedConfig = PreferenceHelper.getNotifyConfiguration();
+        	this.trayMenu = new Menu(this.tray.getDisplay().getActiveShell(), SWT.MENU);
+
+        	for (LuntbuildConnection con : this.connections) {
+        		addTrayMenuItem(con, selectedConfig, -1);
+    		}
+        	addDefaultTrayMenuItems(selectedConfig);
+        }
 		this.connections = new ArrayList<LuntbuildConnection>();
 	}
 
@@ -443,6 +483,11 @@ public class LuntclipsePlugin extends AbstractUIPlugin {
 	public LuntbuildConnection addConnection(ConnectionData con) {
 		LuntbuildConnection connection = new LuntbuildConnection(con);
         this.connections.add(connection);
+
+        if (this.trayMenu != null) {
+        	String selectedConfig = PreferenceHelper.getNotifyConfiguration();
+    		addTrayMenuItem(connection, selectedConfig, 0);
+        }
         return connection;
 	}
 
@@ -452,5 +497,14 @@ public class LuntclipsePlugin extends AbstractUIPlugin {
 	 */
 	public void removeConnection(LuntbuildConnection con) {
 		this.connections.remove(con);
+        if (this.trayMenu != null) {
+        	MenuItem[] items = this.trayMenu.getItems();
+        	for (MenuItem item : items) {
+				if (item.getText().equals(con.getConnectionData().getName())) {
+					item.dispose();
+					break;
+				}
+			}
+        }
 	}
 }

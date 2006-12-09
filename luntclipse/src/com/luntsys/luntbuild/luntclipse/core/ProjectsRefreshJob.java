@@ -1,5 +1,8 @@
 package com.luntsys.luntbuild.luntclipse.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -30,7 +33,9 @@ public class ProjectsRefreshJob extends RefreshJob {
         Thread th = new Thread(
             new Runnable() {
                 public void run(){
-                	for (LuntbuildConnection connection : LuntclipsePlugin.getDefault().getConnections()) {
+                	List<LuntbuildConnection> connections =
+                		new ArrayList<LuntbuildConnection>(LuntclipsePlugin.getDefault().getConnections());
+                	for (LuntbuildConnection connection : connections) {
                 		connection.loadBuildData();
                 		Display.getDefault().asyncExec(new UpdateView(connection));
                 	}

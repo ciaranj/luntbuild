@@ -157,7 +157,7 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         gdata = new GridData();
         gdata.widthHint = 120;
         label.setLayoutData(gdata);
-        this.passwordText = new Text(gridComp, SWT.BORDER);
+        this.passwordText = new Text(gridComp, SWT.BORDER|SWT.PASSWORD);
         gdata = new GridData();
         gdata.widthHint = 220;
         gdata.horizontalAlignment = GridData.FILL;

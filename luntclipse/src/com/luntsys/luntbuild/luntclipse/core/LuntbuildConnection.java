@@ -286,6 +286,7 @@ public class LuntbuildConnection {
         if(luntbuild == null) {
             messenger = new Build();
             messenger.setProjectName("Unable to connect to Luntbuild!");
+        	this.errorMessages.add(new ErrorMessage("", "", "Unable to connect to Luntbuild!"));
             buildInfoModel.add(messenger);
 
             luntbuildData = new TreeMap();
@@ -297,6 +298,7 @@ public class LuntbuildConnection {
             projects = luntbuild.getAllProjects();
         }catch(Exception e){
             LuntclipsePlugin.doLog(IStatus.WARNING, IStatus.OK, e.getMessage(), e);
+        	this.errorMessages.add(new ErrorMessage("", "", e.getMessage()));
             messenger = new Build();
             messenger.setProjectName("Unable to connect to Luntbuild!");
             buildInfoModel.add(messenger);
@@ -356,6 +358,7 @@ public class LuntbuildConnection {
 	                    LuntclipsePlugin.doLog(IStatus.ERROR, IStatus.OK,
 	                            "Cannot get last build for " + projectName + "/" + schedule.getName() +
 	                            " for connection " + getConnectionData().getName(), ex);
+	                	this.errorMessages.add(new ErrorMessage(projectName, scheduleName, ex.getMessage()));
 	                    bf = null;
 	                }
 
