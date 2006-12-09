@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Luntbuild Features List</title>
+<link rel="stylesheet" type="text/css" href="luntbuild.css"/>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
+<script type="text/javascript">_uacct = "UA-125290-1";urchinTracker();</script>
+</head>
+<body>
+<h1>Luntbuild-1.1.1 Release Notes</h1>
+<p>
+<ul>
+<li><strong>Changes since version 1.1</strong></li>
+<ol>
+<li>Sender's email address can be specified at the Properties configuration page.</li>
+<li>Trunk directory can be specified for Subversion VCS adaptor.</li>
+<li>Utilized Cvs history command to speed up revision checking.</li>
+<li>Fixed the bug that Clearcase VCS adaptor reports error when calling "mkview".</li>
+<li>Fixed the bug that post-build target is ignored by Luntbuild.</li>
+<li>Fixed the bug that Cvs adaptor log command works in-correctly with some version of Cvs.</li>
+<li>Fixed the bug that relative reference to other pages in artifacts directory can not be
+   displayed correctly.</li>
+</ol>
+</ul>
+<p>
+<ul>
+<li><strong>Upgrade from version 1.1</strong></li>
+<ol>
+<li>Copy all files under &lt;luntbuild_install_dir&gt;/db and save them
+   somewhere else.</li>
+<li>Follow installation instructions in readme.txt.</li>
+<li>Stop Luntbuild web application, copy back previously saved
+   db files to &lt;luntbuild_install_dir&gt;/db directory and override
+   existing files.</li>
+</ol>
+</ul>
+</p>
+</body>
+</html>
+       

@@ -1,0 +1,146 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting Base Clearcase connection information.</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch10.html" title="Chapter 10. Creating Version Control System (VCS) Adaptor for the Project"><link rel="prev" href="ch10.html" title="Chapter 10. Creating Version Control System (VCS) Adaptor for the Project"><link rel="next" href="ch10s03.html" title="Setting Cvs connection information."></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting Base Clearcase connection information.</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 10. Creating Version Control System (VCS) Adaptor for the Project</th><td width="20%" align="right"> <a accesskey="n" href="ch10s03.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id4766887"></a>Setting Base Clearcase connection information.</h2></div></div></div><p>
+    Using base Clearcase (i.e., non-UCM) is supported in two different
+    manners: using snapshot views, or using dynamic views. In either
+    case, much of the same configuration applies to both. This section
+    will detail the configuration options available to you in either
+    case.
+  </p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id4766897"></a>Base Clearcase connection information.</h3></div></div></div><p>
+      The information presented in this section applies to either
+      snapshot or dynamic views.
+    </p><p>
+      You should have Clearcase client installed on the build machine.
+      Also you should make sure that the account running your
+      application server or servlet container is able to access your
+      Clearcase server and that it can make views. Here is the list of
+      properties for this adaptor:
+      </p><div class="variablelist"><dl><dt><span class="term">View tag</span></dt><dd><p>
+              The name of the Clearcase view tag to use. If a view by
+              this name does not already exist, it will be created for
+              you. If you do not specify this, luntbuild will compute a
+              view tag for you comprised of the luntbuild install
+              location, project name, etc.
+            </p></dd><dt><span class="term">View stgloc name</span></dt><dd><p>
+              Name of the Clearcase server-side view storage location
+              which will be used as
+              <code class="code">-stgloc</code>
+              option when creating Clearcase view for the current
+              project. Either this property or "Explicit path for view
+              storage" property should be specified.
+            </p></dd><dt><span class="term">View storage path</span></dt><dd><p>
+              Explicit path for view storage. This property is required
+              only when the "Clearcase view stgloc name" property is
+              empty. In the case of snapshot views, if this is specified
+              it will be used as -vws option instead of using the
+              -stgloc option to create Clearcase view. In the case of
+              dynamic views, this is the path to the view storage.
+            </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+                This value should be a writable UNC path on Windows
+                platform.
+              </p></td></tr></table></div></dd><dt><span class="term">Config spec</span></dt><dd><p>
+              Config spec used by Luntbuild to create Clearcase snapshot
+              view for a build.
+            </p></dd><dt><span class="term">Modification detection config</span></dt><dd><p>
+              This property will take effect if there are some LATEST
+              versions from some branch to fetch in the above config
+              spec. It is used by Luntbuild to determine, if there are
+              any changes in the repository since the last build. This
+              property consists of multiple entries, where each entry is
+              of the format "&lt;path&gt;[:&lt;branch&gt;]".
+              &lt;path&gt; is a path inside a VOB, which should be
+              visible by the above config spec. Luntbuild will lookup
+              any changes in any branch inside this path recursively, or
+              it will lookup changes in the specified branch, if
+              &lt;branch&gt; is specified. Multiple entries are
+              separated by ";" or line terminator.
+            </p></dd><dt><span class="term">Options for mkview command</span></dt><dd><p>
+              You may optionally specify extra options for the cleartool
+              mkview sub command used by Luntbuild to create related
+              Clearcase view for the current project. Options that can
+              be specified here are restricted to -tmode, -ptime, and
+              -cachesize. For example you can specify "-tmode insert_cr"
+              to use Windows end of line text mode.
+            </p></dd><dt><span class="term">Cleartool executable path</span></dt><dd><p>
+              The directory path, where your cleartool executable file
+              resides in. It should be specified here, if it does not
+              exist in the system path.
+            </p></dd><dt><span class="term">History format parameters</span></dt><dd><p>
+              The revision log for each build is generated via the
+              <code class="code">lshistory</code>
+              cleartool subcommand. Luntbuild includes
+              <code class="code">date:%d user:%u action:%e %n\\n</code>
+              already. If you would like to append additional
+              information, then you may enter additional format
+              parameters here (e.g.,
+              <code class="code">%c</code>
+              to retrieve file checkin comments). See the Clearcase man
+              pages on
+              <code class="code">fmt_ccase</code>
+              for more information.
+            </p></dd><dt><span class="term">Quiet period</span></dt><dd><p>
+              Number of seconds the current VCS should be quiet (without
+              checkins) before Luntbuild decides to check out the code
+              of this VCS for a build. This is used to avoid checking
+              out code in the middle of some other checkins. This
+              property is optional. When left empty, quiet period will
+              not be used before checking out code to build.
+            </p></dd></dl></div><p>
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id4767970"></a>Dynamic Clearcase connection information</h3></div></div></div><p>
+      In addition to the basic Clearcase connection information, the
+      following configuration options are available when using dynamic
+      views.
+      </p><div class="variablelist"><dl><dt><span class="term">Mvfs path</span></dt><dd><p>
+              This is the root path from which all Clearcase views are
+              accessible. On Windows, for example, this defaults to
+              <code class="code">M:\\</code>
+              .
+            </p></dd><dt><span class="term">Project path</span></dt><dd><p>
+              Path relative to the view root in which the desired
+              sources can be found. This is primarily useful for
+              constraining the scope of the history gathering. If left
+              blank, then the view root direcotry will serve as the
+              directory from which history is gathered. Secondarily, it
+              is also useful for determining what the Clearcase working
+              directory should be (see below).
+            </p></dd></dl></div><p>
+    </p><p>
+      It's worth noting that making use Dynamic Clearcase probably
+      requires some additional configuration within other tabs. Because
+      your Clearcase elements are available within the confines of your
+      dynamic view and are not physically copied to your local storage,
+      the Schedule working directory computed on your behalf will not
+      point to your Clearcase view directory. That said, it is unwise to
+      set your Schedule's working directory to your Clearcase view
+      directory since that directory may not be available for
+      luntbuild's use. Instead, you should set the Builder's working
+      directory to the desired location. If you explicitly set your view
+      tag, then this is a simple exercise of using your Mvfs Path
+      compined with your view tag. For example, with a view tag of
+      <code class="code">luntbuild</code>
+      and an Mvfs path of
+      <code class="code">M:\\</code>
+      , you could set your builder working directory to
+      <code class="code">M:\\luntbuild</code>
+      .
+    </p><p>
+      To make things easier for you, a computed pseudo-property is
+      available to you. You can make use of this via an OGNL expression
+      within your builder's directory setting. For example, the
+      following expression will retrieve the Clearcase working directory
+      (see above):
+      <code class="code">
+        ${build.vcsList[0].getClearcaseWorkDir(build.schedule)}
+      </code>
+      . Note that this assumes a single Vcs adapter setup, or at least
+      one where your dynamic ClearCase definition is first in the list.
+    </p><p>
+      Finally, a point of process. When using a Dynamic view, it is
+      generally advisable to include a time rule in order to stabilize
+      the contents of your dynamic view during the build process. If
+      you're operating against
+      <code class="code">/main/LATEST</code>
+      , the following makes a decent config spec:
+      <code class="code">/main/LATEST -nocheckout -time now</code>
+      . Each time your view is "checked out," the view's config spec is
+      reset, thus redefinining "now" to be the time at which the view's
+      config spec was reset.
+    </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html"><img src="../images/up.gif" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s03.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 10. Creating Version Control System (VCS) Adaptor for the Project </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Setting Cvs connection information.</td></tr></table></div></body></html>

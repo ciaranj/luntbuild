@@ -1,0 +1,51 @@
+## Set your variables here
+##set (${test_report_url}="${luntbuild_webroot}/efe/latest/unittest/index.html")
+##set (${coverage_report_url}="${luntbuild_webroot}/efe/latest/coverage/html")
+##set (${javadoc_url}="${luntbuild_webroot}/efe/latest/javadoc/index.html")
+
+Luntbuild
+          Project:  ${build_project}
+          Status:   ${build_status}
+
+          Schedule: ${build_schedule}
+          Time:     ${build_start}
+
+          Build:    ${build_version}
+          Duration: ${build_duration}
+
+Build Artifacts:
+	  	  Build Log:    ${build_buildlog_url}
+          Revision Log: ${build_revisionlog_url}
+#if ($javadoc_url)
+	      Javadocs:     ${javadoc_url}
+#end
+#if ($test_report_url)
+		  UnitTests:    ${test_report_url}
+#end
+#if ($coverage_report_url)
+	      Coverage:     ${coverage_report_url}
+#end
+
+## Conditionally insert failure message
+#if (${build_isFailure})
+Build Log (${build_buildlog_url}):
+
+${build_buildlog_text}
+#end
+
+Revision Log:
+
+${build_revisionlog_text}
+
+#if (${build_test_summary})
+Unit Test Summary:
+
+${build_test_summary}
+#end
+
+#if  (${build_coverage_summary})
+Coverage Summary:
+
+${build_coverage_summary}
+#end
+
