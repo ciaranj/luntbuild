@@ -1,3 +1,12 @@
+Luntbuild 1.3.5
+
+Bugs fixed:
+
+Improved Hibernate/DB access, make use of lazy loading and caching
+Upgraded to ehcache 1.4
+Fixed manual build execution
+
+
 Luntbuild 1.3.4
 
 Bugs fixed:
