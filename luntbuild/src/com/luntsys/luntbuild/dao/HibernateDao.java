@@ -667,7 +667,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
             session.lock(schedule, LockMode.NONE);
-            Query query = session.createFilter(schedule.getBuilds(), "order by this.id desc");
+            Query query = session.createFilter(schedule.getBuilds(), "order by this.endDate desc");
             query.setMaxResults(1);
             List results = query.list();
             if (results.size() != 0)
@@ -696,7 +696,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                     "inner join fetch build.schedule.project where " +
                     "build.schedule.name = :scheduleName and " +
                     "build.schedule.project.name = :projectName " +
-                    "order by build.id desc");
+                    "order by build.endDate desc");
             query.setString("scheduleName", scheduleName);
             query.setString("projectName", projectName);
             query.setMaxResults(1);
@@ -740,7 +740,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                     "build.schedule.name = :scheduleName and " +
                     "build.schedule.project.name = :projectName and " +
                     "build.status = :buildStatus " +
-                    "order by build.id desc");
+                    "order by build.endDate desc");
             query.setString("scheduleName", scheduleName);
             query.setString("projectName", projectName);
             query.setInteger("buildStatus", Constants.BUILD_STATUS_SUCCESS);
@@ -770,7 +770,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         try {
             session.lock(schedule, LockMode.NONE);
             Query query = session.createFilter(schedule.getBuilds(), "where this.status = " +
-                    ":buildStatus order by this.id desc");
+                    ":buildStatus order by this.endDate desc");
             query.setParameter("buildStatus",
                     new Integer(com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_SUCCESS),
                     Hibernate.INTEGER);
@@ -824,7 +824,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                     "inner join fetch build.schedule " +
                     "inner join fetch build.schedule.project " +
                     buildHQLWhereClause(searchCriteria) +
-                    "order by build.id desc");
+                    "order by build.endDate desc");
             fillQueryParams(query, searchCriteria);
             query.setFirstResult(start);
             if (count != 0)
@@ -1328,7 +1328,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
             Query query = session.createQuery("select build from Build build where " +
-                    "build.schedule.id=:scheduleId order by build.id desc");
+                    "build.schedule.id=:scheduleId order by build.endDate desc");
             query.setLong("scheduleId", schedule.getId());
             Iterator it = query.list().listIterator();
             List builds = new ArrayList();
