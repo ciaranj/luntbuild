@@ -1,0 +1,7 @@
+[luntbuild] Schedule of "${schedule_desc}" finished with status ${schedule_status}
+
+Schedule ${schedule_desc} finished with status: ${schedule_status} at ${schedule_status_date}.
+
+See the system log in ${luntbuild_systemlog_url} for details.
+
+-- luntbuild

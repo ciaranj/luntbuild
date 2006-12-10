@@ -1,0 +1,19 @@
+Luntbuild 1.3.5
+
+Bugs fixed:
+
+Improved Hibernate/DB access, make use of lazy loading and caching
+Upgraded to ehcache 1.4
+Fixed manual build execution
+
+
+Luntbuild 1.3.4
+
+Bugs fixed:
+
+[ luntbuild-Bugs-1596098 ] Problems with link in email notification
+[ 1596325 ] Problems with link in email notification
+[luntbuild - Help] Dependency trigger stopped working in 1.3 - rolled back changes made in 1.3.3
+[luntbuild - Help] Getting 1.3.2 and svn 1.4 to work - upgraded to svnkit.ja4 1.1.0 (previously javasvn.jar)
+Upgraded mail.jar to 1.4 to support TLS
+[Luntbuild-users] 1.3.3 Project sort order? - changed order to sort by project, schedule names

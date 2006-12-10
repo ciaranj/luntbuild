@@ -1,0 +1,42 @@
+<chapter id="homepage">
+<title>Luntbuild Home Page</title>
+<para>
+    After you login, Luntbuild Home page will display:
+    <screenshot>
+    <screeninfo>Luntbuild Home Page</screeninfo>
+    <mediaobject>
+        <imageobject><imagedata fileref="images/homepage.jpg" format="JPG" /> </imageobject>
+    <textobject> <phrase>Luntbuild Home Page</phrase> </textobject>
+    </mediaobject>
+    </screenshot>
+There are five tabs on Home page:
+<orderedlist numeration="arabic">
+    <listitem><para><emphasis>Builds</emphasis> - shows all Luntbuild builds</para></listitem>
+    <listitem><para><emphasis>Projects</emphasis> - shows all Luntbuild projects</para></listitem>
+    <listitem><para><emphasis>Users</emphasis> - shows all Luntbuild users</para></listitem>
+    <listitem><para><emphasis>Properties</emphasis> - shows general Luntbuild properties</para></listitem>
+    <listitem><para><emphasis>Administration</emphasis> - shows Luntbuild administration tasks like import/export</para></listitem>
+</orderedlist>
+Just click on the tab and the appropriate tab page will display.
+</para>
+<para>
+Top area of the page contains navigation area
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/navigation.jpg" format="JPG" /> </imageobject>
+    </inlinemediaobject>
+that will help you to navigate quickly throughout the different pages of Luntbuild.
+For example, when you are creating a new project (by clicking New icon on Project tab page),
+you can jump quickly to Home page by clicking Home link in the navigation area.
+</para>
+<para>If you run into problems while running Luntbuild, click on <emphasis>system log</emphasis> link in the upper right corner of each page.
+The Luntbuild's system log will display, that contains Luntbuild's and application server logging information. See chapter
+<emphasis>Debugging Build Problems</emphasis> for details about debugging Luntbuild problems.</para>
+<para>
+The upper right corner of each page contains refresh icon
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/enable_refresh.gif" format="GIF" /> </imageobject>
+    </inlinemediaobject>
+, that toggles automatic page refresh on and off. It is good idea to switch refresh on, if you are tracking the status of the currently running build.
+</para>
+<para>To logout from Luntbuild, just click on <emphasis>logout</emphasis> link in the upper right corner.</para>
+</chapter>
