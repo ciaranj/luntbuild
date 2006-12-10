@@ -1,9 +1,0 @@
-<toc label="Luntclipse Help"  topic="doc/online/html/book.html">
-   	<topic label="Overview" href="doc/online/html/overview.html"/>
-   	<topic label="Luntclipse Documentation">
-		<link toc="doc/online/luntclipse-toc.xml" />
-	</topic>
-   	<topic label="Luntbuild Documentation">
-		<link toc="doc/online/luntbuild-toc.xml" />
-	</topic>
-</toc>
