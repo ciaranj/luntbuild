@@ -894,7 +894,9 @@ public class LuntbuildViewer {
             this.logTextViewer.getTextWidget().setText("");
        } if (this.logHtmlViewer != null) {
             this.logHtmlViewer.setText("<html><body></body></html>");
-        }
+       }
+       this.notifyMessages = new ArrayList<NotificationMessage>();
+       this.messageViewer.refresh();
     }
 
     /**
