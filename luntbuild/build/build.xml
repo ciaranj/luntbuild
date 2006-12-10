@@ -422,6 +422,9 @@
         <copy todir="stage/db">
             <fileset dir="db"/>
         </copy>
+    	<exec executable="dos2unix" dir="${basedir}/stage/scripts">
+    		<arg line="-U *.sh"/>
+    	</exec>
 		<mkdir dir="${artifactsDir}"/>
 		<filter token="appVersion" value="${buildVersion}" />
 		<copy file="installer/install.xml" tofile="installer/install.xml.temp"
