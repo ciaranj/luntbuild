@@ -230,7 +230,7 @@ public class LuntbuildViewer {
         this.buildsProvider = new BuildsViewContentProvider(this.connection);
         this.histBuildsViewer.setContentProvider(this.buildsProvider);
         this.histBuildsViewer.setLabelProvider(new BuildsViewLabelProvider(this.connection));
-        this.histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_VERSION, true));
+        this.histBuildsViewer.setSorter(new BuildsViewSorter(BuildsViewSorter.BUILD_FINISHED, true));
         this.histBuildsViewer.setInput(parent);
         this.histBuildsViewer.setColumnProperties(buildsColumnNames);
         this.histBuildsViewer.addDoubleClickListener(new IDoubleClickListener() {
