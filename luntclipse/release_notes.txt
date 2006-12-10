@@ -1,0 +1,39 @@
+==============================================
+Luntclipse 1.3.5 Release Notes
+==============================================
+
+Changes since version 1.3.5
+---------------------------
+
+* Tray icon, message notification
+* Improved performance in connection with Luntbuild
+* Bug fixes
+
+==============================================
+Luntclipse 1.3.0 Release Notes
+==============================================
+
+Changes since version 0.0.3
+---------------------------
+
+* Create/Edit project
+* Manage history builds
+* Improved UI
+* Online Documentation
+* Follow Luntbuild version scheme
+
+ Changes since version 0.0.2
+----------------------------
+
+* Improved efficiency of refreshing the Luntbuild data (not blocking)
+* Added support for managing multiple Luntbuild connections
+* Luntbuild connections created from view dialog, not the preferences
+* Added support for displaying build, revision log in Html format, in separate tab
+* Added support for displaying system log in Html format
+* Added support for displaying Luntbuild web browser
+
+ Changes since version 0.0.1
+----------------------------
+
+ * fix the bug com.caucho.hessian.io.HessianProtocolException: unknown code:
+ * fix the bug Unhalted event loop exception
