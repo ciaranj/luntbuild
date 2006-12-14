@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>LuntBuild - Build Automation and Management FAQ</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a name="id4645924"></a>LuntBuild - Build Automation and Management FAQ</h1></div><div><p class="copyright">Copyright © 2005 Luntbuild</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="#id4730159">1. LuntBuild FAQ</a></span></dt></dl></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="id4730159"></a>Chapter 1. LuntBuild FAQ</h2></div></div></div><p>LuntBuild - Build Automation and Management FAQ</p><div class="qandaset"><h2 class="title">General FAQ</h2><dl><dt>1.1. <a href="#id4730173">How to configure several projects to use shared artifacts, for example shared jars?</a></dt><dt>1.2. <a href="#id4690740">Is it possible to control maximum number of concurrent builds on a particular Luntbuild server?</a></dt><dt>1.3. <a href="#id4690763">How do you define top location of your Ant target execution?</a></dt><dt>1.4. <a href="#id4690803">How do you create a new Project, Build, Schedule ...?</a></dt><dt>1.5. <a href="#id4690838">My favorite VCS doesn't work with Luntbuild?</a></dt><dt>1.6. <a href="#id4690861">How do I find pending builds?</a></dt><dt>1.7. <a href="#id4690885">Can I include date and time in the build version?</a></dt><dt>1.8. <a href="#id4690936">We are using Luntbuild for Continuous Integration and
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>LuntBuild - Build Automation and Management FAQ</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a name="id4645924"></a>LuntBuild - Build Automation and Management FAQ</h1></div><div><p class="copyright">Copyright © 2005 Luntbuild</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="#id4730159">1. LuntBuild FAQ</a></span></dt></dl></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="id4730159"></a>Chapter 1. LuntBuild FAQ</h2></div></div></div><p>LuntBuild - Build Automation and Management FAQ</p><div class="qandaset"><h2 class="title">General FAQ</h2><dl><dt>1.1. <a href="#id4730173">How to configure several projects to use shared artifacts, for example shared jars?</a></dt><dt>1.2. <a href="#id4690740">Is it possible to control maximum number of concurrent builds on a particular Luntbuild server?</a></dt><dt>1.3. <a href="#id4690763">How do you define top location of your Ant target execution?</a></dt><dt>1.4. <a href="#id4690804">How do you create a new Project, Build, Schedule ...?</a></dt><dt>1.5. <a href="#id4690838">My favorite VCS doesn't work with Luntbuild?</a></dt><dt>1.6. <a href="#id4690861">How do I find pending builds?</a></dt><dt>1.7. <a href="#id4690885">Can I include date and time in the build version?</a></dt><dt>1.8. <a href="#id4690937">We are using Luntbuild for Continuous Integration and
             we set the continuous integration period to be 60 seconds.
             Sometimes for some reason my version control system goes down, and Luntbuild will send
             build failure notification every 60 seconds, which is a lot of emails.
@@ -20,11 +20,11 @@
                     running long after the build completes.  Do I have any options for this?
 				</a></dt><dt>1.13. <a href="#id4691150">
                     How to disable anonymous access to view builds?
-				</a></dt><dt>1.14. <a href="#id4689915">
+				</a></dt><dt>1.14. <a href="#id4689916">
                     How do I get Luntbuild to send me an email if Luntbuild fails?
 				</a></dt><dt>1.15. <a href="#id4689962">
                     I would like to run 3 version numbers in the traditional major.minor.build style. How do I do that?
-				</a></dt><dt>1.16. <a href="#id4690044">
+				</a></dt><dt>1.16. <a href="#id4690045">
                     How do I parse different parts of the build version?
 				</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4730173"></a><a name="id4730175"></a><b>1.1.</b></td><td align="left" valign="top"><p>How to configure several projects to use shared artifacts, for example shared jars?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><div class="orderedlist"><ol type="1"><li><p>Setup a project, for instance "common", and configure it to checkout your shared jars.
  				And configure builder for this project to publish shared jars to the artifacts directory of this project.
@@ -47,7 +47,7 @@
         define environment variable with the top directory of your application,
         and use this variable to define location(s) in the configuration of your application.
         Then define the same environment variable in the appropriate Luntbuild builder.
-				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690803"></a><a name="id4690806"></a><b>1.4.</b></td><td align="left" valign="top"><p>How do you create a new Project, Build, Schedule ...?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690804"></a><a name="id4690806"></a><b>1.4.</b></td><td align="left" valign="top"><p>How do you create a new Project, Build, Schedule ...?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
         To create a new Project, Build, Schedule etc., look in upper right corner, just below
         the Tabs for an icon
 					<span class="inlinemediaobject"><img src="images/new.jpg"></span>. The icon is quite small and for first time user it is hard to
@@ -56,7 +56,7 @@
 				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690838"></a><a name="id4690840"></a><b>1.5.</b></td><td align="left" valign="top"><p>My favorite VCS doesn't work with Luntbuild?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
             Make sure that external VCS application like cvs or p4 is in your default path
             when you are starting Luntbuild.
-				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690861"></a><a name="id4690863"></a><b>1.6.</b></td><td align="left" valign="top"><p>How do I find pending builds?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690861"></a><a name="id4690864"></a><b>1.6.</b></td><td align="left" valign="top"><p>How do I find pending builds?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
             To find pending builds, display builds tab and click on schedule. The schedule page will display,
             showing detailed information about that particular schedule, including pending build queue for that schedule.
 				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690885"></a><a name="id4690887"></a><b>1.7.</b></td><td align="left" valign="top"><p>Can I include date and time in the build version?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
@@ -71,7 +71,7 @@
             </pre><p>
             Where "shortYear", "numericMonth", "dayOfMonth", "hour", "minute" are all OGNL expressions.
             OGNL expressions can be used in build version string, please refer to Luntbuild user manual.
-				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690936"></a><a name="id4690939"></a><b>1.8.</b></td><td align="left" valign="top"><p>We are using Luntbuild for Continuous Integration and
+				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690937"></a><a name="id4690939"></a><b>1.8.</b></td><td align="left" valign="top"><p>We are using Luntbuild for Continuous Integration and
             we set the continuous integration period to be 60 seconds.
             Sometimes for some reason my version control system goes down, and Luntbuild will send
             build failure notification every 60 seconds, which is a lot of emails.
@@ -92,7 +92,7 @@
             By default Luntbuild only sends notifications to recent VCS committers.
             However you can configure the "notification users" property in projects/basic tab to add
             users to receive build result notifications.
-				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4691035"></a><a name="id4691037"></a><b>1.11.</b></td><td align="left" valign="top"><p>
+				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4691035"></a><a name="id4691038"></a><b>1.11.</b></td><td align="left" valign="top"><p>
             We are using Ant builder to run our build on Windows platform,
             and we set the "build success condition" to be "result==0". But Luntbuild still signals
             the build success while actually the Ant builder fails. What gives?
@@ -148,7 +148,7 @@
      &lt;/bean&gt;
 				</pre><p>
                 You have to remove anonymousProcessingFilter from filterChainProxy bean.
-				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4689915"></a><a name="id4689918"></a><b>1.14.</b></td><td align="left" valign="top"><p>
+				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4689916"></a><a name="id4689918"></a><b>1.14.</b></td><td align="left" valign="top"><p>
                     How do I get Luntbuild to send me an email if Luntbuild fails?
 				</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
                 You can configure Luntbuild logging system (log4j) to send email when an error is logged
@@ -186,7 +186,7 @@ ${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), project.va
 </pre><p>
 				This way, builds in "release" schedule will get versions like: foo-1.1.1, foo-1.1.2, foo-1.1.3, ..., and builds in "nightly" schedule
 				will get versions like: foo-1.1.1 build 1, foo-1.1.1 build 2, foo-1.1.1 build3, ...., foo-1.1.2 build 1, foo-1.1.2 build2, ...
-            </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690044"></a><a name="id4690047"></a><b>1.16.</b></td><td align="left" valign="top"><p>
+            </p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690045"></a><a name="id4690047"></a><b>1.16.</b></td><td align="left" valign="top"><p>
                     How do I parse different parts of the build version?
 				</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
                 From Scott Herbert: This is how I manipulate ${buildVersion}:
@@ -338,7 +338,7 @@ at org.springframework.web.context.support.WebApplicationContextUtils.getRequire
             However the error "2004-10-14 08:41:15,657 [Thread-41] WARN com.luntsys.luntbuild.build.BuildGenerator - [log]log: invalid option -- S"
             occurs after I issue the build command.
             What's wrong?
-				</a></dt><dt>1.2. <a href="#id4690161">
+				</a></dt><dt>1.2. <a href="#id4690162">
             I have a problem using Luntbuild with cygwin cvs, the automatically generated .cvspass file
             seems invalid to cygwin cvs. Is there any workaround?
 				</a></dt><dt>1.3. <a href="#id4690187">
@@ -355,7 +355,7 @@ at org.springframework.web.context.support.WebApplicationContextUtils.getRequire
 				</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
         The reason is, that the cvs version you are using is too old and does NOT support "-S" option.
         However, you can turn off "-S" option at cvs adaptor editing page, just set "disable -S option" property to "yes".
-				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690161"></a><a name="id4690164"></a><b>1.2.</b></td><td align="left" valign="top"><p>
+				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4690162"></a><a name="id4690164"></a><b>1.2.</b></td><td align="left" valign="top"><p>
             I have a problem using Luntbuild with cygwin cvs, the automatically generated .cvspass file
             seems invalid to cygwin cvs. Is there any workaround?
 				</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
@@ -403,7 +403,7 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 					</pre><p>
 				</p></td></tr></tbody></table></div><div class="qandaset"><h2 class="title">Clearcase FAQ</h2><dl><dt>1.1. <a href="#id4739971">I have read in the doucmentation that the UCM module does not support labeling.  To anyone
                       using Luntbuild with UCM, how are you creating new baselines/labels when the build is successful?
-                </a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4739971"></a><a name="id4739973"></a><b>1.1.</b></td><td align="left" valign="top"><p>I have read in the doucmentation that the UCM module does not support labeling.  To anyone
+                </a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4739971"></a><a name="id4739974"></a><b>1.1.</b></td><td align="left" valign="top"><p>I have read in the doucmentation that the UCM module does not support labeling.  To anyone
                       using Luntbuild with UCM, how are you creating new baselines/labels when the build is successful?
                 </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
                      From Gordon McNair: Our solution has been to have targets in our build that apply the
@@ -414,9 +414,11 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 					</p><div class="orderedlist"><ol type="1"><li><p>Set the baseline on the source (promotion level "Rejected").</p></li><li><p>Do build operations.</p></li><li><p>Set the baseline promotion level to "Built" on successful build.</p></li></ol></div><p>
 				</p></td></tr></tbody></table></div><div class="qandaset"><h2 class="title">Database FAQ</h2><dl><dt>1.1. <a href="#id4740039">
             When and how are the project definitions and other Luntbuild data persisted to disk in the out-of-the-box Luntbuild distribution?
-				</a></dt><dt>1.2. <a href="#id4740118">
+				</a></dt><dt>1.2. <a href="#id4740119">
             How can I configure the database connection pool to increase it?
-                </a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4740039"></a><a name="id4740041"></a><b>1.1.</b></td><td align="left" valign="top"><p>
+                </a></dt><dt>1.3. <a href="#id4740169">
+            When using Microsoft SQLServer Luntbuild fails at first. What should I do?
+                </a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4740039"></a><a name="id4740042"></a><b>1.1.</b></td><td align="left" valign="top"><p>
             When and how are the project definitions and other Luntbuild data persisted to disk in the out-of-the-box Luntbuild distribution?
 				</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
 		    Luntbuild by default uses HSQL database to store project definitions. The data for the database is stored in
@@ -431,7 +433,7 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 		SET WRITE_DELAY 60
 					</pre><p>
 			  Actually Luntbuild-1.2.1 set this value to 0 to disable any write delay.
-				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4740118"></a><a name="id4740121"></a><b>1.2.</b></td><td align="left" valign="top"><p>
+				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4740119"></a><a name="id4740121"></a><b>1.2.</b></td><td align="left" valign="top"><p>
             How can I configure the database connection pool to increase it?
                 </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
                     You can increase connection pool only for external database, not for internal HSQLDB.
@@ -440,7 +442,22 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
                         Open &lt;Luntbuild dir&gt;/web/WEB-INF/applicationContext.xml file, edit "dataSource" element,
                         and change "maxIdle" and "maxActive" child element to some proper value (5 is normally OK).
                       </p></li></ol></div><p>
-				</p></td></tr></tbody></table></div><div class="qandaset"><h2 class="title">Development FAQ</h2><dl><dt>1.1. <a href="#id4740176">How do I build and debug Luntbuild?</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4740176"></a><a name="id4740178"></a><b>1.1.</b></td><td align="left" valign="top"><p>How do I build and debug Luntbuild?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+				</p></td></tr><tr class="question"><td align="left" valign="top"><a name="id4740169"></a><a name="id4740171"></a><b>1.3.</b></td><td align="left" valign="top"><p>
+            When using Microsoft SQLServer Luntbuild fails at first. What should I do?
+                </p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
+                You can try following small change in the WEB-INF/applicationContext.xml:
+					</p><pre class="programlisting">
+ &lt;bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"&gt;
+[...]
+  &lt;property name="schemaUpdate"&gt;
+   &lt;value&gt;true&lt;/value&gt;
+  &lt;/property&gt;
+ &lt;/bean&gt;
+					</pre><p>
+
+                Setting "schemaUpdate" to true enables the session factory to create (or update)
+                the required schema according to the hibernate mapping.
+				</p></td></tr></tbody></table></div><div class="qandaset"><h2 class="title">Development FAQ</h2><dl><dt>1.1. <a href="#id4740211">How do I build and debug Luntbuild?</a></dt></dl><table border="0" summary="Q and A Set"><col align="left" width="1%"><tbody><tr class="question"><td align="left" valign="top"><a name="id4740211"></a><a name="id4740214"></a><b>1.1.</b></td><td align="left" valign="top"><p>How do I build and debug Luntbuild?</p></td></tr><tr class="answer"><td align="left" valign="top"><b></b></td><td align="left" valign="top"><p>
         Please see
 					<a href="http://www.javaforge.com/proj/doc/displayWikiDocument.do?doc_id=1433" target="_top">
         Luntbuild Wiki</a> for details.
