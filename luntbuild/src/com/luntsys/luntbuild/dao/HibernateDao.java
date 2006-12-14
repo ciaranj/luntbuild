@@ -667,7 +667,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
             session.lock(schedule, LockMode.NONE);
-            Query query = session.createFilter(schedule.getBuilds(), "order by this.endDate desc");
+            Query query = session.createFilter(schedule.getBuilds(), "order by this.startDate desc");
             query.setMaxResults(1);
             List results = query.list();
             if (results.size() != 0)
@@ -696,7 +696,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                     "inner join fetch build.schedule.project where " +
                     "build.schedule.name = :scheduleName and " +
                     "build.schedule.project.name = :projectName " +
-                    "order by build.endDate desc");
+                    "order by build.startDate desc");
             query.setString("scheduleName", scheduleName);
             query.setString("projectName", projectName);
             query.setMaxResults(1);
