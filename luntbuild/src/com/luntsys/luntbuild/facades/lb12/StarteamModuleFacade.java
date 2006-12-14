@@ -33,6 +33,7 @@ package com.luntsys.luntbuild.facades.lb12;
  */
 public class StarteamModuleFacade extends com.luntsys.luntbuild.facades.lb12.ModuleFacade {
 	private String starteamView;
+  private String starteamPromotionState;
 	private String srcPath;
 	private String label;
 	private String destPath;
@@ -52,6 +53,22 @@ public class StarteamModuleFacade extends com.luntsys.luntbuild.facades.lb12.Mod
 	public void setStarteamView(String starteamView) {
 		this.starteamView = starteamView;
 	}
+  
+  /**
+   * Get starteam promotion state.
+   * @return starteam promotion state
+   */
+  public String getStarteamPromotionState() {
+    return starteamPromotionState;
+  }
+
+  /**
+   * Set starteam promitional state of this module. 
+   * @param starteamPromotionState
+   */
+  public void setStarteamPromotionState(String starteamPromotionState) {
+    this.starteamPromotionState = starteamPromotionState;
+  }
 
 	/**
 	 * Get source path of this module

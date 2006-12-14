@@ -109,6 +109,16 @@ public class StarTeamCheckout extends TreeBasedTask {
     public void setLabel(String label) {
         _setLabel(label);
     }
+    
+    /**
+     * Sets the promotion state StarTeam is to use for checkout;  defaults to the most
+     * recent file.  The promotion state must exist in starteam or an exception will 
+     * be thrown.
+     * @param promotionState the promotion state to be used
+     */
+    public void setPromotionState(String promotionState) {
+        _setPromotionState(promotionState);
+    }
 
     /**
      * This attribute tells whether to do a locked checkout, an unlocked
@@ -195,6 +205,13 @@ public class StarTeamCheckout extends TreeBasedTask {
      */
     protected View createSnapshotView(View raw) throws BuildException {
 
+        int promotionStateID = getPromotionStateID(raw);        
+      
+        // if a promotion state has been supplied, use it to configure the view
+        if (this.isUsingPromotionState()) {
+           return new View(raw, ViewConfiguration.createFromPromotionState(promotionStateID));
+        }
+        
         int labelID = getLabelID(raw);
 
         // if a label has been supplied and it is a view label, use it

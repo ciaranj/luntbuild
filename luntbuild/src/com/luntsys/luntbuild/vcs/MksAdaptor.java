@@ -57,6 +57,14 @@ public class MksAdaptor extends Vcs {
 	private static final long serialVersionUID = 3265795051270917502L;
 
 	/**
+	 * Sanbox Search Status Definitions
+	 */
+	public static final int NO_SANDBOX_FOUND = 0; 
+	public static final int MATCHING_SANDBOX_FOUND = 1; 
+	public static final int SANDBOX_DEVPATH_DIFFER = 2; 
+	public static final int SANDBOX_VERSION_DIFFER = 3; 
+	
+	/**
 	 * Internal logger.
 	 */
 	private static final Log logger = LogFactory.getLog(MksServiceProvider.class);
@@ -184,13 +192,11 @@ public class MksAdaptor extends Vcs {
 				}
 
 				public String getDescription() {
-					return "The subproject version to be retrieved. If left empty then the current " +
+					return "The subproject version or checkpoint to be retrieved. If left empty then the latest " +
 							"version of the project will be retrieved. If specified the the corresponding " +
-							"checkpoint will be retrieved. The checkpoint name will be constructed by " +
-							"replacing all dots with underscores, all emtpy spaces with dashes and an 'v' will " +
-							"be added at front of the version number. For example: '2.4.3' will be converted to " +
-							"'v2_4_3'. However, 'R2.1' will be converted to 'R2_1'. Finally, 'R2.1 beta' will" +
-							"be converted to 'R2_1-beta'.";
+							"version or checkpoint will be retrieved. Version and Development path are mutually exclusive. "+
+							"Version will overide the Development Path. Enter project version like '1.6' or Chekpoint "+
+							"Label like 'Dev Build 1.2' as it appears in MKS repository";
 				}
 
 				public boolean isRequired() {
@@ -870,63 +876,38 @@ public class MksAdaptor extends Vcs {
 		MksServiceProvider mks = new MksServiceProvider(defaultHostname, defaultPort, defaultUsername, defaultPassword);
 		try {
 
-			final boolean hasSandbox = mks.isSandboxExist(sandbox);
-			final boolean hasVersion = !Luntbuild.isEmpty(module.getVersion());
+			final int sandboxStatus = mks.isSandboxExist(sandbox, module);
 
-
-			if (hasVersion) {
-				/*
-				 * The givem module has a version. The version should be matched to a particular checkpoint
-				 * (labels are not recommeded in MKS). If the checkpoint is found then create a build
-				 * sandbox with the found revision. If not create the default sandbox just to keep us going.
-				 *
-				 * But first drop any existing sandboxes.
-				 */
-				final String revision = mks.getProjectRevision(
-						project, Luntbuild.getLabelByVersion(module.getVersion()),
-						module.getDevelopmentPath());
-
-				if (hasSandbox) {
-					logDual(antProject, "Droping sandbox: " + sandbox, Project.MSG_INFO);
-					mks.dropSandbox(sandbox);
-				}
-
-				logDual(antProject, "Creating sandbox " + sandbox + ", revision: " + revision, Project.MSG_INFO);
-				mks.createSandbox(project, sandboxDir, revision, module.getDevelopmentPath());
-
+			if( sandboxStatus == MksAdaptor.NO_SANDBOX_FOUND )
+			{
+				logDual(antProject, "Creating sandbox:" + sandboxDir, Project.MSG_INFO);
+				mks.createSandbox(project, sandboxDir, module.getVersion(), module.getDevelopmentPath());
 			}
-			else {
-				/*
-				 * The module version is empty, which means we should work with the tip of the trunk (or
-				 * head in CVS terms). Try to reuse existing sandbox.
-				 */
-
-				if (cleanBuild && hasSandbox) {
-					// sandbox was destroyed by luntbuild - repair and drop
+			else if( sandboxStatus == MksAdaptor.SANDBOX_DEVPATH_DIFFER || sandboxStatus == MksAdaptor.SANDBOX_VERSION_DIFFER )
+			{
+				logDual(antProject, "Droping sandbox: " + sandbox, Project.MSG_INFO);
+				mks.dropSandbox(sandbox);
+				logDual(antProject, "Creating sandbox:" + sandboxDir, Project.MSG_INFO);
+				mks.createSandbox(project, sandboxDir, module.getVersion(), module.getDevelopmentPath());
+			}
+			else if( sandboxStatus == MksAdaptor.MATCHING_SANDBOX_FOUND )
+			{
+				if( cleanBuild )
+				{
+					// No matter that we found a sandbox, drop and recreate it....
 					logDual(antProject, "Droping sandbox: " + sandbox, Project.MSG_INFO);
 					mks.dropSandbox(sandbox);
-
 					logDual(antProject, "Creating sandbox:" + sandboxDir, Project.MSG_INFO);
-					mks.createSandbox(project, sandboxDir, null, module.getDevelopmentPath());
+					mks.createSandbox(project, sandboxDir, module.getVersion(), module.getDevelopmentPath());
 				}
-
-				else if (cleanBuild && !hasSandbox) {
-					logDual(antProject, "Creating sandbox:" + sandboxDir, Project.MSG_INFO);
-					mks.createSandbox(project, sandboxDir, null, module.getDevelopmentPath());
-
-				}
-
-				else if (!cleanBuild && hasSandbox) {
+				else
+				{
+					// Just resynch it
 					logDual(antProject, "Resynchronizing the existing sandbox:" + sandbox, Project.MSG_INFO);
-
 					mks.resyncSandbox(sandbox, true);
 				}
-
-				else /* !cleanBuild && !hasSandbox */{
-					logDual(antProject, "Creating sandbox:" + sandboxDir, Project.MSG_INFO);
-					mks.createSandbox(project, sandboxDir, null, module.getDevelopmentPath());
-				}
 			}
+			
 		}
 		finally {
 			mks.release();
