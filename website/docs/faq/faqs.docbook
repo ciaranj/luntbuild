@@ -16,7 +16,7 @@
 		<title>General FAQ</title>
 		<qandaentry>
 			<question>
-				<para>How to configure several projects to use shared stuffs, for example shared jars?</para>
+				<para>How to configure several projects to use shared artifacts, for example shared jars?</para>
 			</question>
 			<answer>
 				<orderedlist numeration="arabic">
@@ -245,19 +245,111 @@
 				<para>
                 Edit &lt;server&gt;/webapps/luntbuild/luntbuild-login.jsp and remove line:
                 <programlisting>
-                &lt;a href=&quot;j_acegi_security_check.do?j_username=anonymous&amp;j_password=anonymous&quot;&gt;Login as Anonymous&lt;/a&gt;
+                &lt;a href=&quot;app.do?service=reset/Home&amp;relogin=no&quot;&gt;Anonymous&lt;/a&gt;
 				</programlisting>
 				</para>
 				<para>
                 Edit &lt;server&gt;/webapps/luntbuild/WEB-INF/applicationContext.xml and remove line:
                 <programlisting>
-                anonymous=anonymous,ROLE_AUTHENTICATED
+     &lt;bean id=&quot;anonymousProcessingFilter&quot; class=&quot;org.acegisecurity.providers.anonymous.AnonymousProcessingFilter&quot;&gt;
+         &lt;property name=&quot;key&quot;&gt;&lt;value&gt;anonymous&lt;/value&gt;&lt;/property&gt;
+         &lt;property name=&quot;userAttribute&quot;&gt;&lt;value&gt;anonymous,ROLE_ANONYMOUS&lt;/value&gt;&lt;/property&gt;
+     &lt;/bean&gt;
+
+     &lt;bean id=&quot;anonymousAuthenticationProvider&quot; class=&quot;org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider&quot;&gt;
+         &lt;property name=&quot;key&quot;&gt;&lt;value&gt;anonymous&lt;/value&gt;&lt;/property&gt;
+     &lt;/bean&gt;
+				</programlisting>
+                You have to remove anonymousProcessingFilter from filterChainProxy bean.
+				</para>
+			</answer>
+		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>
+                    How do I get Luntbuild to send me an email if Luntbuild fails?
+				</para>
+			</question>
+			<answer>
+				<para>
+                You can configure Luntbuild logging system (log4j) to send email when an error is logged
+                (or warning if you prefer). Just add "mail" to the log4j.rootCategory in log4j.properties
+                and add the following to log4j.properties:
+                <programlisting>
+log4j.appender.mail=org.apache.log4j.net.SMTPAppender
+log4j.appender.mail.To=app-errors@yourdomain.com
+log4j.appender.mail.From=app-errors@yourdomain.com
+log4j.appender.mail.SMTPHost=mail.yourdomain.com
+log4j.appender.mail.Threshold=ERROR
+log4j.appender.mail.BufferSize=1
+log4j.appender.mail.Subject=Application Error
+log4j.appender.Mail.layout=org.apache.log4j.PatternLayout
+log4j.appender.Mail.layout.ConversionPattern=%d %-5p %c %x - %m%n
 				</programlisting>
 				</para>
 			</answer>
 		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>
+                    I would like to run 3 version numbers in the traditional major.minor.build style. How do I do that?
+				</para>
+			</question>
+			<answer>
+            <para>
+            <emphasis>"release" schedule increases release part of the version, while "nightly" schedule
+			increases iteration part of the version. When release part of the version changes, iteration
+			part should be reset to 1.
+            </emphasis>
+            </para>
+            <para>
+				Define the following variables for the project:
+				<simplelist>
+					<member>fixPart=foo-1.1</member>
+					<member>releasePart=1</member>
+					<member>iterationPart=0</member>
+				</simplelist>
+                </para>
+                <para>
+				Define "next build version" of "nightly" schedule as:
+<programlisting>
+${project.var["fixPart"]}.${project.var["releasePart"]}-build-${project.var["iterationPart"].increaseAsInt()}
+</programlisting>
+				Define "next build version" of "release" schedule as:
+<programlisting>
+${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), project.var["releasePart"].(increaseAsInt(), value)}
+</programlisting>
+				This way, builds in "release" schedule will get versions like: foo-1.1.1, foo-1.1.2, foo-1.1.3, ..., and builds in "nightly" schedule
+				will get versions like: foo-1.1.1 build 1, foo-1.1.1 build 2, foo-1.1.1 build3, ...., foo-1.1.2 build 1, foo-1.1.2 build2, ...
+            </para>
+			</answer>
+		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>
+                    How do I parse different parts of the build version?
+				</para>
+			</question>
+			<answer>
+				<para>
+                From Scott Herbert: This is how I manipulate ${buildVersion}:
+                <programlisting>
+&lt;target name=&quot;load-buildproperties&quot;&gt;
+        &lt;propertyregex property=&quot;major&quot; input=&quot;${buildVersion}&quot; regexp=&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)&quot; select=&quot;\1&quot; casesensitive=&quot;false&quot; /&gt;
+        &lt;propertyregex property=&quot;minor&quot; input=&quot;${buildVersion}&quot; regexp=&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)&quot; select=&quot;\2&quot; casesensitive=&quot;false&quot; /&gt;
+        &lt;propertyregex property=&quot;type&quot; input=&quot;${buildVersion}&quot; regexp=&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)&quot; select=&quot;\3&quot; casesensitive=&quot;false&quot; /&gt;
+        &lt;propertyregex property=&quot;number&quot; input=&quot;${buildVersion}&quot; regexp=&quot;(\d+)\.(\d+)\.(\d+)\.(\d+)&quot; select=&quot;\4&quot; casesensitive=&quot;false&quot; /&gt;
+&lt;/target&gt;
+				</programlisting>
+                ${buildVersion} is set to "FOO 1.2.3.4" by luntbuild and this creates separate properties
+                for each version component.
+				</para>
+				<para>
+                    The &lt;propertyregex/&gt; task in from ANT Contrib ( http://ant-contrib.sf.net).
+				</para>
+			</answer>
+		</qandaentry>
 	</qandaset>
-
 
 	<qandaset>
 		<title>Application Server FAQ</title>
@@ -500,8 +592,26 @@ at org.springframework.web.context.support.WebApplicationContextUtils.getRequire
 				</para>
 			</answer>
 		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>How to handle different timezone of Perforce and Luntbuild?</para>
+			</question>
+			<answer>
+				<para>
+                    Having the VCS and Luntbuild in different
+                    timezones is not currently supported. So although we couldn't find a "simple
+                    solution", the work-around is to modify the
+                    server startup options. For Tomcat, this went something along the lines of...
+					<programlisting>
+set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
+					</programlisting>
+                    The downside is that you have to do the mental arithmetic when setting
+                    and interpreting the build times, however, you're probably already used to doing
+                    that when working with Perforce remotely anyway.
+				</para>
+			</answer>
+		</qandaentry>
 	</qandaset>
-
 
 	<qandaset>
 		<title>Visual Sourcesafe FAQ</title>
@@ -519,6 +629,32 @@ at org.springframework.web.context.support.WebApplicationContextUtils.getRequire
 					<programlisting>
 		'd/M/yy;H:mm'
 					</programlisting>
+				</para>
+			</answer>
+		</qandaentry>
+	</qandaset>
+
+	<qandaset>
+		<title>Clearcase FAQ</title>
+		<qandaentry>
+			<question>
+				<para>I have read in the doucmentation that the UCM module does not support labeling.  To anyone
+                      using Luntbuild with UCM, how are you creating new baselines/labels when the build is successful?
+                </para>
+			</question>
+			<answer>
+				<para>
+                     From Gordon McNair: Our solution has been to have targets in our build that apply the
+                     baseline. This was set up before we started using luntbuild. So the
+                     continuous build mechanism doesn't do it directly.
+				</para>
+				<para>
+                So our build process in a nutshell is:
+					<orderedlist numeration="arabic">
+					  <listitem><para>Set the baseline on the source (promotion level "Rejected").</para></listitem>
+					  <listitem><para>Do build operations.</para></listitem>
+					  <listitem><para>Set the baseline promotion level to "Built" on successful build.</para></listitem>
+					</orderedlist>
 				</para>
 			</answer>
 		</qandaentry>
@@ -551,6 +687,49 @@ at org.springframework.web.context.support.WebApplicationContextUtils.getRequire
 		SET WRITE_DELAY 60
 					</programlisting>
 			  Actually Luntbuild-1.2.1 set this value to 0 to disable any write delay.
+				</para>
+			</answer>
+		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>
+            How can I configure the database connection pool to increase it?
+                </para>
+			</question>
+			<answer>
+				<para>
+                    You can increase connection pool only for external database, not for internal HSQLDB.
+                    To increase size of the connection pool, do the following:
+					<orderedlist numeration="arabic">
+					  <listitem><para>Make sure you are connecting to some serial database instead embedded HSQLDB.</para></listitem>
+					  <listitem><para>
+                        Open &lt;Luntbuild dir&gt;/web/WEB-INF/applicationContext.xml file, edit "dataSource" element,
+                        and change "maxIdle" and "maxActive" child element to some proper value (5 is normally OK).
+                      </para></listitem>
+					</orderedlist>
+				</para>
+			</answer>
+		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>
+            When using Microsoft SQLServer Luntbuild fails at first. What should I do?
+                </para>
+			</question>
+			<answer>
+				<para>
+                You can try following small change in the WEB-INF/applicationContext.xml:
+					<programlisting>
+ &lt;bean id=&quot;hibernateSessionFactory&quot; class=&quot;org.springframework.orm.hibernate3.LocalSessionFactoryBean&quot;&gt;
+[...]
+  &lt;property name=&quot;schemaUpdate&quot;&gt;
+   &lt;value&gt;true&lt;/value&gt;
+  &lt;/property&gt;
+ &lt;/bean&gt;
+					</programlisting>
+
+                Setting "schemaUpdate" to true enables the session factory to create (or update)
+                the required schema according to the hibernate mapping.
 				</para>
 			</answer>
 		</qandaentry>

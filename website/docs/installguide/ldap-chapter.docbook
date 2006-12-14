@@ -9,17 +9,20 @@
 &lt;!-- luntbuild internal RDBMS based authentication DAO --&gt;
 &lt;bean id=&quot;luntbuildAuthenticationDAO&quot;
     class=&quot;com.luntsys.luntbuild.security.ApplicationInternalDAO&quot;&gt;
-    &lt;property name=&quot;ldapHost&quot; value=&quot;localhost&quot;/&gt;
-    &lt;property name=&quot;ldapPort&quot; value=&quot;389&quot;/&gt;
-    &lt;property name=&quot;ldapUserDn&quot; value=&quot;ou=People,dc=guessant,dc=org&quot;/&gt;
-    &lt;property name=&quot;ldapAuthentication&quot; value=&quot;simple&quot;/&gt;
-    &lt;property name=&quot;ldapUserId&quot; value=&quot;uid&quot;/&gt;
-    &lt;property name=&quot;ldapUseLuntbuildOnFail&quot; value=&quot;true&quot;/&gt;
-    &lt;property name=&quot;ldapCreateLuntbuildUser&quot; value=&quot;true&quot;/&gt;
-    &lt;property name=&quot;ldapCanCreateProject&quot; value=&quot;true&quot;/&gt;
-    &lt;property name=&quot;ldapCanViewProject&quot; value=&quot;true&quot;/&gt;
-    &lt;property name=&quot;ldapCanBuildProject&quot; value=&quot;true&quot;/&gt;
-    &lt;property name=&quot;ldapEmailAttrName&quot; value=&quot;mail&quot;/&gt;
+       &lt;property name=&quot;ldapHost&quot; value=&quot;dis-corp.com&quot;/&gt;
+       &lt;property name=&quot;ldapPort&quot; value=&quot;389&quot;/&gt;
+       &lt;property name=&quot;ldapUserDn&quot; value=&quot;OU=All DIS Domain Users,DC=dis-corp,DC=com&quot;/&gt;
+       &lt;property name=&quot;ldapAuthentication&quot; value=&quot;simple&quot;/&gt;
+       &lt;property name=&quot;ldapUserId&quot; value=&quot;sAMAccountName&quot;/&gt;
+       &lt;property name=&quot;ldapUseLuntbuildOnFail&quot; value=&quot;true&quot;/&gt;
+       &lt;property name=&quot;ldapCreateLuntbuildUser&quot; value=&quot;true&quot;/&gt;
+       &lt;property name=&quot;ldapCanCreateProject&quot; value=&quot;true&quot;/&gt;
+       &lt;property name=&quot;ldapCanViewProject&quot; value=&quot;true&quot;/&gt;
+       &lt;property name=&quot;ldapCanBuildProject&quot; value=&quot;true&quot;/&gt;
+       &lt;property name=&quot;ldapEmailAttrName&quot; value=&quot;mail&quot;/&gt;
+       &lt;property name=&quot;ldapUrl&quot; value=&quot;ldap://dis-corp.com&quot;/&gt;
+       &lt;property name=&quot;ldapPrefix&quot; value=&quot;&quot;/&gt;
+       &lt;property name=&quot;ldapSuffix&quot; value=&quot;@dis-corp.com&quot;/&gt;
 &lt;/bean&gt;
     </programlisting>
 </para>
@@ -38,6 +41,12 @@
 <tbody>
 <row><entry>ldapHost</entry><entry>LDAP server host</entry></row>
 <row><entry>ldapPort</entry><entry>LDAP port (default is <emphasis>389</emphasis>)</entry></row>
+<row><entry>ldapUrl</entry><entry>LDAP Url (defaults to "ldap://[host]:[port]") - this is used as the URL
+for making the connection, you can use LDAPS by setting the ldapUrl to "ldaps://my.ldap.server"</entry></row>
+<row><entry>ldapPrefix</entry><entry>LDAP Prefix (defaults to "[userId]=") - this is prepended to the username
+for making the connection</entry></row>
+<row><entry>ldapSuffix</entry><entry>LDAP Suffix (defaults to ",[userDn]") - this is appended to the username
+for making the connection</entry></row>
 <row><entry>ldapUserDn</entry><entry>User DN address to access users database</entry></row>
 <row><entry>ldapAuthentication</entry><entry>Authentication type (default is <emphasis>simple</emphasis>)</entry></row>
 <row><entry>ldapUserId</entry><entry>User id LDAP identifier (default is <emphasis>uid</emphasis>)</entry></row>
