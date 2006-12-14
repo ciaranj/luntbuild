@@ -18,6 +18,8 @@ package com.luntsys.luntbuild.ant.starteam;
 
 import com.starbase.starteam.Folder;
 import com.starbase.starteam.Label;
+import com.starbase.starteam.PromotionModel;
+import com.starbase.starteam.PromotionState;
 import com.starbase.starteam.PropertyNames;
 import com.starbase.starteam.StarTeamFinder;
 import com.starbase.starteam.View;
@@ -101,6 +103,11 @@ public abstract class TreeBasedTask extends StarTeamTask {
     private String label = null;
 
     /**
+     * StarTeam promotion state on which to perform task.
+     */
+    private String promotionState = null;
+    
+    /**
      * Set recursion to false to check out files in only the given folder
      * and not in its subfolders.
      */
@@ -122,6 +129,8 @@ public abstract class TreeBasedTask extends StarTeamTask {
     private boolean forced = false;
 
     private Label labelInUse = null;
+    
+    private PromotionState promotionStateInUse = null;
 
     /**
      * holder for the asofdate attribute
@@ -290,7 +299,25 @@ public abstract class TreeBasedTask extends StarTeamTask {
             label = label.trim();
             if (label.length() > 0) {
                 this.label = label;
+                this.promotionState = null;
+                this.promotionStateInUse = null;
             }
+        }
+    }
+    
+    /**
+     * protected function to allow subclasses to set the promotion state (or not).
+     * sets the StarTeam promotion state
+     * @param promotionState name of the StarTeam promotion state to be set
+     */
+    protected void _setPromotionState(String promotionState) {
+        if (null != promotionState) {
+          promotionState = promotionState.trim();
+          if (promotionState.length() > 0) {
+            this.promotionState = promotionState;
+            this.label = null;
+            this.labelInUse = null;
+          }
         }
     }
 
@@ -352,6 +379,14 @@ public abstract class TreeBasedTask extends StarTeamTask {
      */
     protected String getLabel() {
         return this.label;
+    }
+    
+    /**
+     * return the promotion state passed to the task by the user as a string.
+     * @return the promotion state passed to the task by the user as a string
+     */
+    protected String getPromotionState() {
+        return this.promotionState;
     }
 
     /**
@@ -426,6 +461,14 @@ public abstract class TreeBasedTask extends StarTeamTask {
     protected boolean isUsingRevisionLabel() {
         return null != this.labelInUse && this.labelInUse.isRevisionLabel();
     }
+    
+    /**
+     * returns true if a promotion state has been specified.
+     * @return true if a promotion state has been specified.
+     */
+    protected boolean isUsingPromotionState() {
+        return null != this.promotionStateInUse;
+    }
 
     /**
      * returns the label being used
@@ -434,6 +477,14 @@ public abstract class TreeBasedTask extends StarTeamTask {
      */
     protected Label getLabelInUse() {
         return this.labelInUse;
+    }
+    
+    /**
+     * returns the promotion state being used.
+     * @return
+     */
+    protected PromotionState getPromotionStateInUse() {
+        return this.promotionStateInUse;
     }
 
     /**
@@ -447,6 +498,15 @@ public abstract class TreeBasedTask extends StarTeamTask {
         }
     }
 
+    /**
+     * show the promotion state in use.
+     */
+    protected void logPromotionState() {
+        if (this.isUsingPromotionState()) {
+          log("  Using promotion state " + getPromotionState());
+        }
+    }
+    
     /**
      * show the asofDate in the log
      * @since Ant 1.6
@@ -544,6 +604,9 @@ public abstract class TreeBasedTask extends StarTeamTask {
                     .append(getURL());
             if (this.label != null) {
                 msg.append(" using specified label ").append(this.label);
+            }
+            if (this.promotionState != null) {
+              msg.append(" using specified promotion label ").append(this.promotionState);
             }
             if (this.asOfDate != null) {
                 msg.append(" as of specified date ")
@@ -655,6 +718,23 @@ public abstract class TreeBasedTask extends StarTeamTask {
                 + v.getFullName());
 
     }
+    
+    private void findPromotionState(View v) throws BuildException {
+      PromotionModel pm = v.getPromotionModel();        
+      PromotionState[] allPromotionStates = pm.getPromotionStates();
+      for (int i = 0; i < allPromotionStates.length; i++) {
+        PromotionState stPromo = allPromotionStates[i];
+        if (stPromo != null && stPromo.getName().equals(this.promotionState)) {
+          log("using promotion state " + stPromo.getName(), Project.MSG_VERBOSE);
+          this.promotionStateInUse = stPromo;
+          return;
+        }
+      }
+      throw new BuildException("Error: promotion state "
+          + this.promotionState
+          + " does not exist in view "
+          + v.getFullName());
+    }
 
     /**
      * Helper method calls on the StarTeam API to retrieve an ID number
@@ -672,6 +752,23 @@ public abstract class TreeBasedTask extends StarTeamTask {
         }
         return -1;
     }
+    
+    /**
+     * Helper method calls on the StarTeam API to retrieve an ID number
+     * for the specified promotion state, corresponding to this.promotionState. 
+     * @param v the <code>View</code> in which to search for <code>this.promotionState</code>
+     * @return the ID number corresponding to <code>this.promotionState</code> or -1 if
+     *    no label was provided.
+     * @throws BuildException if <code>this.promotionState</code> does not correspond
+     *            to any promotion state in the supplied view.
+     */
+    protected int getPromotionStateID(View v) throws BuildException {
+        if (null != this.promotionState) {
+          findPromotionState(v);
+          return this.promotionStateInUse.getID();
+        }
+        return -1;
+    }
 
     protected int getIDofLabelInUse() {
         if (null != this.labelInUse) {
@@ -679,6 +776,13 @@ public abstract class TreeBasedTask extends StarTeamTask {
         }
         return -1;
     }
+    
+    protected int getIDofPromotionStateInUse() {
+      if (null != this.promotionStateInUse) {
+        return this.promotionStateInUse.getID();
+      }
+      return -1;
+   }
 
     /**
      * Derived classes must override this class to define actual processing

@@ -42,6 +42,7 @@ import org.apache.tools.ant.types.selectors.FilenameSelector;
 
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.vcs.MksAdaptor.MksModule;
 import com.mks.api.CmdRunner;
 import com.mks.api.Command;
 import com.mks.api.IntegrationPoint;
@@ -150,14 +151,19 @@ public class MksServiceProvider {
 		addDevelopmentPath(vproject, devPath);
 
 		Response response = null;
-		try {
+		try 
+		{
 			response = runner.execute(vproject);
 		}
-		catch (APIException ex) {
-			logger.error(
-					"Failed to retrieve project revisions. Cannot view project: " + exceptionString(ex), ex);
-
-			throw new BuildException(getExceptionMessage(ex), ex);
+		catch (APIException ex) 
+		{
+			logger.error("Failed to retrieve project revisions. Cannot view project: " + exceptionString(ex), ex);
+			revisions.getChangeLogs().add("Checking For Revisions Error \n"
+											+"    Project -> "+project+"\n"
+											+"    DevPath -> "+devPath+"\n"
+											+"    Error -> "+ex.getMessage() );
+			return;
+			//throw new BuildException(getExceptionMessage(ex), ex);
 		}
 
 		try {
@@ -199,8 +205,11 @@ public class MksServiceProvider {
 			logger.error(
 					"Failed to retrieve project revisions. Cannot view member history. Error:"
 					+ exceptionString(ex), ex);
-			
-			throw new BuildException(getExceptionMessage(ex), ex);
+			revisions.getChangeLogs().add("Checking For Revisions Error \n"
+					+"    Project -> "+project+"\n"
+					+"    DevPath -> "+devPath+"\n"
+					+"    Error -> "+ex.getMessage() );
+			return;
 		}
 
 		revisions.setFileModified(revisions.getChangeLogins().size() != 0);
@@ -271,42 +280,71 @@ public class MksServiceProvider {
 	 * @throws BuildException
 	 *         if it fails to retrieve the list of sandboxes.
 	 */
-	public boolean isSandboxExist(String sandbox) {
-
-		try {
+	public int isSandboxExist(String sandbox, MksModule module) 
+	{
+		int foundSandbox = MksAdaptor.NO_SANDBOX_FOUND;
+		try 
+		{
 			final boolean windowsOs = isWindowsOs();
 			final Response sboxes = runner.execute(new Command(Command.SI, "sandboxes"));
 			
+			//ResponseUtil.printResponse(sboxes, 4, System.out );
+			
 			// log the list of checkboxes 
-			try {
+			try 
+			{
 				logger.debug("[isSandboxExist]The following sandboxes were found on the build machine:"+ responseString(sboxes));
 			}
-			catch (Throwable ex) {
+			catch (Throwable ex) 
+			{
 				// ignore me.
 				logger.error("Failed to log the list of checkboxes");
 			}
 
 			// look for the given checkbox.
 			WorkItemIterator iter = sboxes.getWorkItems();
-			while (iter.hasNext()) {
-				final String existingSandbox = iter.next().getId();
-				if (windowsOs) {
-					if (sandbox.equalsIgnoreCase(existingSandbox)) {
-						return true;
-					}
+			while ( iter.hasNext() && (foundSandbox == MksAdaptor.NO_SANDBOX_FOUND) ) 
+			{
+				WorkItem item = iter.next();
+				final String existingSandbox = item.getId();
+				boolean nameMatches = false;
+				if (windowsOs) 
+				{
+					if (sandbox.equalsIgnoreCase(existingSandbox)) 
+						nameMatches = true;
 				}
-				else {
-					if (sandbox.equals(existingSandbox)) {
-						return true;
+				else 
+				{
+					if (sandbox.equals(existingSandbox)) 
+						nameMatches = true;
+				}
+				
+				if( nameMatches )
+				{
+					foundSandbox = MksAdaptor.MATCHING_SANDBOX_FOUND;
+					Field devpath = item.getField("developmentPath");
+					Field version = item.getField("buildRevision");
+					
+					if( !Luntbuild.isEmpty( module.getVersion()) || !Luntbuild.isEmpty(version.getValueAsString()) )
+					{
+						// MKS Gives no way to find out what version/chekpoint was used to create the build sandbox, 
+						// so we have to drop and recreate... if sandbox or module has a version specified.....
+						foundSandbox = MksAdaptor.SANDBOX_VERSION_DIFFER ;
+					}
+					else 
+					{
+						if ( !Luntbuild.isEmpty(module.getDevelopmentPath()) || devpath.getValue()!= null  )
+							if ( !module.getDevelopmentPath().equals( devpath.getValueAsString() ) )
+								// Dev Paths are different or either one does not exist.... 
+								foundSandbox = MksAdaptor.SANDBOX_DEVPATH_DIFFER ;
 					}
 				}
 			}
 			
-			// at this point the sandbox was not found to be registered with the SI client.
+			// at this point if the sandbox was not found to be registered with the SI client.
 			// clean up the file if it exists
-			cleanupSandbox(sandbox);
-
-			return false;
+			if( foundSandbox == MksAdaptor.NO_SANDBOX_FOUND )
+				cleanupSandbox(sandbox);
 
 		}
 		catch (APIException ex) {
@@ -314,7 +352,9 @@ public class MksServiceProvider {
 
 			throw new BuildException(getExceptionMessage(ex), ex);
 		}
+		return foundSandbox;
 	}
+
 
 	/**
 	 * Deletes the content of a old sandbox. The content might be of an unregistered sandbox.
@@ -433,8 +473,11 @@ public class MksServiceProvider {
 		cmd.addOption(new Option("recurse"));
 		cmd.addOption(new Option("populate"));
 		cmd.addOption(new Option("forceConfirm", "yes"));
-		addDevelopmentPath(cmd, devPath);
-		addProjectRevision(cmd, revision);
+		// Revision and devPath are mutually exclusive
+		if( !Luntbuild.isEmpty(revision) )
+			cmd.addOption(new Option("projectRevision", revision));
+		else if ( !Luntbuild.isEmpty(devPath) )
+			cmd.addOption(new Option("devpath", devPath));
 		cmd.addSelection(targetDir);
 
 		try {
@@ -721,21 +764,6 @@ public class MksServiceProvider {
 
 		if ( ! Luntbuild.isEmpty(devPath)) {
 			cmd.addOption(new Option("devpath", devPath));
-		}
-	}
-
-	/**
-	 * Adds a project revision option to the given command.
-	 * 
-	 * @param cmd
-	 *        the command to be modified.
-	 * @param revision
-	 *        the revision text.
-	 */
-	private void addProjectRevision(Command cmd, String revision) {
-
-		if (!Luntbuild.isEmpty(revision)) {
-			cmd.addOption(new Option("projectRevision", revision));
 		}
 	}
 

@@ -265,7 +265,9 @@ public class StarteamAdaptor extends Vcs {
 		else
 			starteamTask.setURL(getProjectLocation() + "/" + module.getStarteamView());
 
-		if (!Luntbuild.isEmpty(module.getLabel()))
+    if (!Luntbuild.isEmpty(module.getStarteamPromotionState()))
+      starteamTask.setPromotionState(module.getStarteamPromotionState());
+    else if (!Luntbuild.isEmpty(module.getLabel()))
 			starteamTask.setLabel(module.getLabel());
 		else
 			starteamTask.setAsOfDate(checkoutDate);
@@ -500,6 +502,7 @@ public class StarteamAdaptor extends Vcs {
 		static final long serialVersionUID = 1;
 
 		private String starteamView;
+    private String starteamPromotionState;
 		private String srcPath;
 		private String label;
 		private String destPath;
@@ -569,7 +572,8 @@ public class StarteamAdaptor extends Vcs {
 				public String getDescription() {
 					return "Specify the label for the above StarTeam view. This property " +
 							"is optional. When left empty, the latest version of specified view is" +
-							" assumed.";
+              " assumed.  NOTE: Only one of Promotion State or Label may be set.  " +
+              "Checkout will FAIL if both values are set!";
 				}
 
 				public boolean isRequired() {
@@ -584,6 +588,30 @@ public class StarteamAdaptor extends Vcs {
 					setLabel(value);
 				}
 			});
+      properties.add(new DisplayProperty() {
+        public String getDisplayName() {
+          return "Promotion State";
+        }
+
+        public String getDescription() {
+          return "Specify the promotion state for the above StarTeam view. This property " +
+              "is optional. When left empty, the latest version of specified view is" +
+              " assumed.  NOTE: Only one of Promotion State or Label may be set.  " +
+              "Checkout will FAIL if both values are set!";
+        }
+
+        public boolean isRequired() {
+          return false;
+        }
+
+        public String getValue() {
+          return getStarteamPromotionState();
+        }
+
+        public void setValue(String value) {
+          setStarteamPromotionState(value);
+        }
+      });      
 			properties.add(new DisplayProperty() {
 				public String getDisplayName() {
 					return "Destination path";
@@ -618,6 +646,14 @@ public class StarteamAdaptor extends Vcs {
 		public void setStarteamView(String starteamView) {
 			this.starteamView = starteamView;
 		}
+    
+    public String getStarteamPromotionState() {
+      return starteamPromotionState;
+    }
+    
+    public void setStarteamPromotionState(String starteamPromotionState) {
+      this.starteamPromotionState = starteamPromotionState;
+    }
 
 		public String getSrcPath() {
 			return srcPath;
@@ -648,6 +684,7 @@ public class StarteamAdaptor extends Vcs {
 			facade.setStarteamView(getStarteamView());
 			facade.setDestPath(getDestPath());
 			facade.setLabel(getLabel());
+      facade.setStarteamPromotionState(getStarteamPromotionState());
 			facade.setSrcPath(getSrcPath());
 			return facade;
 		}
@@ -657,6 +694,7 @@ public class StarteamAdaptor extends Vcs {
 				StarteamModuleFacade starteamModuleFacade = (StarteamModuleFacade) facade;
 				setStarteamView(starteamModuleFacade.getStarteamView());
 				setLabel(starteamModuleFacade.getLabel());
+        setStarteamPromotionState(starteamModuleFacade.getStarteamPromotionState());
 				setSrcPath(starteamModuleFacade.getSrcPath());
 				setDestPath(starteamModuleFacade.getDestPath());
 			} else

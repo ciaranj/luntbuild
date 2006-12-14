@@ -1,11 +1,23 @@
 ==============================================
+luntbuild 1.3.6 Release Notes
+==============================================
+
+Bugs fixed:
+
+Fixed current build update in web app introduced in 1.3.5
+MKS integration improvements:
+   1. When an objects gets removed form the MKS repository, checking for revisions used to fail (with MKS API error) and failed the build. Now error gets reported into revision log and build proceeds.
+   2. Logic was enhanced to detect changes in the MKS modules. Adding/changing the version/checkpoint label or development path to existing MKS module no longer fails the build. Once a change is detected sandbox is dropped and recreated with changed parameters.
+StarTeam patch which adds the ability to check out by promotional state to Luntbuild
+
+==============================================
 luntbuild 1.3.5 Release Notes
 ==============================================
 
 Bugs fixed:
 
 Improved Hibernate/DB access, make use of lazy loading and caching
-Upgraded to ehcache 1.4
+Upgraded to ehcache 1.2.4
 Fixed manual build execution
 
 ==============================================
