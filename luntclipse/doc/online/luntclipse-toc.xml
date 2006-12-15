@@ -6,5 +6,6 @@
    <topic label="Create, Edit project" href="doc/online/html/createproject.html"/>
    <topic label="Build, Revision, System Log" href="doc/online/html/logs.html"/>
    <topic label="Luntbuild Browser" href="doc/online/html/browser.html"/>
+   <topic label="Notification" href="doc/online/html/notifications.html"/>
    <topic label="Preferences" href="doc/online/html/preferences.html"/>
 </toc>
