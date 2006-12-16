@@ -110,7 +110,9 @@ public class LuntbuildConnection {
     /**
      * Connect to luntbuild
      */
-    public ILuntbuild connect() {
+    private ILuntbuild connect() {
+
+    	if (this.connectionData.isPaused()) return null;
 
         HessianProxyFactory factory = new HessianProxyFactory();
         factory.setOverloadEnabled(true);
@@ -274,6 +276,8 @@ public class LuntbuildConnection {
      * Loads build data as Build[] from Luntbuild
      */
     public void loadBuildData() {
+    	if (this.connectionData.isPaused()) return;
+
         ILuntbuild luntbuild = connect();
         if (luntbuild == null) {
             luntbuildData = null;

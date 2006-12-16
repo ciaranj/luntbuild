@@ -28,6 +28,7 @@ import com.luntsys.luntbuild.luntclipse.actions.EditProjectAction;
 import com.luntsys.luntbuild.luntclipse.actions.ManageConnectionAction;
 import com.luntsys.luntbuild.luntclipse.actions.MoveBuildsAction;
 import com.luntsys.luntbuild.luntclipse.actions.PasteProjectAction;
+import com.luntsys.luntbuild.luntclipse.actions.PauseConnectionAction;
 import com.luntsys.luntbuild.luntclipse.actions.RefreshAction;
 import com.luntsys.luntbuild.luntclipse.actions.RevisionLogAction;
 import com.luntsys.luntbuild.luntclipse.actions.SearchBuildsAction;
@@ -55,11 +56,11 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
     private Composite focusFolder = null;
 
     //actions
-    private Action refreshAction;
-    private BuildLogAction buildLogAction;
-    private RevisionLogAction revisionLogAction;
-    private SystemLogAction systemLogAction;
-    private CleanLogAction cleanLogAction;
+    private Action refreshAction = null;
+    private BuildLogAction buildLogAction = null;
+    private RevisionLogAction revisionLogAction = null;
+    private SystemLogAction systemLogAction = null;
+    private CleanLogAction cleanLogAction = null;
     private TriggerBuildAction triggerBuildAction = null;
     private SearchBuildsAction searchBuildsAction = null;
     private MoveBuildsAction moveBuildsAction = null;
@@ -70,6 +71,7 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
     private CopyProjectAction copyProjectAction = null;
     private PasteProjectAction pasteProjectAction = null;
     private ManageConnectionAction connectionAction = null;
+    private PauseConnectionAction pauseConnectionAction = null;
 
     /** Current build viewer */
     public static LuntbuildViewer currentViewer = null;
@@ -114,6 +116,7 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
         this.buildLogAction = new BuildLogAction();
         this.revisionLogAction = new RevisionLogAction();
         this.systemLogAction = new SystemLogAction();
+        this.pauseConnectionAction = new PauseConnectionAction();
 
         contributeToActionBars();
 
@@ -160,6 +163,7 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
 	public void fillLocalPullDown(IMenuManager manager) {
         enableActionButtons();
         manager.add(this.connectionAction);
+        manager.add(this.pauseConnectionAction);
         manager.add(this.refreshAction);
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         manager.add(this.triggerBuildAction);
@@ -195,6 +199,7 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
 	private void fillLocalToolBar(IToolBarManager manager) {
         enableActionButtons();
         manager.add(this.connectionAction);
+        manager.add(this.pauseConnectionAction);
         manager.add(this.refreshAction);
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         manager.add(this.triggerBuildAction);
@@ -218,26 +223,42 @@ public class LuntbuildView extends ViewPart implements SelectionListener {
      * Enable/disable toolbar buttons
      */
     public void enableActionButtons() {
-    	boolean enable = currentViewer != null && currentViewer.getSelectedBuild() != null;
-    	this.refreshAction.setEnabled(LuntclipsePlugin.getDefault().getConnections().size() > 0);
+    	boolean enable = currentViewer != null &&
+    		currentViewer.getSelectedBuild() != null &&
+    		!currentViewer.getConnection().getConnectionData().isPaused();
+    	this.pauseConnectionAction.setIcon(
+    			(currentViewer != null)?currentViewer.getConnection().getConnectionData().isPaused():false);
+    	this.refreshAction.setEnabled(
+                currentViewer != null &&
+                !currentViewer.getConnection().getConnectionData().isPaused() &&
+    			LuntclipsePlugin.getDefault().getConnections().size() > 0);
         this.triggerBuildAction.setEnabled(enable);
         this.buildLogAction.setEnabled(enable);
         this.revisionLogAction.setEnabled(enable);
         this.systemLogAction.setEnabled(enable);
         this.cleanLogAction.setEnabled(enable);
-        this.createProjectAction.setEnabled(LuntclipsePlugin.getDefault().getConnections().size() > 0);
+        this.createProjectAction.setEnabled(
+                currentViewer != null &&
+                !currentViewer.getConnection().getConnectionData().isPaused() &&
+        		LuntclipsePlugin.getDefault().getConnections().size() > 0);
         this.editProjectAction.setEnabled(enable);
         this.deleteProjectAction.setEnabled(enable);
         this.copyProjectAction.setEnabled(enable);
-        this.pasteProjectAction.setEnabled(LuntclipsePlugin.getProjectClipboard() != null);
+        this.pasteProjectAction.setEnabled(
+                currentViewer != null &&
+                !currentViewer.getConnection().getConnectionData().isPaused() &&
+        		LuntclipsePlugin.getProjectClipboard() != null);
         this.searchBuildsAction.setEnabled(enable);
         this.moveBuildsAction.setEnabled(
-                currentViewer != null && currentViewer.getSelectedHistoryBuilds() != null &&
+                currentViewer != null &&
+                !currentViewer.getConnection().getConnectionData().isPaused() &&
+                currentViewer.getSelectedHistoryBuilds() != null &&
                 currentViewer.getSelectedHistoryBuilds().size() > 0);
         this.deleteBuildsAction.setEnabled(
-                currentViewer != null && currentViewer.getSelectedHistoryBuilds() != null &&
+                currentViewer != null &&
+                !currentViewer.getConnection().getConnectionData().isPaused() &&
+                currentViewer.getSelectedHistoryBuilds() != null &&
                 currentViewer.getSelectedHistoryBuilds().size() > 0);
-
     }
 
 	/**

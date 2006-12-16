@@ -21,6 +21,7 @@ public class ConnectionData {
         BuildSucceeded
     };
     private NotifyCondition notifyCondition = NotifyCondition.BuildFinished;
+    private boolean isPaused = false;
 
     /**
      * @return Returns the name.
@@ -110,6 +111,18 @@ public class ConnectionData {
 		} catch (Exception e) {
 			this.notifyCondition = NotifyCondition.BuildFinished;
 		}
+	}
+	/**
+	 * @return Returns the isPaused.
+	 */
+	public final boolean isPaused() {
+		return isPaused;
+	}
+	/**
+	 * @param isPaused The isPaused to set.
+	 */
+	public final void setPaused(boolean isPaused) {
+		this.isPaused = isPaused;
 	}
 
 }

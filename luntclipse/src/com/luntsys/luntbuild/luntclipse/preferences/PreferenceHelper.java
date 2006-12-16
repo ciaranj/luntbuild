@@ -23,6 +23,7 @@ public class PreferenceHelper {
     public static final String P_LUNTBUILD_PASSWORD = "P_LUNTBUILD_PASSWORD";
     public static final String P_LUNTBUILD_URL = "P_LUNTBUILD_URL";
     public static final String P_LUNTBUILD_NOTIFY_CONDITION = "P_LUNTBUILD_NOTIFY_CONDITION";
+    public static final String P_LUNTBUILD_PAUSED = "P_LUNTBUILD_PAUSED";
     public static final String P_LUNTBUILD_REFRESH_TIME = "P_REFRESH_TIME";
     public static final String P_LUNTBUILD_VERSION = "P_LUNTBUILD_VERSION";
     public static final String P_LUNTBUILD_NOTIFY_CONNECTION = "P_LUNTBUILD_NOTIFY_CONNECTION";
@@ -63,6 +64,7 @@ public class PreferenceHelper {
         data.setUrl(store.getString(P_LUNTBUILD_URL + "_" + name));
         data.setVersion(store.getString(P_LUNTBUILD_VERSION + "_" + name));
         data.setNotifyCondition(store.getString(P_LUNTBUILD_NOTIFY_CONDITION + "_" + name));
+        data.setPaused(Boolean.valueOf(store.getString(P_LUNTBUILD_PAUSED + "_" + name)));
         return data;
     }
 
@@ -79,6 +81,7 @@ public class PreferenceHelper {
         store.setValue(P_LUNTBUILD_URL + "_" + data.getName(), data.getUrl());
         store.setValue(P_LUNTBUILD_VERSION + "_" + data.getName(), data.getVersion());
         store.setValue(P_LUNTBUILD_NOTIFY_CONDITION + "_" + data.getName(), data.getNotifyCondition().toString());
+        store.setValue(P_LUNTBUILD_PAUSED + "_" + data.getName(), Boolean.toString(data.isPaused()));
     }
 
     /** Add connection
@@ -102,6 +105,7 @@ public class PreferenceHelper {
         store.setValue(P_LUNTBUILD_URL + "_" + data.getName(), data.getUrl());
         store.setValue(P_LUNTBUILD_VERSION + "_" + data.getName(), data.getVersion());
         store.setValue(P_LUNTBUILD_NOTIFY_CONDITION + "_" + data.getName(), data.getNotifyCondition().toString());
+        store.setValue(P_LUNTBUILD_PAUSED + "_" + data.getName(), Boolean.toString(data.isPaused()));
     }
 
     /** Remove connection
@@ -133,6 +137,7 @@ public class PreferenceHelper {
         store.setValue(P_LUNTBUILD_URL + "_" + data.getName(), "");
         store.setValue(P_LUNTBUILD_VERSION + "_" + data.getName(), "");
         store.setValue(P_LUNTBUILD_NOTIFY_CONDITION + "_" + data.getName(), data.getNotifyCondition().toString());
+        store.setValue(P_LUNTBUILD_PAUSED + "_" + data.getName(), Boolean.toString(data.isPaused()));
     }
 
     /**

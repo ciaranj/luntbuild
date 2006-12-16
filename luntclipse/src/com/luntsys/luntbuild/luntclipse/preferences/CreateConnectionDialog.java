@@ -44,6 +44,7 @@ public class CreateConnectionDialog extends TitleAreaDialog {
     private Text userText;
     private Text passwordText;
     private CCombo notifyCondition;
+    private Button pauseButton;
     private ArrayList versionButtons = new ArrayList();
 
     private Image image;
@@ -185,6 +186,19 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         if (this.connection != null)
         	this.notifyCondition.select(this.connection.getConnectionData().getNotifyCondition().ordinal());
 
+        label = new Label(gridComp, SWT.NONE);
+        label.setText("Pause Connection:");
+        gdata = new GridData();
+        gdata.widthHint = 120;
+        label.setLayoutData(gdata);
+        this.pauseButton = new Button(gridComp, SWT.CHECK);
+        this.pauseButton.setText("");
+        gdata = new GridData();
+        gdata.widthHint = 120;
+        this.pauseButton.setLayoutData(gdata);
+        if (this.connection != null)
+        	this.pauseButton.setSelection(this.connection.getConnectionData().isPaused());
+
         // Create the version group
         label = new Label(gridComp, SWT.NONE);
         label.setText("Version:");
@@ -300,6 +314,8 @@ public class CreateConnectionDialog extends TitleAreaDialog {
         if (i >= 0) {
         	data.setNotifyCondition(this.notifyCondition.getItem(i));
         }
+
+        data.setPaused(this.pauseButton.getSelection());
 
         for (Iterator iter = this.versionButtons.iterator(); iter.hasNext();) {
             Button bt = (Button) iter.next();
