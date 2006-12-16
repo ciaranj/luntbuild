@@ -7,5 +7,7 @@ Bundle-Activator: com.luntsys.luntbuild.luntclipse.rcp.LuntclipseRcpPlugin
 Bundle-Vendor: Lubos Pochman
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.update.ui,
+ org.eclipse.update.core
 Eclipse-LazyStart: true

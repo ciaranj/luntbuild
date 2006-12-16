@@ -29,14 +29,12 @@ You can follow Luntclipse or Luntbuild project news at:
 
    <windowImages i16="/luntclipse/icons/luntbuild.gif"/>
 
-
    <launcher name="luntclipse">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
-
 
    <plugins>
       <plugin id="com.genuitec.javascript.debug.mozilla" fragment="true"/>
@@ -84,6 +82,11 @@ You can follow Luntclipse or Luntbuild project news at:
       <plugin id="org.eclipse.ui.carbon" fragment="true"/>
       <plugin id="org.eclipse.ui.forms"/>
       <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.update.configurator"/>
+      <plugin id="org.eclipse.update.core"/>
+      <plugin id="org.eclipse.update.core.linux" fragment="true"/>
+      <plugin id="org.eclipse.update.core.win32" fragment="true"/>
+      <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.mozilla.xpcom"/>
    </plugins>
 
