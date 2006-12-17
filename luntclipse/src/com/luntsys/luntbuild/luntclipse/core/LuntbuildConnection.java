@@ -70,7 +70,6 @@ import com.luntsys.luntbuild.luntclipse.model.SubversionModuleData;
 import com.luntsys.luntbuild.luntclipse.model.VcsProjectData;
 import com.luntsys.luntbuild.luntclipse.model.VisualSourcesafeModuleData;
 import com.luntsys.luntbuild.luntclipse.model.ConnectionData.NotifyCondition;
-import com.luntsys.luntbuild.luntclipse.preferences.PreferenceHelper;
 import com.luntsys.luntbuild.luntclipse.views.LuntbuildViewer;
 
 /**
