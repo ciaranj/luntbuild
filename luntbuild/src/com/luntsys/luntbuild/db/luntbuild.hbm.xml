@@ -43,7 +43,7 @@
 		</set>
 
 		<!-- bi-directional one-to-many association to RolesMapping -->
-		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="all-delete-orphan" inverse="true" >
+		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="all-delete-orphan" inverse="true" lazy="false">
 			<key column="FK_PROJECT_ID"/>
 			<one-to-many class="RolesMapping"/>
 		</set>
@@ -170,7 +170,7 @@
 			<one-to-many class="NotifyMapping"/>
 		</set>
 		<!-- bi-directional one-to-many association to RolesMapping -->
-		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="delete" inverse="true" >
+		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="delete" inverse="true" lazy="false">
 			<key column="FK_USER_ID"/>
 			<one-to-many class="RolesMapping"/>
 		</set>
@@ -186,7 +186,7 @@
 		<property name="name" column="NAME" not-null="true" unique="true" length="255" />
 
 		<!-- bi-directional one-to-many association to RolesMapping -->
-		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="delete" inverse="true" >
+		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="delete" inverse="true"  lazy="false">
 			<key column="FK_ROLE_ID"/>
 			<one-to-many class="RolesMapping"/>
 		</set>
