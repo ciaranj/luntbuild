@@ -14,15 +14,15 @@ var MENU_ITEMS = [
 	['Documentation', null, null,
 		['Features List', 'feature_list.html', null],
 		['Install Guide', null, null,
-			['Html', 'docs/installguide/installguide.html', null],
-			['PDF', 'docs/installguide/installguide.pdf', null]
+			['Html', 'doc/installguide/installguide.html', null],
+			['PDF', 'doc/installguide/installguide.pdf', null]
 		],
 		['Quick Start', null, null,
-			['Html', 'docs/quickstart/quickstart.html', null],
-			['PDF', 'docs/quickstart/quickstart.pdf', null]
+			['Html', 'doc/quickstart/quickstart.html', null],
+			['PDF', 'doc/quickstart/quickstart.pdf', null]
 		],
 		['Quotes', 'quotes.html', null],
-		['Eclipse Plugin', 'docs/luntclipse/index.html', null],
+		['Eclipse Plugin', 'doc/luntclipse/index.html', null],
 		['English User\'s Guide', null, null,
 			['Single Html', 'manual/guide/manual.html', null],
 			['Html', 'manual/guide/index.html', null],
@@ -33,8 +33,8 @@ var MENU_ITEMS = [
 			['Html', 'http://luntbuilddoc.redsaga.com/zh-cn/html/', null],
 			['PDF', 'http://luntbuilddoc.redsaga.com/zh-cn/pdf/luntbuild-guide.pdf', null]
 		],
-		['FAQ', 'docs/faq/index.html', null],
-		['Javadoc', 'docs/javadoc/index.html', null],
+		['FAQ', 'doc/faq/index.html', null],
+		['Javadoc', 'doc/javadoc/index.html', null],
 		['Remote API', null, null,
 			['Javadoc', 'remote-api/javadoc/index.html', null],
 			['Sample Code', 'remote-api/samples/index.html', null]
