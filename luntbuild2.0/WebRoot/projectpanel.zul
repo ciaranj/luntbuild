@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <vbox width="100%">
+		<html>
+			<attribute name="content"><![CDATA[<h3><center>Project Project1</center></h3>]]></attribute>
+		</html>
+		<button label="Project For" onClick="project()"/>
+		<zscript>
+			void project() {
+			Treeitem item = projecttree.getSelectedItem();
+			if (item == null) {
+			    alert("No project selected. Please select a project!");
+				return;
+			} else {
+			    if (item.getLevel() == 0) {
+			        alert(item.getLabel());
+			    }
+			}
+			}
+		</zscript>
+		</vbox>
+</zk>

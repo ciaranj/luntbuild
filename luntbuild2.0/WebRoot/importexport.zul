@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	 xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+	<popup id="export-tip" width="350px">
+		<vbox>
+			This operation may take a long time if there are many builds in the system.
+			We strongly suggest to delete non-necessary builds in order to speed up the
+			export and the import using this exported file. If relative path is specified,
+			the file will be located relative to the Luntbuild installation directory.
+		</vbox>
+	</popup>
+	<popup id="import-tip" width="350px">
+		<vbox>
+			This operation will first erase all existing data(build artifacts under publish directory will not be deleted),
+			and then import data from specified file. It may take a long time depending on the size of the file being imported.
+		</vbox>
+	</popup>
+
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<label id="exportlabel" value="File to export to:"/>
+				<h:input id="exportfile" type="file" size="50" zk:onChange="exportfile.value=self.value"/>
+				<button image="/img/icon_help.png" tooltip="export-tip"/>
+			</row>
+			<row>
+				<label value="File to import from:"/>
+				<h:input id="importfile" type="file" size="50" zk:onChange="importfile.value=self.value"/>
+				<button image="/img/icon_help.png" tooltip="import-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="OK" onClick="alert(exportfile.value)"/>
+		<button label="Cancel" onClick="saverestore.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

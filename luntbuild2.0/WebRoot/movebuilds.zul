@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<popup id="moveschedule-tip" width="500px">
+		<vbox>
+		<label value="Specify the destination schedule for these builds. The move function enables you:"/>
+		<label value="1. To save the builds before deleting a schedule or project."/>
+		<label value="2. To promote important builds. For example, we can promote a particular build from the &quot;nightly&quot; schedule to the &quot;release&quot; schedule, to mark it as an external release."/>
+		</vbox>
+	</popup>
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/time.gif"/>
+					<label value="Destination Schedule"/>
+				</hbox>
+				<listbox rows="5">
+					<listhead>
+					    <listheader label="Project"/>
+					    <listheader label="Schedule"/>
+					</listhead>
+					<listitem selected="true">
+						<listcell label="Project1"/>
+						<listcell label="Schedule1"/>
+					</listitem>
+					<listitem>
+						<listcell label="Project1"/>
+						<listcell label="Schedule2"/>
+					</listitem>
+					<listitem>
+						<listcell label="Project2"/>
+						<listcell label="Schedule1"/>
+					</listitem>
+					<listitem>
+						<listcell label="Project2"/>
+						<listcell label="Schedule2"/>
+					</listitem>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="moveschedule-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="Move" onClick="alert(self.label)"/>
+		<button label="Cancel" onClick="movebuildswin.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

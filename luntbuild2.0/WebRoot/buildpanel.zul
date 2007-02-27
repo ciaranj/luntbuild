@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<vbox>
+	<zscript>
+		vcsList = new String[] {"Perforce1", "Cvs1"};
+		vcsImage = new String[] {"/img/perforce.jpg", "/img/cvs.jpg"};
+		vcsDesc = new String[] {"perforce.mymachine.com:1666", "cvs.sourceforge.net"};
+		builders = new String[] {"Builder1", "Builder2", "Builder3"};
+		buildersImage = new String[] {"/img/ant.gif", "/img/maven.png", "/img/ant.gif"};
+		buildersDesc = new String[] {"ant setup", "mvn install", "ant setup build check"};
+	</zscript>
+	<html>
+		<attribute name="content"><![CDATA[<h3><center>Build build-1234.56</center></h3>]]></attribute>
+	</html>
+    <groupbox>
+		<caption sclass="logReports" label="Log Reports"/>
+		<toolbarbutton sclass="logReports" label="JUnit Report" href=""/>
+		<space bar="true" spacing="15px"/>
+		<toolbarbutton sclass="logReports" label="Build Log" href=""/>
+		<space bar="true" spacing="15px"/>
+		<toolbarbutton sclass="logReports" label="Revision Log" href=""/>
+	</groupbox>
+    <grid>
+		<columns>
+			<column label="Project"/>
+			<column label="VCS"/>
+			<column label="Builders"/>
+			<column label="Schedule"/>
+		</columns>
+		<rows>
+			<row>
+				<toolbarbutton label="Project1" onClick=""/>
+				<combobox id="vcscombo">
+					<comboitem forEach="${vcsList}" label="${each}"
+						image="${vcsImage[forEachStatus.index]}" description="${vcsDesc[forEachStatus.index]}"/>
+				</combobox>
+				<combobox id="buildercombo">
+					<comboitem forEach="${builders}" label="${each}"
+						image="${buildersImage[forEachStatus.index]}" description="${buildersDesc[forEachStatus.index]}"/>
+				</combobox>
+				<toolbarbutton label="Schedule1" onClick=""/>
+			</row>
+        </rows>
+    </grid>
+	<grid>
+		<columns>
+			<column label="Status"/>
+			<column label="Start Date"/>
+			<column label="Finish Date"/>
+			<column label="Duration"/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+				    <image src="/img/success.gif"/>
+					<label value="Success"/>
+				</hbox>
+				<label value="2007-02-25 15:20"/>
+				<label value="2007-02-25 15:30"/>
+				<label value="10 minutes"/>
+			</row>
+        </rows>
+    </grid>
+	<hbox>
+		<zscript>
+		  void drilldown() {
+			String areaid = event.getArea();
+			if (areaid != null) {
+				Area area = self.getFellow(areaid);
+				alert(""+area.getAttribute("entity")+": "+area.getTooltiptext());
+			}
+		  }
+		</zscript>
+		<zscript>
+		  PieModel piemodel = new SimplePieModel();
+		  piemodel.setValue("Failure", new Double(34.5));
+		  piemodel.setValue("Success", new Double(65.5));
+		</zscript>
+		<chart id="buildchart" title="Build Success Chart" width="250" height="200"
+			type="pie" threeD="true" fgAlpha="128" onClick="drilldown()"/>
+		<zscript>
+		  buildchart.setModel(piemodel);
+		</zscript>
+		<zscript>
+		CategoryModel catmodel = new SimpleCategoryModel();
+		catmodel.setValue("Failure", "January", new Integer(5));
+		catmodel.setValue("Failure", "February", new Integer(4));
+		catmodel.setValue("Failure", "March", new Integer(6));
+		catmodel.setValue("Success", "January", new Integer(20));
+		catmodel.setValue("Success", "February", new Integer(35));
+		catmodel.setValue("Success", "March", new Integer(40));
+		</zscript>
+		<chart id="buildchartbar" title="Last three months" width="250" height="200"
+			 type="stacked_bar" threeD="true" fgAlpha="128" onClick="drilldown()"/>
+		<zscript>
+		  buildchartbar.setModel(catmodel);
+		</zscript>
+		</hbox>
+</vbox>
+</zk>

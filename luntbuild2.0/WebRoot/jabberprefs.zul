@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+	<popup id="jabberserver-tip" width="400px">
+		<vbox>
+			You can optionally specify the Jabber host used by Luntbuild to send Jabber messages.
+			If this property is not specified, Luntbuild will use localhost as the default value.
+		</vbox>
+	</popup>
+	<popup id="jabbertype-tip" width="400px">
+		<vbox>
+			You can optionally specify the type of Jabber server Luntbuild will communicate with.
+		</vbox>
+	</popup>
+	<popup id="jabberport-tip" width="400px">
+		<vbox>
+			The Jabber server port to connect to; default is 5222.
+		</vbox>
+	</popup>
+	<popup id="jabberuser-tip" width="400px">
+		<vbox>
+			The Jabber account name to be used for Luntbuild to login and send messages.
+		</vbox>
+	</popup>
+	<popup id="jabberpasswd-tip" width="400px">
+		<vbox>
+			The Jabber account password to login.
+		</vbox>
+	</popup>
+
+	Set the Jabber related properties here if you want to notify user by Jabber. NOTE. Connecting using proxy is not yet supported.
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<label value="Jabber server:"/>
+				<textbox id="jabberserver" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="jabberserver-tip"/>
+			</row>
+			<row>
+				<label value="Jabber server type:"/>
+				<listbox id="jabbertype" mold="select" rows="1">
+					<listitem label="normal" selected="true"/>
+					<listitem label="ssl"/>
+					<listitem label="google"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="jabbertype-tip"/>
+			</row>
+			<row>
+				<label value="Jabber server port:"/>
+				<intbox id="jabberport" width="150px" value="5222" />
+				<button image="/img/icon_help.png" tooltip="jabberport-tip"/>
+			</row>
+			<row>
+				<label value="Jabber user:"/>
+				<textbox id="jabberuser" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="jabberuser-tip"/>
+			</row>
+			<row>
+				<label value="Jabber password:"/>
+				<textbox id="jabberpasswd" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="jabberpasswd-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="OK" onClick=""/>
+		<button label="Cancel" onClick="jabberprefswin.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

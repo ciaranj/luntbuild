@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+	<popup id="username-tip" width="400px">
+		<vbox>
+			Provide a unique name to identify this user. This property is used for presentation and login.
+		</vbox>
+	</popup>
+	<popup id="userfull-tip" width="400px">
+		<vbox>
+			Full user name.
+		</vbox>
+	</popup>
+	<popup id="createproject-tip" width="400px">
+		<vbox>
+			Check this checkbox to give the rights to this user to create new project.
+		</vbox>
+	</popup>
+	<popup id="projectaccess-tip" width="400px">
+		<vbox>
+			Check these checkboxes to give the existing projects access rights for this user.
+		</vbox>
+	</popup>
+	<popup id="userpassword-tip" width="400px">
+		<vbox>
+			Provide a password (can be changed later by the user).
+		</vbox>
+	</popup>
+	<popup id="verifypassword-tip" width="400px">
+		<vbox>
+			Re-type, verify the pasword.
+		</vbox>
+	</popup>
+	<popup id="useremail-tip" width="400px">
+		<vbox>
+			Email address for this user.
+		</vbox>
+	</popup>
+	<popup id="usermsn-tip" width="400px">
+		<vbox>
+			The MSN Messenger account for this user, for example foobar@hotmail.com.
+		</vbox>
+	</popup>
+	<popup id="userjabber-tip" width="400px">
+		<vbox>
+			JabberID for this user, for example johndoe@jabber.org.
+		</vbox>
+	</popup>
+	<popup id="usersametime-tip" width="400px">
+		<vbox>
+			Sametime id for this user, for example johndoe.
+		</vbox>
+	</popup>
+	<popup id="userblog-tip" width="550px">
+		<vbox>
+			Specify URL for your blog. For example http://www.blogger.com/api for blogger type,
+			http://jroller.com/xmlrpc for metaweblog type, and http://www.livejournal.com/interface/xmlrpc for livejournal type.
+			Specify blog username and password. Optionally, you might specify blog id or blog category.
+		</vbox>
+	</popup>
+
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<label value="Name:"/>
+				<textbox id="username" width="350px" value="${arg.name}"/>
+				<button image="/img/icon_help.png" tooltip="username-tip"/>
+			</row>
+			<row>
+				<label value="Full name:"/>
+				<textbox id="userfullname" width="350px" value="${arg.fullname}"/>
+				<button image="/img/icon_help.png" tooltip="userfull-tip"/>
+			</row>
+			<row>
+				<label value="Can create project?:"/>
+				<checkbox id="createproject" checked="${arg.cancreate}"/>
+				<button image="/img/icon_help.png" tooltip="createproject-tip"/>
+			</row>
+			<row>
+				<label value="Existing projects Access?:"/>
+				<groupbox width="250px">
+					<caption label="Project Access"/>
+					<checkbox id="projectview" label="View" checked="${arg.canview}"/>
+					<checkbox id="projectaccess" label="Access" checked="${arg.canaccess}"/>
+					<checkbox id="projectadminister" label="Administer" checked="${arg.canadminister}"/>
+				</groupbox>
+				<button image="/img/icon_help.png" tooltip="projectaccess-tip"/>
+			</row>
+			<row>
+				<label value="Password:"/>
+				<textbox id="userpassword" value="${arg.password}" type="password" width="350px"/>
+				<button image="/img/icon_help.png" tooltip="userpassword-tip"/>
+			</row>
+			<row>
+				<label value="Verify Password:"/>
+				<textbox id="verifypassword" value="${arg.password}" type="password" width="350px"/>
+				<button image="/img/icon_help.png" tooltip="verifypassword-tip"/>
+			</row>
+			<row>
+				<label value="Email account:"/>
+				<textbox id="useremail" value="${arg.email}" width="350px"/>
+				<button image="/img/icon_help.png" tooltip="useremail-tip"/>
+			</row>
+			<row>
+				<label value="MSN account:"/>
+				<textbox id="usermsn" value="${arg.msn}" width="350px"/>
+				<button image="/img/icon_help.png" tooltip="usermsn-tip"/>
+			</row>
+			<row>
+				<label value="Jabber account:"/>
+				<textbox id="userjabber" value="${arg.jabber}" width="350px"/>
+				<button image="/img/icon_help.png" tooltip="userjabber-tip"/>
+			</row>
+			<row>
+				<label value="Sametime account:"/>
+				<textbox id="usersametime" value="${arg.sametime}" width="350px"/>
+				<button image="/img/icon_help.png" tooltip="usersametime-tip"/>
+			</row>
+			<row>
+				<label value="Blog account:"/>
+				<grid width="350px">
+					<columns>
+						<column/>
+						<column/>
+					</columns>
+					<rows>
+						<row>
+							<label value="Blog Type:"/>
+							<listbox id="blogtype" mold="select" rows="1">
+								<listitem label="blogger" selected="${arg.blogger}"/>
+								<listitem label="livejournal" selected="${arg.livejournal}"/>
+								<listitem label="metaweblog" selected="${arg.metaweblog}"/>
+							</listbox>
+						</row>
+						<row>
+							<label value="Blog URL:"/>
+							<textbox id="userblogurl" value="${arg.blogurl}" width="200px"/>
+						</row>
+						<row>
+							<label value="Blog ID:"/>
+							<textbox id="userblogid" value="${arg.blogid}" width="200px"/>
+						</row>
+						<row>
+							<label value="Blog User:"/>
+							<textbox id="userbloguser" value="${arg.bloguser}" width="200px"/>
+						</row>
+						<row>
+							<label value="Blog Password:"/>
+							<textbox id="userblogpasswd" value="${arg.blogpasswd}" type="password" width="200px"/>
+						</row>
+						<row>
+							<label value="Blog Category:"/>
+							<textbox id="userblogcategory" value="${arg.blogcategory}" width="200px"/>
+						</row>
+					</rows>
+				</grid>
+				<button image="/img/icon_help.png" tooltip="userblog-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="OK" onClick="alert(username.value + userfullname.value);userwin.visible = false; event.stopPropagation();"/>
+		<button label="Cancel" onClick="userwin.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

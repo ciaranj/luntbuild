@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<popup id="searchversion-tip" width="450px">
+		<vbox>
+			Specify the version of the matching builds. If "exact match" is checked,
+			Luntbuild will search the build with the version exactly matching the specified value.
+			Otherwise Luntbuild will search all the builds with the version that starts with the specified value.
+		</vbox>
+	</popup>
+	<popup id="searchstatus-tip" width="350px">
+		<vbox>
+			Specify the build status of the matching builds.
+		</vbox>
+	</popup>
+	<popup id="searchfrom-tip" width="350px">
+		<vbox>
+			Search the builds generated after the specified date.
+		</vbox>
+	</popup>
+	<popup id="searchto-tip" width="350px">
+		<vbox>
+			Search the builds generated before the specified date.
+		</vbox>
+	</popup>
+	<popup id="searchschedule-tip" width="350px">
+		<vbox>
+			Specify the schedules to search the builds in.
+		</vbox>
+	</popup>
+	<html>
+		<attribute name="content"><![CDATA[<h4><center>Search for the builds</center></h4>]]></attribute>
+	</html>
+
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/number.gif"/>
+					<label value="Version"/>
+				</hbox>
+				<hbox>
+				    <textbox id="searchversion" width="250px" value=""/>
+					<checkbox id="versionexact" label="exact match"/>
+				</hbox>
+				<button image="/img/icon_help.png" tooltip="searchversion-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/status.gif"/>
+					<label value="Status"/>
+				</hbox>
+				<listbox mold="select" rows="1">
+					<listitem label="All" selected="true"/>
+					<listitem label="Running"/>
+					<listitem label="Successful"/>
+					<listitem label="Failed"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="searchstatus-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/date.gif"/>
+					<label value="From"/>
+				</hbox>
+				<hbox>
+				    <calendar id="searchfromcal" onChange="searchfromin.value = searchfromcal.value"/>
+				    <datebox id="searchfromin" width="250px" onChange="searchfromcal.value = searchfromin.value"/>
+				</hbox>
+				<button image="/img/icon_help.png" tooltip="searchfrom-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/date.gif"/>
+					<label value="To"/>
+				</hbox>
+				<hbox>
+				    <calendar id="searchtocal" onChange="searchtoin.value = searchtocal.value"/>
+				    <datebox id="searchtoin" width="250px" onChange="searchtocal.value = searchtoin.value"/>
+				</hbox>
+				<button image="/img/icon_help.png" tooltip="searchto-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/time.gif"/>
+					<label value="Schedule"/>
+				</hbox>
+				<listbox rows="5">
+					<listhead>
+					    <listheader label="Project"/>
+					    <listheader label="Schedule"/>
+					</listhead>
+					<listitem selected="true">
+						<listcell label="Project1"/>
+						<listcell label="Schedule1"/>
+					</listitem>
+					<listitem>
+						<listcell label="Project1"/>
+						<listcell label="Schedule2"/>
+					</listitem>
+					<listitem>
+						<listcell label="Project2"/>
+						<listcell label="Schedule1"/>
+					</listitem>
+					<listitem>
+						<listcell label="Project2"/>
+						<listcell label="Schedule2"/>
+					</listitem>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="searchschedule-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="Search" onClick="alert(self.label)"/>
+		<button label="Cancel" onClick="searchbuildswin.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

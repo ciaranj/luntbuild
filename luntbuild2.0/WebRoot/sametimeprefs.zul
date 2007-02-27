@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+	<popup id="sametimeserver-tip" width="400px">
+		<vbox>
+			You can optionally specify the Sametime host used by Luntbuild to send Sametime messages.
+			If this property is not specified, Luntbuild will use localhost as the default value.
+		</vbox>
+	</popup>
+	<popup id="sametimepasswd-tip" width="300px">
+		<vbox>
+			The Sametime account password to login.
+		</vbox>
+	</popup>
+	<popup id="sametimeuser-tip" width="400px">
+		<vbox>
+			The Sametime account name to be used for Luntbuild to login and send messages.
+		</vbox>
+	</popup>
+	Set the Sametime related properties here if you want to notify user by Sametime.
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<label value="Sametime server:"/>
+				<textbox id="sametimeserver" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="sametimeserver-tip"/>
+			</row>
+			<row>
+				<label value="Sametime user:"/>
+				<textbox id="sametimeuser" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="sametimeuser-tip"/>
+			</row>
+			<row>
+				<label value="Sametime password:"/>
+				<textbox id="sametimepasswd" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="sametimepasswd-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="OK" onClick=""/>
+		<button label="Cancel" onClick="sametimeprefswin.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

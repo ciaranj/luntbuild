@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <vbox width="100%">
+		<html>
+			<attribute name="content"><![CDATA[<h3><center>Scheduled Builds</center></h3>]]></attribute>
+		</html>
+
+	  <timeline height="350px" width="100%">
+		<bandinfo width="25%" id="tbhour" intervalUnit="hour"
+		  intervalPixels="100">
+		</bandinfo>
+		<bandinfo width="75%" id="tbday" intervalUnit="day" intervalPixels="200"
+		  syncWith="tbhour">
+		</bandinfo>
+	  </timeline>
+	  <zscript>
+	    <![CDATA[
+		  import java.util.*;
+		  import org.zkforge.timeline.*;
+		  import org.zkforge.timeline.data.*;
+
+		  ArrayList events=new ArrayList();
+		  for(int i=0;i<6;i++){
+		    OccurEvent e=new OccurEvent();
+			e.setDuration(true);
+		    Date d=new Date();
+		    d.setHours(i*4);
+		    e.setStart(d);
+		    Date endd = new Date(d.getTime()+1000000);
+		    e.setEnd(endd);
+		    e.setText("build "+String.valueOf(i));
+		    events.add(e);
+		  }
+		  tbhour.addManyOccureEvents(events);
+		  tbday.addManyOccureEvents(events);
+		    ]]>
+		</zscript>
+	</vbox>
+</zk>

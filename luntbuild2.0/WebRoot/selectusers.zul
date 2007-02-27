@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?component name="users" macro-uri="/users.zul"?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<window id="userwin" if="${arg.edit}" title="Edit User" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <users
+		name="user" fullname="Full Name" cancreate="true" canview="true" canaccess="true" canadminister="true"
+		password="test" email="me@you.com" msn="me@msn.com" jabber="" sametime=""
+		blogger="true" livejournal="false" metaweblog="false" blogurl="" blogid="" bloguser="" blogpasswd="" blogcategory=""/>
+	</window>
+
+	<window id="userwin" if="${arg.copy}" title="Copy User" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <users
+		name="user" fullname="Full Name" cancreate="true" canview="true" canaccess="true" canadminister="true"
+		password="test" email="me@you.com" msn="me@msn.com" jabber="" sametime=""
+		blogger="true" livejournal="false" metaweblog="false" blogurl="" blogid="" bloguser="" blogpasswd="" blogcategory=""/>
+	</window>
+
+	<zscript>
+		users = new String[] {"Auser", "Buser", "Zuser", "Quser", "Luser"};
+		fullusers = new String[] {"AFull User", "BFull User", "ZFull User", "QFull User", "LFull User"};
+	</zscript>
+	<listbox mold="paging" pageSize="5">
+		<listhead>
+			<listheader label="Name" sort="auto"/>
+			<listheader label="Full Name" sort="auto"/>
+		</listhead>
+		<listitem  forEach="${users}">
+			<listcell label="${each}"/>
+			<listcell label="${fullusers[forEachStatus.index]}"/>
+		</listitem>
+	</listbox>
+	<separator/>
+	<hbox>
+		<button if="${arg.edit}" label="Edit" onClick="userwin.doOverlapped()"/>
+		<button if="${arg.copy}" label="Copy" onClick="userwin.doOverlapped()"/>
+		<button if="${arg.delete}" label="Delete" onClick="alert(self.label)"/>
+		<button if="${arg.edit}" label="Cancel" onClick="edituserwin.visible = false; event.stopPropagation();"/>
+		<button if="${arg.copy}" label="Cancel" onClick="copyuserwin.visible = false; event.stopPropagation();"/>
+		<button if="${arg.delete}" label="Cancel" onClick="deleteuserwin.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

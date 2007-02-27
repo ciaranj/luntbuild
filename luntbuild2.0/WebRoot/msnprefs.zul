@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+	<popup id="msnaccount-tip" width="400px">
+		<vbox>
+			Luntbuild needs a MSN Messenger account in order to send out build notification messages.
+			For example &quot;luntbuild@hotmail.com&quot;.
+		</vbox>
+	</popup>
+	<popup id="msnpasswd-tip" width="400px">
+		<vbox>
+			Password for the above MSN account.
+		</vbox>
+	</popup>
+	Set the MSN Messenger related properties here if you want to notify user by MSN Messenger.
+	NOTE. Connecting using proxy is not yet supported.
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<label value="Luntbuild MSN account:"/>
+				<textbox id="msnaccount" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="msnaccount-tip"/>
+			</row>
+			<row>
+				<label value="Luntbuild MSN password:"/>
+				<textbox id="msnpasswd" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="msnpasswd-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="OK" onClick=""/>
+		<button label="Cancel" onClick="msnprefswin.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

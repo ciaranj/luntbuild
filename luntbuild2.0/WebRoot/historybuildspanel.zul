@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <vbox width="100%">
+		<html>
+			<attribute name="content"><![CDATA[<h3><center>History builds for schedule Schedule1</center></h3>]]></attribute>
+		</html>
+		<zscript><![CDATA[
+			String[] historyBuilds = {"build-123.5", "build-123.4", "build-123.3", "build-123.2", "build-123.1"};
+			String[] buildProject = {"Project1", "Project1", "Project1", "Project1", "Project1"};
+			String[] buildSchedule = {"Schedule1", "Schedule1", "Schedule1", "Schedule1", "Schedule1"};
+			String[] buildStatusImage = {"/img/success.gif", "/img/failed.gif", "/img/success.gif", "/img/success.gif", "/img/failed.gif"};
+			String[] buildStatus = {"success", "failure", "success", "success", "failure"};
+			String[] buildEndDate = {"2007-02-25 18:31", "2007-02-25 17:01", "2007-02-25 16:00", "2007-02-25 14:31", "2007-02-24 18:30"};
+			String[] buildDuration = {"31", "29", "32", "30", "29"};
+			class MyRowComparator implements Comparator {
+			private int direction = 1;
+			public MyRowComparator(boolean ascending) {
+			    direction = (ascending) ? 1 : -1;
+			}
+			public int compare(Object o1, Object o2) {
+			    return direction * o1.toString().compareTo(o2.toString());
+			}
+			}
+			Comparator ascComparator = new MyRowComparator(true);
+			Comparator dscComparator = new MyRowComparator(false);
+		]]></zscript>
+		<grid mold="paging" pageSize="20">
+			<columns>
+				<column label="Project" sortAscending="${ascComparator}" sortDescending="${dscComparator}" sortDirection="ascending"/>
+				<column label="Schedule" sortAscending="${ascComparator}" sortDescending="${dscComparator}" sortDirection="ascending"/>
+				<column label="Version" sortAscending="${ascComparator}" sortDescending="${dscComparator}" sortDirection="ascending"/>
+				<column label="Status" sortAscending="${ascComparator}" sortDescending="${dscComparator}" sortDirection="ascending"/>
+				<column label="Ended at" sortAscending="${ascComparator}" sortDescending="${dscComparator}" sortDirection="ascending"/>
+				<column label="Duration (min)" sortAscending="${ascComparator}" sortDescending="${dscComparator}" sortDirection="ascending"/>
+			</columns>
+			<rows>
+				<row forEach="${historyBuilds}">
+					<toolbarbutton label="${buildProject[forEachStatus.index]}" href=""/>
+					<toolbarbutton label="${buildSchedule[forEachStatus.index]}" href=""/>
+					<toolbarbutton label="${each}" href=""/>
+					<hbox>
+						<image src="${buildStatusImage[forEachStatus.index]}"/>
+						<label value="${buildStatus[forEachStatus.index]}"/>
+					</hbox>
+					<label value="${buildEndDate[forEachStatus.index]}"/>
+					<label value="${buildDuration[forEachStatus.index]}"/>
+				</row>
+			</rows>
+		</grid>
+	</vbox>
+</zk>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	 xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+	<popup id="servleturl-tip" width="500px">
+		<vbox>
+			The servlet url should be specified correctly so Luntbuild can refer to this url in the notification messages.
+			Normally this value should be http://&lt;server&gt;:&lt;port&gt;/luntbuild/app.do, where &lt;server&gt; is your
+			build server name or ip address, and &lt;port&gt; is the port number you use to access Luntbuild.
+			If this property is left empty, Luntbuild will default this value to be
+			&quot;http://&lt;server_ip&gt;:8080/luntbuild/app.do&quot;, where &lt;server_ip&gt; is the ip address of the build server.
+		</vbox>
+	</popup>
+	<popup id="workdir-tip" width="350px">
+		<vbox>
+			You can optionally specify a work directory for the build system. The work directory is the directory which
+			Luntbuild uses to hold artifacts checked out from the Version Control System. If not specified,
+			Luntbuild will use the "work" sub-directory under the Luntbuild installation directory.
+			NOTE. Because HTML doesn't support directory selection, just create a dummy file and select it.
+		</vbox>
+	</popup>
+	<popup id="publishdir-tip" width="350px">
+		<vbox>
+			You can optionally specify a publish directory for the build system.
+			The publish directory is the directory which Luntbuild uses to hold the output
+			of the build process - the build log, and the other build artifacts.
+			NOTE. Because HTML doesn't support directory selection, just create a dummy file and select it.
+		</vbox>
+	</popup>
+	<popup id="numthreads-tip" width="350px">
+		<vbox>
+			Specify number of build threads. Builds will wait in the queue if all build threads are occupied.
+			The default number of build threads is 10.
+			NOTE: This property will take effect after you restart the application.
+		</vbox>
+	</popup>
+
+	Set the Luntbuild general preferences.
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<label value="Url to access luntbuild servlet:"/>
+				<textbox id="servleturl" width="250px" value="http://localhost:8080/luntbuild"/>
+				<button image="/img/icon_help.png" tooltip="servleturl-tip"/>
+			</row>
+			<row>
+				<label value="Work directory:"/>
+				<h:input id="workdir" type="file" size="50" zk:onChange="workdir.value=self.value"/>
+				<button image="/img/icon_help.png" tooltip="workdir-tip"/>
+			</row>
+			<row>
+				<label value="Publish directory:"/>
+				<h:input id="publishdir" type="file" size="50" zk:onChange="publishdir.value=self.value"/>
+				<button image="/img/icon_help.png" tooltip="publishdir-tip"/>
+			</row>
+			<row>
+				<label value="Number of build threads:"/>
+				<hbox>
+				<label value="0"/>
+				<slider id="numthreads" width="150px" curpos="10" maxpos="25"/>
+				<label value="25"/>
+				</hbox>
+				<button image="/img/icon_help.png" tooltip="numthreads-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="OK" onClick="alert(workdir.value)"/>
+		<button label="Cancel" onClick="generalprefswin.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?page title="Luntbuild Dashboard"?>
+<?link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico"?>
+<?component name="importexport" macro-uri="/importexport.zul"?>
+<?component name="generalprefs" macro-uri="/generalprefs.zul"?>
+<?component name="emailprefs" macro-uri="/emailprefs.zul"?>
+<?component name="msnprefs" macro-uri="/msnprefs.zul"?>
+<?component name="jabberprefs" macro-uri="/jabberprefs.zul"?>
+<?component name="sametimeprefs" macro-uri="/sametimeprefs.zul"?>
+<?component name="users" macro-uri="/users.zul"?>
+<?component name="selectusers" macro-uri="/selectusers.zul"?>
+<?component name="searchbuilds" macro-uri="/searchbuilds.zul"?>
+<?component name="movebuilds" macro-uri="/movebuilds.zul"?>
+
+<zk
+	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<window title="Luntbuild Dashboard" border="normal">
+    <style src="/css/luntbuild.css"/>
+	<caption>
+		<toolbarbutton image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+		<toolbarbutton label="Web Site" href="http://luntbuild.javaforge.com"/>
+	</caption>
+    <style src="/css/luntbuild.css"/>
+
+	<zscript>
+		void confirmStopBuild() {
+			if (Messagebox.show("Are you sure you want to stop the build?", "Stop Build",
+					Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES) {
+				// TODO stop the build
+			}
+		}
+	</zscript>
+
+<!-- Manubar and toolbar -->
+	<menubar id="menubar" autodrop="true">
+		<menu label="Project">
+			<menupopup>
+				<menuitem label="New..." image="/img/icon_new.png" onClick="alert(self.label)"/>
+				<menuitem label="Edit..." image="/img/edit.gif" onClick="alert(self.label)"/>
+				<menuitem label="Copy..." image="/img/copy.gif" onClick="alert(self.label)"/>
+				<menuitem label="Delete..." image="/img/delete.gif" onClick="alert(self.label)"/>
+				<menuseparator/>
+				<menuitem label="Logout" image="/img/logout.png" onClick="alert(self.label)"/>
+			</menupopup>
+		</menu>
+		<menu label="Build">
+			<menupopup>
+				<menuitem label="Run..." image="/img/icon_run.png" onClick="alert(self.label)"/>
+				<menuitem label="Stop..." image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
+				<menuseparator/>
+				<menuitem label="History Builds..." image="/img/history_builds.gif"
+					onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
+				<menuitem label="Search Builds..." image="/img/search.png"
+					onClick="searchbuildswin.doOverlapped();dashboardtabs.setSelectedTab(tab_historybuilds)"/>
+				<menuitem label="Promote Builds..." image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
+			</menupopup>
+		</menu>
+		<menu label="Users">
+			<menupopup>
+				<menuitem label="New..." image="/img/user.gif" onClick="userwin.doOverlapped()"/>
+				<menuitem label="Edit..." image="/img/edit.gif" onClick="edituserwin.doOverlapped()"/>
+				<menuitem label="Copy..." image="/img/copy.gif" onClick="copyuserwin.doOverlapped()"/>
+				<menuitem label="Delete..." image="/img/delete.gif" onClick="deleteuserwin.doOverlapped()"/>
+			</menupopup>
+		</menu>
+		<menu label="Tools">
+			<menupopup>
+				<menuitem label="Save/Restore" image="/img/dirAndfile.gif" onClick="saverestore.doModal()"/>
+				<menuseparator/>
+				<menuitem label="System Log" image="/img/log.gif" href="/luntbuild_log.html"/>
+				<menuseparator/>
+				<menu label="Properties" image="/img/property.gif">
+					<menupopup>
+						<menuitem label="General" image="/img/property.gif" onClick="generalprefswin.doModal()"/>
+						<menuitem label="Email" image="/img/property.gif" onClick="emailprefswin.doModal()"/>
+						<menuitem label="MSN" image="/img/property.gif" onClick="msnprefswin.doModal()"/>
+						<menuitem label="Jabber" image="/img/property.gif" onClick="jabberprefswin.doModal()"/>
+						<menuitem label="Sametime" image="/img/property.gif" onClick="sametimeprefswin.doModal()"/>
+					</menupopup>
+				</menu>
+			</menupopup>
+		</menu>
+		<menu label="Help">
+			<menupopup>
+				<menuitem label="Help Contents" image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+				<menuseparator/>
+				<menuitem label="Check for Updates" image="/img/folder_update.png" href="http://www.javaforge.com/proj/doc.do?doc_id=1205"/>
+				<menuseparator/>
+				<menuitem label="About Luntbuild" image="/img/about.gif" href="http://luntbuild.javaforge.com"/>
+			</menupopup>
+		</menu>
+	</menubar>
+	<toolbar>
+		<toolbarbutton label="New" image="/img/icon_new.png" tooltip="new-tip" onClick="alert(self.label)"/>
+		<space bar="true"/>
+		<toolbarbutton label="Run" image="/img/icon_run.png" onClick="alert(self.label)"/>
+		<toolbarbutton label="Stop" image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
+		<toolbarbutton label="History" image="/img/history_builds.gif" onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
+		<toolbarbutton label="Promote" image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
+		<space bar="true"/>
+		<toolbarbutton label="Help" image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+	</toolbar>
+	<menupopup id="projectPopup">
+		<menuitem label="Edit..." image="/img/edit.gif"/>
+		<menuitem label="Copy..." image="/img/copy.gif"/>
+	</menupopup>
+	<menupopup id="schedulePopup">
+		<menuitem label="Run" image="/img/icon_run.png"/>
+		<menuitem label="Stop" image="/img/icon_stop.png"/>
+		<menuseparator/>
+		<menuitem label="History" image="/img/history_builds.gif" onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
+		<menuitem label="Search Builds..." image="/img/search.png"
+			 onClick="searchbuildswin.doOverlapped();dashboardtabs.setSelectedTab(tab_historybuilds)"/>
+		<menuitem label="Promote Build..." image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
+	</menupopup>
+	<menupopup id="historyBuildsPopup">
+		<menuitem label="Search Builds..." image="/img/search.png"
+			 onClick="searchbuildswin.doOverlapped()"/>
+		<menuitem label="Promote Build..." image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
+	</menupopup>
+	<popup id="new-tip" width="150px">
+		<vbox>
+			<toolbarbutton label="Create new project."
+				href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+		</vbox>
+	</popup>
+
+<!-- Overlapped windows and modal dialogs -->
+	<window id="movebuildswin" title="Promote builds" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <movebuilds/>
+	</window>
+
+	<window id="searchbuildswin" title="Search builds" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <searchbuilds/>
+	</window>
+
+	<window id="deleteuserwin" title="Select User to Delete" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <selectusers delete="true"/>
+	</window>
+
+	<window id="copyuserwin" title="Select User to Copy" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <selectusers copy="true"/>
+	</window>
+
+	<window id="edituserwin" title="Select User to Edit" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <selectusers edit="true"/>
+	</window>
+
+	<window id="userwin" title="New User" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <users cancreate="true"/>
+	</window>
+
+	<window id="generalprefswin" title="General Preferences" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <generalprefs/>
+	</window>
+
+	<window id="emailprefswin" title="Email Preferences" width="500px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <emailprefs/>
+	</window>
+
+	<window id="msnprefswin" title="MSN Preferences" width="500px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <msnprefs/>
+	</window>
+
+	<window id="jabberprefswin" title="Jabber Preferences" mode="overlapped" width="500px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <jabberprefs/>
+	</window>
+
+	<window id="sametimeprefswin" title="Sametime Preferences" width="500px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <sametimeprefs/>
+	</window>
+
+	<window id="saverestore" title="Save/Restore Luntbuild" width="500px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <importexport/>
+	</window>
+
+<!-- Main pane with schedule tree, queue and build pane -->
+	<hbox spacing="0" style="border: 1px solid grey" width="100%">
+		<zscript>
+			projects = new String[] {"Project 1", "Project 2", "Project 3"};
+			schedules = new String[] {"Schedule 1", "Schedule 2", "Schedule 3"};
+			stateImage = new String[] {"/img/running.gif", "/img/success.gif", "/img/failed.gif"};
+		</zscript>
+		<tree id="projecttree" style="border: 0px" width="200px" onSelect="projectTreeSelected()">
+			<treecols sizable="false">
+				<treecol label="Schedules"/>
+				<treecol label="Status"/>
+			</treecols>
+			<treechildren>
+				<treeitem forEach="${projects}">
+					<treerow>
+						<treecell label="${each}" context="projectPopup"/>
+					</treerow>
+					<treechildren>
+						<treeitem forEach="${schedules}">
+							<treerow>
+								<treecell label="${each}" context="schedulePopup"/>
+								<treecell image="${stateImage[forEachStatus.index]}" context="schedulePopup"/>
+							</treerow>
+						</treeitem>
+					</treechildren>
+				</treeitem>
+			</treechildren>
+			<zscript>
+				void projectTreeSelected() {
+					Treeitem item = projecttree.getSelectedItem();
+					if (item == null) {
+						return;
+					} else {
+						if (item.getLevel() == 0) {
+							dashboardtabs.setSelectedTab(tab_project);
+						} else {
+							dashboardtabs.setSelectedTab(tab_build);
+						}
+					}
+				}
+			</zscript>
+		</tree>
+		<!-- TODO Update projecttree and buildpanel -->
+		<timer id="timer" delay="10000" repeats="true" onTimer=""/>
+
+		<tabbox id="dashboardtabs" style="border: 0px" width="100%" onCreate="loadTabData()" onSelect="loadTabData()">
+			<tabs>
+				<tab id="tab_build" label="Build"/>
+				<tab id="tab_historybuilds" label="History Builds"/>
+				<tab id="tab_project" label="Project"/>
+				<tab id="tab_queue" label="Queue"/>
+			</tabs>
+			<tabpanels>
+				<tabpanel id="buildtab" context="schedulePopup"/>
+				<tabpanel id="historybuildstab" context="historyBuildsPopup"/>
+				<tabpanel id="projecttab"/>
+				<tabpanel id="queuetab"/>
+			</tabpanels>
+			<zscript><![CDATA[
+			void loadTabData() {
+			Tabpanel panel = dashboardtabs.getSelectedPanel();
+			if (panel != null) {
+				if (panel.getId().equals("queuetab")) {
+					if (panel.getChildren().isEmpty()) {
+					    Executions.createComponents("/queuepanel.zul", queuetab, null);
+					} else {
+					// TODO update existing
+					}
+				} else if (panel.getId().equals("buildtab")) {
+					if (panel.getChildren().isEmpty()) {
+					    Executions.createComponents("/buildpanel.zul", buildtab, null);
+					} else {
+					// TODO update existing
+					}
+				} else if (panel.getId().equals("historybuildstab")) {
+					if (panel.getChildren().isEmpty()) {
+					    Executions.createComponents("/historybuildspanel.zul", historybuildstab, null);
+					} else {
+					// TODO update existing
+					}
+				} else if (panel.getId().equals("projecttab")) {
+					if (panel.getChildren().isEmpty()) {
+					    Executions.createComponents("/projectpanel.zul", projecttab, null);
+					} else {
+					// TODO update existing
+					}
+				}
+			}
+			}
+			]]></zscript>
+		</tabbox>
+	</hbox>
+</window>
+</zk>
