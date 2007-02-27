@@ -11,6 +11,7 @@
 <?component name="selectusers" macro-uri="/selectusers.zul"?>
 <?component name="searchbuilds" macro-uri="/searchbuilds.zul"?>
 <?component name="movebuilds" macro-uri="/movebuilds.zul"?>
+<?component name="manualbuild" macro-uri="/manualbuild.zul"?>
 
 <zk
 	xmlns="http://www.zkoss.org/2005/zul"
@@ -47,7 +48,7 @@
 		</menu>
 		<menu label="Build">
 			<menupopup>
-				<menuitem label="Run..." image="/img/icon_run.png" onClick="alert(self.label)"/>
+				<menuitem label="Run..." image="/img/icon_run.png" onClick="manualbuildwin.doOverlapped()"/>
 				<menuitem label="Stop..." image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
 				<menuseparator/>
 				<menuitem label="History Builds..." image="/img/history_builds.gif"
@@ -95,7 +96,7 @@
 	<toolbar>
 		<toolbarbutton label="New" image="/img/icon_new.png" tooltip="new-tip" onClick="alert(self.label)"/>
 		<space bar="true"/>
-		<toolbarbutton label="Run" image="/img/icon_run.png" onClick="alert(self.label)"/>
+		<toolbarbutton label="Run" image="/img/icon_run.png" onClick="manualbuildwin.doOverlapped()"/>
 		<toolbarbutton label="Stop" image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
 		<toolbarbutton label="History" image="/img/history_builds.gif" onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
 		<toolbarbutton label="Promote" image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
@@ -107,7 +108,7 @@
 		<menuitem label="Copy..." image="/img/copy.gif"/>
 	</menupopup>
 	<menupopup id="schedulePopup">
-		<menuitem label="Run" image="/img/icon_run.png"/>
+		<menuitem label="Run" image="/img/icon_run.png" onClick="manualbuildwin.doOverlapped()"/>
 		<menuitem label="Stop" image="/img/icon_stop.png"/>
 		<menuseparator/>
 		<menuitem label="History" image="/img/history_builds.gif" onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
@@ -128,6 +129,11 @@
 	</popup>
 
 <!-- Overlapped windows and modal dialogs -->
+	<window id="manualbuildwin" title="Manual build" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <manualbuild/>
+	</window>
+
 	<window id="movebuildswin" title="Promote builds" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <movebuilds/>
@@ -172,12 +178,12 @@
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <msnprefs/>
 	</window>
-
+<!--
 	<window id="jabberprefswin" title="Jabber Preferences" mode="overlapped" width="500px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <jabberprefs/>
 	</window>
-
+-->
 	<window id="sametimeprefswin" title="Sametime Preferences" width="500px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <sametimeprefs/>
@@ -230,9 +236,9 @@
 				}
 			</zscript>
 		</tree>
-		<!-- TODO Update projecttree and buildpanel -->
+		<!-- TODO Update projecttree and buildpanel
 		<timer id="timer" delay="10000" repeats="true" onTimer=""/>
-
+-->
 		<tabbox id="dashboardtabs" style="border: 0px" width="100%" onCreate="loadTabData()" onSelect="loadTabData()">
 			<tabs>
 				<tab id="tab_build" label="Build"/>

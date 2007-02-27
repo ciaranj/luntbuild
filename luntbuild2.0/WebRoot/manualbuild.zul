@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<popup id="buildcondition-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+      The build necessary condition is an OGNL expression used to determine if current build is necessary.
+	  The following are some commonly used expressions:<br>
+      <strong>always</strong>: Always perform build<br>
+      <strong>never</strong>: Never perform build<br>
+      <strong>alwaysIfFailed</strong>: Always perform build when last build is failed.
+      However, if last build is successful, build will be performed only when
+      modifications are detected in related VCS, or new builds are generated in its dependent schedules.<br>
+      <strong>vcsModified or dependencyNewer</strong>: Perform build when modifications are detected in related VCS,
+	  or new builds are generated in its dependent schedules.
+      Refer to the <a href="http://luntbuild.javaforge.com/manual/guide/index.html">User's Guide</a> for details.<br>
+      <strong>dependencySuccessful and (vcsModified or dependencyNewer)</strong>: Perform build when modifications are detected
+	  in related VCS, or new builds are generated in its
+      dependent schedules, in addition that all these new generated builds are successful.
+      Refer to the <a href="http://luntbuild.javaforge.com/manual/guide/index.html">User's Guide</a> for details.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="buildversion-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+      Optionally, if you specify a value here, Luntbuild will use this value as the build version
+      instead of  using "next build version" property. You should carefully specify the version here
+      not to cause potential duplication with any other version. Format of this version is the same as
+      the "next build version" property.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="buildtype-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+      Select the build type for this build, clean build can be more reliable, <br>
+      but can be slower, incremental build can be quicker, but less reliable.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="postbuildstrategy-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+        Choose the post-build strategy for this build. There are four strategies:<br>
+		<strong>do not post-build</strong>: do not execute the post-build script after the build.<br>
+        <strong>post-build when success</strong>: execute the post-build script only when the build was successful. <br>
+        <strong>post-build when failed</strong>: execute the post-build script only when the build has failed. <br>
+        <strong>post-build always</strong>: always execute the post-build script after the build.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="labelstrategy-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+        Choose the label strategy for this build. There are following strategies:<br>
+        <strong>label successful builds</strong>: label the repository only for the successful builds.<br>
+        <strong>do not label</strong>: do not label the repository after the build.<br>
+        <strong>label always</strong>: always label the repository after the build.<br>
+        NOTE. If a build is not labeled when it is initially built, it will not be rebuildable later.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="notifystrategy-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+    Choose the notify strategy for this build. There are following strategies:<br>
+    <strong>notify when status changed</strong>: send the notification when the status of the current build changes
+	compared to the last build. That is, notification will be sent when the current build succeeds and the last build failed,
+	or the current build fails and the last build succeeded. <br>
+    <strong>notify when failed</strong>: send the notification only when the build failed.<br>
+    <strong>notify when success</strong>: send the notification only when the build succeeds. <br>
+    <strong>do not notify</strong>: do not send the notification after the build. <br>
+    <strong>notify always</strong>: always send the notification after the build.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="dependentstrategy-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+    Choose dependency triggering strategy for this build. There are four strategies:<br>
+    <strong>trigger schedules this depends on</strong>: trigger schedules current schedule depends on,
+	and this triggering will happen before current build. For example, if current schedule builds a product which
+	contains several components in other schedules,
+    you can use this strategy to make sure all components used by this product is up to date.<br>
+    <strong>trigger schedules depends on this</strong>: trigger schedules depends on current schedule,
+	and this triggering will happen after current build. For example, if current schedule builds a component
+	which is used by products in other schedules,
+    you can use this strategy to make sure all products using this component is up to date.<br>
+    <strong>trigger all dependent schedules</strong>: This is a combination of the above two strategies, that is,
+	trigger schedules current schedule depends on before current build, and
+    trigger schedules depends on current schedule after current build . <br>
+    <strong>do not trigger any dependent schedules</strong>: trigger neither schedules current schedule
+	depends on, nor schedules depends on current schedule.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="whentobuild-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+			  Optionally, you can specify the time in minutes or date and time when to start the build.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/condition.gif"/>
+					<label value="Build necessary condition:"/>
+				</hbox>
+				<textbox id="buildcondition" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="buildcondition-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/number.gif"/>
+					<label value="Build as version:"/>
+				</hbox>
+				<textbox id="buildversion" width="150px" value=""/>
+				<button image="/img/icon_help.png" tooltip="buildversion-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/build_type.gif"/>
+					<label value="Build type:"/>
+				</hbox>
+				<listbox id="buildtype" mold="select" rows="1">
+					<listitem label="clean" selected="true"/>
+					<listitem label="incremental"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="buildtype-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/postbuild_strategy.gif"/>
+					<label value="Post-build strategy:"/>
+				</hbox>
+				<listbox id="postbuildstrategy" mold="select" rows="1">
+					<listitem label="do not post-build" selected="true"/>
+					<listitem label="post-build if success"/>
+					<listitem label="post-build if failed"/>
+					<listitem label="post-build always"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="postbuildstrategy-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/label.gif"/>
+					<label value="Label strategy:"/>
+				</hbox>
+				<listbox id="labelstrategy" mold="select" rows="1">
+					<listitem label="label if success"/>
+					<listitem label="label always"/>
+					<listitem label="do not label" selected="true"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="labelstrategy-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/notify.gif"/>
+					<label value="Notify strategy:"/>
+				</hbox>
+				<listbox id="notifystrategy" mold="select" rows="1">
+					<listitem label="notify when status changed" selected="true"/>
+					<listitem label="notify when failed"/>
+					<listitem label="notify when success"/>
+					<listitem label="do not notify"/>
+					<listitem label="notify always"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="notifystrategy-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/trigger.gif"/>
+					<label value="Dependent triggering strategy:"/>
+				</hbox>
+				<listbox id="dependentstrategy" mold="select" rows="1">
+					<listitem label="trigger schedules this depends on"/>
+					<listitem label="trigger schedules depends on this"/>
+					<listitem label="trigger all dependent schedules"/>
+					<listitem label="do not trigger any dependent schedules" selected="true"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="dependentstrategy-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/time.gif"/>
+					<label value="When to build:"/>
+				</hbox>
+				<hbox>
+					<listbox id="whentobuild" mold="select" rows="1" onSelect="setDateVisible()" onCreate="setDateVisible()">
+						<listitem label="now" selected="true"/>
+						<listitem label="after"/>
+						<listitem label="at"/>
+					</listbox>
+					<hbox id="afterwhentobuild">
+						<textbox id="whentobuildmin" width="50px"/>
+						<label value="minutes"/>
+					</hbox>
+					<hbox id="atwhentobuild">
+					    <calendar id="whencal" onChange="whenin.value = whencal.value"/>
+					    <datebox id="whenin" onChange="whencal.value = whenin.value"/>
+						<textbox id="whentobuildhour" width="50px"/>
+						<label value="time in hh:mm"/>
+					</hbox>
+				</hbox>
+				<button image="/img/icon_help.png" tooltip="whentobuild-tip"/>
+				<zscript>
+					void setDateVisible() {
+					    if(whentobuild.getSelectedIndex()==1) {
+						    afterwhentobuild.setVisible(true);
+							atwhentobuild.setVisible(false);
+						} else if (whentobuild.getSelectedIndex()==2) {
+						    afterwhentobuild.setVisible(false);
+							atwhentobuild.setVisible(true);
+						} else {
+						    afterwhentobuild.setVisible(false);
+							atwhentobuild.setVisible(false);
+						}
+					}
+				</zscript>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="Run" onClick="alert(self.label)"/>
+		<button label="Cancel" onClick="manualbuildwin.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>
