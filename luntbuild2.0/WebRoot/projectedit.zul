@@ -83,7 +83,6 @@ Comparator sortDsc = new ListitemComparator(0, false, false);
 		new Listcell(value).setParent(li);
 		Listcell lc = new Listcell();
 		Button btn = new Button(null, "/img/delete.gif");
-		btn.setAttribute("onClick","self.parent.parent.setSelected(true);deleteVariable()");
 		btn.addEventListener(Events.ON_CLICK,
 			new EventListener() {
 				public boolean isAsap() {return false;}

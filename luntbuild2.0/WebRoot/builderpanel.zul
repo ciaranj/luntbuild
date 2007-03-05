@@ -4,14 +4,185 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
 	xmlns:h="http://www.w3.org/1999/xhtml">
+
 	<popup id="buildername-tip" width="500px">
 		<vbox>
-			<html>
+		Provide a name to identify this builder, this name can be changed later.
+	   </vbox>
+	</popup>
+	<popup id="buildercmd-tip" width="500px">
+		<vbox>
+			<html if="${arg.type eq &quot;ant&quot; || arg.type eq &quot;nant&quot; || arg.type eq &quot;rake&quot;}">
 		      <attribute name="content"><![CDATA[
+		Specify the command to run Ant (normally path to ant.bat or ant shell script) here.
+		For example: /path/to/ant -DbuildVersion="${build.version}" -DartifactsDir="${build.artifactsDir}".
+		String enclosed by ${...} will be interpreted as OGNL expression, and it be evaluated before execution.
+		For valid OGNL expressions in this context, please refer to the User's Guide.
+		NOTE. A single argument that includes spaces should be quoted in order not to be interpreted as multiple arguments.
 			  ]]></attribute>
 		    </html>
 	   </vbox>
 	</popup>
+	<popup id="builderscript-tip" width="500px">
+		<vbox>
+			<html if="${arg.type eq &quot;ant&quot; || arg.type eq &quot;nant&quot; || arg.type eq &quot;rake&quot;}">
+		      <attribute name="content"><![CDATA[
+The path for the build script. If this path is not an absolute path,
+it is assumed that it is relative to the schedule work directory. Refer to the User's Guide
+for details about how to write a new build file or how to modify your existing build script.
+			  ]]></attribute>
+		    </html>
+			<html if="${arg.type eq &quot;maven1&quot; || arg.type eq &quot;maven2&quot;}">
+		      <attribute name="content"><![CDATA[
+Specify the directory to run Maven in. If this path is not an absolute path,
+it is assumed to be relative to the schedule work directory. Defaults to schedule work directory if this property is left empty.
+			  ]]></attribute>
+		    </html>
+			<html if="${arg.type eq &quot;command&quot;}">
+		      <attribute name="content"><![CDATA[
+The directory path to run the build command in.
+If this path is not an absolute path, it is assumed to be relative to the project work directory.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="buildertargets-tip" width="500px">
+		<vbox>
+			<html if="${arg.type eq &quot;ant&quot; || arg.type eq &quot;nant&quot; || arg.type eq &quot;rake&quot;}">
+		      <attribute name="content"><![CDATA[
+Specify the targets to build. Use space to separate different targets (target name containing spaces should be quoted in order
+not to be interpreted as multiple targets). You can also use ${...} to pass variables to the target name.
+For example you can use ${build.schedule.name} to achieve different targets for different schedules.
+For valid OGNL expressions in this context, please refer to the User's Guide.
+			  ]]></attribute>
+		    </html>
+			<html if="${arg.type eq &quot;maven1&quot; || arg.type eq &quot;maven2&quot;}">
+		      <attribute name="content"><![CDATA[
+Specify the goals to build. Use space to separate different goals (goal name containing spaces should be quoted in order
+not to be interpreted as multiple goals). You can also use ${...} to pass OGNL variables as the goal name.
+For example you can use ${build.schedule.name} to achieve different goals for different schedules.
+For valid OGNL expressions in this context, please refer to User's Guide.
+			  ]]></attribute>
+		    </html>
+			<html if="${arg.type eq &quot;command&quot;}">
+		      <attribute name="content"><![CDATA[
+This property determines whether the build will wait for the command execution to complete before continuing.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="builderproperties-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+Define build properties here to pass into the ant build script. For example:
+<br>buildVersion=${build.version}
+<br>scheduleName=${build.schedule.name}
+<br>You should set one variable per line. OGNL expression can be inserted to form the value provided they are enclosed by ${var}.
+For valid OGNL expressions in this context, please refer to the User's Guide.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="builderenvvar-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+Environment variables to set before running this builder. For example:
+<br>buildVersion=${build.version}
+<br>scheduleName=${build.schedule.name}
+<br>You should set one variable per line. OGNL expression can be inserted to form the value provided they are enclosed by ${var}.
+For valid OGNL expressions in this context, please refer to the User's Guide.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<popup id="buildercondition-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+The build success condition is an OGNL expression used to determine if the build of the current project was successful.
+If left empty, the "result==0" value is assumed. Refer to the User's Guide for details.
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+
+	<zscript>
+class VariableListItem {
+	String name;
+	String value;
+	public VariableListItem(String name, String value) {
+		this.name = name;
+		this.value = value;
+	}
+	public String getValue() {return value;}
+	public String getName() {return name;}
+}
+ArrayList buildPropertiesList = new ArrayList();
+buildPropertiesList.add(new VariableListItem("buildVersion", "${build.version}"));
+
+	void addProperty() {
+		String name = builderpropertyname.getValue();
+		String value = builderpropertyvalue.getValue();
+		if (name == null || name.trim().length() == 0 ||
+			value == null || value.trim().length() == 0)
+			return;
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(name).setParent(li);
+		new Listcell(value).setParent(li);
+		Listcell lc = new Listcell();
+		Button btn = new Button(null, "/img/delete.gif");
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deleteProperty();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		li.setParent(builderpropertieslist);
+	}
+	void deleteProperty() {
+		Listitem item = builderpropertieslist.getSelectedItem();
+		if (item != null) item.detach();
+	}
+
+ArrayList builderenvlist = new ArrayList();
+builderenvlist.add(new VariableListItem("MY_BUILD_VERSION", "${build.version}"));
+
+	void addEnvVar() {
+		String name = builderenvname.getValue();
+		String value = builderenvvalue.getValue();
+		if (name == null || name.trim().length() == 0 ||
+			value == null || value.trim().length() == 0)
+			return;
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(name).setParent(li);
+		new Listcell(value).setParent(li);
+		Listcell lc = new Listcell();
+		Button btn = new Button(null, "/img/delete.gif");
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deleteEnvVar();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		li.setParent(builderenvlist);
+	}
+	void deleteEnvVar() {
+		Listitem item = builderenvlist.getSelectedItem();
+		if (item != null) item.detach();
+	}
+</zscript>
 
 	<grid>
 		<columns>
@@ -32,12 +203,12 @@
 				<button image="/img/icon_help.png" tooltip="buildername-tip"/>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Command to run Ant:" if="${arg.type.equals(&quot;ant&quot;)}"/>
-					<label value="Command to run Maven1:" if="${arg.type.equals(&quot;maven1&quot;)}"/>
-					<label value="Command to run Maven2:" if="${arg.type.equals(&quot;maven2&quot;)}"/>
-					<label value="Build command:" if="${arg.type.equals(&quot;command&quot;)}"/>
-					<label value="Command to run NAnt:" if="${arg.type.equals(&quot;nant&quot;)}"/>
-					<label value="Command to run Rake:" if="${arg.type.equals(&quot;rake&quot;)}"/>
+					<label value="Command to run Ant:" if="${arg.type eq &quot;ant&quot;}"/>
+					<label value="Command to run Maven1:" if="${arg.type eq &quot;maven1&quot;}"/>
+					<label value="Command to run Maven2:" if="${arg.type eq &quot;maven2&quot;}"/>
+					<label value="Build command:" if="${arg.type eq &quot;command&quot;}"/>
+					<label value="Command to run NAnt:" if="${arg.type eq &quot;nant&quot;}"/>
+					<label value="Command to run Rake:" if="${arg.type eq &quot;rake&quot;}"/>
 				</hbox>
 				<textbox id="buildercmd" multiline="true" rows="3" width="250px" value="${arg.desc}"/>
 				<button image="/img/icon_help.png" tooltip="buildercmd-tip"/>
@@ -45,18 +216,34 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Build script path:"/>
+					<label value="Build script path:" if="${arg.type eq &quot;ant&quot;}"/>
+					<label value="Build script path:" if="${arg.type eq &quot;nant&quot;}"/>
+					<label value="Build script path:" if="${arg.type eq &quot;rake&quot;}"/>
+					<label value="Directory to run Maven in:" if="${arg.type eq &quot;maven1&quot;}"/>
+					<label value="Directory to run Maven in:" if="${arg.type eq &quot;maven2&quot;}"/>
+					<label value="Run command in directory:" if="${arg.type eq &quot;command&quot;}"/>
 				</hbox>
-				<textbox id="builderscript" width="150px" value="${arg.name}" constraint="no empty: Builder name cannot be empty"/>
+				<textbox id="builderscript" width="150px" value="${arg.name}"
+					constraint="no empty: Builder name cannot be empty"/>
 				<button image="/img/icon_help.png" tooltip="builderscript-tip"/>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Build targets:"/>
+					<label value="Build targets:" if="${arg.type eq &quot;ant&quot;}"/>
+					<label value="Build targets:" if="${arg.type eq &quot;nant&quot;}"/>
+					<label value="Build targets:" if="${arg.type eq &quot;rake&quot;}"/>
+					<label value="Goals to build:" if="${arg.type eq &quot;maven1&quot;}"/>
+					<label value="Goals to build:" if="${arg.type eq &quot;maven2&quot;}"/>
+					<label value="Wait for process to finish before continuing?:" if="${arg.type eq &quot;command&quot;}"/>
 				</hbox>
-				<textbox id="buildertraget" width="150px" value="${arg.name}" constraint="no empty: Builder name cannot be empty"/>
+				<textbox id="buildertraget" width="150px" value="${arg.name}" unless="${arg.type eq &quot;command&quot;}"
+					constraint="no empty: Builder name cannot be empty"/>
+				<radiogroup id="buildertraget" if="${arg.type eq &quot;command&quot;}">
+					<radio label="Yes" selected="true"/>
+					<radio label="No"/>
+				</radiogroup>
 				<button image="/img/icon_help.png" tooltip="buildertargets-tip"/>
 			</row>
-			<row spans="1,4,1">
+			<row spans="1,4,1" unless="${arg.type eq &quot;command&quot;}">
 				<hbox>
 					<image src="/img/property.gif"/>
 					<label value="Build properties:"/>
