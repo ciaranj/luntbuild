@@ -1,9 +1,0 @@
-<window title="mix HTML demo" xmlns:h="http://www.w3.org/1999/xhtml"
-xmlns:zk="http://www.zkoss.org/2005/zk">
-				<hbox>
-					<textbox id="exportvalue" value=""/>
-				<h:input id="exportfile" type="file" size="50"
-					 zk:onChange="exportvalue.value=self.value"/>
-					 </hbox>
-		<button label="OK" onClick="alert(exportvalue.value)"/>
-</window>

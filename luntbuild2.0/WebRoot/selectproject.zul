@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?component name="projectedit" macro-uri="/projectedit.zul"?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<separator/>
+	<hbox>
+		<button if="${arg.copy}" label="Copy" onClick="projectcopywin.doOverlapped()"/>
+		<button if="${arg.delete}" label="Delete" onClick="alert(self.label)"/>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
+	</hbox>
+</zk>

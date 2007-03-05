@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<popup id="projectname-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+	<zscript>
+class DoubleListItem {
+	String value;
+	String label;
+	public DoubleListItem(String value, String label) {
+		this.value = value;
+		this.label = label;
+	}
+	public String getValue() {return value;}
+	public String getLabel() {return label;}
+}
+class VariableListItem {
+	String name;
+	String value;
+	public VariableListItem(String name, String value) {
+		this.name = name;
+		this.value = value;
+	}
+	public String getValue() {return value;}
+	public String getName() {return name;}
+}
+class ProjectUserAccess {
+	String username;
+	boolean admin;
+	boolean builder;
+	boolean viewer;
+	public ProjectUserAccess(String username, boolean admin, boolean builder, boolean viewer) {
+		this.username = username;
+		this.admin = admin;
+		this.builder = builder;
+		this.viewer = viewer;
+	}
+	public String getUsername() {return username;}
+	public boolean isAdmin() {return admin;}
+	public void setAdmin(boolean admin) {this.admin = admin;}
+	public boolean isBuilder() {return builder;}
+	public void setBuilder(boolean builder) {this.builder = builder;}
+	public boolean isViewer() {return viewer;}
+	public void setViewer(boolean viewer) {this.viewer = viewer;}
+}
+ArrayList usersList = new ArrayList();
+usersList.add(new ProjectUserAccess("user1", false, false, true));
+usersList.add(new ProjectUserAccess("user2", false, true, true));
+usersList.add(new ProjectUserAccess("user3", false, false, true));
+usersList.add(new ProjectUserAccess("user4", false, false, false));
+usersList.add(new ProjectUserAccess("user5", true, true, true));
+ArrayList notifiersList = new ArrayList();
+notifiersList.add(new DoubleListItem("blog", "Blog"));
+notifiersList.add(new DoubleListItem("email", "Email"));
+notifiersList.add(new DoubleListItem("msn", "MSN Messenger"));
+notifiersList.add(new DoubleListItem("jabber", "Jabber Messenger"));
+notifiersList.add(new DoubleListItem("sametime", "Sametime"));
+ArrayList notifyUserList = new ArrayList();
+notifyUserList.add(new DoubleListItem("recentlychecked", "User who checked in code recently"));
+ArrayList projectVariableList = new ArrayList();
+projectVariableList.add(new VariableListItem("versionIterator", "1"));
+Comparator sortAcs = new ListitemComparator(0, true, false);
+Comparator sortDsc = new ListitemComparator(0, false, false);
+
+	void addVariable() {
+		String name = projvariablename.getValue();
+		String value = projvariablevalue.getValue();
+		if (name == null || name.trim().length() == 0 ||
+			value == null || value.trim().length() == 0)
+			return;
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(name).setParent(li);
+		new Listcell(value).setParent(li);
+		Listcell lc = new Listcell();
+		Button btn = new Button(null, "/img/delete.gif");
+		btn.setAttribute("onClick","self.parent.parent.setSelected(true);deleteVariable()");
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deleteVariable();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		li.setParent(projectvariablelist);
+	}
+	void deleteVariable() {
+		Listitem item = projectvariablelist.getSelectedItem();
+		if (item != null) item.detach();
+	}
+</zscript>
+
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="projectname" width="150px" value="${arg.name}" constraint="no empty: Project name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="projectname-tip"/>
+				<hbox>
+					<image src="/img/description.gif"/>
+					<label value="Description:"/>
+				</hbox>
+				<textbox id="projectdesc" multiline="true" rows="3" width="250px" value="${arg.desc}"/>
+				<button image="/img/icon_help.png" tooltip="projectdesc-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/user.gif"/>
+					<label value="Project Access:"/>
+				</hbox>
+				<grid height="120px">
+					<columns>
+						<column label="User"/>
+						<column width="35px" label="Admin"/>
+						<column width="35px" label="Builder"/>
+						<column width="35px" label="Viewer"/>
+					</columns>
+					<rows>
+						<row forEach="${usersList}">
+							<label value="${each.username}"/>
+							<checkbox checked="${each.admin}">
+							</checkbox>
+							<checkbox checked="${each.builder}">
+							</checkbox>
+							<checkbox checked="${each.viewer}">
+							</checkbox>
+						</row>
+					</rows>
+				</grid>
+				<button image="/img/icon_help.png" tooltip="projectaccesslist-tip"/>
+				<hbox>
+					<image src="/img/notify.gif"/>
+					<label value="Notification methods:"/>
+				</hbox>
+				<listbox id="projectnotifylist" checkmark="true" multiple="true" rows="5">
+					<listhead>
+						<listheader label="Notifier" sortAscending="${sortAcs}" sortDescending="${sortDsc}"/>
+					</listhead>
+					<listitem forEach="${notifiersList}" value="${each.value}">
+						<listcell label="${each.label}"/>
+					</listitem>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="projectnotifylist-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/user.gif"/>
+					<label value="Notification users:"/>
+				</hbox>
+				<listbox id="projectnotifyuserlist" checkmark="true" multiple="true" rows="4">
+					<listhead>
+						<listheader label="Notify Users" sortAscending="${sortAcs}" sortDescending="${sortDsc}"/>
+					</listhead>
+					<listitem forEach="${notifyUserList}" value="${each.value}">
+						<listcell label="${each.label}"/>
+					</listitem>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="projectnotifyuserlist-tip"/>
+				<hbox>
+					<image src="/img/log.gif"/>
+					<label value="Log level:"/>
+				</hbox>
+				<listbox id="projectloglevel" mold="select" rows="1">
+					<listitem label="brief"/>
+					<listitem label="normal" selected="true"/>
+					<listitem label="verbose"/>
+					<listitem label="debug"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="projectloglevel-tip"/>
+			</row>
+			<row spans="1,4,1">
+				<hbox>
+					<image src="/img/number.gif"/>
+					<label value="Variables:"/>
+				</hbox>
+				<hbox>
+					<listbox id="projectvariablelist" rows="4">
+						<listhead>
+							<listheader width="200px" label="Variable"/>
+							<listheader width="200px" label="Value"/>
+							<listheader width="20px" label="X"/>
+						</listhead>
+						<listitem id="${each.name}" forEach="${projectVariableList}" value="${each.name}">
+							<listcell label="${each.name}"/>
+							<listcell label="${each.value}"/>
+							<listcell>
+								<button image="/img/delete.gif">
+								<attribute name="onClick">
+									self.parent.parent.setSelected(true);
+									deleteVariable();
+								</attribute>
+								</button>
+							</listcell>
+						</listitem>
+					</listbox>
+					<vbox>
+						<hbox>
+							<label value="Name:"/>
+							<textbox id="projvariablename" width="150px"/>
+						</hbox>
+						<hbox>
+							<label value="Value:"/>
+							<textbox id="projvariablevalue" width="150px"/>
+						</hbox>
+						<button label="Add/Modify" onClick="addVariable()"/>
+					</vbox>
+				</hbox>
+				<button image="/img/icon_help.png" tooltip="projectvariableslist-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="Create" onClick="alert(self.label)" unless="${arg.edit}"/>
+		<button label="Edit" onClick="alert(self.label)" if="${arg.edit}"/>
+		<button label="Next">
+			<attribute name="onClick">
+				String val=projectname.getValue();
+				if (val == null || val.trim().length() == 0) {
+					alert("Please define project first!");
+					return;
+				}
+				// TODO save project
+				self.parent.parent.parent.visible = false;
+				projectvcseditwin.doOverlapped();
+			</attribute>
+		</button>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
+	</hbox>
+
+</zk>

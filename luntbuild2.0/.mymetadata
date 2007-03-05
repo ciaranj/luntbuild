@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-module
   type="WEB"
-  name="luntbuild2.0"
+  name="luntbuild20"
   id="myeclipse.1171843120250"
   context-root="/luntbuild20"
   j2ee-spec="1.4"
-  archive="luntbuild2.0.war">
+  archive="luntbuild20.war">
   <attributes>
     <attribute name="webrootdir" value="/WebRoot" />
   </attributes>

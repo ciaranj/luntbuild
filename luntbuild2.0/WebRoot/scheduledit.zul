@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<popup id="schedulename-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="schedulename" width="150px" value="${arg.name}" constraint="no empty: Schedule name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="schedulename-tip"/>
+				<hbox>
+					<image src="/img/description.gif"/>
+					<label value="Description:"/>
+				</hbox>
+				<textbox id="scheduledesc" multiline="true" rows="3" width="250px" value="${arg.desc}"/>
+				<button image="/img/icon_help.png" tooltip="scheduledesc-tip"/>
+			</row>
+		</rows>
+	</grid>
+
+	<separator/>
+	<hbox>
+		<button label="Create" onClick="alert(self.label)" unless="${arg.edit}"/>
+		<button label="Edit" onClick="alert(self.label)" if="${arg.edit}"/>
+		<button label="Next">
+			<attribute name="onClick">
+				String val=schedulename.getValue();
+				if (val == null || val.trim().length() == 0) {
+					alert("Please define schedule first!");
+					return;
+				}
+				// TODO save schedule
+				self.parent.parent.parent.visible = false;
+				projectloginmappingwin.doOverlapped();
+			</attribute>
+		</button>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
+	</hbox>
+
+</zk>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<popup id="buildername-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="buildername" width="150px" value="${arg.name}" constraint="no empty: Builder name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="buildername-tip"/>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Command to run Ant:" if="${arg.type.equals(&quot;ant&quot;)}"/>
+					<label value="Command to run Maven1:" if="${arg.type.equals(&quot;maven1&quot;)}"/>
+					<label value="Command to run Maven2:" if="${arg.type.equals(&quot;maven2&quot;)}"/>
+					<label value="Build command:" if="${arg.type.equals(&quot;command&quot;)}"/>
+					<label value="Command to run NAnt:" if="${arg.type.equals(&quot;nant&quot;)}"/>
+					<label value="Command to run Rake:" if="${arg.type.equals(&quot;rake&quot;)}"/>
+				</hbox>
+				<textbox id="buildercmd" multiline="true" rows="3" width="250px" value="${arg.desc}"/>
+				<button image="/img/icon_help.png" tooltip="buildercmd-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Build script path:"/>
+				</hbox>
+				<textbox id="builderscript" width="150px" value="${arg.name}" constraint="no empty: Builder name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="builderscript-tip"/>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Build targets:"/>
+				</hbox>
+				<textbox id="buildertraget" width="150px" value="${arg.name}" constraint="no empty: Builder name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="buildertargets-tip"/>
+			</row>
+			<row spans="1,4,1">
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Build properties:"/>
+				</hbox>
+				<hbox>
+					<listbox id="builderpropertieslist" rows="4">
+						<listhead>
+							<listheader width="200px" label="Property"/>
+							<listheader width="200px" label="Value"/>
+							<listheader width="20px" label="X"/>
+						</listhead>
+						<listitem id="${each.name}" forEach="${buildPropertiesList}" value="${each.name}">
+							<listcell label="${each.name}"/>
+							<listcell label="${each.value}"/>
+							<listcell>
+								<button image="/img/delete.gif">
+								<attribute name="onClick">
+									self.parent.parent.setSelected(true);
+									deleteProperty();
+								</attribute>
+								</button>
+							</listcell>
+						</listitem>
+					</listbox>
+					<vbox>
+						<hbox>
+							<label value="Name:"/>
+							<textbox id="builderpropertyname" width="150px"/>
+						</hbox>
+						<hbox>
+							<label value="Value:"/>
+							<textbox id="builderpropertyvalue" width="150px"/>
+						</hbox>
+						<button label="Add/Modify" onClick="addProperty()"/>
+					</vbox>
+				</hbox>
+				<button image="/img/icon_help.png" tooltip="builderproperties-tip"/>
+			</row>
+			<row spans="1,4,1">
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Environment variables:"/>
+				</hbox>
+				<hbox>
+					<listbox id="builderenvlist" rows="4">
+						<listhead>
+							<listheader width="200px" label="Env. Variable"/>
+							<listheader width="200px" label="Value"/>
+							<listheader width="20px" label="X"/>
+						</listhead>
+						<listitem id="${each.name}" forEach="${buildEnvList}" value="${each.name}">
+							<listcell label="${each.name}"/>
+							<listcell label="${each.value}"/>
+							<listcell>
+								<button image="/img/delete.gif">
+								<attribute name="onClick">
+									self.parent.parent.setSelected(true);
+									deleteEnvVar();
+								</attribute>
+								</button>
+							</listcell>
+						</listitem>
+					</listbox>
+					<vbox>
+						<hbox>
+							<label value="Name:"/>
+							<textbox id="builderenvname" width="150px"/>
+						</hbox>
+						<hbox>
+							<label value="Value:"/>
+							<textbox id="builderenvvalue" width="150px"/>
+						</hbox>
+						<button label="Add/Modify" onClick="addEnvVar()"/>
+					</vbox>
+				</hbox>
+				<button image="/img/icon_help.png" tooltip="builderenvvar-tip"/>
+			</row>
+			<row spans="1,4,1">
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Build success condition:"/>
+				</hbox>
+				<textbox id="buildercondition" width="250px" value="${arg.condition}" constraint="no empty: Builder name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="buildercondition-tip"/>
+			</row>
+		</rows>
+	</grid>
+
+</zk>

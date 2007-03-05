@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<popup id="vcsname-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+
+	<tabbox id="vcstabs" style="border: 0px" width="100%" onCreate="loadVcsTabData()" onSelect="loadVcsTabData()">
+		<tabs>
+			<tab id="tab_accurev" label="AccuRev"/>
+			<tab id="tab_baseclearcase" label="Base Clearcase"/>
+			<tab id="tab_dynclearcase" label="Dynamic Clearcase"/>
+			<tab id="tab_cvs" label="Cvs" selected="true"/>
+			<tab id="tab_file" label="File System"/>
+			<tab id="tab_mks" label="Mks"/>
+			<tab id="tab_perforce" label="Perforce"/>
+			<tab id="tab_starteam" label="SterTeam"/>
+			<tab id="tab_svn" label="Svn"/>
+			<tab id="tab_svnexe" label="SvnExe"/>
+			<tab id="tab_ucmclearcase" label="Clearcase UCM"/>
+			<tab id="tab_vss" label="Visual SourceSafe"/>
+		</tabs>
+		<tabpanels>
+			<tabpanel id="accurevtab"/>
+			<tabpanel id="baseclearcasetab"/>
+			<tabpanel id="dynclearcasetab"/>
+			<tabpanel id="cvstab"/>
+			<tabpanel id="filetab"/>
+			<tabpanel id="mkstab"/>
+			<tabpanel id="perforcetab"/>
+			<tabpanel id="starteamtab"/>
+			<tabpanel id="svntab"/>
+			<tabpanel id="svnexetab"/>
+			<tabpanel id="ucmclearcasetab"/>
+			<tabpanel id="vsstab"/>
+		</tabpanels>
+		<zscript><![CDATA[
+		void loadVcsTabData() {
+		Tabpanel panel = vcstabs.getSelectedPanel();
+		if (panel != null) {
+			if (panel.getId().equals("accurevtab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/accurevpanel.zul", accurevtab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("baseclearcasetab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/baseclearcasepanel.zul", baseclearcasetab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("dynclearcasetab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/dynclearcasepanel.zul", dynclearcasetab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("cvstab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/cvspanel.zul", cvstab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("filetab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/filepanel.zul", filetab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("mkstab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/mkspanel.zul", mkstab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("perforcetab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/perforcepanel.zul", perforcetab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("starteamtab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/starteampanel.zul", starteamtab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("svntab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/svnpanel.zul", svntab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("svnexetab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/svnexepanel.zul", svnexetab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("ucmclearcasetab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/ucmclearcasepanel.zul", ucmclearcasetab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("vsstab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/vsspanel.zul", vsstab, null);
+				} else {
+				// TODO update existing
+				}
+			}
+		}
+		}
+		]]></zscript>
+	</tabbox>
+
+	<separator/>
+	<hbox>
+		<button label="Create" onClick="alert(self.label)" unless="${arg.edit}"/>
+		<button label="Edit" onClick="alert(self.label)" if="${arg.edit}"/>
+		<button label="Next">
+			<attribute name="onClick">
+				String val=vcsname.getValue();
+				if (val == null || val.trim().length() == 0) {
+					alert("Please define VCS first!");
+					return;
+				}
+				// TODO save vcs
+				self.parent.parent.parent.visible = false;
+				builderedit.doOverlapped();
+			</attribute>
+		</button>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
+	</hbox>
+
+</zk>

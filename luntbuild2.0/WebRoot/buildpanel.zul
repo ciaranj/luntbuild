@@ -32,14 +32,12 @@
 		<rows>
 			<row>
 				<toolbarbutton label="Project1" onClick=""/>
-				<combobox id="vcscombo">
-					<comboitem forEach="${vcsList}" label="${each}"
-						image="${vcsImage[forEachStatus.index]}" description="${vcsDesc[forEachStatus.index]}"/>
-				</combobox>
-				<combobox id="buildercombo">
-					<comboitem forEach="${builders}" label="${each}"
-						image="${buildersImage[forEachStatus.index]}" description="${buildersDesc[forEachStatus.index]}"/>
-				</combobox>
+				<listbox mold="select" rows="1" id="vcscombo">
+					<listitem forEach="${vcsList}" label="${each}" />
+				</listbox>
+				<listbox mold="select" rows="1" id="buildercombo">
+					<listitem forEach="${builders}" label="${each}"/>
+				</listbox>
 				<toolbarbutton label="Schedule1" onClick=""/>
 			</row>
         </rows>

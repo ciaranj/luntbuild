@@ -38,6 +38,6 @@
 	<separator/>
 	<hbox>
 		<button label="OK" onClick="alert(exportfile.value)"/>
-		<button label="Cancel" onClick="saverestore.visible = false; event.stopPropagation();"/>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
 	</hbox>
 </zk>

@@ -1,0 +1,61 @@
+class DoubleListItem {
+	String value;
+	String label;
+	public DoubleListItem(String value, String label) {
+		this.value = value;
+		this.label = label;
+	}
+	public String getValue() {return value;}
+	public String getLabel() {return label;}
+}
+class ProjectUserAccess {
+	String username;
+	boolean admin;
+	boolean builder;
+	boolean viewer;
+	public ProjectUserAccess(String username, boolean admin, boolean builder, boolean viewer) {
+		this.username = username;
+		this.admin = admin;
+		this.builder = builder;
+		this.viewer = viewer;
+	}
+	String getUsername() {return username;}
+	boolean isAdmin() {return admin;}
+	void setAdmin(boolean admin) {this.admin = admin;}
+	boolean isBuilder() {return builder;}
+	void setBuilder(boolean builder) {this.builder = builder;}
+	boolean isViewer() {return viewer;}
+	void setViewer(boolean viewer) {this.viewer = viewer;}
+}
+ArrayList usersList = new ArrayList();
+usersList.add(new ProjectUserAccess("user1", false, false, true));
+usersList.add(new ProjectUserAccess("user2", false, true, true));
+usersList.add(new ProjectUserAccess("user3", false, false, true));
+usersList.add(new ProjectUserAccess("user4", false, false, false));
+usersList.add(new ProjectUserAccess("user5", true, true, true));
+ArrayList notifiersList = new ArrayList();
+notifiersList.add(new DoubleListItem("blog", "Blog"));
+notifiersList.add(new DoubleListItem("email", "Email"));
+notifiersList.add(new DoubleListItem("msn", "MSN Messenger"));
+notifiersList.add(new DoubleListItem("jabber", "Jabber Messenger"));
+notifiersList.add(new DoubleListItem("sametime", "Sametime"));
+ArrayList notifyUserList = new ArrayList();
+notifyUserList.add(new DoubleListItem("recentlychecked", "User who cheked in code recently"));
+Comparator sortAcs = new ListitemComparator(0, true, false);
+Comparator sortDsc = new ListitemComparator(0, false, false);
+
+void addVariable() {
+	String name = projvariablename.getValue();
+	String value = projvariablevalue.getValue();
+	if (name == null || name.trim().length() == 0 ||
+		value == null || value.trim().length() == 0)
+		return;
+	Listitem li = new Listitem();
+	new Listcell(name).setParent(li);
+	new Listcell(value).setParent(li);
+	Listcell lc = new Listcell().setParent(li);
+	Button btn = new Button(null, "/img/delete.gif").setParent(lc);
+	btn.setAttribute("onClick","deleteVariable()");
+	li.setParent(projectvariablelist);
+}
+

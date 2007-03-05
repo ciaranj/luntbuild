@@ -250,6 +250,6 @@
 	<separator/>
 	<hbox>
 		<button label="Run" onClick="alert(self.label)"/>
-		<button label="Cancel" onClick="manualbuildwin.visible = false; event.stopPropagation();"/>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
 	</hbox>
 </zk>

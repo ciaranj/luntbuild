@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?component name="loginmapping" macro-uri="/loginmapping.zul"?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<popup id="vcslogin-tip" width="500px">
+		<vbox>
+			Enter the login name for the Version Control System of the current project.
+	   </vbox>
+	</popup>
+	<popup id="vcsuser-tip" width="500px">
+		<vbox>
+			Select the user you want to map to the current VCS login.
+	   </vbox>
+	</popup>
+	This page shows the mapping from VCS login to the user of the current project.
+	When Luntbuild retrieves the list of VCS users who have recently checked code into the repository,
+	it will use this mapping to identify corresponding users and send them notification email if requested.
+	If the particular VCS login is not mapped, it will automatically map to the user with the same name.
+		<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/user.gif"/>
+					<label value="VCS login:"/>
+				</hbox>
+				<textbox id="vcslogin" width="150px" value="${arg.login}"/>
+				<button image="/img/icon_help.png" tooltip="vcslogin-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/user.gif"/>
+					<label value="User:"/>
+				</hbox>
+				<listbox id="vcsuser" mold="select" rows="1">
+					<listitem label="user1"/>
+					<listitem label="user2" selected="true"/>
+					<listitem label="user3"/>
+					<listitem label="user4"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="vcsuser-tip"/>
+			</row>
+		</rows>
+	</grid>
+	<separator/>
+	<hbox>
+		<button label="Create" onClick="alert(self.label)" unless="${arg.edit}"/>
+		<button label="Edit" onClick="alert(self.label)" if="${arg.edit}"/>
+		<button label="Finish" onClick="alert(self.label)"/>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
+	</hbox>
+
+</zk>

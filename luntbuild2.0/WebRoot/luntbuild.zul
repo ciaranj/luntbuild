@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<?taglib uri="/WEB-INF/tld/web/core.dsp.tld" prefix="c" ?>
 <?page title="Luntbuild Dashboard"?>
 <?link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico"?>
 <?component name="importexport" macro-uri="/importexport.zul"?>
@@ -7,21 +8,30 @@
 <?component name="msnprefs" macro-uri="/msnprefs.zul"?>
 <?component name="jabberprefs" macro-uri="/jabberprefs.zul"?>
 <?component name="sametimeprefs" macro-uri="/sametimeprefs.zul"?>
+<?component name="templatedit" macro-uri="/templatedit.zul"?>
 <?component name="users" macro-uri="/users.zul"?>
 <?component name="selectusers" macro-uri="/selectusers.zul"?>
 <?component name="searchbuilds" macro-uri="/searchbuilds.zul"?>
 <?component name="movebuilds" macro-uri="/movebuilds.zul"?>
 <?component name="manualbuild" macro-uri="/manualbuild.zul"?>
+<?component name="projectedit" macro-uri="/projectedit.zul"?>
+<?component name="selectproject" macro-uri="/selectproject.zul"?>
+<?component name="vcsedit" macro-uri="/vcsedit.zul"?>
+<?component name="builderedit" macro-uri="/builderedit.zul"?>
+<?component name="scheduledit" macro-uri="/scheduledit.zul"?>
+<?component name="loginmapping" macro-uri="/loginmapping.zul"?>
 
 <zk
 	xmlns="http://www.zkoss.org/2005/zul"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
 <window title="Luntbuild Dashboard" border="normal">
     <style src="/css/luntbuild.css"/>
 	<caption>
+	    <label value="Version 2.0 prototype "/>
 		<toolbarbutton image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
-		<toolbarbutton label="Web Site" href="http://luntbuild.javaforge.com"/>
+		<toolbarbutton label=" Web Site " href="http://luntbuild.javaforge.com"/>
 	</caption>
     <style src="/css/luntbuild.css"/>
 
@@ -38,10 +48,10 @@
 	<menubar id="menubar" autodrop="true">
 		<menu label="Project">
 			<menupopup>
-				<menuitem label="New..." image="/img/icon_new.png" onClick="alert(self.label)"/>
-				<menuitem label="Edit..." image="/img/edit.gif" onClick="alert(self.label)"/>
-				<menuitem label="Copy..." image="/img/copy.gif" onClick="alert(self.label)"/>
-				<menuitem label="Delete..." image="/img/delete.gif" onClick="alert(self.label)"/>
+				<menuitem label="New..." image="/img/icon_new.png" onClick="projectnewwin.doOverlapped()"/>
+				<menuitem label="Edit..." image="/img/edit.gif" onClick="projecteditwin.doOverlapped()"/>
+				<menuitem label="Copy..." image="/img/copy.gif" onClick="projectcopywin.doOverlapped()"/>
+				<menuitem label="Delete..." image="/img/delete.gif" onClick="projectdeletewin.doOverlapped()"/>
 				<menuseparator/>
 				<menuitem label="Logout" image="/img/logout.png" onClick="alert(self.label)"/>
 			</menupopup>
@@ -68,17 +78,27 @@
 		</menu>
 		<menu label="Tools">
 			<menupopup>
-				<menuitem label="Save/Restore" image="/img/dirAndfile.gif" onClick="saverestore.doModal()"/>
+				<menuitem label="Save/Restore" image="/img/dirAndfile.gif" onClick="saverestore.doOverlapped()"/>
 				<menuseparator/>
 				<menuitem label="System Log" image="/img/log.gif" href="/luntbuild_log.html"/>
 				<menuseparator/>
+				<menu label="Edit Templates" image="/img/property.gif">
+					<menupopup>
+						<menuitem label="Blog" image="/img/property.gif" onClick="blogtemplatewin.doOverlapped()"/>
+						<menuitem label="Email" image="/img/property.gif" onClick="emailtemplatewin.doOverlapped()"/>
+						<menuitem label="MSN" image="/img/property.gif" onClick="msntemplatewin.doOverlapped()"/>
+						<menuitem label="Jabber" image="/img/property.gif" onClick="jabbertemplatewin.doOverlapped()"/>
+						<menuitem label="Sametime" image="/img/property.gif" onClick="sametimetemplatewin.doOverlapped()"/>
+					</menupopup>
+				</menu>
+				<menuseparator/>
 				<menu label="Properties" image="/img/property.gif">
 					<menupopup>
-						<menuitem label="General" image="/img/property.gif" onClick="generalprefswin.doModal()"/>
-						<menuitem label="Email" image="/img/property.gif" onClick="emailprefswin.doModal()"/>
-						<menuitem label="MSN" image="/img/property.gif" onClick="msnprefswin.doModal()"/>
-						<menuitem label="Jabber" image="/img/property.gif" onClick="jabberprefswin.doModal()"/>
-						<menuitem label="Sametime" image="/img/property.gif" onClick="sametimeprefswin.doModal()"/>
+						<menuitem label="General" image="/img/property.gif" onClick="generalprefswin.doOverlapped()"/>
+						<menuitem label="Email" image="/img/property.gif" onClick="emailprefswin.doOverlapped()"/>
+						<menuitem label="MSN" image="/img/property.gif" onClick="msnprefswin.doOverlapped()"/>
+						<menuitem label="Jabber" image="/img/property.gif" onClick="jabberprefswin.doOverlapped()"/>
+						<menuitem label="Sametime" image="/img/property.gif" onClick="sametimeprefswin.doOverlapped()"/>
 					</menupopup>
 				</menu>
 			</menupopup>
@@ -94,22 +114,23 @@
 		</menu>
 	</menubar>
 	<toolbar>
-		<toolbarbutton label="New" image="/img/icon_new.png" tooltip="new-tip" onClick="alert(self.label)"/>
+		<toolbarbutton label="New" image="/img/icon_new.png" tooltip="new-project-tip" onClick="projectnewwin.doOverlapped()"/>
 		<space bar="true"/>
-		<toolbarbutton label="Run" image="/img/icon_run.png" onClick="manualbuildwin.doOverlapped()"/>
-		<toolbarbutton label="Stop" image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
-		<toolbarbutton label="History" image="/img/history_builds.gif" onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
-		<toolbarbutton label="Promote" image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
+		<toolbarbutton label="Run" image="/img/icon_run.png" tooltip="run-build-tip" onClick="manualbuildwin.doOverlapped()"/>
+		<toolbarbutton label="Stop" image="/img/icon_stop.png" tooltip="stop-build-tip" onClick="confirmStopBuild()"/>
+		<toolbarbutton label="History" image="/img/history_builds.gif" tooltip="history-builds-tip"
+			onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
+		<toolbarbutton label="Promote" image="/img/move.gif" tooltip="promote-builds-tip" onClick="movebuildswin.doOverlapped()"/>
 		<space bar="true"/>
 		<toolbarbutton label="Help" image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
 	</toolbar>
 	<menupopup id="projectPopup">
-		<menuitem label="Edit..." image="/img/edit.gif"/>
-		<menuitem label="Copy..." image="/img/copy.gif"/>
+		<menuitem label="Edit..." image="/img/edit.gif" onClick="projecteditwin.doOverlapped()"/>
+		<menuitem label="Copy..." image="/img/copy.gif" onClick="projectcopywin.doOverlapped()"/>
 	</menupopup>
 	<menupopup id="schedulePopup">
 		<menuitem label="Run" image="/img/icon_run.png" onClick="manualbuildwin.doOverlapped()"/>
-		<menuitem label="Stop" image="/img/icon_stop.png"/>
+		<menuitem label="Stop" image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
 		<menuseparator/>
 		<menuitem label="History" image="/img/history_builds.gif" onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
 		<menuitem label="Search Builds..." image="/img/search.png"
@@ -121,14 +142,79 @@
 			 onClick="searchbuildswin.doOverlapped()"/>
 		<menuitem label="Promote Build..." image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
 	</menupopup>
-	<popup id="new-tip" width="150px">
-		<vbox>
-			<toolbarbutton label="Create new project."
-				href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
-		</vbox>
+	<popup id="new-project-tip" width="150px">
+		<hbox>
+			<label value="${c:l('new.project.tip')}"/>
+			<toolbarbutton image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+		</hbox>
+	</popup>
+	<popup id="run-build-tip" width="150px">
+		<hbox>
+			<label value="${c:l('run.build.tip')}"/>
+			<toolbarbutton image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+		</hbox>
+	</popup>
+	<popup id="stop-build-tip" width="150px">
+		<hbox>
+			<label value="${c:l('stop.build.tip')}"/>
+			<toolbarbutton image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+		</hbox>
+	</popup>
+	<popup id="history-builds-tip" width="150px">
+		<hbox>
+			<label value="${c:l('history.builds.tip')}"/>
+			<toolbarbutton image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+		</hbox>
+	</popup>
+	<popup id="promote-builds-tip" width="150px">
+		<hbox>
+			<label value="${c:l('promote.builds.tip')}"/>
+			<toolbarbutton image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+		</hbox>
 	</popup>
 
 <!-- Overlapped windows and modal dialogs -->
+
+	<window id="projectnewwin" title="Create new Project" width="900px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <projectedit/>
+	</window>
+
+	<window id="projecteditwin" title="Edit Project" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <projectedit edit="true"/>
+	</window>
+
+	<window id="projectdeletewin" title="Select Project to Delete" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <selectproject delete="true"/>
+	</window>
+
+	<window id="projectcopywin" title="Select Project to Copy" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <selectproject copy="true"/>
+	</window>
+
+	<window id="projectvcseditwin" title="Edit Version Control" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <vcsedit edit="${arg.edit}" project="projectname"/>
+	</window>
+
+	<window id="builderedit" title="Edit Builder" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <builderedit edit="${arg.edit}" project="${arg.projectname}"/>
+	</window>
+
+	<window id="scheduleditwin" title="Edit Schedule" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <scheduledit edit="${arg.edit}" project="${arg.projectname}"/>
+	</window>
+
+	<window id="projectloginmappingwin" title="Login Mapping" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <loginmapping edit="${arg.edit}" project="${arg.projectname}"/>
+	</window>
+
 	<window id="manualbuildwin" title="Manual build" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <manualbuild/>
@@ -164,6 +250,31 @@
 	  <users cancreate="true"/>
 	</window>
 
+	<window id="blogtemplatewin" title="Edit Blog Templates" width="750px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <templatedit type="blog"/>
+	</window>
+
+	<window id="emailtemplatewin" title="Edit Email Templates" width="750px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <templatedit type="email"/>
+	</window>
+
+	<window id="msntemplatewin" title="Edit MSN Templates" width="750px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <templatedit type="msn"/>
+	</window>
+
+	<window id="jabbertemplatewin" title="Edit Jabber Templates" width="750px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <templatedit type="jabber"/>
+	</window>
+
+	<window id="sametimetemplatewin" title="Edit Sametime Templates" width="750px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <templatedit type="sametime"/>
+	</window>
+
 	<window id="generalprefswin" title="General Preferences" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <generalprefs/>
@@ -178,12 +289,12 @@
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <msnprefs/>
 	</window>
-<!--
-	<window id="jabberprefswin" title="Jabber Preferences" mode="overlapped" width="500px"
+
+	<window id="jabberprefswin" title="Jabber Preferences" width="500px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <jabberprefs/>
 	</window>
--->
+
 	<window id="sametimeprefswin" title="Sametime Preferences" width="500px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <sametimeprefs/>
@@ -249,8 +360,8 @@
 			<tabpanels>
 				<tabpanel id="buildtab" context="schedulePopup"/>
 				<tabpanel id="historybuildstab" context="historyBuildsPopup"/>
-				<tabpanel id="projecttab"/>
-				<tabpanel id="queuetab"/>
+				<tabpanel id="projecttab" context="schedulePopup"/>
+				<tabpanel id="queuetab" context="schedulePopup"/>
 			</tabpanels>
 			<zscript><![CDATA[
 			void loadTabData() {

@@ -41,8 +41,6 @@
 		<button if="${arg.edit}" label="Edit" onClick="userwin.doOverlapped()"/>
 		<button if="${arg.copy}" label="Copy" onClick="userwin.doOverlapped()"/>
 		<button if="${arg.delete}" label="Delete" onClick="alert(self.label)"/>
-		<button if="${arg.edit}" label="Cancel" onClick="edituserwin.visible = false; event.stopPropagation();"/>
-		<button if="${arg.copy}" label="Cancel" onClick="copyuserwin.visible = false; event.stopPropagation();"/>
-		<button if="${arg.delete}" label="Cancel" onClick="deleteuserwin.visible = false; event.stopPropagation();"/>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
 	</hbox>
 </zk>

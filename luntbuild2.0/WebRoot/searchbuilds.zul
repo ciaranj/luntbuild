@@ -121,6 +121,6 @@
 	<separator/>
 	<hbox>
 		<button label="Search" onClick="alert(self.label)"/>
-		<button label="Cancel" onClick="searchbuildswin.visible = false; event.stopPropagation();"/>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
 	</hbox>
 </zk>

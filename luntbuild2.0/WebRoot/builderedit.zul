@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<tabbox id="buildertabs" style="border: 0px" width="100%" onCreate="loadBuilderTabData()" onSelect="loadBuilderTabData()">
+		<tabs>
+			<tab id="tab_ant" label="Ant" selected="true"/>
+			<tab id="tab_maven1" label="Maven1"/>
+			<tab id="tab_maven2" label="Maven2"/>
+			<tab id="tab_command" label="Command"/>
+			<tab id="tab_nant" label="NAnt"/>
+			<tab id="tab_rake" label="Rake"/>
+		</tabs>
+		<tabpanels>
+			<tabpanel id="anttab"/>
+			<tabpanel id="maven1tab"/>
+			<tabpanel id="maven2tab"/>
+			<tabpanel id="commandtab"/>
+			<tabpanel id="nanttab"/>
+			<tabpanel id="raketab"/>
+		</tabpanels>
+		<zscript><![CDATA[
+		void loadBuilderTabData() {
+		Tabpanel panel = buildertabs.getSelectedPanel();
+		HashMap args=new HashMap();
+		if (panel != null) {
+			if (panel.getId().equals("anttab")) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","ant");
+				    Executions.createComponents("/builderpanel.zul", anttab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("maven1tab")) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","maven1");
+				    Executions.createComponents("/builderpanel.zul", maven1tab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("maven2tab")) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","maven2");
+				    Executions.createComponents("/builderpanel.zul", maven2tab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("commandtab")) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","command");
+				    Executions.createComponents("/builderpanel.zul", commandtab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("nanttab")) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","nant");
+				    Executions.createComponents("/builderpanel.zul", nanttab, null);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("raketab")) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","rake");
+				    Executions.createComponents("/builderpanel.zul", raketab, null);
+				} else {
+				// TODO update existing
+				}
+			}
+		}
+		}
+		]]></zscript>
+	</tabbox>
+
+	<separator/>
+	<hbox>
+		<button label="Create" onClick="alert(self.label)" unless="${arg.edit}"/>
+		<button label="Edit" onClick="alert(self.label)" if="${arg.edit}"/>
+		<button label="Next">
+			<attribute name="onClick">
+				String val=buildername.getValue();
+				if (val == null || val.trim().length() == 0) {
+					alert("Please define builder first!");
+					return;
+				}
+				// TODO save builder
+				self.parent.parent.parent.visible = false;
+				scheduleditwin.doOverlapped();
+			</attribute>
+		</button>
+		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
+	</hbox>
+
+</zk>

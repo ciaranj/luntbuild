@@ -1,4 +1,4 @@
-#Mon Feb 26 20:24:33 MST 2007
+#Wed Feb 28 23:22:21 MST 2007
 eclipse.preferences.version=1
 encoding//WebRoot/buildpanel.zul=UTF-8
 encoding//WebRoot/emailprefs.zul=UTF-8
@@ -14,5 +14,4 @@ encoding//WebRoot/queuepanel.zul=UTF-8
 encoding//WebRoot/sametimeprefs.zul=UTF-8
 encoding//WebRoot/searchbuilds.zul=UTF-8
 encoding//WebRoot/selectusers.zul=UTF-8
-encoding//WebRoot/test.zul=UTF-8
 encoding//WebRoot/users.zul=UTF-8

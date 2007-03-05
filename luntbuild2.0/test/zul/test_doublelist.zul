@@ -1,0 +1,45 @@
+<?component name="doublelist" macro-uri="/doublelist.zul"?>
+
+<window title="double list"
+	xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:zk="http://www.zkoss.org/2005/zk">
+	<zscript>
+class DoubleListItem {
+	String value;
+	String label;
+	public DoubleListItem(String value, String label) {
+		this.value = value;
+		this.label = label;
+	}
+	public String getValue() {return value;}
+	public String getLabel() {return label;}
+}
+ArrayList srcList = new ArrayList();
+srcList.add(new DoubleListItem("Builder1", "Builder1"));
+srcList.add(new DoubleListItem("Builder2", "Builder2"));
+srcList.add(new DoubleListItem("Builder3", "Builder3"));
+srcList.add(new DoubleListItem("Builder4", "Builder4"));
+srcList.add(new DoubleListItem("Builder5", "Builder5"));
+	</zscript>
+	<doublelist id="list1" multiple="true" rows="5" lwidth="120px" srcheader="Source" dstheader="Destination" src="${srcList}"/>
+	<button label="GetResult" onClick="getResult(list1)"/>
+	<doublelist id="list2" multiple="false" rows="5" lwidth="120px" srcheader="Left" dstheader="Right" src="${srcList}"/>
+	<button label="GetResult" onClick="getResult(list2)"/>
+	<textbox multiline="true" width="300px" rows="8"/>
+	<zscript><![CDATA[
+	void getResult(ArrayList list) {
+		for (Iterator it = list.iterator(); it.hasNext();) {
+			DoubleListItem item=it.next();
+			alert(item.getValue());
+		}
+	}
+	void getResult(HtmlBasedComponent comp) {
+		List res = comp.getVariable("dstList", true);
+		if (res == null) return;
+		for (Iterator it = res.iterator(); it.hasNext();) {
+			Listitem item=it.next();
+			alert(item.getValue());
+		}
+	}
+	]]></zscript>
+</window>

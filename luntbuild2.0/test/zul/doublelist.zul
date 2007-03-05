@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+
+<hbox>
+<zscript>
+	Comparator sortAcs = new ListitemComparator(0, true, false);
+	Comparator sortDsc = new ListitemComparator(0, false, false);
+</zscript>
+<listbox id="listsrc" multiple="${arg.multiple}" width="${arg.lwidth}" rows="${arg.rows}">
+	<listhead>
+		<listheader label="${arg.srcheader}" sortAscending="${sortAcs}" sortDescending="${sortDsc}"/>
+	</listhead>
+	<listitem forEach="${arg.src}" value="${each.value}">
+		<listcell label="${each.label}"/>
+	</listitem>
+</listbox>
+<vbox>
+	<button image="/img/arrow_right.png" onClick="moveSelectedItems(listsrc, listdst, true)"/>
+	<button image="/img/arrow_left.png" onClick="moveSelectedItems(listdst, listsrc, false)"/>
+</vbox>
+<listbox id="listdst" multiple="${arg.multiple}" width="${arg.lwidth}" rows="${arg.rows}">
+	<listhead>
+		<listheader label="${arg.dstheader}" sortAscending="${sortAcs}" sortDescending="${sortDsc}"/>
+	</listhead>
+	<listitem forEach="${arg.dst}" value="${each.value}">
+		<listcell label="${each.label}"/>
+	</listitem>
+</listbox>
+<zscript><![CDATA[
+void moveSelectedItems(Listbox src, Listbox dst, boolean forward) {
+	Set selected = src.getSelectedItems();
+	ArrayList selist = new ArrayList();
+	for (Iterator it = selected.iterator(); it.hasNext();) {
+		selist.add(it.next());
+	}
+	for (int i = 0; i < selist.size(); i++) {
+		Listitem li = selist.get(i);
+		li.setParent(dst);
+		li.setSelected(false);
+	}
+	src.clearSelection();
+	dst.clearSelection();
+	if (forward)
+		self.setVariable("dstList", dst.getItems(), true);
+	else
+		self.setVariable("dstList", src.getItems(), true);
+}
+]]></zscript>
+</hbox>
+</zk>
