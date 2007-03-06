@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Clearcase view stgloc name:"/>
+				</hbox>
+				<textbox id="uccviewstgloc" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="uccviewstgloc-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Project vob tag:"/>
+				</hbox>
+				<textbox id="uccvobtag" width="250px" value="" constraint="no empty: Project vob tag cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="uccvobtag-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Explicit path for view storage:"/>
+				</hbox>
+				<textbox id="uccstoragepath" width="250px" value="" constraint="no empty: Explicit path for view storage cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="uccstoragepath-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="UCM stream name:"/>
+				</hbox>
+				<textbox id="uccstreamname" width="250px" value="" constraint="no empty: UCM stream name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="uccstreamname-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="What to build:"/>
+				</hbox>
+				<textbox id="ucctobuild" width="250px" value="&lt;latest&gt;" constraint="no empty: What to build cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="ucctobuild-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Modification detection config:"/>
+				</hbox>
+				<textbox id="uccmodconfigspec" rows="2" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="uccmodconfigspec-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Extra options when creating snapshot view:"/>
+				</hbox>
+				<textbox id="uccsnapshotviewopts" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="uccsnapshotviewopts-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Path for cleartool executable:"/>
+				</hbox>
+				<textbox id="uccpathcleartool" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="uccpathcleartool-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Quiet period:"/>
+				</hbox>
+				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
+				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+		</rows>
+	</grid>
+
+</zk>

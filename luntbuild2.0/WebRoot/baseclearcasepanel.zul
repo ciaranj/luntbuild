@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="View tag:"/>
+				</hbox>
+				<textbox id="bccviewtag" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="bccviewtag-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Clearcase view stgloc name:"/>
+				</hbox>
+				<textbox id="bccviewstgloc" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="bccviewstgloc-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Explicit path for view storage:"/>
+				</hbox>
+				<textbox id="bccstoragepath" width="250px" value="" constraint="no empty: VCS name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="bccstoragepath-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Config spec:"/>
+				</hbox>
+				<textbox id="bccconfigspec" rows="2" width="250px" value="" constraint="no empty: VCS name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="bccconfigspec-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Modification detection config:"/>
+				</hbox>
+				<textbox id="bccmodconfigspec" rows="2" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="bccmodconfigspec-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Options for mkview command:"/>
+				</hbox>
+				<textbox id="bccmkviewopts" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="bccmkviewopts-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Path for cleartool executable:"/>
+				</hbox>
+				<textbox id="bccpathcleartool" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="bccpathcleartool-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="History format parameters:"/>
+				</hbox>
+				<textbox id="bcchistoryfmt" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="bcchistoryfmt-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Quiet period:"/>
+				</hbox>
+				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
+				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+		</rows>
+	</grid>
+
+</zk>

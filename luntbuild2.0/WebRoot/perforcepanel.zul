@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Perforce port:"/>
+				</hbox>
+				<textbox id="perforceport" width="250px" value="" constraint="no empty: Perforce port cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="perforceport-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Username:"/>
+				</hbox>
+				<textbox id="perforceusername" width="250px" value="" constraint="no empty: Username cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="perforceusername-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Password:"/>
+				</hbox>
+				<textbox id="perforcepassword" width="250px" value="" constraint="no empty: Password cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="perforcepassword-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Line end:"/>
+				</hbox>
+				<radiogroup id="perforcelineend">
+					<radio label="local" selected="true"/>
+					<radio label="unix"/>
+					<radio label="mac"/>
+					<radio label="win"/>
+					<radio label="share"/>
+				</radiogroup>
+				<button image="/img/icon_help.png" tooltip="perforcelineend-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Path for p4 executable:"/>
+				</hbox>
+				<textbox id="p4executable" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="p4executable-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="P4 additional options:"/>
+				</hbox>
+				<textbox id="p4options" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="p4options-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Quiet period:"/>
+				</hbox>
+				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
+				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+		</rows>
+	</grid>
+
+</zk>

@@ -71,6 +71,10 @@
 	<!-- Configure the theme URIs -->
 	<desktop-config>
 		<theme-uri>/css/luntbuild.css</theme-uri>
+		<desktop-timeout>3600</desktop-timeout>
+		<file-check-period>5</file-check-period>
+		<processing-prompt-delay>900</processing-prompt-delay>
+		<tooltip-delay>1000</tooltip-delay>
 	</desktop-config>
 
 	<!-- Any number of preferences.

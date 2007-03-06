@@ -4,6 +4,57 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
 	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<zscript>
+class CvsModuleListItem {
+	String path;
+	String branch;
+	String label;
+	public CvsModuleListItem(String path, String branch, String label) {
+		this.path = path;
+		this.branch = branch;
+		this.label = label;
+	}
+	public String getPath() {return path;}
+	public String getBranch() {return branch;}
+	public String getLabel() {return label;}
+}
+ArrayList cvsModulesList = new ArrayList();
+cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
+	void addProperty() {
+		String path = cvsmodulepath.getValue();
+		String branch = cvsmodulebranch.getValue();
+		String label = cvsmodulelabel.getValue();
+		if (path == null || path.trim().length() == 0 ||
+			branch == null || branch.trim().length() == 0 ||
+			label == null || label.trim().length() == 0)
+			return;
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(path).setParent(li);
+		new Listcell(branch).setParent(li);
+		new Listcell(label).setParent(li);
+		Listcell lc = new Listcell();
+		Button btn = new Button(null, "/img/delete.gif");
+		// TODO create custom attributes
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deleteProperty();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		li.setParent(cvsmoduleslist);
+	}
+	void deleteCvsModule() {
+		Listitem item = cvsmoduleslist.getSelectedItem();
+		if (item != null) item.detach();
+	}
+
+</zscript>
 	<grid>
 		<columns>
 			<column/>
@@ -16,10 +67,132 @@
 					<image src="/img/name.gif"/>
 					<label value="Name:"/>
 				</hbox>
-				<textbox id="vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
 				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Cvs root:"/>
+				</hbox>
+				<textbox id="cvsroot" width="250px" value="" constraint="no empty: CVS root cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="cvsroot-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Cvs password:"/>
+				</hbox>
+				<textbox id="cvspassword" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="cvspassword-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Is cygwin cvs?:"/>
+				</hbox>
+				<radiogroup id="cvscygwin">
+					<radio label="Yes"/>
+					<radio label="No" selected="true"/>
+				</radiogroup>
+				<button image="/img/icon_help.png" tooltip="cvscygwin-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Disable '-S' option for log command?:"/>
+				</hbox>
+				<radiogroup id="cvssoption">
+					<radio label="Yes"/>
+					<radio label="No" selected="true"/>
+				</radiogroup>
+				<button image="/img/icon_help.png" tooltip="cvssoption-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Disable history command?:"/>
+				</hbox>
+				<radiogroup id="cvshistory">
+					<radio label="Yes"/>
+					<radio label="No" selected="true"/>
+				</radiogroup>
+				<button image="/img/icon_help.png" tooltip="cvshistory-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Path for cvs executable:"/>
+				</hbox>
+				<textbox id="cvsexecutable" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="cvsexecutable-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Cvs additional options:"/>
+				</hbox>
+				<textbox id="cvsoptions" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="cvsoptions-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Quiet period:"/>
+				</hbox>
+				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
+				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+			<row spans="2,1">
+				<groupbox mold="3d" open="true">
+					<caption label="Modules"/>
+					<vbox>
+						<listbox id="cvsmoduleslist" rows="2">
+							<listhead>
+								<listheader width="250px" label="Source path"/>
+								<listheader width="150px" label="Branch"/>
+								<listheader width="150px" label="Label"/>
+								<listheader width="20px" label="X"/>
+							</listhead>
+							<listitem forEach="${cvsModulesList}" value="${each.path}">
+								<listcell label="${each.path}"/>
+								<listcell label="${each.branch}"/>
+								<listcell label="${each.label}"/>
+								<listcell>
+									<button image="/img/delete.gif">
+									<attribute name="onClick">
+										self.parent.parent.setSelected(true);
+										deleteCvsModule();
+									</attribute>
+									</button>
+								</listcell>
+							</listitem>
+						</listbox>
+						<grid>
+							<columns>
+								<column/>
+								<column/>
+							</columns>
+							<rows>
+								<row>
+									<label value="Source path:"/>
+									<textbox id="cvsmodulepath" width="150px"/>
+								</row>
+								<row>
+									<label value="Branch:"/>
+									<textbox id="cvsmodulebranch" width="150px"/>
+								</row>
+								<row>
+									<label value="Label:"/>
+									<textbox id="cvsmodulelabel" width="150px"/>
+								</row>
+							</rows>
+						</grid>
+						<button label="Add/Modify" onClick="addCvsModule()"/>
+					</vbox>
+				</groupbox>
+				<button image="/img/icon_help.png" tooltip="cvsmodules-tip"/>
 			</row>
 		</rows>
 	</grid>
-
 </zk>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Sourcesafe path:"/>
+				</hbox>
+				<textbox id="vsspath" width="250px" value="" constraint="no empty: Sourcesafe path cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="vsspath-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Username:"/>
+				</hbox>
+				<textbox id="vssusername" width="250px" value="" constraint="no empty: Sourcesafe username cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="vssusername-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Password:"/>
+				</hbox>
+				<textbox id="vsspassword" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="vsspassword-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Datetime format:"/>
+				</hbox>
+				<textbox id="vssdtformat" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="vssdtformat-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Path for ss executable:"/>
+				</hbox>
+				<textbox id="vssexecutable" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="vssexecutable-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Ss.exe additional options:"/>
+				</hbox>
+				<textbox id="vssoptions" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="vssoptions-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Quiet period:"/>
+				</hbox>
+				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
+				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+		</rows>
+	</grid>
+
+</zk>

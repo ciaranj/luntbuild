@@ -22,7 +22,7 @@
 			<tab id="tab_file" label="File System"/>
 			<tab id="tab_mks" label="Mks"/>
 			<tab id="tab_perforce" label="Perforce"/>
-			<tab id="tab_starteam" label="SterTeam"/>
+			<tab id="tab_starteam" label="StarTeam"/>
 			<tab id="tab_svn" label="Svn"/>
 			<tab id="tab_svnexe" label="SvnExe"/>
 			<tab id="tab_ucmclearcase" label="Clearcase UCM"/>
@@ -45,76 +45,89 @@
 		<zscript><![CDATA[
 		void loadVcsTabData() {
 		Tabpanel panel = vcstabs.getSelectedPanel();
+		HashMap args=new HashMap();
 		if (panel != null) {
 			if (panel.getId().equals("accurevtab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/accurevpanel.zul", accurevtab, null);
+					args.put("type","accurev");
+				    Executions.createComponents("/accurevpanel.zul", accurevtab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("baseclearcasetab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/baseclearcasepanel.zul", baseclearcasetab, null);
+					args.put("type","baseclearcase");
+				    Executions.createComponents("/baseclearcasepanel.zul", baseclearcasetab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("dynclearcasetab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/dynclearcasepanel.zul", dynclearcasetab, null);
+					args.put("type","dynclearcase");
+				    Executions.createComponents("/dynclearcasepanel.zul", dynclearcasetab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("cvstab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/cvspanel.zul", cvstab, null);
+					args.put("type","cvs");
+				    Executions.createComponents("/cvspanel.zul", cvstab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("filetab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/filepanel.zul", filetab, null);
+					args.put("type","file");
+				    Executions.createComponents("/filepanel.zul", filetab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("mkstab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/mkspanel.zul", mkstab, null);
+					args.put("type","mks");
+				    Executions.createComponents("/mkspanel.zul", mkstab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("perforcetab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/perforcepanel.zul", perforcetab, null);
+					args.put("type","perforce");
+				    Executions.createComponents("/perforcepanel.zul", perforcetab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("starteamtab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/starteampanel.zul", starteamtab, null);
+					args.put("type","starteam");
+				    Executions.createComponents("/starteampanel.zul", starteamtab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("svntab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/svnpanel.zul", svntab, null);
+					args.put("type","svn");
+				    Executions.createComponents("/svnpanel.zul", svntab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("svnexetab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/svnexepanel.zul", svnexetab, null);
+					args.put("type","svnexe");
+				    Executions.createComponents("/svnpanel.zul", svnexetab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("ucmclearcasetab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/ucmclearcasepanel.zul", ucmclearcasetab, null);
+					args.put("type","ucmclearcase");
+				    Executions.createComponents("/ucmclearcasepanel.zul", ucmclearcasetab, args);
 				} else {
 				// TODO update existing
 				}
 			} else if (panel.getId().equals("vsstab")) {
 				if (panel.getChildren().isEmpty()) {
-				    Executions.createComponents("/vsspanel.zul", vsstab, null);
+					args.put("type","vss");
+				    Executions.createComponents("/vsspanel.zul", vsstab, args);
 				} else {
 				// TODO update existing
 				}
@@ -130,17 +143,12 @@
 		<button label="Edit" onClick="alert(self.label)" if="${arg.edit}"/>
 		<button label="Next">
 			<attribute name="onClick">
-				String val=vcsname.getValue();
-				if (val == null || val.trim().length() == 0) {
-					alert("Please define VCS first!");
-					return;
-				}
 				// TODO save vcs
-				self.parent.parent.parent.visible = false;
-				builderedit.doOverlapped();
+				vcseditwin.visible = false;
+				buildereditwin.doOverlapped();
 			</attribute>
 		</button>
-		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
+		<button label="Cancel" onClick="vcseditwin.visible = false; event.stopPropagation();"/>
 	</hbox>
 
 </zk>

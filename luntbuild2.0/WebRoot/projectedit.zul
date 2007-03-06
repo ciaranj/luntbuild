@@ -244,7 +244,7 @@ Comparator sortDsc = new ListitemComparator(0, false, false);
 				}
 				// TODO save project
 				self.parent.parent.parent.visible = false;
-				projectvcseditwin.doOverlapped();
+				vcseditwin.doOverlapped();
 			</attribute>
 		</button>
 		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>

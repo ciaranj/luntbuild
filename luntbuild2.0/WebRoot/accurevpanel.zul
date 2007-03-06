@@ -16,8 +16,32 @@
 					<image src="/img/name.gif"/>
 					<label value="Name:"/>
 				</hbox>
-				<textbox id="vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
 				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="User:"/>
+				</hbox>
+				<textbox id="accurevuser" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="accurevuser-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Password:"/>
+				</hbox>
+				<textbox id="accurevpasswd" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="accurevpasswd-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Quiet period:"/>
+				</hbox>
+				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
+				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
 			</row>
 		</rows>
 	</grid>

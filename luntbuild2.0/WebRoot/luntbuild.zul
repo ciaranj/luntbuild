@@ -180,7 +180,7 @@
 	  <projectedit/>
 	</window>
 
-	<window id="projecteditwin" title="Edit Project" width="550px"
+	<window id="projecteditwin" title="Edit Project" width="900px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <projectedit edit="true"/>
 	</window>
@@ -195,22 +195,22 @@
 	  <selectproject copy="true"/>
 	</window>
 
-	<window id="projectvcseditwin" title="Edit Version Control" width="550px"
+	<window id="vcseditwin" title="Edit Version Control" width="800px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <vcsedit edit="${arg.edit}" project="projectname"/>
 	</window>
 
-	<window id="builderedit" title="Edit Builder" width="550px"
+	<window id="buildereditwin" title="Edit Builder" width="900px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <builderedit edit="${arg.edit}" project="${arg.projectname}"/>
 	</window>
 
-	<window id="scheduleditwin" title="Edit Schedule" width="550px"
+	<window id="scheduleditwin" title="Edit Schedule" width="900px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <scheduledit edit="${arg.edit}" project="${arg.projectname}"/>
 	</window>
 
-	<window id="projectloginmappingwin" title="Login Mapping" width="550px"
+	<window id="loginmappingwin" title="Login Mapping" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <loginmapping edit="${arg.edit}" project="${arg.projectname}"/>
 	</window>

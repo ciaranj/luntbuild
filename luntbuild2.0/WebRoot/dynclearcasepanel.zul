@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="View tag:"/>
+				</hbox>
+				<textbox id="dccviewtag" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="dccviewtag-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Clearcase view stgloc name:"/>
+				</hbox>
+				<textbox id="dccviewstgloc" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="dccviewstgloc-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Explicit path for view storage:"/>
+				</hbox>
+				<textbox id="dccstoragepath" width="250px" value="" constraint="no empty: View storage path cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="dccstoragepath-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Config spec:"/>
+				</hbox>
+				<textbox id="dccconfigspec" rows="2" width="250px" value="" constraint="no empty: Config spec cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="dccconfigspec-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Modification detection config:"/>
+				</hbox>
+				<textbox id="dccmodconfigspec" rows="2" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="dccmodconfigspec-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Options for mkview command:"/>
+				</hbox>
+				<textbox id="dccmkviewopts" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="dccmkviewopts-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Path for cleartool executable:"/>
+				</hbox>
+				<textbox id="dccpathcleartool" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="dccpathcleartool-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="History format parameters:"/>
+				</hbox>
+				<textbox id="dcchistoryfmt" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="dcchistoryfmt-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="MVFS path:"/>
+				</hbox>
+				<textbox id="dccmvfspath" width="250px" value="" constraint="no empty: MVFS path cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="dccmvfspath-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Project path:"/>
+				</hbox>
+				<textbox id="dccprojectpath" width="250px" value="" constraint="no empty: Project path cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="dccprojectpath-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Quiet period:"/>
+				</hbox>
+				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
+				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+		</rows>
+	</grid>
+
+</zk>

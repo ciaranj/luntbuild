@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Repository url base:"/>
+				</hbox>
+				<textbox id="${arg.type}urlbase" width="250px" value="" constraint="no empty: Repository url base cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="svnurlbase-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Directory for trunk:"/>
+				</hbox>
+				<textbox id="${arg.type}trunk" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="svntrunk-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Directory for branches:"/>
+				</hbox>
+				<textbox id="${arg.type}branch" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="svnbranch-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Directory for tags:"/>
+				</hbox>
+				<textbox id="${arg.type}tags" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="svntags-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Username:"/>
+				</hbox>
+				<textbox id="${arg.type}username" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="svnusername-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Password:"/>
+				</hbox>
+				<textbox id="${arg.type}password" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="svnpassword-tip"/>
+			</row>
+			<row if="${arg.type eq &quot;svnexe&quot;}">
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Path for svn executable:"/>
+				</hbox>
+				<textbox id="svnexecutable" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="svnexecutable-tip"/>
+			</row>
+			<row if="${arg.type eq &quot;svnexe&quot;}">
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Svn additional options:"/>
+				</hbox>
+				<textbox id="svnexeoptions" width="250px" value=""/>
+				<button image="/img/icon_help.png" tooltip="svnexeoptions-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/property.gif"/>
+					<label value="Quiet period:"/>
+				</hbox>
+				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
+				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+		</rows>
+	</grid>
+
+</zk>
