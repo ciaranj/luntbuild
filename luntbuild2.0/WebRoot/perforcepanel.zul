@@ -4,6 +4,55 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
 	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<zscript>
+class P4ModuleListItem {
+	String depotpath;
+	String label;
+	String clientpath;
+	public P4ModuleListItem(String depotpath, String label, String clientpath) {
+		this.depotpath = depotpath;
+		this.label = label;
+		this.clientpath = clientpath;
+	}
+	public String getDepotpath() {return depotpath;}
+	public String getLabel() {return label;}
+	public String getClientpath() {return clientpath;}
+}
+ArrayList p4ModulesList = new ArrayList();
+p4ModulesList.add(new P4ModuleListItem("mydepotpath", "mylabel", "myclientpath"));
+	void addPerforceModule() {
+		String depotpath = p4moduledepotpath.getValue();
+		String label = p4modulelabel.getValue();
+		String clientpath = p4moduleclientpath.getValue();
+		if (depotpath == null || depotpath.trim().length() == 0 ||
+			clientpath == null || clientpath.trim().length() == 0) return;
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(depotpath).setParent(li);
+		new Listcell(label).setParent(li);
+		new Listcell(clientpath).setParent(li);
+		Listcell lc = new Listcell();
+		Button btn = new Button(null, "/img/trash.png");
+		// TODO create custom attributes
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deletePerforceModule();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		li.setParent(p4moduleslist);
+	}
+	void deletePerforceModule() {
+		Listitem item = p4moduleslist.getSelectedItem();
+		if (item != null) item.detach();
+	}
+
+</zscript>
 	<grid>
 		<columns>
 			<column/>
@@ -80,6 +129,56 @@
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+			<row spans="2,1">
+				<groupbox mold="3d" open="true">
+					<caption label="Modules"/>
+					<vbox>
+						<listbox id="p4moduleslist" rows="2">
+							<listhead>
+								<listheader width="250px" label="Depot path"/>
+								<listheader width="150px" label="Label"/>
+								<listheader width="150px" label="Client path"/>
+								<listheader width="20px" label="X"/>
+							</listhead>
+							<listitem forEach="${p4ModulesList}" value="${each.depotpath}">
+								<listcell label="${each.depotpath}"/>
+								<listcell label="${each.label}"/>
+								<listcell label="${each.clientpath}"/>
+								<listcell>
+									<button image="/img/trash.png">
+									<attribute name="onClick">
+										self.parent.parent.setSelected(true);
+										deletePerforceModule();
+									</attribute>
+									</button>
+								</listcell>
+							</listitem>
+						</listbox>
+						<grid>
+							<columns>
+								<column/>
+								<column/>
+							</columns>
+							<rows>
+								<row>
+									<label value="Depot path:"/>
+									<textbox id="p4moduledepotpath" width="150px" constraint="no empty: depot path cannot be empty"/>
+								</row>
+								<row>
+									<label value="Label:"/>
+									<textbox id="p4modulelabel" width="150px"/>
+								</row>
+								<row>
+									<label value="Client path:"/>
+									<textbox id="p4moduleclientpath" width="150px" constraint="no empty: client path cannot be empty"/>
+								</row>
+							</rows>
+						</grid>
+						<button label="Add" onClick="addPerforceModule()"/>
+					</vbox>
+				</groupbox>
+				<button image="/img/icon_help.png" tooltip="p4modules-tip"/>
 			</row>
 		</rows>
 	</grid>

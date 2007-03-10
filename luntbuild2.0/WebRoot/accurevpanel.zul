@@ -4,6 +4,66 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
 	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<zscript>
+class AccurevModuleListItem {
+	String path;
+	String depot;
+	String label;
+	String backing;
+	String build;
+	public AccurevModuleListItem(String path, String label, String depot, String backing, String build) {
+		this.path = path;
+		this.depot = depot;
+		this.label = label;
+		this.backing = backing;
+		this.build = build;
+	}
+	public String getPath() {return path;}
+	public String getDepot() {return depot;}
+	public String getLabel() {return label;}
+	public String getBacking() {return backing;}
+	public String getBuild() {return build;}
+}
+ArrayList accurevModulesList = new ArrayList();
+accurevModulesList.add(new AccurevModuleListItem("mymodule", "mylabel", "mydepot", "mybacking", "mybuild"));
+	void addAccurevModule() {
+		String path = accurevmodulepath.getValue();
+		String label = accurevmodulelabel.getValue();
+		String depot = accurevmoduledepot.getValue();
+		String backing = accurevmodulebacking.getValue();
+		String build = accurevmodulebuild.getValue();
+		if (depot == null || depot.trim().length() == 0 ||
+			backing == null || backing.trim().length() == 0 ||
+			build == null || build.trim().length() == 0) return;
+
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(path).setParent(li);
+		new Listcell(label).setParent(li);
+		new Listcell(depot).setParent(li);
+		new Listcell(backing).setParent(li);
+		new Listcell(build).setParent(li);
+		Listcell lc = new Listcell();
+		Button btn = new Button(null, "/img/trash.png");
+		// TODO create custom attributes
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deleteAccurevModule();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		li.setParent(accurevmoduleslist);
+	}
+	void deleteAccurevModule() {
+		Listitem item = accurevmoduleslist.getSelectedItem();
+		if (item != null) item.detach();
+	}
+</zscript>
 	<grid>
 		<columns>
 			<column/>
@@ -42,6 +102,66 @@
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+			<row spans="2,1">
+				<groupbox mold="3d" open="true">
+					<caption label="Modules"/>
+					<vbox>
+						<listbox id="accurevmoduleslist" rows="2">
+							<listhead>
+								<listheader width="200px" label="Module path"/>
+								<listheader width="100px" label="Label"/>
+								<listheader width="100px" label="Depot"/>
+								<listheader width="100px" label="Backing stream"/>
+								<listheader width="100px" label="Build stream"/>
+								<listheader width="20px" label="X"/>
+							</listhead>
+							<listitem forEach="${accurevModulesList}" value="${each.path}">
+								<listcell label="${each.path}"/>
+								<listcell label="${each.label}"/>
+								<listcell label="${each.depot}"/>
+								<listcell label="${each.backing}"/>
+								<listcell label="${each.build}"/>
+								<listcell>
+									<button image="/img/trash.png">
+									<attribute name="onClick">
+										self.parent.parent.setSelected(true);
+										deleteAccurevModule();
+									</attribute>
+									</button>
+								</listcell>
+							</listitem>
+						</listbox>
+						<grid>
+							<columns>
+								<column/>
+								<column/>
+								<column/>
+								<column/>
+							</columns>
+							<rows>
+								<row>
+									<label value="Module path:"/>
+									<textbox id="accurevmodulepath" width="150px"/>
+									<label value="Label:"/>
+									<textbox id="accurevmodulelabel" width="150px"/>
+								</row>
+								<row>
+									<label value="Depot:"/>
+									<textbox id="accurevmoduledepot" width="150px" constraint="no empty: depot cannot be empty"/>
+									<label value="Backing stream:"/>
+									<textbox id="accurevmodulebacking" width="150px" constraint="no empty: backing stream cannot be empty"/>
+								</row>
+								<row>
+									<label value="Build stream:"/>
+									<textbox id="accurevmodulebuild" width="150px"  constraint="no empty: build stream cannot be empty"/>
+								</row>
+							</rows>
+						</grid>
+						<button label="Add" onClick="addAccurevModule()"/>
+					</vbox>
+				</groupbox>
+				<button image="/img/icon_help.png" tooltip="accurevmodules-tip"/>
 			</row>
 		</rows>
 	</grid>

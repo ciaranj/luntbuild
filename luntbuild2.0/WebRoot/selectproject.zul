@@ -6,6 +6,21 @@
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
 	xmlns:h="http://www.w3.org/1999/xhtml">
 
+	<zscript>
+		projects = new String[] {"Project1", "Project2", "Project3", "Project4", "Project5"};
+		projectsdesc = new String[] {"Project1 Description", "Project2 Description", "Project3 Description",
+			"Project4 Description", "Project5 Description"};
+	</zscript>
+	<listbox mold="paging" pageSize="5">
+		<listhead>
+			<listheader label="Name" sort="auto"/>
+			<listheader label="Description" sort="auto"/>
+		</listhead>
+		<listitem  forEach="${projects}">
+			<listcell label="${each}"/>
+			<listcell label="${projectsdesc[forEachStatus.index]}"/>
+		</listitem>
+	</listbox>
 	<separator/>
 	<hbox>
 		<button if="${arg.copy}" label="Copy" onClick="projectcopywin.doOverlapped()"/>

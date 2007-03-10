@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?component name="testcalendar" macro-uri="/test_calendar.zul"?>
+<zk
+	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+<window title="Test Calendar" border="normal">
+
+	<button label="Test Calendar" onClick="testcalendarwin.doOverlapped()"/>
+	<window id="testcalendarwin" title="Test Calendar" width="550px"
+	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
+	  <testcalendar/>
+	</window>
+</window>
+</zk>

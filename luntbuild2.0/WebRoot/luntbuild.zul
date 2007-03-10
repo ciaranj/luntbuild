@@ -31,7 +31,7 @@
 	<caption>
 	    <label value="Version 2.0 prototype "/>
 		<toolbarbutton image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
-		<toolbarbutton label=" Web Site " href="http://luntbuild.javaforge.com"/>
+		<toolbarbutton image="/img/home.gif" href="http://luntbuild.javaforge.com"/>
 	</caption>
     <style src="/css/luntbuild.css"/>
 

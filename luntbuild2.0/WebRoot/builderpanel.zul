@@ -30,7 +30,7 @@ buildPropertiesList.add(new VariableListItem("buildVersion", "${build.version}")
 		new Listcell(name).setParent(li);
 		new Listcell(value).setParent(li);
 		Listcell lc = new Listcell();
-		Button btn = new Button(null, "/img/delete.gif");
+		Button btn = new Button(null, "/img/trash.png");
 		// TODO create custom attributes
 		btn.addEventListener(Events.ON_CLICK,
 			new EventListener() {
@@ -65,7 +65,7 @@ buildEnvList.add(new VariableListItem("MY_BUILD_VERSION", "${build.version}"));
 		new Listcell(name).setParent(li);
 		new Listcell(value).setParent(li);
 		Listcell lc = new Listcell();
-		Button btn = new Button(null, "/img/delete.gif");
+		Button btn = new Button(null, "/img/trash.png");
 		// TODO create custom attributes
 		btn.addEventListener(Events.ON_CLICK,
 			new EventListener() {
@@ -162,7 +162,7 @@ buildEnvList.add(new VariableListItem("MY_BUILD_VERSION", "${build.version}"));
 							<listcell label="${each.name}"/>
 							<listcell label="${each.value}"/>
 							<listcell>
-								<button image="/img/delete.gif">
+								<button image="/img/trash.png">
 								<custom-attributes
 									builderpropertynameid="${arg.type}builderpropertyname"
 									builderpropertyvalueid="${arg.type}builderpropertyvalue"
@@ -184,7 +184,7 @@ buildEnvList.add(new VariableListItem("MY_BUILD_VERSION", "${build.version}"));
 							<label value="Value:"/>
 							<textbox id="${arg.type}builderpropertyvalue" width="150px"/>
 						</hbox>
-						<button label="Add/Modify" onClick="addProperty()">
+						<button label="Add" onClick="addProperty()">
 							<custom-attributes
 								builderpropertynameid="${arg.type}builderpropertyname"
 								builderpropertyvalueid="${arg.type}builderpropertyvalue"
@@ -210,7 +210,7 @@ buildEnvList.add(new VariableListItem("MY_BUILD_VERSION", "${build.version}"));
 							<listcell label="${each.name}"/>
 							<listcell label="${each.value}"/>
 							<listcell>
-								<button image="/img/delete.gif">
+								<button image="/img/trash.png">
 								<custom-attributes
 									builderenvnameid="${arg.type}builderenvname"
 									builderenvvalueid="${arg.type}builderenvvalue"
@@ -232,7 +232,7 @@ buildEnvList.add(new VariableListItem("MY_BUILD_VERSION", "${build.version}"));
 							<label value="Value:"/>
 							<textbox id="${arg.type}builderenvvalue" width="150px"/>
 						</hbox>
-						<button label="Add/Modify" onClick="addEnvVar()">
+						<button label="Add" onClick="addEnvVar()">
 							<custom-attributes
 								builderenvnameid="${arg.type}builderenvname"
 								builderenvvalueid="${arg.type}builderenvvalue"

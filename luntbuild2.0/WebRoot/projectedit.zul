@@ -82,7 +82,7 @@ Comparator sortDsc = new ListitemComparator(0, false, false);
 		new Listcell(name).setParent(li);
 		new Listcell(value).setParent(li);
 		Listcell lc = new Listcell();
-		Button btn = new Button(null, "/img/delete.gif");
+		Button btn = new Button(null, "/img/trash.png");
 		btn.addEventListener(Events.ON_CLICK,
 			new EventListener() {
 				public boolean isAsap() {return false;}
@@ -206,7 +206,7 @@ Comparator sortDsc = new ListitemComparator(0, false, false);
 							<listcell label="${each.name}"/>
 							<listcell label="${each.value}"/>
 							<listcell>
-								<button image="/img/delete.gif">
+								<button image="/img/trash.png">
 								<attribute name="onClick">
 									self.parent.parent.setSelected(true);
 									deleteVariable();
@@ -224,7 +224,7 @@ Comparator sortDsc = new ListitemComparator(0, false, false);
 							<label value="Value:"/>
 							<textbox id="projvariablevalue" width="150px"/>
 						</hbox>
-						<button label="Add/Modify" onClick="addVariable()"/>
+						<button label="Add" onClick="addVariable()"/>
 					</vbox>
 				</hbox>
 				<button image="/img/icon_help.png" tooltip="projectvariableslist-tip"/>

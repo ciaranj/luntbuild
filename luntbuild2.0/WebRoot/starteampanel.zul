@@ -4,6 +4,65 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
 	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<zscript>
+class StarteamModuleListItem {
+	String view;
+	String sourcepath;
+	String label;
+	String promotion;
+	String destinationpath;
+	public StarteamModuleListItem(String view, String sourcepath, String label, String promotion, String destinationpath) {
+		this.view = view;
+		this.sourcepath = sourcepath;
+		this.label = label;
+		this.promotion = promotion;
+		this.destinationpath = destinationpath;
+	}
+	public String getView() {return view;}
+	public String getSourcepath() {return sourcepath;}
+	public String getLabel() {return label;}
+	public String getPromotion() {return promotion;}
+	public String getDestinationpath() {return destinationpath;}
+}
+ArrayList starteamModulesList = new ArrayList();
+starteamModulesList.add(new StarteamModuleListItem("myview", "myspath", "mylabel", "mypromotion", "mydpath"));
+	void addStarteamModule() {
+		String view = starteammoduleview.getValue();
+		String sourcepath = starteammodulesourcepath.getValue();
+		String label = starteammodulelabel.getValue();
+		String promotion = starteammodulepromotion.getValue();
+		String destpath = starteammoduledestpath.getValue();
+		if (sourcepath == null || sourcepath.trim().length() == 0) return;
+
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(view).setParent(li);
+		new Listcell(sourcepath).setParent(li);
+		new Listcell(label).setParent(li);
+		new Listcell(promotion).setParent(li);
+		new Listcell(destpath).setParent(li);
+		Listcell lc = new Listcell();
+		Button btn = new Button(null, "/img/trash.png");
+		// TODO create custom attributes
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deleteStarteamModule();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		li.setParent(starteammoduleslist);
+	}
+	void deleteStarteamModule() {
+		Listitem item = starteammoduleslist.getSelectedItem();
+		if (item != null) item.detach();
+	}
+</zscript>
+
 	<grid>
 		<columns>
 			<column/>
@@ -61,6 +120,66 @@
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+			<row spans="2,1">
+				<groupbox mold="3d" open="true">
+					<caption label="Modules"/>
+					<vbox>
+						<listbox id="starteammoduleslist" rows="2">
+							<listhead>
+								<listheader width="200px" label="StarTeam view"/>
+								<listheader width="100px" label="Source path"/>
+								<listheader width="100px" label="Label"/>
+								<listheader width="100px" label="Promotion State"/>
+								<listheader width="100px" label="Destination path"/>
+								<listheader width="20px" label="X"/>
+							</listhead>
+							<listitem forEach="${starteamModulesList}" value="${each.sourcepath}">
+								<listcell label="${each.view}"/>
+								<listcell label="${each.sourcepath}"/>
+								<listcell label="${each.label}"/>
+								<listcell label="${each.promotion}"/>
+								<listcell label="${each.destinationpath}"/>
+								<listcell>
+									<button image="/img/trash.png">
+									<attribute name="onClick">
+										self.parent.parent.setSelected(true);
+										deleteStarteamModule();
+									</attribute>
+									</button>
+								</listcell>
+							</listitem>
+						</listbox>
+						<grid>
+							<columns>
+								<column/>
+								<column/>
+								<column/>
+								<column/>
+							</columns>
+							<rows>
+								<row>
+									<label value="StarTeam view:"/>
+									<textbox id="starteammoduleview" width="150px"/>
+									<label value="Source path:"/>
+									<textbox id="starteammodulesourcepath" width="150px" constraint="no empty: source path cannot be empty"/>
+								</row>
+								<row>
+									<label value="Label:"/>
+									<textbox id="starteammodulelabel" width="150px"/>
+									<label value="Promotion State:"/>
+									<textbox id="starteammodulepromotion" width="150px"/>
+								</row>
+								<row>
+									<label value="Destination path:"/>
+									<textbox id="starteammoduledestpath" width="150px"/>
+								</row>
+							</rows>
+						</grid>
+						<button label="Add" onClick="addStarteamModule()"/>
+					</vbox>
+				</groupbox>
+				<button image="/img/icon_help.png" tooltip="starteammodules-tip"/>
 			</row>
 		</rows>
 	</grid>

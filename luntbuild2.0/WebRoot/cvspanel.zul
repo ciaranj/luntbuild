@@ -21,28 +21,25 @@ class CvsModuleListItem {
 }
 ArrayList cvsModulesList = new ArrayList();
 cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
-	void addProperty() {
+	void addCvsModule() {
 		String path = cvsmodulepath.getValue();
 		String branch = cvsmodulebranch.getValue();
 		String label = cvsmodulelabel.getValue();
-		if (path == null || path.trim().length() == 0 ||
-			branch == null || branch.trim().length() == 0 ||
-			label == null || label.trim().length() == 0)
-			return;
+		if (path == null || path.trim().length() == 0) return;
 		// TODO check if var name exists and modify
 		Listitem li = new Listitem();
 		new Listcell(path).setParent(li);
 		new Listcell(branch).setParent(li);
 		new Listcell(label).setParent(li);
 		Listcell lc = new Listcell();
-		Button btn = new Button(null, "/img/delete.gif");
+		Button btn = new Button(null, "/img/trash.png");
 		// TODO create custom attributes
 		btn.addEventListener(Events.ON_CLICK,
 			new EventListener() {
 				public boolean isAsap() {return false;}
 				public void onEvent(Event evt) {
 					self.getParent().getParent().setSelected(true);
-					deleteProperty();
+					deleteCvsModule();
 				}
 		});
 		btn.setParent(lc);
@@ -159,7 +156,7 @@ cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
 								<listcell label="${each.branch}"/>
 								<listcell label="${each.label}"/>
 								<listcell>
-									<button image="/img/delete.gif">
+									<button image="/img/trash.png">
 									<attribute name="onClick">
 										self.parent.parent.setSelected(true);
 										deleteCvsModule();
@@ -176,7 +173,7 @@ cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
 							<rows>
 								<row>
 									<label value="Source path:"/>
-									<textbox id="cvsmodulepath" width="150px"/>
+									<textbox id="cvsmodulepath" width="150px" constraint="no empty: CVS source path cannot be empty"/>
 								</row>
 								<row>
 									<label value="Branch:"/>
@@ -188,7 +185,7 @@ cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
 								</row>
 							</rows>
 						</grid>
-						<button label="Add/Modify" onClick="addCvsModule()"/>
+						<button label="Add" onClick="addCvsModule()"/>
 					</vbox>
 				</groupbox>
 				<button image="/img/icon_help.png" tooltip="cvsmodules-tip"/>

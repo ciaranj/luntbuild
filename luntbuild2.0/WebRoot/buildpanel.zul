@@ -95,6 +95,6 @@
 		<zscript>
 		  buildchartbar.setModel(catmodel);
 		</zscript>
-		</hbox>
+	</hbox>
 </vbox>
 </zk>

@@ -4,6 +4,62 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
 	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<zscript>
+class SvnModuleListItem {
+	String sourcepath;
+	String branch;
+	String label;
+	String destinationpath;
+	public SvnModuleListItem(String sourcepath, String branch, String label, String destinationpath) {
+		this.sourcepath = sourcepath;
+		this.branch = branch;
+		this.label = label;
+		this.destinationpath = destinationpath;
+	}
+	public String getSourcepath() {return sourcepath;}
+	public String getBranch() {return branch;}
+	public String getLabel() {return label;}
+	public String getDestinationpath() {return destinationpath;}
+}
+ArrayList svnModulesList = new ArrayList();
+svnModulesList.add(new SvnModuleListItem("myspath", "mybranch", "mylabel", "mydpath"));
+	void addSvnModule() {
+		String sourcepath = self.getFellow(self.getAttribute("svnmodulesourcepathid")).getValue();
+		String branch = self.getFellow(self.getAttribute("svnmodulebranchid")).getValue().getValue();
+		String label = self.getFellow(self.getAttribute("svnmodulelabelid")).getValue().getValue();
+		String destpath = self.getFellow(self.getAttribute("svnmoduledestpathid")).getValue().getValue();
+
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(sourcepath).setParent(li);
+		new Listcell(branch).setParent(li);
+		new Listcell(label).setParent(li);
+		new Listcell(destpath).setParent(li);
+		Listcell lc = new Listcell();
+		Button btn = new Button(null, "/img/trash.png");
+		btn.setAttribute("svnmoduleslistid", self.getAttribute("svnmoduleslistid"));
+		// TODO create custom attributes
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deleteSvnModule();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		Component comp = self.getFellow(self.getAttribute("svnmoduleslistid"));
+		li.setParent(comp);
+	}
+	void deleteSvnModule() {
+		Component comp = self.getFellow(self.getAttribute("svnmoduleslistid"));
+		Listitem item = comp.getSelectedItem();
+		if (item != null) item.detach();
+	}
+</zscript>
+
 	<grid>
 		<columns>
 			<column/>
@@ -90,6 +146,70 @@
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+			<row spans="2,1">
+				<groupbox mold="3d" open="true">
+					<caption label="Modules"/>
+					<vbox>
+						<listbox id="${arg.type}moduleslist" rows="2">
+							<listhead>
+								<listheader width="200px" label="Source path"/>
+								<listheader width="100px" label="Branch"/>
+								<listheader width="100px" label="Label"/>
+								<listheader width="100px" label="Destination path"/>
+								<listheader width="20px" label="X"/>
+							</listhead>
+							<listitem forEach="${svnModulesList}" value="${each.sourcepath}">
+								<listcell label="${each.sourcepath}"/>
+								<listcell label="${each.branch}"/>
+								<listcell label="${each.label}"/>
+								<listcell label="${each.destinationpath}"/>
+								<listcell>
+									<button image="/img/trash.png">
+									<custom-attributes
+										svnmodulelistid="${arg.type}moduleslist"/>
+									<attribute name="onClick">
+										self.parent.parent.setSelected(true);
+										deleteSvnModule();
+									</attribute>
+									</button>
+								</listcell>
+							</listitem>
+						</listbox>
+						<grid>
+							<columns>
+								<column/>
+								<column/>
+								<column/>
+								<column/>
+							</columns>
+							<rows>
+								<row>
+									<label value="Source path:"/>
+									<textbox id="${arg.type}modulesourcepath" width="150px"/>
+									<label value="Branch:"/>
+									<textbox id="${arg.type}svnmodulebranch" width="150px"/>
+								</row>
+								<row>
+									<label value="Label:"/>
+									<textbox id="${arg.type}modulelabel" width="150px"/>
+									<label value="Destination path:"/>
+									<textbox id="${arg.type}moduledestpath" width="150px"/>
+								</row>
+							</rows>
+						</grid>
+						<button label="Add" onClick="addSvnModule()">
+							<custom-attributes
+								svnmodulelistid="${arg.type}moduleslist"
+								svnmodulesourcepathid="${arg.type}modulesourcepath"
+								svnsvnmodulebranchid="${arg.type}svnmodulebranch"
+								svnmodulelabelid="${arg.type}modulelabel"
+								svnmoduledestpathid="${arg.type}moduledestpath"
+								/>
+						</button>
+					</vbox>
+				</groupbox>
+				<button image="/img/icon_help.png" tooltip="svnmodules-tip"/>
 			</row>
 		</rows>
 	</grid>

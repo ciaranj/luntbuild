@@ -3,22 +3,89 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
     <vbox width="100%">
-		<html>
-			<attribute name="content"><![CDATA[<h3><center>Project Project1</center></h3>]]></attribute>
-		</html>
-		<button label="Project For" onClick="project()"/>
+	<html>
+		<attribute name="content"><![CDATA[<h3><center>Project Project1</center></h3>]]></attribute>
+	</html>
+	<hbox>
+		<button label="Copy..." image="/img/copy.gif" onClick="copyProject()"/>
+		<button label="Delete..." image="/img/delete.gif" onClick="deleteProject()"/>
 		<zscript>
-			void project() {
-			Treeitem item = projecttree.getSelectedItem();
-			if (item == null) {
-			    alert("No project selected. Please select a project!");
-				return;
-			} else {
-			    if (item.getLevel() == 0) {
-			        alert(item.getLabel());
-			    }
+			void deleteProject() {
+				Treeitem item = projecttree.getSelectedItem();
+				if (item == null) {
+				    alert("No project selected. Please select a project!");
+					return;
+				} else {
+				    if (item.getLevel() == 0) {
+				        // TODO delete project
+				    } else {
+				    	alert("No project selected. Please select a project!");
+						return;
+				    }
+				}
 			}
+			void copyProject() {
+				Treeitem item = projecttree.getSelectedItem();
+				if (item == null) {
+				    alert("No project selected. Please select a project!");
+					return;
+				} else {
+				    if (item.getLevel() == 0) {
+				    	projecteditwin.doOverlapped();
+				    } else {
+				    	alert("No project selected. Please select a project!");
+						return;
+				    }
+				}
 			}
 		</zscript>
-		</vbox>
+	</hbox>
+	<hbox>
+		<zscript>
+		  void drilldown() {
+			String areaid = event.getArea();
+			if (areaid != null) {
+				Area area = self.getFellow(areaid);
+				alert(""+area.getAttribute("entity")+": "+area.getTooltiptext());
+			}
+		  }
+		</zscript>
+		<zscript>
+		  PieModel piemodel = new SimplePieModel();
+		  piemodel.setValue("Failure", new Double(34.5));
+		  piemodel.setValue("Success", new Double(65.5));
+		</zscript>
+		<chart id="projectchart" title="Project Build Success Chart" width="250" height="200"
+			type="pie" threeD="true" fgAlpha="128" onClick="drilldown()"/>
+		<zscript>
+		  projectchart.setModel(piemodel);
+		</zscript>
+		<zscript>
+		CategoryModel catmodel = new SimpleCategoryModel();
+		catmodel.setValue("Failure", "January", new Integer(5));
+		catmodel.setValue("Failure", "February", new Integer(4));
+		catmodel.setValue("Failure", "March", new Integer(6));
+		catmodel.setValue("Success", "January", new Integer(20));
+		catmodel.setValue("Success", "February", new Integer(35));
+		catmodel.setValue("Success", "March", new Integer(40));
+		</zscript>
+		<chart id="projectchartbar" title="Last three months" width="250" height="200"
+			 type="stacked_bar" threeD="true" fgAlpha="128" onClick="drilldown()"/>
+		<zscript>
+		  projectchartbar.setModel(catmodel);
+		</zscript>
+	</hbox>
+	<tabbox mold="accordion" width="99%">
+		<tabs>
+		<tab label="Version Control"/>
+		<tab label="Builders"/>
+		<tab label="Schedules" selected="true"/>
+		</tabs>
+		<tabpanels>
+		<tabpanel>Version Control.</tabpanel>
+		<tabpanel>Builders.</tabpanel>
+		<tabpanel >Schedules.</tabpanel>
+		</tabpanels>
+	</tabbox>
+	</vbox>
 </zk>

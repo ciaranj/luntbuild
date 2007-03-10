@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<grid>
+		<columns>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+				    <calendar id="searchfromcal" onChange="searchfromin.value = searchfromcal.value"/>
+				    <datebox id="searchfromin" width="250px" onChange="searchfromcal.value = searchfromin.value"/>
+				</hbox>
+			</row>
+		</rows>
+	</grid>
+</zk>

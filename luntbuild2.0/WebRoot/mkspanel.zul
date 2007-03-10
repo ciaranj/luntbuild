@@ -4,6 +4,70 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
 	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<zscript>
+class MksModuleListItem {
+	String subproject;
+	String version;
+	String projectfile;
+	String developmentpath;
+	boolean external;
+	public MksModuleListItem(String subproject, String version, String projectfile, String developmentpath, boolean external) {
+		this.subproject = subproject;
+		this.version = version;
+		this.projectfile = projectfile;
+		this.developmentpath = developmentpath;
+		this.external = external;
+	}
+	public String getSubproject() {return subproject;}
+	public String getVersion() {return version;}
+	public String getProjectfile() {return projectfile;}
+	public String getDevelopmentpath() {return developmentpath;}
+	public boolean isExternal() {return external;}
+}
+ArrayList mksModulesList = new ArrayList();
+mksModulesList.add(new MksModuleListItem("mysubproject", "myversion", "myprojectfile", "mydevelpath", false));
+	void addMksModule() {
+		String subproject = mksmodulesubproject.getValue();
+		String version = mksmoduleversion.getValue();
+		String projectfile = mksmoduleprojectfile.getValue();
+		String develpath = mksmoduledevelpath.getValue();
+		boolean external = mksmoduleexternal.isChecked();
+		if (subproject == null || subproject.trim().length() == 0 ||
+			subproject == null || subproject.trim().length() == 0) return;
+
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(subproject).setParent(li);
+		new Listcell(version).setParent(li);
+		new Listcell(projectfile).setParent(li);
+		new Listcell(develpath).setParent(li);
+		Listcell lc = new Listcell();
+		Checkbox chk = new Checkbox();
+		chk.setChecked(external);
+		chk.setReadonly(true);
+		chk.setParent(lc);
+		lc.setParent(li);
+		lc = new Listcell();
+		Button btn = new Button(null, "/img/trash.png");
+		// TODO create custom attributes
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deleteMksModule();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		li.setParent(mksmoduleslist);
+	}
+	void deleteMksModule() {
+		Listitem item = mksmoduleslist.getSelectedItem();
+		if (item != null) item.detach();
+	}
+</zscript>
 	<grid>
 		<columns>
 			<column/>
@@ -66,6 +130,69 @@
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+			<row spans="2,1">
+				<groupbox mold="3d" open="true">
+					<caption label="Modules"/>
+					<vbox>
+						<listbox id="mksmoduleslist" rows="2">
+							<listhead>
+								<listheader width="200px" label="Subproject"/>
+								<listheader width="100px" label="Version"/>
+								<listheader width="100px" label="Project File"/>
+								<listheader width="100px" label="Development Path"/>
+								<listheader width="100px" label="External module?"/>
+								<listheader width="20px" label="X"/>
+							</listhead>
+							<listitem forEach="${mksModulesList}" value="${each.subproject}">
+								<listcell label="${each.subproject}"/>
+								<listcell label="${each.version}"/>
+								<listcell label="${each.projectfile}"/>
+								<listcell label="${each.developmentpath}"/>
+								<listcell>
+									<checkbox readonly="true" checked="${each.external}"/>
+								</listcell>
+								<listcell>
+									<button image="/img/trash.png">
+									<attribute name="onClick">
+										self.parent.parent.setSelected(true);
+										deleteMksModule();
+									</attribute>
+									</button>
+								</listcell>
+							</listitem>
+						</listbox>
+						<grid>
+							<columns>
+								<column/>
+								<column/>
+								<column/>
+								<column/>
+							</columns>
+							<rows>
+								<row>
+									<label value="Subproject:"/>
+									<textbox id="mksmodulesubproject" width="150px" constraint="no empty: subproject cannot be empty"/>
+									<label value="Version:"/>
+									<textbox id="mksmoduleversion" width="150px"/>
+								</row>
+								<row>
+									<label value="Project File:"/>
+									<textbox id="mksmoduleprojectfile" width="150px"
+										value="project.pj" constraint="no empty: project file cannot be empty"/>
+									<label value="Development Path:"/>
+									<textbox id="mksmoduledevelpath" width="150px"/>
+								</row>
+								<row>
+									<label value="External module?:"/>
+									<checkbox id="mksmoduleexternal"/>
+								</row>
+							</rows>
+						</grid>
+						<button label="Add" onClick="addMksModule()"/>
+					</vbox>
+				</groupbox>
+				<button image="/img/icon_help.png" tooltip="mksmodules-tip"/>
 			</row>
 		</rows>
 	</grid>

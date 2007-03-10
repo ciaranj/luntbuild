@@ -223,8 +223,7 @@
 						<label value="minutes"/>
 					</hbox>
 					<hbox id="atwhentobuild">
-					    <calendar id="whencal" onChange="whenin.value = whencal.value"/>
-					    <datebox id="whenin" onChange="whencal.value = whenin.value"/>
+					    <datebox id="whenin" compact="true" lenient="true"/>
 						<textbox id="whentobuildhour" width="50px"/>
 						<label value="time in hh:mm"/>
 					</hbox>

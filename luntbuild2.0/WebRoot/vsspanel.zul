@@ -4,6 +4,54 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
 	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<zscript>
+class VssModuleListItem {
+	String sourcepath;
+	String label;
+	String destinationpath;
+	public VssModuleListItem(String sourcepath, String label, String destinationpath) {
+		this.sourcepath = sourcepath;
+		this.label = label;
+		this.destinationpath = destinationpath;
+	}
+	public String getSourcepath() {return sourcepath;}
+	public String getLabel() {return label;}
+	public String getDestinationpath() {return destinationpath;}
+}
+ArrayList vssModulesList = new ArrayList();
+vssModulesList.add(new VssModuleListItem("myspath", "mylabel", "mydpath"));
+	void addVssModule() {
+		String sourcepath = vssmodulesourcepath.getValue();
+		String label = vssmodulelabel.getValue();
+		String destpath = vssmoduledestpath.getValue();
+
+		// TODO check if var name exists and modify
+		Listitem li = new Listitem();
+		new Listcell(sourcepath).setParent(li);
+		new Listcell(label).setParent(li);
+		new Listcell(destpath).setParent(li);
+		Listcell lc = new Listcell();
+		Button btn = new Button(null, "/img/trash.png");
+		// TODO create custom attributes
+		btn.addEventListener(Events.ON_CLICK,
+			new EventListener() {
+				public boolean isAsap() {return false;}
+				public void onEvent(Event evt) {
+					self.getParent().getParent().setSelected(true);
+					deleteVssModule();
+				}
+		});
+		btn.setParent(lc);
+		lc.setParent(li);
+		li.setParent(vssmoduleslist);
+	}
+	void deleteVssModule() {
+		Listitem item = vssmoduleslist.getSelectedItem();
+		if (item != null) item.detach();
+	}
+</zscript>
+
 	<grid>
 		<columns>
 			<column/>
@@ -74,6 +122,56 @@
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
+			</row>
+			<row spans="2,1">
+				<groupbox mold="3d" open="true">
+					<caption label="Modules"/>
+					<vbox>
+						<listbox id="vssmoduleslist" rows="2">
+							<listhead>
+								<listheader width="200px" label="Source path"/>
+								<listheader width="100px" label="Label"/>
+								<listheader width="100px" label="Destination path"/>
+								<listheader width="20px" label="X"/>
+							</listhead>
+							<listitem forEach="${vssModulesList}" value="${each.sourcepath}">
+								<listcell label="${each.sourcepath}"/>
+								<listcell label="${each.label}"/>
+								<listcell label="${each.destinationpath}"/>
+								<listcell>
+									<button image="/img/trash.png">
+									<attribute name="onClick">
+										self.parent.parent.setSelected(true);
+										deleteVssModule();
+									</attribute>
+									</button>
+								</listcell>
+							</listitem>
+						</listbox>
+						<grid>
+							<columns>
+								<column/>
+								<column/>
+								<column/>
+								<column/>
+							</columns>
+							<rows>
+								<row>
+									<label value="Source path:"/>
+									<textbox id="vssmodulesourcepath" width="150px" constraint="no empty: source path cannot be empty"/>
+									<label value="Label:"/>
+									<textbox id="vssmodulelabel" width="150px"/>
+								</row>
+								<row>
+									<label value="Destination path:"/>
+									<textbox id="vssmoduledestpath" width="150px"/>
+								</row>
+							</rows>
+						</grid>
+						<button label="Add" onClick="addVssModule()"/>
+					</vbox>
+				</groupbox>
+				<button image="/img/icon_help.png" tooltip="vssmodules-tip"/>
 			</row>
 		</rows>
 	</grid>

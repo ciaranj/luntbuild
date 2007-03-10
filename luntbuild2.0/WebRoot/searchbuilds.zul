@@ -71,8 +71,9 @@
 					<label value="From"/>
 				</hbox>
 				<hbox>
-				    <calendar id="searchfromcal" onChange="searchfromin.value = searchfromcal.value"/>
-				    <datebox id="searchfromin" width="250px" onChange="searchfromcal.value = searchfromin.value"/>
+				    <datebox id="searchfromin" compact="true" lenient="true"/>
+				    <textbox id="searchfrominhour" width="50px"/>
+					<label value="time in hh:mm"/>
 				</hbox>
 				<button image="/img/icon_help.png" tooltip="searchfrom-tip"/>
 			</row>
@@ -82,8 +83,9 @@
 					<label value="To"/>
 				</hbox>
 				<hbox>
-				    <calendar id="searchtocal" onChange="searchtoin.value = searchtocal.value"/>
-				    <datebox id="searchtoin" width="250px" onChange="searchtocal.value = searchtoin.value"/>
+				    <datebox id="searchtoin" compact="true" lenient="true"/>
+				    <textbox id="searchtoinhour" width="50px"/>
+					<label value="time in hh:mm"/>
 				</hbox>
 				<button image="/img/icon_help.png" tooltip="searchto-tip"/>
 			</row>
