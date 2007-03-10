@@ -1,13 +1,6 @@
 package com.luntsys.luntbuild;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,11 +14,10 @@ import winstone.Launcher;
  */
 public class StandaloneLauncher {
 
-//    private static Log logger = LogFactory.getLog(StandaloneStopper.class);
 	Launcher winstone = null;
 
     /**
-     * @param args 0 - port, [1 - stop port]
+     * @param args 0 - port, [1 - stop port] [2 - webroot]
      */
     public static void main(String[] args) {
 //        try {
@@ -43,7 +35,7 @@ public class StandaloneLauncher {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (NumberFormatException ex) {
-//                logger.warn("Failed to parse port " + args[0] + " , using 9090!");
+                System.err.println("Failed to parse port " + args[0] + " , using 9090!");
                 port = 9090;
             }
         }
@@ -54,29 +46,31 @@ public class StandaloneLauncher {
             try {
                 stopPort = Integer.parseInt(args[1]);
             } catch (NumberFormatException ex) {
-//                logger.error("Failed to parse stop port " + args[1]);
+            	System.err.println("Failed to parse stop port " + args[1]);
                 stopPort = -1;
             }
         }
         if (stopPort == -1) {
             stopPort = port + 1;
         }
-
+        String webroot = "WebRoot";
+        if (args.length > 2) {
+        	webroot = args[2];
+        }
         // Start server
         try {
             Map wargs = new HashMap();
             wargs.put("httpPort", Integer.toString(port));
-            wargs.put("webroot", "WebRoot"); // or any other command line args, eg port
+            wargs.put("webroot", webroot);
             wargs.put("controlPort", Integer.toString(stopPort));
             Launcher.initLogger(wargs);
-            Launcher winstone = new Launcher(wargs); // spawns threads, so your application doesn't block
+            Launcher winstone = new Launcher(wargs);
 
-            while (true) {
+            while (winstone.isRunning()) {
             	Thread.sleep(10000);
             }
         } catch (Throwable th) {
-//            logger.fatal("Failed to start servlet container: ");
-//            logger.debug("Failed to start servlet container: ", th);
+        	System.err.println("Failed to start servlet container: " + th.getMessage());
             System.exit(-1);
         }
     }
