@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="WebRoot/WEB-INF/classes" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="com.genuitec.eclipse.j2eedt.core.J2EE14_CONTAINER"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/bsh.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-el.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-fileupload.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/commons-io.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/dojoz.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/fckez.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/gmapsz.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/groovy.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jcommon.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jfreechart.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/jruby.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/js.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/json_simple.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/timelinez.jar"/>
@@ -23,5 +19,9 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/zkplus.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/zul.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/zweb.jar"/>
+	<classpathentry kind="lib" path="standalone/lib/activation.jar"/>
+	<classpathentry kind="lib" path="standalone/lib/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="standalone/lib/javax.servlet.jsp.jar"/>
+	<classpathentry kind="lib" path="standalone/lib/winstone.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>
