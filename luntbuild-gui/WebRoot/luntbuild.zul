@@ -26,10 +26,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-<window title="Luntbuild Dashboard" border="normal">
+<window title="${c:l('main.window.title')}" border="normal">
     <style src="/css/luntbuild.css"/>
 	<caption>
-	    <label value="Version 2.0 prototype "/>
+	    <label value="${c:l('main.window.version')}"/>
 		<toolbarbutton image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
 		<toolbarbutton image="/img/home.gif" href="http://luntbuild.javaforge.com"/>
 	</caption>
@@ -37,8 +37,9 @@
 
 	<zscript>
 		void confirmStopBuild() {
-			if (Messagebox.show("Are you sure you want to stop the build?", "Stop Build",
-					Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES) {
+			String title=org.zkoss.util.resource.Labels.getLabel("msgbox.title.stopbuild");
+			String msg=org.zkoss.util.resource.Labels.getLabel("msgbox.msg.stopbuild");
+			if (Messagebox.show(msg, title, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES) {
 				// TODO stop the build
 			}
 		}
@@ -46,101 +47,104 @@
 
 <!-- Manubar and toolbar -->
 	<menubar id="menubar" autodrop="true">
-		<menu label="Project">
+		<menu label="${c:l('menu.project')}">
 			<menupopup>
-				<menuitem label="New..." image="/img/icon_new.png" onClick="projectnewwin.doOverlapped()"/>
-				<menuitem label="Edit..." image="/img/edit.gif" onClick="projecteditwin.doOverlapped()"/>
-				<menuitem label="Copy..." image="/img/copy.gif" onClick="projectcopywin.doOverlapped()"/>
-				<menuitem label="Delete..." image="/img/delete.gif" onClick="projectdeletewin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.project.new')}" image="/img/icon_new.png" onClick="projectnewwin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.project.edit')}" image="/img/edit.gif" onClick="projecteditwin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.project.copy')}" image="/img/copy.gif" onClick="projectcopywin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.project.delete')}" image="/img/delete.gif" onClick="projectdeletewin.doOverlapped()"/>
 				<menuseparator/>
-				<menuitem label="Logout" image="/img/logout.png" onClick="alert(self.label)"/>
+				<menuitem label="${c:l('menu.project.logout')}" image="/img/logout.png" onClick="alert(self.label)"/>
 			</menupopup>
 		</menu>
-		<menu label="Build">
+		<menu label="${c:l('menu.build')}">
 			<menupopup>
-				<menuitem label="Run..." image="/img/icon_run.png" onClick="manualbuildwin.doOverlapped()"/>
-				<menuitem label="Stop..." image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
+				<menuitem label="${c:l('menu.build.run')}" image="/img/icon_run.png" onClick="manualbuildwin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.build.stop')}" image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
 				<menuseparator/>
-				<menuitem label="History Builds..." image="/img/history_builds.gif"
+				<menuitem label="${c:l('menu.build.history')}" image="/img/history_builds.gif"
 					onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
-				<menuitem label="Search Builds..." image="/img/search.png"
+				<menuitem label="${c:l('menu.build.search')}" image="/img/search.gif"
 					onClick="searchbuildswin.doOverlapped();dashboardtabs.setSelectedTab(tab_historybuilds)"/>
-				<menuitem label="Promote Builds..." image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.build.promote')}" image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
 			</menupopup>
 		</menu>
-		<menu label="Users">
+		<menu label="${c:l('menu.users')}">
 			<menupopup>
-				<menuitem label="New..." image="/img/user.gif" onClick="userwin.doOverlapped()"/>
-				<menuitem label="Edit..." image="/img/edit.gif" onClick="edituserwin.doOverlapped()"/>
-				<menuitem label="Copy..." image="/img/copy.gif" onClick="copyuserwin.doOverlapped()"/>
-				<menuitem label="Delete..." image="/img/delete.gif" onClick="deleteuserwin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.users.new')}" image="/img/user.gif" onClick="userwin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.users.edit')}" image="/img/edit.gif" onClick="edituserwin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.users.copy')}" image="/img/copy.gif" onClick="copyuserwin.doOverlapped()"/>
+				<menuitem label="${c:l('menu.users.delete')}" image="/img/delete.gif" onClick="deleteuserwin.doOverlapped()"/>
 			</menupopup>
 		</menu>
-		<menu label="Tools">
+		<menu label="${c:l('menu.tools')}">
 			<menupopup>
-				<menuitem label="Save/Restore" image="/img/dirAndfile.gif" onClick="saverestore.doOverlapped()"/>
+				<menuitem label="${c:l('menu.tools.pause')}" image="/img/pause.gif" onClick="alert(self.label)"/>
 				<menuseparator/>
-				<menuitem label="System Log" image="/img/log.gif" href="/luntbuild_log.html"/>
+				<menuitem label="${c:l('menu.tools.save')}" image="/img/dirAndfile.gif" onClick="saverestore.doOverlapped()"/>
 				<menuseparator/>
-				<menu label="Edit Templates" image="/img/property.gif">
+				<menuitem label="${c:l('menu.tools.syslog')}" image="/img/log.gif" href="/luntbuild_log.html"/>
+				<menuseparator/>
+				<menu label="${c:l('menu.tools.templates')}" image="/img/property.gif">
 					<menupopup>
-						<menuitem label="Blog" image="/img/property.gif" onClick="blogtemplatewin.doOverlapped()"/>
-						<menuitem label="Email" image="/img/property.gif" onClick="emailtemplatewin.doOverlapped()"/>
-						<menuitem label="MSN" image="/img/property.gif" onClick="msntemplatewin.doOverlapped()"/>
-						<menuitem label="Jabber" image="/img/property.gif" onClick="jabbertemplatewin.doOverlapped()"/>
-						<menuitem label="Sametime" image="/img/property.gif" onClick="sametimetemplatewin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.templates.blog')}" image="/img/property.gif" onClick="blogtemplatewin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.templates.email')}" image="/img/property.gif" onClick="emailtemplatewin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.templates.msn')}" image="/img/property.gif" onClick="msntemplatewin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.templates.jabber')}" image="/img/property.gif" onClick="jabbertemplatewin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.templates.sametime')}" image="/img/property.gif" onClick="sametimetemplatewin.doOverlapped()"/>
 					</menupopup>
 				</menu>
 				<menuseparator/>
-				<menu label="Properties" image="/img/property.gif">
+				<menu label="${c:l('menu.tools.properties')}" image="/img/property.gif">
 					<menupopup>
-						<menuitem label="General" image="/img/property.gif" onClick="generalprefswin.doOverlapped()"/>
-						<menuitem label="Email" image="/img/property.gif" onClick="emailprefswin.doOverlapped()"/>
-						<menuitem label="MSN" image="/img/property.gif" onClick="msnprefswin.doOverlapped()"/>
-						<menuitem label="Jabber" image="/img/property.gif" onClick="jabberprefswin.doOverlapped()"/>
-						<menuitem label="Sametime" image="/img/property.gif" onClick="sametimeprefswin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.properties.general')}" image="/img/property.gif" onClick="generalprefswin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.properties.email')}" image="/img/property.gif" onClick="emailprefswin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.properties.msn')}" image="/img/property.gif" onClick="msnprefswin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.properties.jabber')}" image="/img/property.gif" onClick="jabberprefswin.doOverlapped()"/>
+						<menuitem label="${c:l('menu.tools.properties.sametime')}" image="/img/property.gif" onClick="sametimeprefswin.doOverlapped()"/>
 					</menupopup>
 				</menu>
 			</menupopup>
 		</menu>
-		<menu label="Help">
+		<menu label="${c:l('menu.help')}">
 			<menupopup>
-				<menuitem label="Help Contents" image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+				<menuitem label="${c:l('menu.help.contents')}" image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
 				<menuseparator/>
-				<menuitem label="Check for Updates" image="/img/folder_update.png" href="http://www.javaforge.com/proj/doc.do?doc_id=1205"/>
+				<menuitem label="${c:l('menu.help.updates')}" image="/img/folder_update.png" href="http://www.javaforge.com/proj/doc.do?doc_id=1205"/>
 				<menuseparator/>
-				<menuitem label="About Luntbuild" image="/img/about.gif" href="http://luntbuild.javaforge.com"/>
+				<menuitem label="${c:l('menu.help.about')}" image="/img/about.gif" href="http://luntbuild.javaforge.com"/>
 			</menupopup>
 		</menu>
 	</menubar>
 	<toolbar>
-		<toolbarbutton label="New" image="/img/icon_new.png" tooltip="new-project-tip" onClick="projectnewwin.doOverlapped()"/>
+		<toolbarbutton label="${c:l('toolbar.project.new')}" image="/img/icon_new.png" tooltip="new-project-tip" onClick="projectnewwin.doOverlapped()"/>
 		<space bar="true"/>
-		<toolbarbutton label="Run" image="/img/icon_run.png" tooltip="run-build-tip" onClick="manualbuildwin.doOverlapped()"/>
-		<toolbarbutton label="Stop" image="/img/icon_stop.png" tooltip="stop-build-tip" onClick="confirmStopBuild()"/>
-		<toolbarbutton label="History" image="/img/history_builds.gif" tooltip="history-builds-tip"
+		<toolbarbutton label="${c:l('toolbar.build.run')}" image="/img/icon_run.png" tooltip="run-build-tip" onClick="manualbuildwin.doOverlapped()"/>
+		<toolbarbutton label="${c:l('toolbar.build.stop')}" image="/img/icon_stop.png" tooltip="stop-build-tip" onClick="confirmStopBuild()"/>
+		<toolbarbutton label="${c:l('toolbar.build.history')}" image="/img/history_builds.gif" tooltip="history-builds-tip"
 			onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
-		<toolbarbutton label="Promote" image="/img/move.gif" tooltip="promote-builds-tip" onClick="movebuildswin.doOverlapped()"/>
+		<toolbarbutton label="${c:l('toolbar.build.promote')}" image="/img/move.gif" tooltip="promote-builds-tip" onClick="movebuildswin.doOverlapped()"/>
 		<space bar="true"/>
-		<toolbarbutton label="Help" image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
+		<toolbarbutton label="${c:l('toolbar.help')}" image="/img/icon_help.png" href="http://luntbuild.javaforge.com/manual/guide/index.html"/>
 	</toolbar>
 	<menupopup id="projectPopup">
-		<menuitem label="Edit..." image="/img/edit.gif" onClick="projecteditwin.doOverlapped()"/>
-		<menuitem label="Copy..." image="/img/copy.gif" onClick="projectcopywin.doOverlapped()"/>
+		<menuitem label="${c:l('popup.project.edit')}" image="/img/edit.gif" onClick="projecteditwin.doOverlapped()"/>
+		<menuitem label="${c:l('popup.project.copy')}" image="/img/copy.gif" onClick="projectcopywin.doOverlapped()"/>
+		<menuitem label="${c:l('popup.project.pause')}" image="/img/pause.gif" onClick="alert(self.label)"/>
 	</menupopup>
 	<menupopup id="schedulePopup">
-		<menuitem label="Run" image="/img/icon_run.png" onClick="manualbuildwin.doOverlapped()"/>
-		<menuitem label="Stop" image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
+		<menuitem label="${c:l('popup.schedule.run')}" image="/img/icon_run.png" onClick="manualbuildwin.doOverlapped()"/>
+		<menuitem label="${c:l('popup.schedule.stop')}" image="/img/icon_stop.png" onClick="confirmStopBuild()"/>
 		<menuseparator/>
-		<menuitem label="History" image="/img/history_builds.gif" onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
-		<menuitem label="Search Builds..." image="/img/search.png"
+		<menuitem label="${c:l('popup.schedule.history')}" image="/img/history_builds.gif" onClick="dashboardtabs.setSelectedTab(tab_historybuilds)"/>
+		<menuitem label="${c:l('popup.schedule.search')}" image="/img/search.gif"
 			 onClick="searchbuildswin.doOverlapped();dashboardtabs.setSelectedTab(tab_historybuilds)"/>
-		<menuitem label="Promote Build..." image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
+		<menuitem label="${c:l('popup.schedule.promote')}" image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
 	</menupopup>
 	<menupopup id="historyBuildsPopup">
-		<menuitem label="Search Builds..." image="/img/search.png"
+		<menuitem label="${c:l('popup.history.search')}" image="/img/search.gif"
 			 onClick="searchbuildswin.doOverlapped()"/>
-		<menuitem label="Promote Build..." image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
+		<menuitem label="${c:l('popup.history.promote')}" image="/img/move.gif" onClick="movebuildswin.doOverlapped()"/>
 	</menupopup>
 	<popup id="new-project-tip" width="150px">
 		<hbox>
@@ -175,132 +179,132 @@
 
 <!-- Overlapped windows and modal dialogs -->
 
-	<window id="projectnewwin" title="Create new Project" width="900px"
+	<window id="projectnewwin" title="${c:l('window.title.newproject')}" width="900px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <projectedit/>
 	</window>
 
-	<window id="projecteditwin" title="Edit Project" width="900px"
+	<window id="projecteditwin" title="${c:l('window.title.editproject')}" width="900px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <projectedit edit="true"/>
 	</window>
 
-	<window id="projectdeletewin" title="Select Project to Delete" width="550px"
+	<window id="projectdeletewin" title="${c:l('window.title.deleteproject')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <selectproject delete="true"/>
 	</window>
 
-	<window id="projectcopywin" title="Select Project to Copy" width="550px"
+	<window id="projectcopywin" title="${c:l('window.title.copyproject')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <selectproject copy="true"/>
 	</window>
 
-	<window id="vcseditwin" title="Edit Version Control" width="800px"
+	<window id="vcseditwin" title="${c:l('window.title.editvcs')}" width="800px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <vcsedit edit="${arg.edit}" project="projectname"/>
 	</window>
 
-	<window id="buildereditwin" title="Edit Builder" width="900px"
+	<window id="buildereditwin" title="${c:l('window.title.editbuilder')}" width="900px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <builderedit edit="${arg.edit}" project="${arg.projectname}"/>
 	</window>
 
-	<window id="scheduleditwin" title="Edit Schedule" width="900px"
+	<window id="scheduleditwin" title="${c:l('window.title.editschedule')}" width="900px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <scheduledit edit="${arg.edit}" project="${arg.projectname}"/>
 	</window>
 
-	<window id="loginmappingwin" title="Login Mapping" width="550px"
+	<window id="loginmappingwin" title="${c:l('window.title.loginmapping')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <loginmapping edit="${arg.edit}" project="${arg.projectname}"/>
 	</window>
 
-	<window id="manualbuildwin" title="Manual build" width="550px"
+	<window id="manualbuildwin" title="${c:l('window.title.manualbuild')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <manualbuild/>
 	</window>
 
-	<window id="movebuildswin" title="Promote builds" width="550px"
+	<window id="movebuildswin" title="${c:l('window.title.promotebuild')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <movebuilds/>
 	</window>
 
-	<window id="searchbuildswin" title="Search builds" width="550px"
+	<window id="searchbuildswin" title="${c:l('window.title.searchbuilds')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <searchbuilds/>
 	</window>
 
-	<window id="deleteuserwin" title="Select User to Delete" width="550px"
+	<window id="deleteuserwin" title="${c:l('window.title.deleteuser')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <selectusers delete="true"/>
 	</window>
 
-	<window id="copyuserwin" title="Select User to Copy" width="550px"
+	<window id="copyuserwin" title="${c:l('window.title.copyuser')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <selectusers copy="true"/>
 	</window>
 
-	<window id="edituserwin" title="Select User to Edit" width="550px"
+	<window id="edituserwin" title="${c:l('window.title.edituser')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <selectusers edit="true"/>
 	</window>
 
-	<window id="userwin" title="New User" width="550px"
+	<window id="userwin" title="${c:l('window.title.newuser')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <users cancreate="true"/>
 	</window>
 
-	<window id="blogtemplatewin" title="Edit Blog Templates" width="750px"
+	<window id="blogtemplatewin" title="${c:l('window.title.blogtemplate')}" width="750px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <templatedit type="blog"/>
 	</window>
 
-	<window id="emailtemplatewin" title="Edit Email Templates" width="750px"
+	<window id="emailtemplatewin" title="${c:l('window.title.emailtemplate')}" width="750px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <templatedit type="email"/>
 	</window>
 
-	<window id="msntemplatewin" title="Edit MSN Templates" width="750px"
+	<window id="msntemplatewin" title="${c:l('window.title.msntemplate')}" width="750px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <templatedit type="msn"/>
 	</window>
 
-	<window id="jabbertemplatewin" title="Edit Jabber Templates" width="750px"
+	<window id="jabbertemplatewin" title="${c:l('window.title.jabbertemplate')}" width="750px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <templatedit type="jabber"/>
 	</window>
 
-	<window id="sametimetemplatewin" title="Edit Sametime Templates" width="750px"
+	<window id="sametimetemplatewin" title="${c:l('window.title.sametimetemplate')}" width="750px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <templatedit type="sametime"/>
 	</window>
 
-	<window id="generalprefswin" title="General Preferences" width="550px"
+	<window id="generalprefswin" title="${c:l('window.title.generalprefs')}" width="550px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <generalprefs/>
 	</window>
 
-	<window id="emailprefswin" title="Email Preferences" width="500px"
+	<window id="emailprefswin" title="${c:l('window.title.emailprefs')}" width="500px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <emailprefs/>
 	</window>
 
-	<window id="msnprefswin" title="MSN Preferences" width="500px"
+	<window id="msnprefswin" title="${c:l('window.title.msnprefs')}" width="500px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <msnprefs/>
 	</window>
 
-	<window id="jabberprefswin" title="Jabber Preferences" width="500px"
+	<window id="jabberprefswin" title="${c:l('window.title.jabberprefs')}" width="500px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <jabberprefs/>
 	</window>
 
-	<window id="sametimeprefswin" title="Sametime Preferences" width="500px"
+	<window id="sametimeprefswin" title="${c:l('window.title.sametimeprefs')}" width="500px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <sametimeprefs/>
 	</window>
 
-	<window id="saverestore" title="Save/Restore Luntbuild" width="500px"
+	<window id="saverestore" title="${c:l('window.title.saverestore')}" width="500px"
 	  closable="true" sizable="true" onClose="self.visible = false; event.stopPropagation();" visible="false" border="normal">
 	  <importexport/>
 	</window>
@@ -312,10 +316,10 @@
 			schedules = new String[] {"Schedule 1", "Schedule 2", "Schedule 3"};
 			stateImage = new String[] {"/img/running.gif", "/img/success.gif", "/img/failed.gif"};
 		</zscript>
-		<tree id="projecttree" style="border: 0px" width="200px" onSelect="projectTreeSelected()">
+		<tree id="projecttree" style="border: 1px" width="200px" onSelect="projectTreeSelected()">
 			<treecols sizable="false">
-				<treecol label="Schedules"/>
-				<treecol label="Status"/>
+				<treecol label="${c:l('tree.schedule.label')}"/>
+				<treecol label="${c:l('tree.schedule.status')}"/>
 			</treecols>
 			<treechildren>
 				<treeitem forEach="${projects}">
@@ -352,10 +356,10 @@
 -->
 		<tabbox id="dashboardtabs" style="border: 0px" width="100%" onCreate="loadTabData()" onSelect="loadTabData()">
 			<tabs>
-				<tab id="tab_build" label="Build"/>
-				<tab id="tab_historybuilds" label="History Builds"/>
-				<tab id="tab_project" label="Project"/>
-				<tab id="tab_queue" label="Queue"/>
+				<tab id="tab_build" label="${c:l('tab.main.build')}"/>
+				<tab id="tab_historybuilds" label="${c:l('tab.main.history')}"/>
+				<tab id="tab_project" label="${c:l('tab.main.project')}"/>
+				<tab id="tab_queue" label="${c:l('tab.main.queue')}"/>
 			</tabs>
 			<tabpanels>
 				<tabpanel id="buildtab" context="schedulePopup"/>

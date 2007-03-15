@@ -75,17 +75,52 @@
 		  projectchartbar.setModel(catmodel);
 		</zscript>
 	</hbox>
-	<tabbox mold="accordion" width="99%">
+	<tabbox id="projecttabs" mold="accordion" width="99%" onCreate="loadProjectTabData()" onSelect="loadProjectTabData()">
 		<tabs>
-		<tab label="Version Control"/>
-		<tab label="Builders"/>
-		<tab label="Schedules" selected="true"/>
+		<tab id="tab_projectvcs" label="Version Control"/>
+		<tab id="tab_projectbuilders" label="Builders"/>
+		<tab id="tab_projectschedules" label="Schedules" selected="true"/>
+		<tab id="tab_projectloginmapping" label="Login Mapping"/>
 		</tabs>
 		<tabpanels>
-		<tabpanel>Version Control.</tabpanel>
-		<tabpanel>Builders.</tabpanel>
-		<tabpanel >Schedules.</tabpanel>
+		<tabpanel id="projectvcstab"/>
+		<tabpanel id="projectbuilderstab"/>
+		<tabpanel id="projectschedulestab"/>
+		<tabpanel id="projectloginmappingtab"/>
 		</tabpanels>
+		<zscript><![CDATA[
+		void loadProjectTabData() {
+		Tabpanel panel = projecttabs.getSelectedPanel();
+		HashMap args=new HashMap();
+		if (panel != null) {
+			if (panel.getId().equals("projectvcstab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/projectvcspanel.zul", projectvcstab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("projectbuilderstab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/projectbuilderspanel.zul", projectbuilderstab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("projectschedulestab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/projectschedulespanel.zul", projectschedulestab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("projectloginmappingtab")) {
+				if (panel.getChildren().isEmpty()) {
+				    Executions.createComponents("/projectloginmappingpanel.zul", projectloginmappingtab, args);
+				} else {
+				// TODO update existing
+				}
+			}
+		}
+		}
+		]]></zscript>
 	</tabbox>
 	</vbox>
 </zk>

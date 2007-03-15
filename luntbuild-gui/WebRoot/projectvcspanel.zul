@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<tabbox id="projectvcstabs" style="border: 0px" width="100%" onCreate="loadProjectVcsTabData()" onSelect="loadProjectVcsTabData()">
+		<tabs>
+			<tab id="tab_accurev" label="AccuRev" visible="false"/>
+			<tab id="tab_baseclearcase" label="Base Clearcase" visible="false"/>
+			<tab id="tab_dynclearcase" label="Dynamic Clearcase" visible="false"/>
+			<tab id="tab_cvs" label="Cvs" selected="true"/>
+			<tab id="tab_file" label="File System" visible="false"/>
+			<tab id="tab_mks" label="Mks" visible="false"/>
+			<tab id="tab_perforce" label="Perforce" visible="false"/>
+			<tab id="tab_starteam" label="StarTeam" visible="false"/>
+			<tab id="tab_svn" label="Svn"/>
+			<tab id="tab_svnexe" label="SvnExe" visible="false"/>
+			<tab id="tab_ucmclearcase" label="Clearcase UCM" visible="false"/>
+			<tab id="tab_vss" label="Visual SourceSafe" visible="false"/>
+		</tabs>
+		<tabpanels>
+			<tabpanel id="accurevtab"/>
+			<tabpanel id="baseclearcasetab"/>
+			<tabpanel id="dynclearcasetab"/>
+			<tabpanel id="cvstab"/>
+			<tabpanel id="filetab"/>
+			<tabpanel id="mkstab"/>
+			<tabpanel id="perforcetab"/>
+			<tabpanel id="starteamtab"/>
+			<tabpanel id="svntab"/>
+			<tabpanel id="svnexetab"/>
+			<tabpanel id="ucmclearcasetab"/>
+			<tabpanel id="vsstab"/>
+		</tabpanels>
+		<zscript><![CDATA[
+		void loadProjectVcsTabData() {
+		// TODO set tabpanels visibility dynamically based on project info
+		Tabpanel panel = projectvcstabs.getSelectedPanel();
+		HashMap args=new HashMap();
+		if (panel != null) {
+			if (panel.getId().equals("accurevtab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","accurev");
+				    Executions.createComponents("/accurevpanel.zul", accurevtab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("baseclearcasetab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","baseclearcase");
+				    Executions.createComponents("/baseclearcasepanel.zul", baseclearcasetab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("dynclearcasetab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","dynclearcase");
+				    Executions.createComponents("/dynclearcasepanel.zul", dynclearcasetab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("cvstab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","cvs");
+				    Executions.createComponents("/cvspanel.zul", cvstab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("filetab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","file");
+				    Executions.createComponents("/filepanel.zul", filetab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("mkstab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","mks");
+				    Executions.createComponents("/mkspanel.zul", mkstab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("perforcetab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","perforce");
+				    Executions.createComponents("/perforcepanel.zul", perforcetab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("starteamtab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","starteam");
+				    Executions.createComponents("/starteampanel.zul", starteamtab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("svntab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","svn");
+				    Executions.createComponents("/svnpanel.zul", svntab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("svnexetab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","svnexe");
+				    Executions.createComponents("/svnpanel.zul", svnexetab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("ucmclearcasetab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","ucmclearcase");
+				    Executions.createComponents("/ucmclearcasepanel.zul", ucmclearcasetab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("vsstab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","vss");
+				    Executions.createComponents("/vsspanel.zul", vsstab, args);
+				} else {
+				// TODO update existing
+				}
+			}
+		}
+		}
+		]]></zscript>
+	</tabbox>
+
+	<separator/>
+	<hbox>
+		<button label="Save" onClick="alert(self.label)"/>
+	</hbox>
+</zk>

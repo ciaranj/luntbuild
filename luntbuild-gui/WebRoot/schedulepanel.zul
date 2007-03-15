@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<popup id="schedulename-tip" width="500px">
+		<vbox>
+			<html>
+		      <attribute name="content"><![CDATA[
+			  ]]></attribute>
+		    </html>
+	   </vbox>
+	</popup>
+
+	<grid>
+		<columns>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+			<column/>
+		</columns>
+		<rows>
+			<row>
+				<hbox>
+					<image src="/img/name.gif"/>
+					<label value="Name:"/>
+				</hbox>
+				<textbox id="schedulename" width="150px" value="${arg.name}" constraint="no empty: Schedule name cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="schedulename-tip"/>
+				<hbox>
+					<image src="/img/description.gif"/>
+					<label value="Description:"/>
+				</hbox>
+				<textbox id="scheduledesc" multiline="true" rows="3" width="250px" value="${arg.desc}"/>
+				<button image="/img/icon_help.png" tooltip="scheduledesc-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/number.gif"/>
+					<label value="Next build version:"/>
+				</hbox>
+				<textbox id="nextbuildversion" width="150px" value="${arg.name}" constraint="no empty: Schedule build version cannot be empty"/>
+				<button image="/img/icon_help.png" tooltip="nextbuildversion-tip"/>
+				<hbox>
+					<image src="/img/dirAndfile.gif"/>
+					<label value="Work directory:"/>
+				</hbox>
+				<textbox id="buildworkdir" multiline="true" rows="3" width="250px" value="${arg.desc}"/>
+				<button image="/img/icon_help.png" tooltip="buildworkdir-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/trigger.gif"/>
+					<label value="Trigger type:"/>
+				</hbox>
+				<radiogroup id="buildtriggertype">
+					<radio label="manual" selected="true"/>
+					<radio label="simple"/>
+					<radio label="cron"/>
+				</radiogroup>
+				<button image="/img/icon_help.png" tooltip="buildtriggertype-tip"/>
+				<hbox>
+					<image src="/img/condition.gif"/>
+					<label value="Build necessary condition:"/>
+				</hbox>
+				<bandbox id="buildcondition" width="250px" value="always" constraint="no empty: build condition cannot be empty">
+					<bandpopup>
+						<listbox width="250px" onSelect="buildcondition.value=self.selectedItem.label; buildcondition.closeDropdown();">
+							<listitem label="always"/>
+							<listitem label="never"/>
+							<listitem label="alwaysIfFailed"/>
+							<listitem label="vcsModified or dependencyNewer"/>
+							<listitem label="dependencySuccessful and (vcsModified or dependencyNewer)"/>
+						</listbox>
+					</bandpopup>
+				</bandbox>
+				<button image="/img/icon_help.png" tooltip="buildcondition-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/builder.gif"/>
+					<label value="Builders:"/>
+				</hbox>
+				<listbox id="builderslist" checkmark="true" multiple="true" rows="4">
+					<listhead>
+						<listheader label="Builder" sortAscending="${sortAcs}" sortDescending="${sortDsc}"/>
+					</listhead>
+					<listitem forEach="${buildersList}" value="${each.value}">
+						<listcell label="${each.label}"/>
+					</listitem>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="builderslist-tip"/>
+				<hbox>
+					<image src="/img/builder.gif"/>
+					<label value="Post-Builders:"/>
+				</hbox>
+				<listbox id="postbuilderslist" checkmark="true" multiple="true" rows="4">
+					<listhead>
+						<listheader label="Post-Builder" sortAscending="${sortAcs}" sortDescending="${sortDsc}"/>
+					</listhead>
+					<listitem forEach="${postBuildersList}" value="${each.value}">
+						<listcell label="${each.label}"/>
+					</listitem>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="postbuilderslist-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/build_type.gif"/>
+					<label value="Build type:"/>
+				</hbox>
+				<radiogroup id="buildtype">
+					<radio label="clean" selected="true"/>
+					<radio label="incremental"/>
+				</radiogroup>
+				<button image="/img/icon_help.png" tooltip="buildtype-tip"/>
+				<hbox>
+					<image src="/img/postbuild_strategy.gif"/>
+					<label value="Post-build strategy:"/>
+				</hbox>
+				<listbox id="postbuildstrategy" mold="select" rows="1">
+					<listitem label="do not post-build" selected="true"/>
+					<listitem label="post-build if success"/>
+					<listitem label="post-build if failed"/>
+					<listitem label="post-build always"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="postbuildstrategy-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/label.gif"/>
+					<label value="Label strategy:"/>
+				</hbox>
+				<listbox id="labelstrategy" mold="select" rows="1">
+					<listitem label="label if success" selected="true"/>
+					<listitem label="label always"/>
+					<listitem label="do not label"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="labelstrategy-tip"/>
+				<hbox>
+					<image src="/img/notify.gif"/>
+					<label value="Notify strategy:"/>
+				</hbox>
+				<listbox id="notifystrategy" mold="select" rows="1">
+					<listitem label="notify when status changed" selected="true"/>
+					<listitem label="notify when failed"/>
+					<listitem label="notify when success"/>
+					<listitem label="do not notify"/>
+					<listitem label="notify always"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="notifystrategy-tip"/>
+			</row>
+			<row>
+				<hbox>
+					<image src="/img/dependent.gif"/>
+					<label value="Dependent Schedules:"/>
+				</hbox>
+				<listbox id="dependentscheduleslist" checkmark="true" multiple="true" rows="4">
+					<listhead>
+						<listheader label="Dependent Schedules" sortAscending="${sortAcs}" sortDescending="${sortDsc}"/>
+					</listhead>
+					<listitem forEach="${dependentSchedulesList}" value="${each.value}">
+						<listcell label="${each.label}"/>
+					</listitem>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="dependentscheduleslist-tip"/>
+				<hbox>
+					<image src="/img/trigger.gif"/>
+					<label value="Dependency triggering strategy:"/>
+				</hbox>
+				<listbox id="dependencystrategy" mold="select" rows="1">
+					<listitem label="trigger schedules this schedule depends on" selected="true"/>
+					<listitem label="trigger schedules that depends on this schedule"/>
+					<listitem label="trigger all dependent schedules"/>
+					<listitem label="do not trigger any dependent schedules"/>
+				</listbox>
+				<button image="/img/icon_help.png" tooltip="dependencystrategy-tip"/>
+			</row>
+			<row spans="1,4,1">
+				<hbox>
+					<image src="/img/trash.png"/>
+					<label value="Build cleanup strategy:"/>
+				</hbox>
+				<hbox>
+					<listbox id="buildcleanup" mold="select" rows="1"
+						onSelect="setBuildCleanupVisible()" onCreate="setBuildCleanupVisible()">
+						<listitem label="do not cleanup builds automatically" selected="true"/>
+						<listitem label="keep builds by days"/>
+						<listitem label="keep builds by count"/>
+					</listbox>
+					<hbox id="buildbycountdate">
+						<intbox id="buildcleanupbycountday" width="50px"/>
+						<label id="buildcleanupbycountdaylabel"/>
+					</hbox>
+				</hbox>
+				<button image="/img/icon_help.png" tooltip="buildcleanup-tip"/>
+				<zscript>
+					void setBuildCleanupVisible() {
+					    if(buildcleanup.getSelectedIndex()==0) {
+						    buildbycountdate.setVisible(false);
+						    buildcleanupbycountdaylabel.setValue("");
+						} else {
+						    buildbycountdate.setVisible(true);
+						    if(buildcleanup.getSelectedIndex()==1) {
+						    	buildcleanupbycountdaylabel.setValue("days");
+						    } else if(buildcleanup.getSelectedIndex()==2) {
+						    	buildcleanupbycountdaylabel.setValue("count");
+						    }
+						}
+					}
+				</zscript>
+			</row>
+		</rows>
+	</grid>
+</zk>

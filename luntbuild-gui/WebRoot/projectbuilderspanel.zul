@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<zk	xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+
+	<tabbox id="projectbuildertabs" style="border: 0px" width="100%"
+		onCreate="loadProjectBuilderTabData()" onSelect="loadProjectBuilderTabData()">
+		<tabs>
+			<tab id="tab_ant" label="Ant" selected="true" visible="true"/>
+			<tab id="tab_maven1" label="Maven1" visible="false"/>
+			<tab id="tab_maven2" label="Maven2" visible="true"/>
+			<tab id="tab_command" label="Command" visible="false"/>
+			<tab id="tab_nant" label="NAnt" visible="false"/>
+			<tab id="tab_rake" label="Rake" visible="false"/>
+		</tabs>
+		<tabpanels>
+			<tabpanel id="anttab"/>
+			<tabpanel id="maven1tab"/>
+			<tabpanel id="maven2tab"/>
+			<tabpanel id="commandtab"/>
+			<tabpanel id="nanttab"/>
+			<tabpanel id="raketab"/>
+		</tabpanels>
+		<zscript><![CDATA[
+		void loadProjectBuilderTabData() {
+		// TODO set tabpanels visibility
+		Tabpanel panel = projectbuildertabs.getSelectedPanel();
+		HashMap args=new HashMap();
+		if (panel != null) {
+			if (panel.getId().equals("anttab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","ant");
+					args.put("save","true");
+				    Executions.createComponents("/builderpanel.zul", anttab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("maven1tab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","maven1");
+					args.put("save","true");
+				    Executions.createComponents("/builderpanel.zul", maven1tab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("maven2tab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","maven2");
+					args.put("save","true");
+				    Executions.createComponents("/builderpanel.zul", maven2tab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("commandtab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","command");
+					args.put("save","true");
+				    Executions.createComponents("/builderpanel.zul", commandtab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("nanttab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","nant");
+					args.put("save","true");
+				    Executions.createComponents("/builderpanel.zul", nanttab, args);
+				} else {
+				// TODO update existing
+				}
+			} else if (panel.getId().equals("raketab") && panel.isVisible()) {
+				if (panel.getChildren().isEmpty()) {
+					args.put("type","rake");
+					args.put("save","true");
+				    Executions.createComponents("/builderpanel.zul", raketab, args);
+				} else {
+				// TODO update existing
+				}
+			}
+		}
+		}
+		]]></zscript>
+	</tabbox>
+</zk>

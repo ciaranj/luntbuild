@@ -255,9 +255,10 @@ buildEnvList.add(new VariableListItem("MY_BUILD_VERSION", "${build.version}"));
 
 	<separator/>
 	<hbox>
-		<button label="Create" onClick="alert(self.label)" unless="${arg.edit}"/>
+		<button label="Save" onClick="alert(self.label)" if="${arg.save}"/>
+		<button label="Create" onClick="alert(self.label)" unless="${arg.edit || arg.save}"/>
 		<button label="Edit" onClick="alert(self.label)" if="${arg.edit}"/>
-		<button label="Next">
+		<button label="Next" unless="${arg.save}">
 			<custom-attributes buildernameid="${arg.type}buildername"/>
 			<attribute name="onClick">
 				String val=self.getFellow(self.getAttribute("buildernameid")).getValue();
@@ -270,7 +271,7 @@ buildEnvList.add(new VariableListItem("MY_BUILD_VERSION", "${build.version}"));
 				scheduleditwin.doOverlapped();
 			</attribute>
 		</button>
-		<button label="Cancel" onClick="buildereditwin.visible = false; event.stopPropagation();"/>
+		<button label="Cancel" onClick="buildereditwin.visible = false; event.stopPropagation();" unless="${arg.save}"/>
 	</hbox>
 
 </zk>

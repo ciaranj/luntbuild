@@ -91,7 +91,7 @@
 			</row>
 			<row>
 				<hbox>
-					<image src="/img/time.gif"/>
+					<image src="/img/time.png"/>
 					<label value="Schedule"/>
 				</hbox>
 				<listbox rows="5">

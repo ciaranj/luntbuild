@@ -10,10 +10,7 @@
 
 	<separator/>
 	<hbox>
-		<button label="Create" onClick="alert(self.label)" unless="${arg.edit}"/>
-		<button label="Edit" onClick="alert(self.label)" if="${arg.edit}"/>
-		<button label="Finish" onClick="alert(self.label);loginmappingwin.visible=false"/>
-		<button label="Cancel" onClick="loginmappingwin.visible = false; event.stopPropagation();"/>
+		<button label="Save" onClick="alert(self.label)"/>
 	</hbox>
 
 </zk>

@@ -57,9 +57,9 @@
 	</path>
 
 	<target name="webstage_compile">
-		<mkdir dir="${webroot}/WEB-INF/classes"/>
+		<mkdir dir="stage/WEB-INF/classes"/>
         <echo message="Compiling using source level: ${compile-source-level}, target level: ${compile-target-level}"/>
-        <javac sourcepath="" srcdir="src" destdir="${webroot}/WEB-INF/classes"
+        <javac sourcepath="" srcdir="src" destdir="stage/WEB-INF/classes"
             debug="${compile-with-debug}" source="${compile-source-level}" target="${compile-target-level}">
             <classpath refid="classpath"/>
         </javac>
@@ -185,14 +185,20 @@
 
     <target name="compile-standalone" depends="webstage_compile"
         description="Compiles standalone launcher">
+    	<copy todir="stage">
+            <fileset dir="${webroot}"/>
+    	</copy>
+    	<copy todir="stage/WEB-INF/lib">
+            <fileset dir="standalone/lib" includes="*.jar"/>
+    	</copy>
         <jar destfile="luntbuild-standalone.war">
-        	<fileset dir="${webroot}/WEB-INF/classes"/>
-    		<fileset dir="standalone/lib" includes="winstone.jar"/>
-            <fileset dir="${webroot}" />
+        	<fileset dir="stage/WEB-INF/classes"/>
+            <fileset dir="stage"/>
+        	<fileset dir="standalone/lib" includes="winstone.jar"/>
             <manifest>
               <attribute name="Built-By" value="Luntbuild"/>
                 <attribute name="Main-Class" value="com.luntsys.luntbuild.StandaloneLauncher"/>
-                <attribute name="Class-Path" value="./winstone.jar"/>
+                <attribute name="Class-Path" value=""/>
             </manifest>
         </jar>
     </target>

@@ -133,7 +133,17 @@
 					<image src="/img/condition.gif"/>
 					<label value="Build necessary condition:"/>
 				</hbox>
-				<textbox id="buildcondition" width="150px" value=""/>
+				<bandbox id="buildcondition" width="250px" value="always" constraint="no empty: build condition cannot be empty">
+					<bandpopup>
+						<listbox width="250px" onSelect="buildcondition.value=self.selectedItem.label; buildcondition.closeDropdown();">
+							<listitem label="always"/>
+							<listitem label="never"/>
+							<listitem label="alwaysIfFailed"/>
+							<listitem label="vcsModified or dependencyNewer"/>
+							<listitem label="dependencySuccessful and (vcsModified or dependencyNewer)"/>
+						</listbox>
+					</bandpopup>
+				</bandbox>
 				<button image="/img/icon_help.png" tooltip="buildcondition-tip"/>
 			</row>
 			<row>
@@ -141,7 +151,7 @@
 					<image src="/img/number.gif"/>
 					<label value="Build as version:"/>
 				</hbox>
-				<textbox id="buildversion" width="150px" value=""/>
+				<textbox id="buildversion" width="150px" value="" constraint="no empty: build version cannot be empty"/>
 				<button image="/img/icon_help.png" tooltip="buildversion-tip"/>
 			</row>
 			<row>
@@ -209,7 +219,7 @@
 			</row>
 			<row>
 				<hbox>
-					<image src="/img/time.gif"/>
+					<image src="/img/time.png"/>
 					<label value="When to build:"/>
 				</hbox>
 				<hbox>
