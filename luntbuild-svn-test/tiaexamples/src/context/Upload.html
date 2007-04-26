@@ -1,0 +1,19 @@
+<html jwcid="@Shell" title="File Upload">
+<body jwcid="@Body">
+
+<form jwcid="@Form" listener="ognl:listeners.formSubmit">
+File to upload:
+<br/>
+<input type="file" jwcid="@Upload" file="ognl:file" size="100"/>
+<br/>
+<input type="submit" value="Upload"/>
+	
+</form>
+
+<hr/>
+	
+<p><a href="#" jwcid="@PageLink" page="Home">Return to Home page</a>.</p>
+
+
+</body>
+</html>

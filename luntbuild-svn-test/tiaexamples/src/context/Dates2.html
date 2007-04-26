@@ -1,0 +1,71 @@
+<html jwcid="@Shell" title="Date Input" stylesheet="ognl:assets.stylesheet">
+<head jwcid="$remove$">
+<link rel="stylesheet" type="text/css" href="css/style.css"/>	
+</head>
+<body jwcid="@Body">
+	
+<span class="title">Enter a Range of Dates</span>
+
+<p>Please enter a range of dates.  
+Fields marked with a <span class="required-marker">*</span>
+are required.
+</p>
+	
+<span jwcid="@Conditional" condition="ognl:beans.delegate.hasErrors">
+
+<table class="error">
+<tr valign="top">
+<td>
+<IMG height="52" alt="[Error]" src="images/form-error.png" width="52">	
+</td>
+<td>
+<span jwcid="@Delegator" delegate="ognl:beans.delegate.firstError">Error Message</span>	
+</td>
+</tr>
+
+</table>
+
+</span>
+
+<form jwcid="@Form" listener="ognl:listeners.formSubmit" delegate="ognl:beans.delegate">
+	
+<table class="form">
+
+<tr>
+<th><span jwcid="@FieldLabel" displayName="Start Date" 
+	field="ognl:components.inputStart">Start Date</span></th>
+<td><input type="text" jwcid="inputStart" size="10"/>
+	<span class="required-marker">*</span>
+<span jwcid="@Conditional" condition="ognl:beans.delegate.inError">
+	<img src="images/field-error.png"/>
+</span>	
+</td>
+</tr>
+
+<tr>
+<th><span jwcid="@FieldLabel" displayName="End Date" field="ognl:components.inputEnd">End Date</span></th>
+<td><input type="text" jwcid="inputEnd" size="10"/>
+	<span class="required-marker">*</span>
+<span jwcid="@Conditional" condition="ognl:beans.delegate.inError">
+	<img src="images/field-error.png"/>
+</span>	
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type="image" src="images/continue.png" width="100" height="32"/>
+</tr>
+
+</table>
+	
+</form>
+
+<hr/>
+	
+<p><a href="#" jwcid="@PageLink" page="Home">Return to Home page</a>.</p>
+
+
+
+</body>
+</html>

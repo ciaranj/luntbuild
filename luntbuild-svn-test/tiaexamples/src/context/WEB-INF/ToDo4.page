@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+	     	
+<page-specification class="examples.todo4.ToDo4">
+
+	<property-specification name="toDoList" type="java.util.List" persistent="yes"/>
+	<property-specification name="item" type="examples.todo1.ToDoItem"/>
+	<property-specification name="moveUpItem" type="examples.todo1.ToDoItem"/>
+	<property-specification name="moveDownItem" type="examples.todo1.ToDoItem"/>
+	<property-specification name="listEditMap" type="org.apache.tapestry.form.ListEditMap"/>
+	<property-specification name="errorMessage" type="java.lang.String"/>
+  
+  <component id="listEdit" type="ListEdit">
+    <binding name="source" expression="listEditMap.keys"/>
+    <binding name="value" expression="listEditMap.key"/>
+    <binding name="listener" expression="listeners.synchronizeItem"/>
+  </component>  
+  
+</page-specification>

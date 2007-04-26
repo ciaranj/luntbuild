@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="examples.dates.Dates2">
+
+  <bean name="delegate" class="examples.register.RegisterDelegate"/>
+
+  <property-specification name="startDate" type="java.util.Date"/>
+  <property-specification name="endDate" type="java.util.Date"/>
+
+  <component id="inputStart" type="DatePicker">
+    <binding name="value" expression="startDate"/>	
+  </component>
+
+  <component id="inputEnd" type="DatePicker">
+  	<binding name="value" expression="endDate"/>
+  </component>
+  
+  <context-asset name="stylesheet" path="css/style.css"/>
+  
+</page-specification>

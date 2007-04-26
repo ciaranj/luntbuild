@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE component-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+	     	
+<component-specification
+	allow-body="no"
+	allow-informal-parameters="no">
+
+  <parameter name="digit" direction="in" required="yes" type="int"/>
+
+  <component id="image" type="Image">
+  	<binding name="image">
+  		getAsset("digit" + digit)
+  	</binding>
+  	<binding name="alt" expression="digit"/>
+  </component>
+  
+  <context-asset name="digit0" path="images/Chalkboard_1x7.png"/>
+  <context-asset name="digit1" path="images/Chalkboard_1x8.png"/>
+  <context-asset name="digit2" path="images/Chalkboard_2x7.png"/>
+  <context-asset name="digit3" path="images/Chalkboard_2x8.png"/>  
+  <context-asset name="digit4" path="images/Chalkboard_3x7.png"/>
+  <context-asset name="digit5" path="images/Chalkboard_3x8.png"/>
+  
+</component-specification>

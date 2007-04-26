@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE component-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification
+	class="examples.cc.CreditCardField"
+	allow-body="no" allow-informal-parameters="no">
+	
+	<parameter name="cardNumber" type="java.lang.String" direction="form" required="yes"/>
+	
+	<parameter name="disabled" type="boolean" direction="in">
+    <description>
+    If true, then all four text fields will be disabled.
+    </description>
+  </parameter>
+  
+	<property-specification name="form" type="org.apache.tapestry.IForm"/>
+	<property-specification name="name" type="java.lang.String"/>
+	
+</component-specification>

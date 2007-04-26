@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="examples.register.Register">
+
+  <bean name="delegate" class="examples.register.RegisterDelegate"/>
+  
+  <bean name="required" class="org.apache.tapestry.valid.StringValidator" lifecycle="page">
+    <set-property name="required" expression="true"/>
+    <set-property name="clientScriptingEnabled" expression="true"/>
+  </bean>
+  
+  <bean name="stateValidator" class="org.apache.tapestry.valid.StringValidator" lifecycle="page">
+  	<set-property name="required" expression="true"/>
+  	<set-property name="minimumLength" expression="2"/>
+    <set-property name="clientScriptingEnabled" expression="true"/>
+  </bean>
+  
+  <bean name="zipValidator" class="examples.register.PatternValidator" lifecycle="page">
+    <set-property name="pattern">
+      "\\d{5}(-\\d{4})?"	
+    </set-property>	
+    <set-property name="errorMessage">
+    "Zip code format is five or nine digits.  
+     Example: 02134 or 02474-1145."	
+    </set-property>
+  </bean>
+
+  <property-specification name="address" type="examples.register.Address"/>
+  
+  <component id="inputFirstName" type="ValidField">
+    <static-binding name="displayName" value="First Name"/>
+    <binding name="validator" expression="beans.required"/>
+    <binding name="value" expression="address.firstName"/>	
+  </component>
+
+  <component id="inputLastName" type="ValidField">
+    <static-binding name="displayName" value="Last Name"/>
+    <binding name="validator" expression="beans.required"/>
+    <binding name="value" expression="address.lastName"/>	
+  </component>
+  
+  <component id="inputAddress1" type="ValidField">
+    <static-binding name="displayName" value="Address"/>
+    <binding name="validator" expression="beans.required"/>
+    <binding name="value" expression="address.address1"/>	
+  </component>
+  
+
+  <component id="inputCity" type="ValidField">
+    <static-binding name="displayName" value="City"/>
+    <binding name="validator" expression="beans.required"/>
+    <binding name="value" expression="address.city"/>	
+  </component> 
+  
+
+  <component id="inputState" type="ValidField">
+    <static-binding name="displayName" value="State"/>
+    <binding name="validator" expression="beans.stateValidator"/>
+    <binding name="value" expression="address.state"/>	
+  </component> 
+  
+  <component id="inputZip" type="ValidField">
+    <static-binding name="displayName" value="Zip"/>
+    <binding name="validator" expression="beans.zipValidator"/>
+    <binding name="value" expression="address.zip"/>	
+  </component> 
+  
+  <context-asset name="stylesheet" path="css/style.css"/>
+  
+</page-specification>

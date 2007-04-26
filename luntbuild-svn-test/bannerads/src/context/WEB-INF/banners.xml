@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<banner-ads>
+  <banner id="0001" title="Cafe Au Lait"
+  	width="468" height="82" imageURL="ads/cafeaulait.png" 
+  	clickThruURL="http://www.ibiblio.org/javafaq/"/>	
+  <banner id="0002" title="JavaLobby.org"
+  		width="468" height="60"
+  		imageURL="ads/javalobby.png"
+  		clickThruURL="http://www.javalobby.org"/>
+  <banner id="0003" title="Apache Jakarta Project"
+  	width="468" height="60"
+  	imageURL="ads/jakarta.png"
+  	clickThruURL="http://jakarta.apache.org"/>
+  <banner id="0004" title="TheServerSide.com"
+  		width="468" height="60"
+  		imageURL="ads/theserverside.png"
+  		clickThruURL="http://www.theserverside.com"/>
+</banner-ads>

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<project name="Tapestry Book Examples" default="deploy">
+
+	<target name="clean" description="Deletes all derived files.">
+	
+		<ant dir="examples-library" target="clean"/>
+		<ant dir="tiaexamples" target="clean"/>
+		<ant dir="hangman1" target="clean"/>
+		<ant dir="hangman2" target="clean"/>
+		<ant dir="bannerads" target="clean"/>
+		
+		<delete>
+		  <fileset dir="lib">
+		  	<include name="*.jar"/>
+		  </fileset>
+		</delete>
+	</target>
+	
+	<target name="deploy" 
+		depends="check-properties"
+		description="Build and deploy all WARs.">
+		
+		<ant dir="examples-library" target="install"/>
+		<ant dir="tiaexamples" target="deploy"/>
+		<ant dir="hangman1" target="deploy"/>
+		<ant dir="hangman2" target="deploy"/>
+		<ant dir="bannerads" target="deploy"/>		
+
+		<!-- Copy the log4j library and a log4j.properties file into Tomcat's shared
+			 library. -->
+			 		
+   		<property file="${props.file}"/>
+
+	</target>
+	
+	<target name="check-properties">
+		
+		<property name="props.file" value="common/build.properties"/>
+
+		<available property="exists.build.properties" type="file" file="${props.file}"/>
+		
+		<fail unless="exists.build.properties"
+			message="${props.file} does not exist.  See ${props.file}.template for instructions."/>
+	
+    	<property file="${props.file}"/>
+	</target>
+	
+	<target name="dist" depends="clean" description="Builds the source distribution.">
+	
+		<zip destfile="../TapestryInAction.zip">
+		  <zipfileset dir="." prefix="TapestryInAction">
+		  	<include name="*"/>
+		  	<include name="**/*"/>
+		  	<exclude name="common/build.properties"/>
+		  	<exclude name="book/**"/>
+		  	<exclude name="bin/**"/>	
+		  	<exclude name="lib/**"/>
+		  	<exclude name=".*"/>
+		  	<exclude name="**/Thumbs.db"/>
+		  	<exclude name="**/pspbrwse.jbf"/>	  	
+		  </zipfileset>
+		</zip>
+	</target>
+</project>

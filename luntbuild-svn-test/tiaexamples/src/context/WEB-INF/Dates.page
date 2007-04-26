@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="examples.dates.Dates">
+
+  <bean name="delegate" class="examples.register.RegisterDelegate"/>
+  
+  <bean name="validator" class="org.apache.tapestry.valid.DateValidator" lifecycle="page">
+    <set-property name="required" expression="true"/>
+  </bean>
+
+  <property-specification name="startDate" type="java.util.Date"/>
+  <property-specification name="endDate" type="java.util.Date"/>
+
+  <component id="inputStart" type="ValidField">
+    <static-binding name="displayName" value="Start Date"/>
+    <binding name="validator" expression="beans.validator"/>
+    <binding name="value" expression="startDate"/>	
+  </component>
+
+  <component id="inputEnd" type="ValidField">
+  	<static-binding name="displayName" value="End Date"/>
+  	<binding name="validator" expression="beans.validator"/>
+  	<binding name="value" expression="endDate"/>
+  </component>
+  
+  <context-asset name="stylesheet" path="css/style.css"/>
+  
+</page-specification>

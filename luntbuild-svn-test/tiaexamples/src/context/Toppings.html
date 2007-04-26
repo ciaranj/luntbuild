@@ -1,0 +1,27 @@
+<html jwcid="@Shell" title="Toppings">
+<body jwcid="@Body">
+
+<form jwcid="@Form" listener="ognl:listeners.selectToppings">
+
+Select toppings:
+<select jwcid="@Select" multiple="ognl:true">
+  <span jwcid="@Foreach"
+    source="ognl:allToppings"
+    value="ognl:topping">
+    <option jwcid="@Option"
+       selected="ognl:toppingSelected"
+       label="ognl:topping"/>
+  </span>
+</select>
+	
+<br/>
+<input type="submit" value="Select"/>
+
+</form>
+
+<hr/>
+	
+<p><a href="#" jwcid="@PageLink" page="Home">Return to Home page</a>.</p>
+
+</body>
+</html>

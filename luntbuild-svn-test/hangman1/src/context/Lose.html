@@ -1,0 +1,39 @@
+<html>
+<head>
+<title>Tapestry Hangman</title>
+<link rel="stylesheet" type="text/css" href="css/hangman.css"/>
+</head>
+<body>
+<table>
+<tr>
+  <td><img alt="Tapestry Hangman" src="images/tapestry-hangman.png" width="197" height="50" border="0">
+  </td>
+  <td width="70" align="right"><img height="36" alt="0" src="images/Chalkboard_1x7.png" width="36" border="0">
+  </td>
+  <td><img alt="Guesses Left" src="images/guesses-left.png" width="164" height="11" border="0">
+  </td>
+</tr>
+<tr>
+  <td>
+  </td>
+  <td>
+  </td>
+  <td><img alt="" src="images/scaffold-6.png" border="0">
+  </td>
+</tr>
+</table>
+<br>
+<table>
+<tr valign="center">
+  <td width="160">
+    <p align="right"><img alt="Current Guess" src="images/guess.png" align="MIDDLE" width="127" height="20" border="0"></p>
+  </td>
+  <td valign="top"><span jwcid="@Foreach" source="ognl:visit.game.letters" value="ognl:letter"><img jwcid="@Image" image="ognl:letterImage" alt="ognl:letterLabel" height="36" src="images/Chalkboard_5x3.png" width="36" border="0"/></span><span jwcid="$remove$"><!--- Additional letters from the mockup ---><img height="36" alt="A" src="images/Chalkboard_1x1.png" width="36" border="0"><img height="36" alt="_" src="images/Chalkboard_5x3.png" width="36" border="0"><img height="36" alt="_" src="images/Chalkboard_1x5.png" width="36" border="0"><img height="36" alt="_" src="images/Chalkboard_5x3.png" width="36" border="0"><img height="36" alt="_" src="images/Chalkboard_5x3.png" width="36" border="0"><img height="36" alt="_" src="images/Chalkboard_5x3.png" width="36" border="0"><img height="36" alt="_" src="images/Chalkboard_5x1.png" width="36" border="0"></span>
+  </td>
+</tr>
+</table><img src="images/you-lose.png" width="381" height="44" border="0" alt="You Lose!">
+<br>
+<br>
+<a href="#" jwcid="@DirectLink" listener="ognl:listeners.playAgain"><img src="images/play-again.png" width="446" height="43" border="0" alt="Play Again"></a>
+</body>
+</html>
