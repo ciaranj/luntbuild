@@ -1,0 +1,22 @@
+<span jwcid="@Conditional" condition="ognl:delegate.hasErrors">
+
+<table style="{
+  border-style : solid;
+  color : Red;
+  font-weight : bold;
+  background-color : #FFFF40;
+  border-width : 1px;
+  border-color : Black;
+  padding : 2px;
+}">
+<tr valign="top">
+<td>
+<img jwcid="@Image" height="52" alt="[Error]" image="ognl:assets.icon" width="52"/>	
+</td>
+<td>
+<span jwcid="@Delegator" delegate="ognl:delegate.firstError">Error Message</span>	
+</td>
+</tr>
+</table>
+
+</span>

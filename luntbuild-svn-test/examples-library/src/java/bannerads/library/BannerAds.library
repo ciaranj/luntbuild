@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE library-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+	     	
+<library-specification>
+
+  <service name="bannerads.banner" class="bannerads.library.BannerService"/>
+	
+</library-specification>

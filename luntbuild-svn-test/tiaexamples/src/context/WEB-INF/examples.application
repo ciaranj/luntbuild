@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE application PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<application name="Tapestry In Action Examples">
+	
+	<library id="contrib" specification-path="/org/apache/tapestry/contrib/Contrib.library"/>
+  
+  <library id="lib" specification-path="/examples/library/Examples.library"/>
+    
+</application>

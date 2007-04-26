@@ -1,0 +1,36 @@
+<html jwcid="@Shell" title="Uploaded File">
+<body jwcid="@Body">
+
+<table border="0">
+<tr>
+	<th>Name:</th>
+	<td><span jwcid="@Insert" value="ognl:file.fileName">File Name</span></td>	
+</tr>
+
+<tr>
+	<th>Path:</th>
+	<td><span jwcid="@Insert" value="ognl:file.filePath">File Path</span></td>
+</tr>
+
+<tr>
+	<th>Content Type:</th>
+	<td><span jwcid="@Insert" value="ognl:file.contentType">text/html</span></td>
+</tr>
+
+<tr>
+	<th>Content:</th>	
+</tr>
+	
+</table>
+
+<pre>
+<span jwcid="@Delegator" delegate="ognl:contentRenderer"/>
+</pre>
+
+<hr/>
+	
+<p><a href="#" jwcid="@PageLink" page="Home">Return to Home page</a>.</p>
+
+
+</body>
+</html>

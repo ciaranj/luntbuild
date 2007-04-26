@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="examples.cc.CreditCardResults">
+  
+  <property-specification name="cardType" type="examples.cc.CreditCardType"/>
+  <property-specification name="cardNumber" type="java.lang.String"/>
+
+  <context-asset name="stylesheet" path="css/style.css"/>
+  
+</page-specification>

@@ -1,0 +1,41 @@
+<html jwcid="@Shell" title="ToDo List (version 4)">
+<body jwcid="@Body">
+
+<span jwcid="@Conditional" condition="ognl:errorMessage">
+<span style="{ font: bold; color: red }">
+<span jwcid="@Insert" value="ognl:errorMessage">Error Message
+</span>
+<br/>
+</span>
+</span>
+
+<form jwcid="@Form" listener="ognl:listeners.formSubmit">
+	
+<table>
+	<tr>
+		<th>Done</th>
+		<th>Priority</th>
+		<th>Title</th>
+		<th colspan="2">Reorder</th>
+	</tr>
+<tr jwcid="listEdit" element="tr">
+  <td><input type="checkbox" jwcid="completed@Checkbox" selected="ognl:item.completed"/></td>
+  <td><select jwcid="priority@PropertySelection" value="ognl:item.priority" model="ognl:priorityModel"/></td>
+  <td><input type="text" jwcid="title@TextField" size="50" value="ognl:item.title"/></td>
+  <td><input type="submit" jwcid="up@Submit" selected="ognl:moveUpItem" tag="ognl:item" label="Move Up"/></td>
+  <td><input type="submit" jwcid="down@Submit" selected="ognl:moveDownItem" tag="ognl:item" label="Move Down"/></td>
+</tr>	
+</table>
+
+<input type="submit" value="Update"/>
+<input type="submit" jwcid="add@Submit" listener="ognl:listeners.addTodoItem" label="Add Item"/>
+<input type="submit" jwcid="deleteCompleted@Submit" listener="ognl:listeners.deleteCompleted" label="Delete Completed"/>
+
+</form>
+
+<hr/>
+	
+<p><a href="#" jwcid="@PageLink" page="Home">Return to Home page</a>.</p>
+
+</body>
+</html>

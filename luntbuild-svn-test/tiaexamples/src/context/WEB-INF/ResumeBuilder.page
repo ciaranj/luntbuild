@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="examples.resume.ResumeBuilder">
+
+  <bean name="delegate" class="examples.register.RegisterDelegate"/>
+
+  <property-specification name="experience" type="examples.resume.Experience">
+    @examples.resume.Experience@JUNIOR	
+  </property-specification>
+  
+  <property-specification name="languages" type="java.util.List"/>
+
+  <component id="inputExperience" type="PropertySelection">
+  	<binding name="model" expression="experienceModel"/>
+  	<binding name="value" expression="experience"/>	
+  </component>
+
+  <component id="labelLanguages" type="FieldLabel">
+    <binding name="field" expression="components.inputLanguages"/>
+    <static-binding name="displayName" value="Languages"/>	
+  </component>
+
+  <component id="inputLanguages" type="contrib:Palette">
+    <binding name="selected" expression="languages"/>
+    <binding name="model" expression="languageModel"/>	
+    <binding name="sort">
+      @org.apache.tapestry.contrib.palette.SortMode@USER
+    </binding>
+  </component>
+
+</page-specification>

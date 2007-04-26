@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+	     	
+<page-specification class="examples.todo3.ToDo3">
+
+	<property-specification name="toDoList" type="java.util.List" persistent="yes"/>
+	<property-specification name="item" type="examples.todo1.ToDoItem"/>
+	<property-specification name="moveUpItem" type="examples.todo1.ToDoItem"/>
+	<property-specification name="moveDownItem" type="examples.todo1.ToDoItem"/>
+  
+</page-specification>

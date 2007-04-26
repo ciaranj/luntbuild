@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE script PUBLIC
+  "-//Apache Software Foundation//Tapestry Script Specification 3.0//EN"
+	"http://jakarta.apache.org/tapestry/dtd/Script_3_0.dtd">
+
+<script>
+<!-- 
+
+input symbols:
+
+  creditCardField: The CreditCardField component
+  formatMessage: Message displayed if any input field has invalid data.
+  
+output symbols:
+
+  formValidateFunction The name of a form validator function that validates the fields.
+
+-->
+
+<input-symbol key="creditCardField" class="examples.cc.CreditCardField" required="yes"/>
+<input-symbol key="formatMessage" class="java.lang.String" required="yes"/>
+
+<set key="name" expression="creditCardField.name"/>
+
+<let key="baseName">
+  document.${creditCardField.form.name}.${name}	
+</let>
+
+<let key="field0">
+  ${baseName}$g0
+</let>
+
+<let key="field1">
+  ${baseName}$g1
+</let>
+
+<let key="field2">
+  ${baseName}$g2	
+</let>
+
+<let key="field3">
+  ${baseName}$g3	
+</let>
+
+<let key="formValidateFunction" unique="yes">
+  validate_${name}	
+</let>
+
+
+<body>
+
+<unique>
+<![CDATA[
+function onkeyup_cc_field(field, next)
+{ 
+  // IE only, I'm afraid
+  var keycode = window.event.keyCode;
+
+  if (keycode >=  48 && keycode <= 57 && field.value.length == 4)
+  {
+	  next.focus();
+	  next.select();
+  }
+}	
+
+function validate_cc_field(field)
+{
+  if (! field.value.match(/^\d{4}$/))
+  {
+    field.focus();
+    field.select();
+    window.alert("${formatMessage}");
+    return false;
+  }
+     
+  return true;
+}
+]]>
+</unique>
+
+<![CDATA[
+
+function ${formValidateFunction}()
+{
+  return validate_cc_field(${field0}) &&
+    validate_cc_field(${field1}) &&
+    validate_cc_field(${field2}) &&
+    validate_cc_field(${field3});
+}
+
+]]>
+</body>
+
+<initialization>
+	
+${field0}.onkeyup = function()
+{
+  onkeyup_cc_field(${field0}, ${field1});
+}
+
+${field1}.onkeyup = function()
+{
+  onkeyup_cc_field(${field1}, ${field2});
+}
+
+${field2}.onkeyup = function()
+{
+  onkeyup_cc_field(${field2}, ${field3});
+}
+
+</initialization>
+
+</script>

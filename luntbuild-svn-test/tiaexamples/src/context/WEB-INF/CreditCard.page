@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="examples.cc.CreditCard">
+
+  <bean name="delegate" class="examples.register.RegisterDelegate"/>
+  
+  <property-specification name="cardType" type="examples.cc.CreditCardType"/>
+  <property-specification name="cardNumber" type="java.lang.String"/>
+
+	<component id="inputCardType" type="PropertySelection">
+	  <binding name="model" expression="cardModel"/>
+	  <binding name="value" expression="cardType"/>	
+	</component>
+
+  <context-asset name="stylesheet" path="css/style.css"/>
+  
+</page-specification>

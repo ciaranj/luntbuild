@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!-- web.xml,v 1.1 2002/07/08 21:46:10 hship Exp -->
+
+<!DOCTYPE web-app
+    PUBLIC
+    "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+	<display-name>Tapestry In Action Examples</display-name>
+	
+	<servlet>
+		<servlet-name>examples</servlet-name>
+		<servlet-class>org.apache.tapestry.ApplicationServlet</servlet-class>
+					
+        <init-param>
+          <param-name>org.apache.tapestry.visit-class</param-name>
+          <param-value>examples.Visit</param-value>
+        </init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>examples</servlet-name>
+		<url-pattern>/app</url-pattern>
+	</servlet-mapping>
+	
+  <taglib>
+  	<taglib-uri>http://jakarta.apache.org/tapestry/tld/tapestry_1_0.tld</taglib-uri>
+  	<taglib-location>/WEB-INF/lib/tapestry-3.0.jar</taglib-location>
+  </taglib>
+  	
+</web-app>

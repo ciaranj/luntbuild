@@ -1,0 +1,14 @@
+
+TABLE.data TD {
+  border-width: 1px;
+  border-color: #c0c0c0;
+  border-style: solid;
+}
+
+TABLE.data TH
+{
+  font-weight: bold;
+  text-align: center;
+  background-color: Black;
+  color: White;
+}

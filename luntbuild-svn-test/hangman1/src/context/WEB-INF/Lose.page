@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+	     	
+<page-specification class="hangman1.Lose">
+	
+	<context-asset name="digit0" path="images/Chalkboard_1x7.png"/>
+  <context-asset name="digit1" path="images/Chalkboard_1x8.png"/>
+  <context-asset name="digit2" path="images/Chalkboard_2x7.png"/>
+  <context-asset name="digit3" path="images/Chalkboard_2x8.png"/>  
+  <context-asset name="digit4" path="images/Chalkboard_3x7.png"/>
+  <context-asset name="digit5" path="images/Chalkboard_3x8.png"/>
+  
+  <context-asset name="scaffold5" path="images/scaffold.png"/>
+  <context-asset name="scaffold4" path="images/scaffold-1.png"/>
+  <context-asset name="scaffold3" path="images/scaffold-2.png"/>
+  <context-asset name="scaffold2" path="images/scaffold-3.png"/>
+  <context-asset name="scaffold1" path="images/scaffold-4.png"/>
+  <context-asset name="scaffold0" path="images/scaffold-5.png"/> 
+  
+  <context-asset name="space" path="images/letter-spacer.png"/>
+  <context-asset name="dash" path="images/Chalkboard_5x3.png"/>
+  
+  <context-asset name="a" path="images/Chalkboard_1x1.png"/>
+  <context-asset name="b" path="images/Chalkboard_1x2.png"/>
+  <context-asset name="c" path="images/Chalkboard_1x3.png"/>
+  <context-asset name="d" path="images/Chalkboard_1x4.png"/>
+  <context-asset name="e" path="images/Chalkboard_1x5.png"/>
+  <context-asset name="f" path="images/Chalkboard_1x6.png"/>
+  <context-asset name="g" path="images/Chalkboard_2x1.png"/>
+  <context-asset name="h" path="images/Chalkboard_2x2.png"/>
+  <context-asset name="i" path="images/Chalkboard_2x3.png"/>
+  <context-asset name="j" path="images/Chalkboard_2x4.png"/>
+  <context-asset name="k" path="images/Chalkboard_2x5.png"/>
+  <context-asset name="l" path="images/Chalkboard_2x6.png"/>
+  <context-asset name="m" path="images/Chalkboard_3x1.png"/>
+  <context-asset name="n" path="images/Chalkboard_3x2.png"/> 
+  <context-asset name="o" path="images/Chalkboard_3x3.png"/>
+  <context-asset name="p" path="images/Chalkboard_3x4.png"/>
+  <context-asset name="q" path="images/Chalkboard_3x5.png"/>
+  <context-asset name="r" path="images/Chalkboard_3x6.png"/>
+  <context-asset name="s" path="images/Chalkboard_4x1.png"/>
+  <context-asset name="t" path="images/Chalkboard_4x2.png"/>
+  <context-asset name="u" path="images/Chalkboard_4x3.png"/>
+  <context-asset name="v" path="images/Chalkboard_4x4.png"/>
+  <context-asset name="w" path="images/Chalkboard_4x5.png"/>
+  <context-asset name="x" path="images/Chalkboard_4x6.png"/>
+  <context-asset name="y" path="images/Chalkboard_5x1.png"/>
+  <context-asset name="z" path="images/Chalkboard_5x2.png"/>
+	
+</page-specification>

@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<project name="Tapestry In Action -- Library" default="jar">
+
+	<!-- Customize this to match the desired name. -->
+	
+	<property name="project.name" value="examples-library"/>
+	
+	<!-- Find out where other project's distributions are. -->
+	
+	<property file="../common/build.properties"/>
+	
+	<!-- All derived files end up somewhere under target. -->
+	
+	<property name="target.dir" value="target"/>
+	
+	<property name="src.dir" value="src/java"/>
+	<property name="context.dir" value="src/context"/>
+	<property name="conf.dir" value="src/conf"/>
+			
+	<property name="classes.dir" value="${target.dir}/classes"/>
+	<property name="jar.file" value="${target.dir}/${project.name}.jar"/>
+	
+	<!-- We expect Tomcat 5.0 to be available. -->
+	
+	<property name="servlet.jar" value="${tomcat.dir}/common/lib/servlet-api.jar"/>
+		
+	<path id="project.class.path">
+		<fileset dir="../ext-lib" includes="*.jar"/>
+
+		<pathelement location="${servlet.jar}"/>
+	</path>
+	
+	<target name="clean" description="Deletes derived files.">
+		<delete dir="${target.dir}" quiet="true"/>
+	</target>
+	
+	<target name="compile" description="Compile Java classes.">
+		<mkdir dir="${classes.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" source="1.4"
+			classpathref="project.class.path"/>
+	</target>
+	
+	<target name="jar" depends="compile"
+		description="Compile all classes and build the JAR.">
+		<jar destfile="${jar.file}">
+	 		
+	 		<!-- Pick up compiled classes.  These go into WEB-INF/classes.  -->
+	 		
+			<fileset dir="${classes.dir}"/>
+						
+			<!-- Pick up properties files and such from the Java source directory. -->
+			
+			<fileset dir="${src.dir}">
+				<exclude name="**/*.java"/>
+				<exclude name="**/package.html"/>
+			</fileset>
+			
+		</jar>
+	</target>
+	
+	<target name="install" depends="jar"
+		description="Deploy the JAR into lib directory.">
+				
+		<property name="install.dir" location="../lib"/>
+		<mkdir dir="${install.dir}"/>
+		<copy file="${jar.file}" todir="${install.dir}"/>
+	</target>
+</project>

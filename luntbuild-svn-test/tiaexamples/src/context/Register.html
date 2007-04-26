@@ -1,0 +1,83 @@
+<html jwcid="@Shell" title="Registration" stylesheet="ognl:assets.stylesheet">
+<head jwcid="$remove$">
+<link rel="stylesheet" type="text/css" href="css/style.css"/>	
+</head>
+<body jwcid="@Body">
+	
+<span class="title">Registration</span>
+
+<p>Please enter your mailing address for our records.  Fields marked with a <span class="required-marker">*</span>
+are required.
+</p>
+	
+<span jwcid="@Conditional" condition="ognl:beans.delegate.hasErrors">
+
+<table class="error">
+<tr valign="top">
+<td>
+<img height="52" alt="[Error]" src="images/form-error.png" width="52"/>	
+</td>
+<td>
+<span jwcid="@Delegator" delegate="ognl:beans.delegate.firstError">Error Message</span>	
+</td>
+</tr>
+
+</table>
+
+</span>
+
+<form jwcid="@Form" listener="ognl:listeners.formSubmit" delegate="ognl:beans.delegate">
+	
+<table class="form">
+
+<tr>
+<th><span jwcid="@FieldLabel" field="ognl:components.inputFirstName">First Name</span></th>
+<td><input type="text" jwcid="inputFirstName" size="50"/></td>
+</tr>
+
+<tr>
+<th><span jwcid="@FieldLabel" field="ognl:components.inputLastName">Last Name</span></th>
+<td><input type="text" jwcid="inputLastName" size="50"/></td>
+</tr>
+
+<tr>
+<th><span jwcid="@FieldLabel" field="ognl:components.inputAddress1">Address</span></th>
+<td><input type="text" jwcid="inputAddress1" size="50"/></td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type="text" jwcid="@TextField" value="ognl:address.address2" size="50"/></td>
+</tr>
+
+<tr>
+<th><span jwcid="@FieldLabel" field="ognl:components.inputCity">City</span></th>
+<td><input type="text" jwcid="inputCity" size="50"/></td>
+</tr>
+<tr>
+<th><span jwcid="@FieldLabel" field="ognl:components.inputState">State</span></th>
+<td><input type="text" jwcid="inputState" size="2"/></td>
+</tr>
+
+<tr>
+<th><span jwcid="@FieldLabel" field="ognl:components.inputZip">Zip</span></th>
+<td><input type="text" jwcid="inputZip" size="10"/>
+</tr>
+
+<tr>
+<td></td>
+<td><input type="image" src="images/continue.png" width="100" height="32"/>
+</tr>
+
+</table>
+	
+</form>
+
+<hr/>
+	
+<p><a href="#" jwcid="@PageLink" page="Home">Return to Home page</a>.</p>
+
+
+
+</body>
+</html>

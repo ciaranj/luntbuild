@@ -1,0 +1,76 @@
+TABLE.error  {
+	border-style : solid;
+	color : Red;
+	font-weight : bold;
+	background-color : #FFFF40;
+	border-width : 1px;
+	border-color : Black;
+	padding : 2px;
+}
+
+INPUT.field-error  {
+	background-color : Red;
+	color : White;
+}
+
+SPAN.label-error  {
+	color : Red;
+}
+
+BODY  {
+	font-family : Trebuchet MS, san serif;
+	font-weight : normal;
+}
+
+SPAN.title  {
+	font-size : large;
+	text-align : center;
+}
+
+SPAN.required-marker  {
+	color : Red;
+	font-weight : bold;
+}
+
+TABLE.form TH  {
+	text-align : right;
+	font-weight : bold;
+}
+
+TABLE.form TH.tall
+{
+	text-align : right;
+	font-weight : bold;
+}
+
+TABLE.form TR  {
+	margin : 0 0 16 16;
+	vertical-align: bottom;
+}
+
+TABLE.form TR.tall
+{
+  vertical-align: top;
+}
+
+TABLE.tapestry-palette TH
+{
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+TABLE.tapestry-palette SELECT
+{
+  font-weight: bold;
+  width: 200px;
+}
+
+TABLE.tapestry-palette TD.controls
+{
+   text-align: center;
+   vertical-align: middle;
+   width: 60px;
+}

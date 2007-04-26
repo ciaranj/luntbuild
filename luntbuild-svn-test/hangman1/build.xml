@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<project name="Tapestry In Action -- Hangman, version 1" default="war">
+
+	<!-- Customize this to match the desired name. -->
+	
+	<property name="project.name" value="hangman1"/>
+	
+	<!-- Find out where other project's distributions are. -->
+	
+	<property file="../common/build.properties"/>
+	
+	<!-- All derived files end up somewhere under target. -->
+	
+	<property name="target.dir" value="target"/>
+	
+	<property name="src.dir" value="src/java"/>
+	<property name="context.dir" value="src/context"/>
+	<property name="conf.dir" value="src/conf"/>
+			
+	<property name="classes.dir" value="${target.dir}/classes"/>
+	<property name="war.file" value="${target.dir}/${project.name}.war"/>
+	
+	<!-- We expect Tomcat 5.0 to be available. -->
+	
+	<property name="servlet.jar" value="${tomcat.dir}/common/lib/servlet-api.jar"/>
+
+		
+	<path id="project.class.path">
+		<fileset dir="../ext-lib" includes="*.jar"/>
+		<fileset dir="../lib" includes="*.jar"/>
+
+		<pathelement location="${servlet.jar}"/>
+	</path>
+	
+	<target name="clean" description="Deletes derived files.">
+		<delete dir="${target.dir}" quiet="true"/>
+	</target>
+	
+	<target name="compile" description="Compile Java classes.">
+		<mkdir dir="${classes.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" debug="on" source="1.4"
+			classpathref="project.class.path"/>
+	</target>
+	
+	<target name="war" depends="compile"
+		description="Compile all classes and build the WAR.">
+		<war warfile="${war.file}" webxml="${context.dir}/WEB-INF/web.xml">
+		
+			<!-- Copy everything in the context directory to the root of the WAR, including
+			     everything in WEB-INF, except for the web.xml, which the <war> task
+			     strangely demands be seperate. -->
+			     
+			<fileset dir="${context.dir}">
+				<exclude name="WEB-INF/web.xml"/>
+	 		</fileset>
+	 		
+	 		<!-- Pick up compiled classes.  These go into WEB-INF/classes.  -->
+	 		
+			<classes dir="${classes.dir}"/>
+						
+			<!-- Pick up properties files and such from the Java source directory. -->
+			
+			<classes dir="${src.dir}">
+				<exclude name="**/*.java"/>
+				<exclude name="**/package.html"/>
+			</classes>
+			
+			<lib dir="../ext-lib" includes="*.jar"/>
+		</war>
+	</target>
+	
+	<target name="deploy" depends="war"
+		description="Deploy the WAR into Tomcat.">
+		
+		<!-- You can deploy elsewhere by setting deploy.dir in the build.properties file. -->
+		
+		<property name="deploy.dir" value="${tomcat.dir}/webapps"/>
+		
+		<copy file="${war.file}" todir="${deploy.dir}"/>
+	</target>
+</project>

@@ -1,0 +1,43 @@
+<body jwcid="@Border" title="Resume Builder">
+
+<span class="title">Resume Builder</span>
+
+<p>Please fill out a few questions so that we can compile your on-line resume.
+</p>
+	
+<span jwcid="@lib:FormError" delegate="ognl:beans.delegate"/>
+
+<form jwcid="@Form" listener="ognl:listeners.formSubmit" delegate="ognl:beans.delegate">
+	
+<table class="form">
+
+<tr>
+<th>Experience:</th>
+<td><select jwcid="inputExperience"/> Years</td>
+</tr>
+
+<tr class="tall">
+<th><span jwcid="labelLanguages">Languages</span>:</th>	
+
+<td><select jwcid="inputLanguages"/>
+
+<p>
+Select the programming languages you are proficient in, and order them by relative level
+of skill.
+</p>	
+	
+</td>
+</tr>
+	
+
+<tr>
+<td>
+<input type="submit" value="Continue"/>	
+</td>	
+</tr>
+
+</table>
+
+</form>
+
+</body>

@@ -1,0 +1,27 @@
+# This file is used to adapt the Ant build files to your particular environment.
+# Modify to match your environment and rename it to "build.properties"
+
+# Absolute path to the directory containing Tomcat 5.0
+# The Servlet API is picked up from within Tomcat.
+# This is also used to deploy the WAR.
+
+tomcat.dir = C:/Program Files/Apache Software Foundation/Tomcat 5.0
+
+# If not using Tomcat, fill in the following:
+
+# The absolute path to a JAR containing the Servlet API.
+# Default is common/lib/servlet.jar under Tomcat
+
+# servlet.jar = . . .
+
+# The absolute path to a directory into which the WAR files should be deployed.
+# Default is webapps under Tomcat.
+
+# deploy.dir = . . .
+
+
+
+
+
+
+

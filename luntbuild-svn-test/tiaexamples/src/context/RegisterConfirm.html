@@ -1,0 +1,30 @@
+<html jwcid="@Shell" title="Registration Confirmation" stylesheet="ognl:assets.stylesheet">
+<body>
+
+<p>Thank you for registering.  Here is the data you entered:</p>
+
+<br/>
+
+<span jwcid="@Insert" value="ognl:address.lastName">Kent</span>,
+<span jwcid="@Insert" value="ognl:address.firstName">Clark</span>
+<br/>
+<span jwcid="@Insert" value="ognl:address.address1">One Gotham Way</span>
+
+<span jwcid="@Conditional" condition="ognl:address.address2">
+<br/>
+<span jwcid="@Insert" value="ognl:address.address2">4th Floor</span>	
+</span>
+
+<br/>
+<span jwcid="@Insert" value="ognl:address.city">Metropolis</span>,
+<span jwcid="@Insert" value="ognl:address.state">DC</span>
+<span jwcid="@Insert" value="ognl:address.zip">01234</span>
+
+<hr/>
+	
+<p><a href="#" jwcid="@PageLink" page="Home">Return to Home page</a>.</p>
+
+
+
+</body>
+</html>

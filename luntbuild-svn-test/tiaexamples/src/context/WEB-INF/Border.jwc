@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE component-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification
+  allow-body="yes" 
+  allow-informal-parameters="yes">
+
+  <parameter name="title" required="yes" type="java.lang.String" direction="in"/>
+	
+  <context-asset name="stylesheet" path="css/style.css"/>
+  
+</component-specification>

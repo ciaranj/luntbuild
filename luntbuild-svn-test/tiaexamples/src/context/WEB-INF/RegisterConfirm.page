@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="examples.register.RegisterConfirm">
+
+  <property-specification name="address" type="examples.register.Address"/>
+  
+  <context-asset name="stylesheet" path="css/style.css"/>
+  
+</page-specification>

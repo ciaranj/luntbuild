@@ -1,0 +1,26 @@
+<html jwcid="@Shell" title="message:title">
+<body>
+
+<h1><span key="title"/></h1>
+
+<span key="blurb">Descriptive text.</span>
+
+<form jwcid="@Form" listener="ognl:listeners.formSubmit">
+
+<span key="language-label">Language</span>:
+<select jwcid="@PropertySelection" value="ognl:engine.locale" model="ognl:localeModel"/>
+
+<p/>
+
+<input type="image"
+	src="images/L10N/Change.png"
+	jwcid="@ImageSubmit" 
+	image="ognl:assets.change"  
+	alt="message:change-label"/>
+</form>
+
+<p><a href="#" jwcid="@PageLink" page="Home"><span key="return-to-home">Return to Home page</span></a>.</p>
+
+
+</body>
+</html>

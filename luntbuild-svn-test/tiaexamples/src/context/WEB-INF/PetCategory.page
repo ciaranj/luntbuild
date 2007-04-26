@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="examples.pets.PetCategory">
+
+  <property-specification name="type" type="java.lang.String"/>
+  
+  <context-asset name="birds" path="images/birds_icon.gif"/>
+  <context-asset name="cats" path="images/cats_icon.gif"/>
+  <context-asset name="dogs" path="images/dogs_icon.gif"/>
+  <context-asset name="fish" path="images/fish_icon.gif"/>
+  <context-asset name="reptiles" path="images/reptiles_icon.gif"/>
+
+</page-specification>

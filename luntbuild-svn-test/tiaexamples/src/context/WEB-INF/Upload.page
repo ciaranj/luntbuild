@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE page-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="examples.upload.Upload">
+
+  <property-specification name="file" type="org.apache.tapestry.request.IUploadFile"/>
+
+</page-specification>

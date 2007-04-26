@@ -1,0 +1,32 @@
+<html jwcid="@Shell" title="Banner Ads Statistics" stylesheet="ognl:assets.stylesheet">
+<body>
+
+<h1>Banner Ad Statistics</h1>
+
+<table class="data">
+	<tr>
+		<th>Id</th>
+		<th>Title</th>
+		<th>Impressions</th>
+		<th>Click-Throughs</th>
+	</tr>
+<tr jwcid="@Foreach" source="ognl:sortedBanners" value="ognl:banner" element="tr">
+	<td><span jwcid="@Insert" value="ognl:banner.id">ID</span></td>
+	<td><span jwcid="@Insert" value="ognl:banner.title">Banner Title</span></td>
+	<td><span jwcid="@Insert" value="ognl:banner.impressions">0</span></td>
+	<td><span jwcid="@Insert" value="ognl:banner.clickThrus">0</span></td>
+</tr>
+</table>
+
+
+<p>
+You may:
+<ul>
+ <li><a href="#" jwcid="@PageLink" page="Home">Return</a> to the Home page</li>	
+ <li><a href="#" jwcid="@PageLink" page="Stats">Refresh</a> this page</li>
+</ul>	
+</p>
+
+</body>
+
+</html>

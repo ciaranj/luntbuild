@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE component-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+	     	
+<component-specification class="bannerads.library.components.BannerAd"
+	allow-body="no"
+	allow-informal-parameters="yes">
+	
+	<reserved-parameter name="href"/>
+	
+</component-specification>

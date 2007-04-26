@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE component-specification PUBLIC 
+	"-//Apache Software Foundation//Tapestry Specification 3.0//EN" 
+	"http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+	     	
+<component-specification
+	allow-body="yes"
+	allow-informal-parameters="no">
+  
+	<context-asset name="stylesheet" path="css/hangman.css"/>
+  
+</component-specification>
