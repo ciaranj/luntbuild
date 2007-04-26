@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<?taglib uri="/WEB-INF/tld/web/core.dsp.tld" prefix="c" ?>
 
 <zk	xmlns="http://www.zkoss.org/2005/zul"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -14,15 +15,15 @@
 			<row>
 				<hbox>
 					<image src="/img/name.gif"/>
-					<label value="Name:"/>
+					<label value="${c:l('vcs.name')}"/>
 				</hbox>
-				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: ${c:l('vcs.name.notempty')}"/>
 				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="View tag:"/>
+					<label value="${c:l('vcs.dyncc.viewtag')}"/>
 				</hbox>
 				<textbox id="dccviewtag" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="dccviewtag-tip"/>
@@ -30,7 +31,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Clearcase view stgloc name:"/>
+					<label value="${c:l('vcs.dyncc.stgloc')}"/>
 				</hbox>
 				<textbox id="dccviewstgloc" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="dccviewstgloc-tip"/>
@@ -38,23 +39,23 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Explicit path for view storage:"/>
+					<label value="${c:l('vcs.dyncc.viewstorage')}"/>
 				</hbox>
-				<textbox id="dccstoragepath" width="250px" value="" constraint="no empty: View storage path cannot be empty"/>
+				<textbox id="dccstoragepath" width="250px" value="" constraint="no empty: ${c:l('vcs.dyncc.viewstorage.noempty')}"/>
 				<button image="/img/icon_help.png" tooltip="dccstoragepath-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Config spec:"/>
+					<label value="${c:l('vcs.dyncc.configspec')}"/>
 				</hbox>
-				<textbox id="dccconfigspec" rows="2" width="250px" value="" constraint="no empty: Config spec cannot be empty"/>
+				<textbox id="dccconfigspec" rows="2" width="250px" value="" constraint="no empty: ${c:l('vcs.dyncc.configspec.noempty')}"/>
 				<button image="/img/icon_help.png" tooltip="dccconfigspec-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Modification detection config:"/>
+					<label value="${c:l('vcs.dyncc.modconfig')}"/>
 				</hbox>
 				<textbox id="dccmodconfigspec" rows="2" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="dccmodconfigspec-tip"/>
@@ -62,7 +63,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Options for mkview command:"/>
+					<label value="${c:l('vcs.dyncc.mkview')}"/>
 				</hbox>
 				<textbox id="dccmkviewopts" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="dccmkviewopts-tip"/>
@@ -70,7 +71,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Path for cleartool executable:"/>
+					<label value="${c:l('vcs.dyncc.cleartool')}"/>
 				</hbox>
 				<textbox id="dccpathcleartool" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="dccpathcleartool-tip"/>
@@ -78,7 +79,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="History format parameters:"/>
+					<label value="${c:l('vcs.dyncc.history')}"/>
 				</hbox>
 				<textbox id="dcchistoryfmt" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="dcchistoryfmt-tip"/>
@@ -86,23 +87,23 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="MVFS path:"/>
+					<label value="${c:l('vcs.dyncc.mvfs')}"/>
 				</hbox>
-				<textbox id="dccmvfspath" width="250px" value="" constraint="no empty: MVFS path cannot be empty"/>
+				<textbox id="dccmvfspath" width="250px" value="" constraint="no empty: ${c:l('vcs.dyncc.mvfs.noempty')}"/>
 				<button image="/img/icon_help.png" tooltip="dccmvfspath-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Project path:"/>
+					<label value="${c:l('vcs.dyncc.project')}"/>
 				</hbox>
-				<textbox id="dccprojectpath" width="250px" value="" constraint="no empty: Project path cannot be empty"/>
+				<textbox id="dccprojectpath" width="250px" value="" constraint="no empty: ${c:l('vcs.dyncc.project.noempty')}"/>
 				<button image="/img/icon_help.png" tooltip="dccprojectpath-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Quiet period:"/>
+					<label value="${c:l('vcs.quietperiod')}"/>
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>

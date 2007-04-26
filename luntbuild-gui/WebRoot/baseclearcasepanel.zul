@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<?taglib uri="/WEB-INF/tld/web/core.dsp.tld" prefix="c" ?>
 
 <zk	xmlns="http://www.zkoss.org/2005/zul"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -14,15 +15,15 @@
 			<row>
 				<hbox>
 					<image src="/img/name.gif"/>
-					<label value="Name:"/>
+					<label value="${c:l('vcs.name')}"/>
 				</hbox>
-				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: ${c:l('vcs.name.notempty')}"/>
 				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="View tag:"/>
+					<label value="${c:l('vcs.bclearcase.viewtag')}"/>
 				</hbox>
 				<textbox id="bccviewtag" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="bccviewtag-tip"/>
@@ -30,7 +31,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Clearcase view stgloc name:"/>
+					<label value="${c:l('vcs.bclearcase.stgloc')}"/>
 				</hbox>
 				<textbox id="bccviewstgloc" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="bccviewstgloc-tip"/>
@@ -38,23 +39,23 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Explicit path for view storage:"/>
+					<label value="${c:l('vcs.bclearcase.viewstorage')}"/>
 				</hbox>
-				<textbox id="bccstoragepath" width="250px" value="" constraint="no empty: VCS name cannot be empty"/>
+				<textbox id="bccstoragepath" width="250px" value="" constraint="no empty: ${c:l('vcs.bclearcase.storage.notempty')}"/>
 				<button image="/img/icon_help.png" tooltip="bccstoragepath-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Config spec:"/>
+					<label value="${c:l('vcs.bclearcase.spec')}"/>
 				</hbox>
-				<textbox id="bccconfigspec" rows="2" width="250px" value="" constraint="no empty: VCS name cannot be empty"/>
+				<textbox id="bccconfigspec" rows="2" width="250px" value="" constraint="no empty: ${c:l('vcs.bclearcase.spec.notempty')}"/>
 				<button image="/img/icon_help.png" tooltip="bccconfigspec-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Modification detection config:"/>
+					<label value="${c:l('vcs.bclearcase.modconfig')}"/>
 				</hbox>
 				<textbox id="bccmodconfigspec" rows="2" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="bccmodconfigspec-tip"/>
@@ -62,7 +63,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Options for mkview command:"/>
+					<label value="${c:l('vcs.bclearcase.mkviewopts')}"/>
 				</hbox>
 				<textbox id="bccmkviewopts" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="bccmkviewopts-tip"/>
@@ -70,7 +71,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Path for cleartool executable:"/>
+					<label value="${c:l('vcs.bclearcase.path')}"/>
 				</hbox>
 				<textbox id="bccpathcleartool" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="bccpathcleartool-tip"/>
@@ -78,7 +79,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="History format parameters:"/>
+					<label value="${c:l('vcs.bclearcase.history')}"/>
 				</hbox>
 				<textbox id="bcchistoryfmt" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="bcchistoryfmt-tip"/>
@@ -86,7 +87,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Quiet period:"/>
+					<label value="${c:l('vcs.quietperiod')}"/>
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>

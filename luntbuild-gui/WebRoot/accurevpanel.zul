@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<?taglib uri="/WEB-INF/tld/web/core.dsp.tld" prefix="c" ?>
 
 <zk	xmlns="http://www.zkoss.org/2005/zul"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -74,15 +75,15 @@ accurevModulesList.add(new AccurevModuleListItem("mymodule", "mylabel", "mydepot
 			<row>
 				<hbox>
 					<image src="/img/name.gif"/>
-					<label value="Name:"/>
+					<label value="${c:l('vcs.name')}"/>
 				</hbox>
-				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: ${c:l('vcs.name.notempty')}"/>
 				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="User:"/>
+					<label value="${c:l('vcs.accurev.user')}"/>
 				</hbox>
 				<textbox id="accurevuser" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="accurevuser-tip"/>
@@ -90,7 +91,7 @@ accurevModulesList.add(new AccurevModuleListItem("mymodule", "mylabel", "mydepot
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Password:"/>
+					<label value="${c:l('vcs.accurev.password')}"/>
 				</hbox>
 				<textbox id="accurevpasswd" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="accurevpasswd-tip"/>
@@ -98,22 +99,22 @@ accurevModulesList.add(new AccurevModuleListItem("mymodule", "mylabel", "mydepot
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Quiet period:"/>
+					<label value="${c:l('vcs.quietperiod')}"/>
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
 			</row>
 			<row spans="2,1">
 				<groupbox mold="3d" open="true">
-					<caption label="Modules"/>
+					<caption label="${c:l('vcs.modules')}"/>
 					<vbox>
 						<listbox id="accurevmoduleslist" rows="2">
 							<listhead>
-								<listheader width="200px" label="Module path"/>
-								<listheader width="100px" label="Label"/>
-								<listheader width="100px" label="Depot"/>
-								<listheader width="100px" label="Backing stream"/>
-								<listheader width="100px" label="Build stream"/>
+								<listheader width="200px" label="${c:l('vcs.accurev.modulepath')}"/>
+								<listheader width="100px" label="${c:l('vcs.accurev.label')}"/>
+								<listheader width="100px" label="${c:l('vcs.accurev.depot')}"/>
+								<listheader width="100px" label="${c:l('vcs.accurev.backing')}"/>
+								<listheader width="100px" label="${c:l('vcs.accurev.build')}"/>
 								<listheader width="20px" label="X"/>
 							</listhead>
 							<listitem forEach="${accurevModulesList}" value="${each.path}">
@@ -141,20 +142,20 @@ accurevModulesList.add(new AccurevModuleListItem("mymodule", "mylabel", "mydepot
 							</columns>
 							<rows>
 								<row>
-									<label value="Module path:"/>
+									<label value="${c:l('vcs.accurev.modulepath')}:"/>
 									<textbox id="accurevmodulepath" width="150px"/>
-									<label value="Label:"/>
+									<label value="${c:l('vcs.accurev.label')}:"/>
 									<textbox id="accurevmodulelabel" width="150px"/>
 								</row>
 								<row>
-									<label value="Depot:"/>
-									<textbox id="accurevmoduledepot" width="150px" constraint="no empty: depot cannot be empty"/>
-									<label value="Backing stream:"/>
-									<textbox id="accurevmodulebacking" width="150px" constraint="no empty: backing stream cannot be empty"/>
+									<label value="${c:l('vcs.accurev.depot')}:"/>
+									<textbox id="accurevmoduledepot" width="150px" constraint="no empty: ${c:l('vcs.accurev.depot.notempty')}"/>
+									<label value="${c:l('vcs.accurev.backing')}:"/>
+									<textbox id="accurevmodulebacking" width="150px" constraint="no empty: ${c:l('vcs.accurev.backing.notempty')}"/>
 								</row>
 								<row>
-									<label value="Build stream:"/>
-									<textbox id="accurevmodulebuild" width="150px"  constraint="no empty: build stream cannot be empty"/>
+									<label value="${c:l('vcs.accurev.build')}:"/>
+									<textbox id="accurevmodulebuild" width="150px"  constraint="no empty: ${c:l('vcs.accurev.build.notempty')}"/>
 								</row>
 							</rows>
 						</grid>

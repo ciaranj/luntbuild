@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<?taglib uri="/WEB-INF/tld/web/core.dsp.tld" prefix="c" ?>
+
 <zk	xmlns="http://www.zkoss.org/2005/zul"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
@@ -15,19 +17,19 @@
 		<attribute name="content"><![CDATA[<h3><center>Build build-1234.56</center></h3>]]></attribute>
 	</html>
     <groupbox>
-		<caption sclass="logReports" label="Log Reports"/>
-		<toolbarbutton sclass="logReports" label="JUnit Report" href=""/>
+		<caption sclass="logReports" label="${c:l('build.panel.logcaption')}"/>
+		<toolbarbutton sclass="logReports" label="${c:l('build.panel.junit')}" href=""/>
 		<space bar="true" spacing="15px"/>
-		<toolbarbutton sclass="logReports" label="Build Log" href=""/>
+		<toolbarbutton sclass="logReports" label="${c:l('build.panel.buildlog')}" href=""/>
 		<space bar="true" spacing="15px"/>
-		<toolbarbutton sclass="logReports" label="Revision Log" href=""/>
+		<toolbarbutton sclass="logReports" label="${c:l('build.panel.revisionlog')}" href=""/>
 	</groupbox>
     <grid>
 		<columns>
-			<column label="Project"/>
-			<column label="VCS"/>
-			<column label="Builders"/>
-			<column label="Schedule"/>
+			<column label="${c:l('build.panel.project')}"/>
+			<column label="${c:l('build.panel.vcs')}"/>
+			<column label="${c:l('build.panel.builders')}"/>
+			<column label="${c:l('build.panel.schedule')}"/>
 		</columns>
 		<rows>
 			<row>
@@ -44,16 +46,16 @@
     </grid>
 	<grid>
 		<columns>
-			<column label="Status"/>
-			<column label="Start Date"/>
-			<column label="Finish Date"/>
-			<column label="Duration"/>
+			<column label="${c:l('build.panel.status')}"/>
+			<column label="${c:l('build.panel.startdate')}"/>
+			<column label="${c:l('build.panel.finishdate')}"/>
+			<column label="${c:l('build.panel.duration')}"/>
 		</columns>
 		<rows>
 			<row>
 				<hbox>
 				    <image src="/img/success.gif"/>
-					<label value="Success"/>
+					<label value="${c:l('build.status.success')}"/>
 				</hbox>
 				<label value="2007-02-25 15:20"/>
 				<label value="2007-02-25 15:30"/>
@@ -72,25 +74,25 @@
 		  }
 		</zscript>
 		<zscript>
+		  String success=org.zkoss.util.resource.Labels.getLabel("build.status.success");
+		  String failed=org.zkoss.util.resource.Labels.getLabel("build.status.failed");
 		  PieModel piemodel = new SimplePieModel();
-		  piemodel.setValue("Failure", new Double(34.5));
-		  piemodel.setValue("Success", new Double(65.5));
+		  piemodel.setValue(success, new Double(34.5));
+		  piemodel.setValue(failed, new Double(65.5));
+		  CategoryModel catmodel = new SimpleCategoryModel();
+		  catmodel.setValue(failed, "January", new Integer(5));
+		  catmodel.setValue(failed, "February", new Integer(4));
+		  catmodel.setValue(failed, "March", new Integer(6));
+		  catmodel.setValue(success, "January", new Integer(20));
+		  catmodel.setValue(success, "February", new Integer(35));
+		  catmodel.setValue(success, "March", new Integer(40));
 		</zscript>
-		<chart id="buildchart" title="Build Success Chart" width="250" height="200"
+		<chart id="buildchart" title="${c:l('build.panel.buildchart')}" width="250" height="200"
 			type="pie" threeD="true" fgAlpha="128" onClick="drilldown()"/>
 		<zscript>
 		  buildchart.setModel(piemodel);
 		</zscript>
-		<zscript>
-		CategoryModel catmodel = new SimpleCategoryModel();
-		catmodel.setValue("Failure", "January", new Integer(5));
-		catmodel.setValue("Failure", "February", new Integer(4));
-		catmodel.setValue("Failure", "March", new Integer(6));
-		catmodel.setValue("Success", "January", new Integer(20));
-		catmodel.setValue("Success", "February", new Integer(35));
-		catmodel.setValue("Success", "March", new Integer(40));
-		</zscript>
-		<chart id="buildchartbar" title="Last three months" width="250" height="200"
+		<chart id="buildchartbar" title="${c:l('build.panel.last3months')}" width="250" height="200"
 			 type="stacked_bar" threeD="true" fgAlpha="128" onClick="drilldown()"/>
 		<zscript>
 		  buildchartbar.setModel(catmodel);

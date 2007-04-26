@@ -1,39 +1,36 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<?taglib uri="/WEB-INF/tld/web/core.dsp.tld" prefix="c" ?>
+
 <zk	xmlns="http://www.zkoss.org/2005/zul"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 	<popup id="smtphost-tip" width="400px">
 		<vbox>
-			You can optionally specify the SMTP mail host used by Luntbuild to send email.
-			If this property is not specified, Luntbuild will use localhost as the default value.
+		${c:l('emailprefs.smtphost-tip')}
 		</vbox>
 	</popup>
 	<popup id="smtpport-tip" width="400px">
 		<vbox>
-			You can optionally specify the SMTP mail port used by Luntbuild to send email.
-			If this property is not specified, Luntbuild will use the default value.
+		${c:l('emailprefs.smtpport-tip')}
 		</vbox>
 	</popup>
 	<popup id="smtpuser-tip" width="400px">
 		<vbox>
-			This property is optional. If the SMTP host needs authentication,
-			you should provide the user name here.
+		${c:l('emailprefs.smtpuser-tip')}
 		</vbox>
 	</popup>
 	<popup id="smtppasswd-tip" width="400px">
 		<vbox>
-			This property is optional. If the SMTP host needs authentication, you should provide the password here.
+		${c:l('emailprefs.smtppasswd-tip')}
 		</vbox>
 	</popup>
 	<popup id="emailaddress-tip" width="400px">
 		<vbox>
-			This property is optional. If specified, Luntbuild will use this email as the sender address
-			when sending out email notifications. Otherwise, the sender address will be
-			&quot;luntbuild@&lt;hostname&gt;&quot;, where &lt;hostname&gt; is the host name of the build machine.
+		${c:l('emailprefs.emailaddress-tip')}
 		</vbox>
 	</popup>
 
-	Set the Email related properties here if you want to notify user by Email.
+	${c:l('emailprefs.notice')}
 	<grid>
 		<columns>
 			<column/>
@@ -42,27 +39,27 @@
 		</columns>
 		<rows>
 			<row>
-				<label value="SMTP host:"/>
+				<label value="${c:l('emailprefs.host')}"/>
 				<textbox id="smtphost" width="150px" value=""/>
 				<button image="/img/icon_help.png" tooltip="smtphost-tip"/>
 			</row>
 			<row>
-				<label value="SMTP port:"/>
-				<intbox id="smtpport" width="150px" constraint="no negative,no zero"/>
+				<label value="${c:l('emailprefs.port')}"/>
+				<intbox id="smtpport" width="150px" value="25" constraint="no negative,no zero"/>
 				<button image="/img/icon_help.png" tooltip="smtpport-tip"/>
 			</row>
 			<row>
-				<label value="SMTP user:"/>
+				<label value="${c:l('emailprefs.user')}"/>
 				<textbox id="smtpuser" width="150px" value=""/>
 				<button image="/img/icon_help.png" tooltip="smtpuser-tip"/>
 			</row>
 			<row>
-				<label value="SMTP password:"/>
+				<label value="${c:l('emailprefs.password')}"/>
 				<textbox id="smtppasswd" width="150px" value=""/>
 				<button image="/img/icon_help.png" tooltip="smtppasswd-tip"/>
 			</row>
 			<row>
-				<label value="Email address of the sender:"/>
+				<label value="${c:l('emailprefs.sender')}"/>
 				<textbox id="emailaddress" width="150px" value=""/>
 				<button image="/img/icon_help.png" tooltip="emailaddress-tip"/>
 			</row>
@@ -70,7 +67,7 @@
 	</grid>
 	<separator/>
 	<hbox>
-		<button label="OK" onClick=""/>
-		<button label="Cancel" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
+		<button label="${c:l('constants.ok')}" onClick=""/>
+		<button label="${c:l('constants.cancel')}" onClick="self.parent.parent.parent.visible = false; event.stopPropagation();"/>
 	</hbox>
 </zk>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<?taglib uri="/WEB-INF/tld/web/core.dsp.tld" prefix="c" ?>
 
 <zk	xmlns="http://www.zkoss.org/2005/zul"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -62,23 +63,23 @@ cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
 			<row>
 				<hbox>
 					<image src="/img/name.gif"/>
-					<label value="Name:"/>
+					<label value="${c:l('vcs.name')}"/>
 				</hbox>
-				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: ${c:l('vcs.name.notempty')}"/>
 				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Cvs root:"/>
+					<label value="${c:l('vcs.cvs.root')}"/>
 				</hbox>
-				<textbox id="cvsroot" width="250px" value="" constraint="no empty: CVS root cannot be empty"/>
+				<textbox id="cvsroot" width="250px" value="" constraint="no empty: ${c:l('vcs.cvs.root.noempty')}"/>
 				<button image="/img/icon_help.png" tooltip="cvsroot-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Cvs password:"/>
+					<label value="${c:l('vcs.cvs.password')}"/>
 				</hbox>
 				<textbox id="cvspassword" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="cvspassword-tip"/>
@@ -86,40 +87,40 @@ cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Is cygwin cvs?:"/>
+					<label value="${c:l('vcs.cvs.iscygwin')}"/>
 				</hbox>
 				<radiogroup id="cvscygwin">
-					<radio label="Yes"/>
-					<radio label="No" selected="true"/>
+					<radio label="${c:l('constants.yes')}"/>
+					<radio label="${c:l('constants.no')}" selected="true"/>
 				</radiogroup>
 				<button image="/img/icon_help.png" tooltip="cvscygwin-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Disable '-S' option for log command?:"/>
+					<label value="${c:l('vcs.cvs.disable-s')}"/>
 				</hbox>
 				<radiogroup id="cvssoption">
-					<radio label="Yes"/>
-					<radio label="No" selected="true"/>
+					<radio label="${c:l('constants.yes')}"/>
+					<radio label="${c:l('constants.no')}" selected="true"/>
 				</radiogroup>
 				<button image="/img/icon_help.png" tooltip="cvssoption-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Disable history command?:"/>
+					<label value="${c:l('vcs.cvs.disable.history')}"/>
 				</hbox>
 				<radiogroup id="cvshistory">
-					<radio label="Yes"/>
-					<radio label="No" selected="true"/>
+					<radio label="${c:l('constants.yes')}"/>
+					<radio label="${c:l('constants.no')}" selected="true"/>
 				</radiogroup>
 				<button image="/img/icon_help.png" tooltip="cvshistory-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Path for cvs executable:"/>
+					<label value="${c:l('vcs.cvs.executable')}"/>
 				</hbox>
 				<textbox id="cvsexecutable" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="cvsexecutable-tip"/>
@@ -127,7 +128,7 @@ cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Cvs additional options:"/>
+					<label value="${c:l('vcs.cvs.options')}"/>
 				</hbox>
 				<textbox id="cvsoptions" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="cvsoptions-tip"/>
@@ -135,20 +136,20 @@ cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Quiet period:"/>
+					<label value="${c:l('vcs.quietperiod')}"/>
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>
 			</row>
 			<row spans="2,1">
 				<groupbox mold="3d" open="true">
-					<caption label="Modules"/>
+					<caption label="${c:l('vcs.modules')}"/>
 					<vbox>
 						<listbox id="cvsmoduleslist" rows="2">
 							<listhead>
-								<listheader width="250px" label="Source path"/>
-								<listheader width="150px" label="Branch"/>
-								<listheader width="150px" label="Label"/>
+								<listheader width="250px" label="${c:l('vcs.cvs.sourcepath')}"/>
+								<listheader width="150px" label="${c:l('vcs.cvs.branch')}"/>
+								<listheader width="150px" label="${c:l('vcs.cvs.label')}"/>
 								<listheader width="20px" label="X"/>
 							</listhead>
 							<listitem forEach="${cvsModulesList}" value="${each.path}">
@@ -172,20 +173,20 @@ cvsModulesList.add(new CvsModuleListItem("mymodule", "mybranch", "mylabel"));
 							</columns>
 							<rows>
 								<row>
-									<label value="Source path:"/>
-									<textbox id="cvsmodulepath" width="150px" constraint="no empty: CVS source path cannot be empty"/>
+									<label value="${c:l('vcs.cvs.sourcepath')}:"/>
+									<textbox id="cvsmodulepath" width="150px" constraint="no empty: ${c:l('vcs.cvs.sourcepath.noempty')}"/>
 								</row>
 								<row>
-									<label value="Branch:"/>
+									<label value="${c:l('vcs.cvs.branch')}:"/>
 									<textbox id="cvsmodulebranch" width="150px"/>
 								</row>
 								<row>
-									<label value="Label:"/>
+									<label value="${c:l('vcs.cvs.label')}:"/>
 									<textbox id="cvsmodulelabel" width="150px"/>
 								</row>
 							</rows>
 						</grid>
-						<button label="Add" onClick="addCvsModule()"/>
+						<button label="${c:l('constants.add')}" onClick="addCvsModule()"/>
 					</vbox>
 				</groupbox>
 				<button image="/img/icon_help.png" tooltip="cvsmodules-tip"/>

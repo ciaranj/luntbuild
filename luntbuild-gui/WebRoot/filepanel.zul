@@ -14,15 +14,16 @@
 			<row>
 				<hbox>
 					<image src="/img/name.gif"/>
-					<label value="Name:"/>
+					<label value="${c:l('vcs.name')}"/>
 				</hbox>
-				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}" constraint="no empty: VCS name cannot be empty"/>
+				<textbox id="${arg.type}vcsname" width="150px" value="${arg.name}"
+					constraint="no empty: ${c:l('vcs.name.notempty')}"/>
 				<button image="/img/icon_help.png" tooltip="vcsname-tip"/>
 			</row>
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Source directory:"/>
+					<label value="${c:l('vcs.file.sourcedir')}"/>
 				</hbox>
 				<textbox id="filesourcedir" width="250px" value=""/>
 				<button image="/img/icon_help.png" tooltip="filesourcedir-tip"/>
@@ -30,7 +31,7 @@
 			<row>
 				<hbox>
 					<image src="/img/property.gif"/>
-					<label value="Quiet period:"/>
+					<label value="${c:l('vcs.quietperiod')}"/>
 				</hbox>
 				<intbox id="${arg.type}quietperiod" width="150px" value="60"/>
 				<button image="/img/icon_help.png" tooltip="quietperiod-tip"/>

@@ -6,9 +6,9 @@ Purpose:
 Description:
 	
 Histroy:
-	Mon Jun 20 20:57:56     2005, Created by tomyeh@potix.com
+	Tue Sep 12 15:14:51     2006, Created by tomyeh
 
-Copyright (C) 2005 Potix Corporation. All Rights Reserved.
+Copyright (C) 2006 Potix Corporation. All Rights Reserved.
 -->
 
 <taglib>
@@ -16,4 +16,25 @@ Copyright (C) 2005 Potix Corporation. All Rights Reserved.
 	Methods and actions for ZUL in DSP/ZUML
 	</description>
 
+	<function>
+		<name>getColAttrs</name>
+		<function-class>org.zkoss.zul.fn.ZulFns</function-class>
+		<function-signature>
+	java.lang.String getColAttrs(org.zkoss.zul.Row, int)
+		</function-signature>
+		<description>
+	Returns the attribute used for the cell of the specified row and index.
+		</description>
+	</function>
+	<function>
+		<name>getBoxChildAttrs</name>
+		<function-class>org.zkoss.zul.fn.ZulFns</function-class>
+		<function-signature>
+	java.lang.String getBoxChildAttrs(org.zkoss.zk.ui.Component)
+		</function-signature>
+		<description>
+	Returns the attributes used for the cell of the specified child
+	when it is placed inside of hbox/vobx.
+		</description>
+	</function>
 </taglib>

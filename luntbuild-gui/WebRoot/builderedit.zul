@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<?taglib uri="/WEB-INF/tld/web/core.dsp.tld" prefix="c" ?>
 
 <zk	xmlns="http://www.zkoss.org/2005/zul"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -7,7 +8,7 @@
 
 	<popup id="buildername-tip" width="500px">
 		<vbox>
-		Provide a name to identify this builder, this name can be changed later.
+		${c:l('builder.edit.name-tip')}
 	   </vbox>
 	</popup>
 	<popup id="buildercmd-tip" width="500px">
@@ -101,8 +102,7 @@ For valid OGNL expressions in this context, please refer to the User's Guide.
 		<vbox>
 			<html>
 		      <attribute name="content"><![CDATA[
-The build success condition is an OGNL expression used to determine if the build of the current project was successful.
-If left empty, the "result==0" value is assumed. Refer to the User's Guide for details.
+		      ${c:l('builder.edit.condition-tip')}
 			  ]]></attribute>
 		    </html>
 	   </vbox>
@@ -110,12 +110,12 @@ If left empty, the "result==0" value is assumed. Refer to the User's Guide for d
 
 	<tabbox id="buildertabs" style="border: 0px" width="100%" onCreate="loadBuilderTabData()" onSelect="loadBuilderTabData()">
 		<tabs>
-			<tab id="tab_ant" label="Ant" selected="true"/>
-			<tab id="tab_maven1" label="Maven1"/>
-			<tab id="tab_maven2" label="Maven2"/>
-			<tab id="tab_command" label="Command"/>
-			<tab id="tab_nant" label="NAnt"/>
-			<tab id="tab_rake" label="Rake"/>
+			<tab id="tab_ant" label="${c:l('builderedit.tab.ant')}" selected="true"/>
+			<tab id="tab_maven1" label="${c:l('builderedit.tab.maven1')}"/>
+			<tab id="tab_maven2" label="${c:l('builderedit.tab.maven2')}"/>
+			<tab id="tab_command" label="${c:l('builderedit.tab.command')}"/>
+			<tab id="tab_nant" label="${c:l('builderedit.tab.nant')}"/>
+			<tab id="tab_rake" label="${c:l('builderedit.tab.rake')}"/>
 		</tabs>
 		<tabpanels>
 			<tabpanel id="anttab"/>
