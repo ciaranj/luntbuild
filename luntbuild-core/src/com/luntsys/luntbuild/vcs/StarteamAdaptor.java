@@ -29,9 +29,9 @@ package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.facades.lb12.StarteamAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.StarteamModuleFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.facades.lb20.StarteamAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb20.StarteamModuleFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.utility.*;
 import com.luntsys.luntbuild.ant.starteam.StarTeamCheckout;
 import com.luntsys.luntbuild.ant.starteam.StarTeamLabel;
@@ -442,7 +442,7 @@ public class StarteamAdaptor extends Vcs {
 			this.destPath = destPath;
 		}
 
-		public com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade() {
+		public com.luntsys.luntbuild.facades.lb20.ModuleFacade getFacade() {
 			StarteamModuleFacade facade = new StarteamModuleFacade();
 			facade.setStarteamView(getStarteamView());
 			facade.setDestPath(getDestPath());
@@ -452,7 +452,7 @@ public class StarteamAdaptor extends Vcs {
 			return facade;
 		}
 
-		public void setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade facade) {
+		public void setFacade(com.luntsys.luntbuild.facades.lb20.ModuleFacade facade) {
 			if (facade instanceof StarteamModuleFacade) {
 				StarteamModuleFacade starteamModuleFacade = (StarteamModuleFacade) facade;
 				setStarteamView(starteamModuleFacade.getStarteamView());
@@ -465,7 +465,7 @@ public class StarteamAdaptor extends Vcs {
 		}
 	}
 
-	public void saveToFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
+	public void saveToFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade facade) {
 		StarteamAdaptorFacade starteamFacade = (StarteamAdaptorFacade) facade;
 		starteamFacade.setConvertEOL(getConvertEOL());
 		starteamFacade.setPassword(getPassword());
@@ -473,7 +473,7 @@ public class StarteamAdaptor extends Vcs {
 		starteamFacade.setUser(getUser());
 	}
 
-	public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
+	public void loadFromFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade facade) {
 		if (!(facade instanceof StarteamAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
 		StarteamAdaptorFacade starteamFacade = (StarteamAdaptorFacade) facade;

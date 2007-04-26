@@ -30,8 +30,7 @@ package com.luntsys.luntbuild.db;
 import com.luntsys.luntbuild.BuildGenerator;
 import com.luntsys.luntbuild.facades.BuildParams;
 import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.facades.lb12.ScheduleFacade;
-import com.luntsys.luntbuild.builders.Builder;
+import com.luntsys.luntbuild.facades.lb20.ScheduleFacade;
 import com.luntsys.luntbuild.dependency.DependentNode;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
@@ -499,8 +498,8 @@ public class Schedule implements DependentNode {
             return getWorkDirRaw() + File.separator + filePath;
     }
 
-    public com.luntsys.luntbuild.facades.lb12.ScheduleFacade getFacade() {
-        com.luntsys.luntbuild.facades.lb12.ScheduleFacade facade = new ScheduleFacade();
+    public com.luntsys.luntbuild.facades.lb20.ScheduleFacade getFacade() {
+        com.luntsys.luntbuild.facades.lb20.ScheduleFacade facade = new ScheduleFacade();
         facade.setId(getId());
         facade.setName(getName());
         facade.setDescription(getDescription());

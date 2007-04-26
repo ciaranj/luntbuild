@@ -34,7 +34,7 @@ import com.luntsys.luntbuild.ant.perforce.P4Labelsync;
 import com.luntsys.luntbuild.ant.perforce.P4Base;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.facades.lb12.PerforceModuleFacade;
+import com.luntsys.luntbuild.facades.lb20.PerforceModuleFacade;
 import com.luntsys.luntbuild.utility.*;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -487,16 +487,16 @@ public class PerforceAdaptor extends Vcs {
             this.clientPath = clientPath;
         }
 
-        public com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade() {
-            PerforceModuleFacade facade = new com.luntsys.luntbuild.facades.lb12.PerforceModuleFacade();
+        public com.luntsys.luntbuild.facades.lb20.ModuleFacade getFacade() {
+            PerforceModuleFacade facade = new com.luntsys.luntbuild.facades.lb20.PerforceModuleFacade();
             facade.setClientPath(getClientPath());
             facade.setDepotPath(getDepotPath());
             facade.setLabel(getLabel());
             return facade;
         }
 
-        public void setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade facade) {
-            if (facade instanceof com.luntsys.luntbuild.facades.lb12.PerforceModuleFacade) {
+        public void setFacade(com.luntsys.luntbuild.facades.lb20.ModuleFacade facade) {
+            if (facade instanceof com.luntsys.luntbuild.facades.lb20.PerforceModuleFacade) {
                 PerforceModuleFacade perforceModuleFacade = (PerforceModuleFacade) facade;
                 setClientPath(perforceModuleFacade.getClientPath());
                 setDepotPath(perforceModuleFacade.getDepotPath());
@@ -506,8 +506,8 @@ public class PerforceAdaptor extends Vcs {
         }
     }
 
-    public void saveToFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
-        com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade perforceFacade = (com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade) facade;
+    public void saveToFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade facade) {
+        com.luntsys.luntbuild.facades.lb20.PerforceAdaptorFacade perforceFacade = (com.luntsys.luntbuild.facades.lb20.PerforceAdaptorFacade) facade;
         perforceFacade.setLineEnd(getLineEnd());
         perforceFacade.setPassword(getPassword());
         perforceFacade.setPort(getPort());
@@ -515,10 +515,10 @@ public class PerforceAdaptor extends Vcs {
 		perforceFacade.setP4Dir(getP4Dir());
     }
 
-    public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade))
+    public void loadFromFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade facade) {
+        if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.PerforceAdaptorFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade perforceFacade = (com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade) facade;
+        com.luntsys.luntbuild.facades.lb20.PerforceAdaptorFacade perforceFacade = (com.luntsys.luntbuild.facades.lb20.PerforceAdaptorFacade) facade;
         setLineEnd(perforceFacade.getLineEnd());
         setPassword(perforceFacade.getPassword());
         setPort(perforceFacade.getPort());
@@ -526,7 +526,7 @@ public class PerforceAdaptor extends Vcs {
 		setP4Dir(perforceFacade.getP4Dir());
     }
 
-	public com.luntsys.luntbuild.facades.lb12.VcsFacade constructFacade() {
-		return new com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade();
+	public com.luntsys.luntbuild.facades.lb20.VcsFacade constructFacade() {
+		return new com.luntsys.luntbuild.facades.lb20.PerforceAdaptorFacade();
 	}
 }

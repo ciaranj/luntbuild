@@ -30,8 +30,8 @@ package com.luntsys.luntbuild.vcs;
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade;
+import com.luntsys.luntbuild.facades.lb20.SvnExeAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb20.SvnExeModuleFacade;
 import com.luntsys.luntbuild.utility.*;
 
 import org.apache.tools.ant.BuildException;
@@ -566,8 +566,8 @@ public class SvnExeAdaptor extends Vcs {
 			return properties;
 		}
 
-		public com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade() {
-			SvnExeModuleFacade facade = new com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade();
+		public com.luntsys.luntbuild.facades.lb20.ModuleFacade getFacade() {
+			SvnExeModuleFacade facade = new com.luntsys.luntbuild.facades.lb20.SvnExeModuleFacade();
 			facade.setBranch(getBranch());
 			facade.setDestPath(getDestPath());
 			facade.setLabel(getLabel());
@@ -575,9 +575,9 @@ public class SvnExeAdaptor extends Vcs {
 			return facade;
 		}
 
-		public void setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade facade) {
-			if (facade instanceof com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade) {
-				SvnExeModuleFacade svnModuleFacade = (com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade) facade;
+		public void setFacade(com.luntsys.luntbuild.facades.lb20.ModuleFacade facade) {
+			if (facade instanceof com.luntsys.luntbuild.facades.lb20.SvnExeModuleFacade) {
+				SvnExeModuleFacade svnModuleFacade = (com.luntsys.luntbuild.facades.lb20.SvnExeModuleFacade) facade;
 				setBranch(svnModuleFacade.getBranch());
 				setLabel(svnModuleFacade.getLabel());
 				setSrcPath(svnModuleFacade.getSrcPath());
@@ -587,7 +587,7 @@ public class SvnExeAdaptor extends Vcs {
 		}
 	}
 
-	public void saveToFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
+	public void saveToFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade facade) {
 		SvnExeAdaptorFacade svnFacade = (SvnExeAdaptorFacade) facade;
 		svnFacade.setTrunk(getTrunk());
 		svnFacade.setBranches(getBranches());
@@ -598,11 +598,11 @@ public class SvnExeAdaptor extends Vcs {
 		svnFacade.setSvnDir(getSvnDir());
 	}
 
-	public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade))
+	public void loadFromFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade facade) {
+		if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.SvnExeAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade svnFacade =
-            (com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade) facade;
+		com.luntsys.luntbuild.facades.lb20.SvnExeAdaptorFacade svnFacade =
+            (com.luntsys.luntbuild.facades.lb20.SvnExeAdaptorFacade) facade;
 		setTrunk(svnFacade.getTrunk());
 		setBranches(svnFacade.getBranches());
 		setPassword(svnFacade.getPassword());
@@ -612,7 +612,7 @@ public class SvnExeAdaptor extends Vcs {
 		setSvnDir(svnFacade.getSvnDir());
 	}
 
-	public com.luntsys.luntbuild.facades.lb12.VcsFacade constructFacade() {
+	public com.luntsys.luntbuild.facades.lb20.VcsFacade constructFacade() {
 		return new SvnExeAdaptorFacade();
 	}
 }

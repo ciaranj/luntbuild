@@ -28,8 +28,8 @@
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.ant.Commandline;
-import com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.utility.*;
@@ -72,7 +72,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 	/**
 	 * Config to detect modifications. This is used to dertermine whether or not need to
 	 * perform next build. This property will not take effect when {@link whatToBuild}
-	 * is not of value {@link com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade#BUILD_LATEST}
+	 * is not of value {@link com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade#BUILD_LATEST}
 	 */
 	private String modificationDetectionConfig;
 
@@ -183,10 +183,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 		Matcher matcher = reservedPattern.matcher(getWhatToBuild());
 		if (matcher.find()) {
 			String reserved = matcher.group(1).trim();
-			if (!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES) &&
-					!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST) &&
-					!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST_BASELINES) &&
-					!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_RECOMMENDED_BASELINES))
+			if (!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES) &&
+					!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BUILD_LATEST) &&
+					!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BUILD_LATEST_BASELINES) &&
+					!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BUILD_RECOMMENDED_BASELINES))
 				throw new ValidationException("Invalid reserved values for \"what to build\" property!");
 		}
 		if ((Luntbuild.isEmpty(viewStgLoc)) && Luntbuild.isEmpty(vws))
@@ -221,15 +221,15 @@ public class UCMClearcaseAdaptor extends Vcs {
 		Matcher matcher = reservedPattern.matcher(getWhatToBuild());
 		if (matcher.find()) {
 			String reserved = matcher.group(1).trim();
-			if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST)) {
-				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_LATEST, antProject);
+			if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BUILD_LATEST)) {
+				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BASELINE_LATEST, antProject);
 				cfgSpec += "element * .../" + getStream() + "/LATEST\n";
-			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES)) {
-				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_FOUNDATION, antProject);
-			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST_BASELINES)) {
-				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_LATEST, antProject);
-			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_RECOMMENDED_BASELINES)) {
-				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_RECOMMENDED, antProject);
+			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES)) {
+				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BASELINE_FOUNDATION, antProject);
+			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BUILD_LATEST_BASELINES)) {
+				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BASELINE_LATEST, antProject);
+			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BUILD_RECOMMENDED_BASELINES)) {
+				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade.BASELINE_RECOMMENDED, antProject);
 			} else
 				throw new BuildException("Invalid reserved value for what to build property: " +
 						getWhatToBuild());
@@ -282,8 +282,8 @@ public class UCMClearcaseAdaptor extends Vcs {
 	 *
 	 * @param baselineType specifies what type of baselines you want to retrieve,
 	 *                     possible values are {@link UCMClearcaseAdaptorFacade#BASELINE_FOUNDATION},
-	 *                     {@link com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade#BASELINE_LATEST},
-	 *                     and {@link com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade#BASELINE_RECOMMENDED}
+	 *                     {@link com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade#BASELINE_LATEST},
+	 *                     and {@link com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade#BASELINE_RECOMMENDED}
 	 * @param antProject   the ant antProject
 	 * @return
 	 * @throws BuildException
@@ -518,7 +518,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 	}
 
 	public void saveToFacade(VcsFacade facade) {
-		UCMClearcaseAdaptorFacade ucmClearcaseFacade = (com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade) facade;
+		UCMClearcaseAdaptorFacade ucmClearcaseFacade = (com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade) facade;
 		ucmClearcaseFacade.setMkviewExtraOpts(getMkviewExtraOpts());
 		ucmClearcaseFacade.setModificationDetectionConfig(getModificationDetectionConfig());
 		ucmClearcaseFacade.setProjectVob(getProjectVob());
@@ -529,10 +529,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 		ucmClearcaseFacade.setCleartoolDir(getCleartoolDir());
 	}
 
-	public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade))
+	public void loadFromFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade facade) {
+		if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		UCMClearcaseAdaptorFacade ucmClearcaseFacade = (com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade) facade;
+		UCMClearcaseAdaptorFacade ucmClearcaseFacade = (com.luntsys.luntbuild.facades.lb20.UCMClearcaseAdaptorFacade) facade;
 		setMkviewExtraOpts(ucmClearcaseFacade.getMkviewExtraOpts());
 		setModificationDetectionConfig(ucmClearcaseFacade.getModificationDetectionConfig());
 		setProjectVob(ucmClearcaseFacade.getProjectVob());
@@ -543,7 +543,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 		setCleartoolDir(ucmClearcaseFacade.getCleartoolDir());
 	}
 
-	public com.luntsys.luntbuild.facades.lb12.VcsFacade constructFacade() {
+	public com.luntsys.luntbuild.facades.lb20.VcsFacade constructFacade() {
 		return new UCMClearcaseAdaptorFacade();
 	}
 }

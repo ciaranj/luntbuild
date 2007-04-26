@@ -30,7 +30,7 @@ package com.luntsys.luntbuild.dao;
 import com.luntsys.luntbuild.db.*;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.SearchCriteria;
-import com.luntsys.luntbuild.facades.lb12.DataCollection;
+import com.luntsys.luntbuild.facades.lb20.DataCollection;
 import com.luntsys.luntbuild.migration.MigrationManager;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
@@ -1390,67 +1390,67 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
      * @return 1.2 data collection
      *
      * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadDataCollection12()
+     * @see com.luntsys.luntbuild.dao.Dao#loadDataCollection20()
      */
-    public DataCollection loadDataCollection12() {
+    public DataCollection loadDataCollection20() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
-            DataCollection data12 = new DataCollection();
+            DataCollection data20 = new DataCollection();
             Query query = session.createQuery("from Property");
             Iterator it = query.list().iterator();
             while (it.hasNext()) {
                 Property property = (Property) it.next();
-                data12.getProperties().add(property.getFacade());
+                data20.getProperties().add(property.getFacade());
             }
             query = session.createQuery("from Project project");
             it = query.list().iterator();
             while (it.hasNext()) {
                 Project project = (Project) it.next();
-                data12.getProjects().add(project.getFacade());
+                data20.getProjects().add(project.getFacade());
             }
             query = session.createQuery("from Schedule schedule");
             it = query.list().iterator();
             while (it.hasNext()) {
                 Schedule schedule = (Schedule) it.next();
-                data12.getSchedules().add(schedule.getFacade());
+                data20.getSchedules().add(schedule.getFacade());
             }
             query = session.createQuery("from Build build");
             it = query.list().iterator();
             while (it.hasNext()) {
                 Build build = (Build) it.next();
-                data12.getBuilds().add(build.getFacade());
+                data20.getBuilds().add(build.getFacade());
             }
             query = session.createQuery("from User user");
             it = query.list().iterator();
             while (it.hasNext()) {
                 User user = (User) it.next();
-                data12.getUsers().add(user.getFacade());
+                data20.getUsers().add(user.getFacade());
             }
             query = session.createQuery("from Role role");
             it = query.list().iterator();
             while (it.hasNext()) {
                 Role role = (Role) it.next();
-                data12.getRoles().add(role.getFacade());
+                data20.getRoles().add(role.getFacade());
             }
             query = session.createQuery("from VcsLogin vcsLogin");
             it = query.list().iterator();
             while (it.hasNext()) {
                 VcsLogin vcsLogin = (VcsLogin) it.next();
-                data12.getVcsLoginMapping().add(vcsLogin.getFacade());
+                data20.getVcsLoginMapping().add(vcsLogin.getFacade());
             }
             query = session.createQuery("from RolesMapping rolesMapping");
             it = query.list().iterator();
             while (it.hasNext()) {
                 RolesMapping rolesMapping = (RolesMapping) it.next();
-                data12.getRolesMapping().add(rolesMapping.getFacade());
+                data20.getRolesMapping().add(rolesMapping.getFacade());
             }
             query = session.createQuery("from NotifyMapping notifyMapping");
             it = query.list().iterator();
             while (it.hasNext()) {
                 NotifyMapping notifyMapping = (NotifyMapping) it.next();
-                data12.getNotifyMapping().add(notifyMapping.getFacade());
+                data20.getNotifyMapping().add(notifyMapping.getFacade());
             }
-            return data12;
+            return data20;
         } catch (HibernateException ex) {
             logger.error("Error in loadDataCollection: ", ex);
             throw SessionFactoryUtils.convertHibernateAccessException(ex);
@@ -1458,16 +1458,16 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param data12 1.2 data collection
+     * @param data20 2.0 data collection
      *
      * (non-Javadoc)
      * @see
-     *  com.luntsys.luntbuild.dao.Dao#saveDataCollection12(com.luntsys.luntbuild.facades.lb12.DataCollection)
+     *  com.luntsys.luntbuild.dao.Dao#saveDataCollection20(com.luntsys.luntbuild.facades.lb20.DataCollection)
      */
-    public void saveDataCollection12(DataCollection data12) {
+    public void saveDataCollection20(DataCollection data20) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
-            com.luntsys.luntbuild.db.DataCollection data = MigrationManager.deFacade(data12);
+            com.luntsys.luntbuild.db.DataCollection data = MigrationManager.deFacade(data20);
 
             logger.info("Saving system settings...");
             Iterator it = data.getProperties().iterator();

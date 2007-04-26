@@ -39,10 +39,10 @@ import org.apache.tools.ant.types.FileSet;
 
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.IStringProperty;
 import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.facades.lb12.DynamicClearcaseAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.utility.IStringProperty;
+import com.luntsys.luntbuild.facades.lb20.DynamicClearcaseAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.utility.MyExecTask;
 
 public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {

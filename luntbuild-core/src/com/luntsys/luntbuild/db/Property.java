@@ -4,7 +4,7 @@
  * Time: 9:44:09
  *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 1.
  * Redistributions of source code must retain the above copyright notice, this
@@ -12,7 +12,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,7 +23,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
+ *
  */
 package com.luntsys.luntbuild.db;
 
@@ -53,14 +53,14 @@ public class Property {
 		return value;
 	}
 
-	public com.luntsys.luntbuild.facades.lb12.PropertyFacade getFacade() {
-		com.luntsys.luntbuild.facades.lb12.PropertyFacade facade = new com.luntsys.luntbuild.facades.lb12.PropertyFacade();
+	public com.luntsys.luntbuild.facades.lb20.PropertyFacade getFacade() {
+		com.luntsys.luntbuild.facades.lb20.PropertyFacade facade = new com.luntsys.luntbuild.facades.lb20.PropertyFacade();
 		facade.setName(getName());
 		facade.setValue(getValue());
 		return facade;
 	}
 
-	public void setFacade(com.luntsys.luntbuild.facades.lb12.PropertyFacade facade) {
+	public void setFacade(com.luntsys.luntbuild.facades.lb20.PropertyFacade facade) {
 		setValue(facade.getValue());
 	}
 

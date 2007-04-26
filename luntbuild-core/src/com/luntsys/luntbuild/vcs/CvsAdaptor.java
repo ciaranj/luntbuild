@@ -33,8 +33,8 @@ import com.luntsys.luntbuild.ant.cvstask.Cvs;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.facades.lb20.ModuleFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.utility.*;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -697,7 +697,7 @@ public class CvsAdaptor extends Vcs {
 		}
 
 		public ModuleFacade getFacade() {
-			com.luntsys.luntbuild.facades.lb12.CvsModuleFacade facade = new com.luntsys.luntbuild.facades.lb12.CvsModuleFacade();
+			com.luntsys.luntbuild.facades.lb20.CvsModuleFacade facade = new com.luntsys.luntbuild.facades.lb20.CvsModuleFacade();
 			facade.setBranch(getBranch());
 			facade.setLabel(getLabel());
 			facade.setSrcPath(getSrcPath());
@@ -705,8 +705,8 @@ public class CvsAdaptor extends Vcs {
 		}
 
 		public void setFacade(ModuleFacade facade) {
-			if (facade instanceof com.luntsys.luntbuild.facades.lb12.CvsModuleFacade) {
-				com.luntsys.luntbuild.facades.lb12.CvsModuleFacade cvsModuleFacade = (com.luntsys.luntbuild.facades.lb12.CvsModuleFacade) facade;
+			if (facade instanceof com.luntsys.luntbuild.facades.lb20.CvsModuleFacade) {
+				com.luntsys.luntbuild.facades.lb20.CvsModuleFacade cvsModuleFacade = (com.luntsys.luntbuild.facades.lb20.CvsModuleFacade) facade;
 				setBranch(cvsModuleFacade.getBranch());
 				setLabel(cvsModuleFacade.getLabel());
 				setSrcPath(cvsModuleFacade.getSrcPath());
@@ -716,7 +716,7 @@ public class CvsAdaptor extends Vcs {
 	}
 
 	public void saveToFacade(VcsFacade facade) {
-		com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade cvsFacade = (com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade) facade;
+		com.luntsys.luntbuild.facades.lb20.CvsAdaptorFacade cvsFacade = (com.luntsys.luntbuild.facades.lb20.CvsAdaptorFacade) facade;
 		cvsFacade.setCvsRoot(getCvsRoot());
 		cvsFacade.setCvsPassword(getCvsPassword());
 		cvsFacade.setCygwinCvs(getCygwinCvs());
@@ -725,10 +725,10 @@ public class CvsAdaptor extends Vcs {
 		cvsFacade.setCvsDir(getCvsDir());
 	}
 
-	public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade))
+	public void loadFromFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade facade) {
+		if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.CvsAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade cvsFacade = (com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade) facade;
+		com.luntsys.luntbuild.facades.lb20.CvsAdaptorFacade cvsFacade = (com.luntsys.luntbuild.facades.lb20.CvsAdaptorFacade) facade;
 		setCvsRoot(cvsFacade.getCvsRoot());
 		setCvsPassword(cvsFacade.getCvsPassword());
 		setCygwinCvs(cvsFacade.getCygwinCvs());
@@ -737,7 +737,7 @@ public class CvsAdaptor extends Vcs {
 		setCvsDir(cvsFacade.getCvsDir());
 	}
 
-	public com.luntsys.luntbuild.facades.lb12.VcsFacade constructFacade() {
-		return new com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade();
+	public com.luntsys.luntbuild.facades.lb20.VcsFacade constructFacade() {
+		return new com.luntsys.luntbuild.facades.lb20.CvsAdaptorFacade();
 	}
 }

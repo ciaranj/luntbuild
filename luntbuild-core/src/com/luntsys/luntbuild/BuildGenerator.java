@@ -1,8 +1,8 @@
 package com.luntsys.luntbuild;
 
 
-import com.luntsys.luntbuild.builders.Builder;
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Builder;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.dependency.DependencyResolver;

@@ -28,8 +28,8 @@
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.ant.Commandline;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
+import com.luntsys.luntbuild.facades.lb20.VssAdaptorFacade;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.utility.*;
@@ -307,17 +307,17 @@ public class VssAdaptor extends Vcs {
 			return properties;
 		}
 
-		public com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade() {
-			com.luntsys.luntbuild.facades.lb12.VssModuleFacade facade = new com.luntsys.luntbuild.facades.lb12.VssModuleFacade();
+		public com.luntsys.luntbuild.facades.lb20.ModuleFacade getFacade() {
+			com.luntsys.luntbuild.facades.lb20.VssModuleFacade facade = new com.luntsys.luntbuild.facades.lb20.VssModuleFacade();
 			facade.setDestPath(getDestPath());
 			facade.setLabel(getLabel());
 			facade.setSrcPath(getSrcPath());
 			return facade;
 		}
 
-		public void setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade facade) {
-			if (facade instanceof com.luntsys.luntbuild.facades.lb12.VssModuleFacade) {
-				com.luntsys.luntbuild.facades.lb12.VssModuleFacade vssModuleFacade = (com.luntsys.luntbuild.facades.lb12.VssModuleFacade) facade;
+		public void setFacade(com.luntsys.luntbuild.facades.lb20.ModuleFacade facade) {
+			if (facade instanceof com.luntsys.luntbuild.facades.lb20.VssModuleFacade) {
+				com.luntsys.luntbuild.facades.lb20.VssModuleFacade vssModuleFacade = (com.luntsys.luntbuild.facades.lb20.VssModuleFacade) facade;
 				setLabel(vssModuleFacade.getLabel());
 				setSrcPath(vssModuleFacade.getSrcPath());
 				setDestPath(vssModuleFacade.getDestPath());
@@ -468,7 +468,7 @@ public class VssAdaptor extends Vcs {
 	}
 
 	public void saveToFacade(VcsFacade facade) {
-		com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade vssFacade = (VssAdaptorFacade) facade;
+		com.luntsys.luntbuild.facades.lb20.VssAdaptorFacade vssFacade = (VssAdaptorFacade) facade;
 		vssFacade.setDateTimeFormat(getDateTimeFormat());
 		vssFacade.setSsDir(getSsDir());
 		vssFacade.setVssPassword(getVssPassword());
@@ -477,9 +477,9 @@ public class VssAdaptor extends Vcs {
 	}
 
 	public void loadFromFacade(VcsFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade))
+		if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.VssAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade vssFacade = (com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade) facade;
+		com.luntsys.luntbuild.facades.lb20.VssAdaptorFacade vssFacade = (com.luntsys.luntbuild.facades.lb20.VssAdaptorFacade) facade;
 		setDateTimeFormat(vssFacade.getDateTimeFormat());
 		setSsDir(vssFacade.getSsDir());
 		setVssPassword(vssFacade.getVssPassword());

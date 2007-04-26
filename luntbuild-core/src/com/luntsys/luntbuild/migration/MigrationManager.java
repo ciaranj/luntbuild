@@ -49,7 +49,7 @@ import java.util.Iterator;
 public class MigrationManager {
 	private static Log logger = LogFactory.getLog(MigrationManager.class);
 
-	public static com.luntsys.luntbuild.facades.lb12.DataCollection importAsDataCollection12(File xmlDataFile) {
+	public static com.luntsys.luntbuild.facades.lb20.DataCollection importAsDataCollection20(File xmlDataFile) {
 		FileReader fileReader = null;
 		try {
 			logger.info("Detect data version...");
@@ -69,8 +69,8 @@ public class MigrationManager {
 			fileReader = new FileReader(xmlDataFile);
 			logger.info("Data version of importing file is: " + version);
 			if (version.equals("1.2")) {
-				xstream.alias("DataCollection", com.luntsys.luntbuild.facades.lb12.DataCollection.class);
-				return (com.luntsys.luntbuild.facades.lb12.DataCollection) xstream.fromXML(fileReader);
+				xstream.alias("DataCollection", com.luntsys.luntbuild.facades.lb20.DataCollection.class);
+				return (com.luntsys.luntbuild.facades.lb20.DataCollection) xstream.fromXML(fileReader);
 			}
 			throw new MigrationException("This version of data file is not supported!");
 		} catch (FileNotFoundException e) {
@@ -89,24 +89,24 @@ public class MigrationManager {
 		}
 	}
 
-	public static com.luntsys.luntbuild.db.DataCollection deFacade(com.luntsys.luntbuild.facades.lb12.DataCollection data12) {
-		logger.info("Defacading 1.2 data collection...");
+	public static com.luntsys.luntbuild.db.DataCollection deFacade(com.luntsys.luntbuild.facades.lb20.DataCollection data20) {
+		logger.info("Defacading 2.0 data collection...");
 		com.luntsys.luntbuild.db.DataCollection data = new com.luntsys.luntbuild.db.DataCollection();
 		logger.info("Defacading system settings...");
-		Iterator it = data12.getProperties().iterator();
+		Iterator it = data20.getProperties().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.PropertyFacade propertyFacade =
-					(com.luntsys.luntbuild.facades.lb12.PropertyFacade) it.next();
+			com.luntsys.luntbuild.facades.lb20.PropertyFacade propertyFacade =
+					(com.luntsys.luntbuild.facades.lb20.PropertyFacade) it.next();
 			Property property = new Property();
 			property.setName(propertyFacade.getName());
 			property.setFacade(propertyFacade);
 			data.getProperties().add(property);
 		}
 
-		it = data12.getProjects().iterator();
+		it = data20.getProjects().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade =
-					(com.luntsys.luntbuild.facades.lb12.ProjectFacade) it.next();
+			com.luntsys.luntbuild.facades.lb20.ProjectFacade projectFacade =
+					(com.luntsys.luntbuild.facades.lb20.ProjectFacade) it.next();
 			logger.info("Defacading project: " + projectFacade.getName());
 			Project project = new Project();
 			project.setId(projectFacade.getId());
@@ -115,11 +115,11 @@ public class MigrationManager {
 			data.getProjects().add(project);
 		}
 
-		it = data12.getSchedules().iterator();
+		it = data20.getSchedules().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade =
-					(com.luntsys.luntbuild.facades.lb12.ScheduleFacade) it.next();
-			logger.info("Defacading schedule: " + data12.getProject(scheduleFacade.getProjectId()).getName() +
+			com.luntsys.luntbuild.facades.lb20.ScheduleFacade scheduleFacade =
+					(com.luntsys.luntbuild.facades.lb20.ScheduleFacade) it.next();
+			logger.info("Defacading schedule: " + data20.getProject(scheduleFacade.getProjectId()).getName() +
 					"/" + scheduleFacade.getName());
 			Schedule schedule = new Schedule();
 			schedule.setId(scheduleFacade.getId());
@@ -146,9 +146,9 @@ public class MigrationManager {
 			}
 		}
 
-		it = data12.getBuilds().iterator();
+		it = data20.getBuilds().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade = (com.luntsys.luntbuild.facades.lb12.BuildFacade) it.next();
+			com.luntsys.luntbuild.facades.lb20.BuildFacade buildFacade = (com.luntsys.luntbuild.facades.lb20.BuildFacade) it.next();
 			logger.info("Defacading build: " + data.getSchedule(buildFacade.getScheduleId()).getProject().getName() +
 					"/" + data.getSchedule(buildFacade.getScheduleId()) + "/" + buildFacade.getVersion());
 			Build build = new Build();
@@ -160,10 +160,10 @@ public class MigrationManager {
 			data.getBuilds().add(build);
 		}
 
-		it = data12.getUsers().iterator();
+		it = data20.getUsers().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.UserFacade userFacade =
-					(com.luntsys.luntbuild.facades.lb12.UserFacade) it.next();
+			com.luntsys.luntbuild.facades.lb20.UserFacade userFacade =
+					(com.luntsys.luntbuild.facades.lb20.UserFacade) it.next();
 			logger.info("Defacading user: " + userFacade.getName());
 			User user = new User();
 			user.setId(userFacade.getId());
@@ -172,10 +172,10 @@ public class MigrationManager {
 			data.getUsers().add(user);
 		}
 
-		it = data12.getRoles().iterator();
+		it = data20.getRoles().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.RoleFacade roleFacade =
-					(com.luntsys.luntbuild.facades.lb12.RoleFacade) it.next();
+			com.luntsys.luntbuild.facades.lb20.RoleFacade roleFacade =
+					(com.luntsys.luntbuild.facades.lb20.RoleFacade) it.next();
 			logger.info("Defacading role: " + roleFacade.getName());
 			Role role = new Role();
 			role.setId(roleFacade.getId());
@@ -185,10 +185,10 @@ public class MigrationManager {
 		}
 
 		logger.info("Defacading vcs logins...");
-		it = data12.getVcsLoginMapping().iterator();
+		it = data20.getVcsLoginMapping().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.VcsLoginFacade vcsLoginFacade =
-					(com.luntsys.luntbuild.facades.lb12.VcsLoginFacade) it.next();
+			com.luntsys.luntbuild.facades.lb20.VcsLoginFacade vcsLoginFacade =
+					(com.luntsys.luntbuild.facades.lb20.VcsLoginFacade) it.next();
 			VcsLogin vcsLogin = new VcsLogin();
 			vcsLogin.setLogin(vcsLoginFacade.getLogin());
 			Project project = new Project();
@@ -201,10 +201,10 @@ public class MigrationManager {
 		}
 
 		logger.info("Defacading roles mappings...");
-		it = data12.getRolesMapping().iterator();
+		it = data20.getRolesMapping().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.RolesMappingFacade rolesMappingFacade =
-					(com.luntsys.luntbuild.facades.lb12.RolesMappingFacade) it.next();
+			com.luntsys.luntbuild.facades.lb20.RolesMappingFacade rolesMappingFacade =
+					(com.luntsys.luntbuild.facades.lb20.RolesMappingFacade) it.next();
 			RolesMapping rolesMapping = new RolesMapping();
 			Project project = new Project();
 			project.setId(rolesMappingFacade.getProjectId());
@@ -220,10 +220,10 @@ public class MigrationManager {
 		}
 
 		logger.info("Defacading notify mappings...");
-		it = data12.getNotifyMapping().iterator();
+		it = data20.getNotifyMapping().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade notifyMappingFacade =
-					(com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade) it.next();
+			com.luntsys.luntbuild.facades.lb20.NotifyMappingFacade notifyMappingFacade =
+					(com.luntsys.luntbuild.facades.lb20.NotifyMappingFacade) it.next();
 			NotifyMapping notifyMapping = new NotifyMapping();
 			Project project = new Project();
 			project.setId(notifyMappingFacade.getProjectId());

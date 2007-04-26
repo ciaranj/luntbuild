@@ -28,7 +28,7 @@
 
 package com.luntsys.luntbuild.db;
 
-import com.luntsys.luntbuild.facades.lb12.UserFacade;
+import com.luntsys.luntbuild.facades.lb20.UserFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
 
@@ -51,7 +51,7 @@ public class User {
 	private Set notifyMappings;
 	private boolean canCreateProject;
     private transient String validatedPassword;
-    
+
 	/**
 	 * mapped project specific security roles
 	 */
@@ -208,7 +208,7 @@ public class User {
                 !validPassword.trim().equals(decryptedPassword.trim()))
             throw new ValidationException("Verified Password does not match!");
         setDecryptedPassword(decryptedPassword.trim());
-        
+
 		Iterator it = getContacts().entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
@@ -231,7 +231,7 @@ public class User {
 	}
 
 	public UserFacade getFacade() {
-		com.luntsys.luntbuild.facades.lb12.UserFacade facade = new com.luntsys.luntbuild.facades.lb12.UserFacade();
+		com.luntsys.luntbuild.facades.lb20.UserFacade facade = new com.luntsys.luntbuild.facades.lb20.UserFacade();
 		facade.setCanCreateProject(isCanCreateProject());
 		facade.setFullname(getFullname());
 		facade.setId(getId());

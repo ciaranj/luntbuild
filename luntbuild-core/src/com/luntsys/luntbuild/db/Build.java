@@ -28,9 +28,8 @@
 package com.luntsys.luntbuild.db;
 
 import com.luntsys.luntbuild.BuildGenerator;
-import com.luntsys.luntbuild.builders.Builder;
-import com.luntsys.luntbuild.facades.lb12.BuildFacade;
-import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
+import com.luntsys.luntbuild.facades.lb20.BuildFacade;
+import com.luntsys.luntbuild.facades.lb20.BuilderFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.LuntbuildLogger;
 import com.luntsys.luntbuild.utility.OgnlHelper;
@@ -326,7 +325,7 @@ public class Build {
      * @return facade of this build
      */
     public BuildFacade getFacade() {
-        com.luntsys.luntbuild.facades.lb12.BuildFacade facade = new BuildFacade();
+        com.luntsys.luntbuild.facades.lb20.BuildFacade facade = new BuildFacade();
         facade.setBuildType(getBuildType());
         facade.setEndDate(getEndDate());
         facade.setHaveLabelOnHead(isHaveLabelOnHead());
@@ -380,7 +379,7 @@ public class Build {
             getVcsList().clear();
             Iterator it = facade.getVcsList().iterator();
             while (it.hasNext()) {
-                com.luntsys.luntbuild.facades.lb12.VcsFacade vcsFacade = (com.luntsys.luntbuild.facades.lb12.VcsFacade) it.next();
+                com.luntsys.luntbuild.facades.lb20.VcsFacade vcsFacade = (com.luntsys.luntbuild.facades.lb20.VcsFacade) it.next();
                 Vcs vcs = (Vcs) Class.forName(vcsFacade.getVcsClassName()).newInstance();
                 vcs.setFacade(vcsFacade);
                 getVcsList().add(vcs);
@@ -388,7 +387,7 @@ public class Build {
             getBuilderList().clear();
             it = facade.getBuilderList().iterator();
             while (it.hasNext()) {
-                BuilderFacade builderFacade = (com.luntsys.luntbuild.facades.lb12.BuilderFacade) it.next();
+                BuilderFacade builderFacade = (com.luntsys.luntbuild.facades.lb20.BuilderFacade) it.next();
                 Builder builder = (Builder) Class.forName(builderFacade.getBuilderClassName()).newInstance();
                 builder.setFacade(builderFacade);
                 getBuilderList().add(builder);
@@ -396,7 +395,7 @@ public class Build {
             getPostbuilderList().clear();
             it = facade.getPostbuilderList().iterator();
             while (it.hasNext()) {
-                BuilderFacade builderFacade = (com.luntsys.luntbuild.facades.lb12.BuilderFacade) it.next();
+                BuilderFacade builderFacade = (com.luntsys.luntbuild.facades.lb20.BuilderFacade) it.next();
                 Builder builder = (Builder) Class.forName(builderFacade.getBuilderClassName()).newInstance();
                 builder.setFacade(builderFacade);
                 getPostbuilderList().add(builder);

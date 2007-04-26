@@ -34,6 +34,7 @@ import com.luntsys.luntbuild.builders.Maven2Builder;
 import com.luntsys.luntbuild.builders.CommandBuilder;
 import com.luntsys.luntbuild.builders.RakeBuilder;
 import com.luntsys.luntbuild.dao.Dao;
+import com.luntsys.luntbuild.db.IStringProperty;
 import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.ILuntbuild;

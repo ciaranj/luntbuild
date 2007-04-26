@@ -28,7 +28,7 @@
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.ant.Commandline;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.utility.*;
@@ -62,13 +62,13 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
     }
 
     protected void validateClearcaseAdaptorProperties() {
-        // EMPTY        
+        // EMPTY
     }
-    
+
     protected boolean isSnapshot() {
         return true;
     }
-    
+
     protected String getClearcaseWorkDirRaw(final Schedule schedule) {
         return schedule.getWorkDirRaw();
     }
@@ -219,17 +219,17 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
     }
 
 	public VcsFacade constructFacade() {
-		return new com.luntsys.luntbuild.facades.lb12.BaseClearcaseAdaptorFacade();
+		return new com.luntsys.luntbuild.facades.lb20.BaseClearcaseAdaptorFacade();
 	}
 
     protected void saveAdditionalStuffToFacade(VcsFacade facade) {
-        // EMPTY        
+        // EMPTY
     }
-    
+
     protected void loadAdditionalStuffFromFacade(VcsFacade facade) {
-        // EMPTY        
+        // EMPTY
     }
-    
+
 	public void cleanupCheckout(Schedule workingSchedule, Project antProject) {
 		String workingDir = getClearcaseWorkDirRaw(workingSchedule);
 		if (ccViewExists(workingSchedule, antProject)) {

@@ -1,0 +1,4 @@
+#Sun Apr 01 10:50:46 MDT 2007
+default.configuration=luntbuild-core-hibernate
+eclipse.preferences.version=1
+hibernate3.enabled=true

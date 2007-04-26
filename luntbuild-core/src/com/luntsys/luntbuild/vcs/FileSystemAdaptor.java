@@ -28,10 +28,10 @@
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.IStringProperty;
 import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.utility.IStringProperty;
+import com.luntsys.luntbuild.facades.lb20.FileSystemAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.utility.ValidationException;
@@ -148,14 +148,14 @@ public class FileSystemAdaptor extends Vcs {
 	}
 
 	public void saveToFacade(VcsFacade facade) {
-		com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade fileSystemFacade = (com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade) facade;
+		com.luntsys.luntbuild.facades.lb20.FileSystemAdaptorFacade fileSystemFacade = (com.luntsys.luntbuild.facades.lb20.FileSystemAdaptorFacade) facade;
 		fileSystemFacade.setSourceDir(getSourceDir());
 	}
 
 	public void loadFromFacade(VcsFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade))
+		if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.FileSystemAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade fileSystemFacade = (FileSystemAdaptorFacade) facade;
+		com.luntsys.luntbuild.facades.lb20.FileSystemAdaptorFacade fileSystemFacade = (FileSystemAdaptorFacade) facade;
 		setSourceDir(fileSystemFacade.getSourceDir());
 	}
 

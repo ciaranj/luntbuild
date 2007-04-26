@@ -28,9 +28,10 @@
 package com.luntsys.luntbuild.builders;
 
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Builder;
+import com.luntsys.luntbuild.db.StringProperty;
 import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade;
-import com.luntsys.luntbuild.utility.IStringProperty;
+import com.luntsys.luntbuild.facades.lb20.RakeBuilderFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
 
@@ -38,8 +39,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Rake builder implementation.
@@ -51,83 +52,95 @@ public class RakeBuilder extends Builder {
      */
     static final long serialVersionUID = 1L;
 
-    /**
-     * The command to run rake.
-     */
-    private String command;
+    public static final String COMMAND = "command";
+    public static final String BUILDSCRIPTPATH = "buildscriptpath";
+    public static final String TARGETS = "targets";
+    public static final String BUILDPROPERTIES = "buildproperties";
+    public static final String DISPLAYNAME = "displayname";
 
-    /**
-     * Path to rake build script.
-     */
-    private String buildScriptPath;
-
-    /**
-     * Targets to build.
-     */
-    private String targets;
+    private String type = "rakebuilder";
 
     /**
      * Extra properties transfered into the build script.
      */
-    private String buildProperties =
+    private static final String buildProperties =
             "buildVersion=\"${build.version}\"\n" +
             "artifactsDir=\"${build.artifactsDir}\"\n" +
             "buildDate=\"${build.startDate}\"\n" +
             "junitHtmlReportDir=\"${build.junitHtmlReportDir}\"";
 
+    private Map properties;
+
+
     public RakeBuilder() {
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            this.command = "C:\\rake\\bin\\rake.bat ";
-        } else {
-            this.command = "/usr/local/bin/rake ";
-        }
         setBuildSuccessCondition("result==0 and !logContainsLine(\"Command failed with status\")");
     }
 
-    public String getCommand() {
-        return command;
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof RakeBuilder) {
+            if (getName().equals(((RakeBuilder)obj).getName()))
+                return true;
+        }
+        return false;
     }
 
-    public void setCommand(String command) {
-        this.command = command;
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
+    public String getCommand() {
+    	Map props = getProperties();
+    	String command = (String)props.get(COMMAND);
+        return (command == null) ? "" : command;
     }
 
     public String getBuildScriptPath() {
-        return buildScriptPath;
-    }
-
-    public void setBuildScriptPath(String buildScriptPath) {
-        this.buildScriptPath = buildScriptPath;
+    	Map props = getProperties();
+    	String buildScriptPath = (String)props.get(BUILDSCRIPTPATH);
+    	return (buildScriptPath == null) ? "" : buildScriptPath;
     }
 
     public String getTargets() {
-        return targets;
-    }
-
-    public void setTargets(String targets) {
-        this.targets = targets;
+    	Map props = getProperties();
+    	String targets = (String)props.get(TARGETS);
+    	return (targets == null) ? "" : targets;
     }
 
     public String getBuildProperties() {
-        return buildProperties;
-    }
-
-    public void setBuildProperties(String buildProperties) {
-        this.buildProperties = buildProperties;
+    	Map props = getProperties();
+    	String buildprops = (String)props.get(BUILDPROPERTIES);
+    	return (buildprops == null) ? "" : buildprops;
     }
 
     public String getDisplayName() {
-        return "Rake builder";
+    	Map props = getProperties();
+    	String displayName = (String)props.get(DISPLAYNAME);
+    	return (displayName == null) ? "" : displayName;
     }
 
-    public String getIconName() {
-        return "rake.gif";
-    }
+	@Override
+	public Map getProperties() {
+		if (this.properties == null) {
+			this.properties = new HashMap();
+	        this.properties.put(BUILDPROPERTIES, new StringProperty(BUILDPROPERTIES, buildProperties));
+	        if (System.getProperty("os.name").startsWith("Windows")) {
+	        	this.properties.put(COMMAND, "C:\\rake\\bin\\rake.bat ");
+	        } else {
+	        	this.properties.put(COMMAND, "/usr/local/bin/rake ");
+	        }
+		}
+		return this.properties;
+	}
 
-    public List getBuilderSpecificProperties() {
-        List properties = getRakeProperties();
-        return properties;
-    }
+	@Override
+	public String getType() {
+		return this.type;
+	}
+
+	@Override
+	public void setProperties(Map m) {
+		this.properties = m;
+	}
 
     public void validate() {
         super.validate();
@@ -214,27 +227,21 @@ public class RakeBuilder extends Builder {
         return new File(buildScriptAbsolutePath).getParent();
     }
 
-    public com.luntsys.luntbuild.facades.lb12.BuilderFacade constructFacade() {
+    public com.luntsys.luntbuild.facades.lb20.BuilderFacade constructFacade() {
         return new RakeBuilderFacade();
     }
 
-    public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade))
+    public void loadFromFacade(com.luntsys.luntbuild.facades.lb20.BuilderFacade facade) {
+        if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.RakeBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade rakeBuilderFacade = (com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade) facade;
-        setCommand(rakeBuilderFacade.getCommand());
-        setBuildScriptPath(rakeBuilderFacade.getBuildScriptPath());
-        setTargets(rakeBuilderFacade.getBuildTargets());
-        setBuildProperties(rakeBuilderFacade.getBuildProperties());
+        com.luntsys.luntbuild.facades.lb20.RakeBuilderFacade rakeBuilderFacade = (com.luntsys.luntbuild.facades.lb20.RakeBuilderFacade) facade;
+        copyProperties(rakeBuilderFacade.getProperties(), getProperties());
     }
 
-    public void saveToFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade))
+    public void saveToFacade(com.luntsys.luntbuild.facades.lb20.BuilderFacade facade) {
+        if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.RakeBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade rakeBuilderFacade = (RakeBuilderFacade) facade;
-        rakeBuilderFacade.setCommand(getCommand());
-        rakeBuilderFacade.setBuildScriptPath(getBuildScriptPath());
-        rakeBuilderFacade.setBuildTargets(getTargets());
-        rakeBuilderFacade.setBuildProperties(getBuildProperties());
+        com.luntsys.luntbuild.facades.lb20.RakeBuilderFacade rakeBuilderFacade = (RakeBuilderFacade) facade;
+        copyProperties(getProperties(), rakeBuilderFacade.getProperties());
     }
 }

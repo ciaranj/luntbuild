@@ -28,10 +28,9 @@
 
 package com.luntsys.luntbuild.db;
 
-import com.luntsys.luntbuild.builders.Builder;
 import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
-import com.luntsys.luntbuild.facades.lb12.ProjectFacade;
+import com.luntsys.luntbuild.facades.lb20.BuilderFacade;
+import com.luntsys.luntbuild.facades.lb20.ProjectFacade;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.*;
 import com.luntsys.luntbuild.vcs.Vcs;
@@ -69,7 +68,7 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	/**
 	 * List of builders configured for this project
 	 */
-	private List builderList;
+	private Set builders;
 
 	/**
 	 * Set of schedules configured for this project
@@ -124,8 +123,8 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Get identifer of this build
-	 * @return identifer of this build
+	 * Get identifer of this project
+	 * @return identifer of this project
 	 */
 	public long getId() {
 		return id;
@@ -187,18 +186,18 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	 * Get builder list of this project
 	 * @return builder list of this project
 	 */
-	public List getBuilderList() {
-		if (builderList == null)
-			builderList = new ArrayList();
-		return builderList;
+	public Set getBuilders() {
+		if (builders == null)
+			builders = new HashSet();
+		return builders;
 	}
 
 	/**
 	 * Set builder list of this project
-	 * @param builderList
+	 * @param builders
 	 */
-	public void setBuilderList(List builderList) {
-		this.builderList = builderList;
+	public void setBuilders(Set builders) {
+		this.builders = builders;
 	}
 
 	/**
@@ -309,7 +308,7 @@ public class Project implements AclObjectIdentity, VariableHolder {
 			Vcs vcs = (Vcs) it.next();
 			vcs.validate();
 		}
-		it = getBuilderList().iterator();
+		it = getBuilders().iterator();
 		while (it.hasNext()) {
 			Builder builder = (Builder) it.next();
 			builder.validate();
@@ -347,8 +346,8 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	 * Get facade of this project
 	 * @return facade of this project
 	 */
-	public com.luntsys.luntbuild.facades.lb12.ProjectFacade getFacade() {
-		ProjectFacade facade = new com.luntsys.luntbuild.facades.lb12.ProjectFacade();
+	public com.luntsys.luntbuild.facades.lb20.ProjectFacade getFacade() {
+		ProjectFacade facade = new com.luntsys.luntbuild.facades.lb20.ProjectFacade();
 		facade.setId(getId());
 		facade.setName(getName());
 		facade.setDescription(getDescription());
@@ -360,10 +359,10 @@ public class Project implements AclObjectIdentity, VariableHolder {
 			Vcs vcs = (Vcs) it.next();
 			facade.getVcsList().add(vcs.getFacade());
 		}
-		it = getBuilderList().iterator();
+		it = getBuilders().iterator();
 		while (it.hasNext()) {
 			Builder builder = (Builder) it.next();
-			facade.getBuilderList().add(builder.getFacade());
+			facade.getBuilders().add(builder.getFacade());
 		}
 		return facade;
 	}
@@ -381,18 +380,18 @@ public class Project implements AclObjectIdentity, VariableHolder {
 			getVcsList().clear();
 			Iterator it = facade.getVcsList().iterator();
 			while (it.hasNext()) {
-				com.luntsys.luntbuild.facades.lb12.VcsFacade vcsFacade = (com.luntsys.luntbuild.facades.lb12.VcsFacade) it.next();
+				com.luntsys.luntbuild.facades.lb20.VcsFacade vcsFacade = (com.luntsys.luntbuild.facades.lb20.VcsFacade) it.next();
 				Vcs vcs = (Vcs) Class.forName(vcsFacade.getVcsClassName()).newInstance();
 				vcs.setFacade(vcsFacade);
 				getVcsList().add(vcs);
 			}
-			getBuilderList().clear();
-			it = facade.getBuilderList().iterator();
+			getBuilders().clear();
+			it = facade.getBuilders().iterator();
 			while (it.hasNext()) {
-				BuilderFacade builderFacade = (com.luntsys.luntbuild.facades.lb12.BuilderFacade) it.next();
+				BuilderFacade builderFacade = (com.luntsys.luntbuild.facades.lb20.BuilderFacade) it.next();
 				Builder builder = (Builder) Class.forName(builderFacade.getBuilderClassName()).newInstance();
 				builder.setFacade(builderFacade);
-				getBuilderList().add(builder);
+				getBuilders().add(builder);
 			}
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
@@ -647,7 +646,7 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	 */
 	public Project createNewByCopy() {
 		Project newProject = new Project();
-		newProject.setBuilderList(getBuilderList());
+		newProject.setBuilders(getBuilders());
 		newProject.setDescription(getDescription());
 		newProject.setVariables(getVariables());
 		newProject.setLogLevel(getLogLevel());
@@ -788,7 +787,7 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	public Builder getBuilderByName(String name) {
-		Iterator it = getBuilderList().iterator();
+		Iterator it = getBuilders().iterator();
 		while (it.hasNext()) {
 			Builder builder = (Builder) it.next();
 			if (builder.getName().equals(name))

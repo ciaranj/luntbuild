@@ -28,15 +28,16 @@
 package com.luntsys.luntbuild.builders;
 
 import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.utility.IStringProperty;
+import com.luntsys.luntbuild.db.Builder;
+import com.luntsys.luntbuild.db.StringProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Maven builder implementation
@@ -48,83 +49,93 @@ public class Maven2Builder extends Builder {
      */
     static final long serialVersionUID = 1L;
 
-    /**
-     * The command to run maven
-     */
-    private String command;
-
-    /**
-     * Directory to run maven in
-     */
-    private String dirToRunMaven;
-
-    /**
-     * Goals to build
-     */
-    private String goals;
+    public static final String COMMAND = "command";
+    public static final String DIRTORUNMAVEN = "dirtorunmaven";
+    public static final String GOALS = "goals";
+    public static final String BUILDPROPERTIES = "buildproperties";
+    public static final String DISPLAYNAME = "displayname";
 
     /**
      * Extra properties transfered into the build script
      */
-    private String buildProperties =
+    private static final String buildProperties =
             "buildVersion=\"${build.version}\"\n" +
             "artifactsDir=\"${build.artifactsDir}\"\n" +
             "buildDate=\"${build.startDate}\"\n" +
             "junitHtmlReportDir=\"${build.junitHtmlReportDir}\"";
 
+    private Map properties;
+
+    private String type = "maven2builder";
 
     public Maven2Builder() {
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            this.command = "\"C:\\maven-2.0.1\\bin\\mvn.bat\"";
-        } else {
-            this.command = "/usr/local/bin/mvn";
-        }
         setBuildSuccessCondition("result==0 and logContainsLine(\"\\\\[INFO\\\\].*BUILD SUCCESSFUL.*\")");
     }
 
-    public String getCommand() {
-        return command;
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof Maven2Builder) {
+            if (getName().equals(((Maven2Builder)obj).getName()))
+                return true;
+        }
+        return false;
     }
 
-    public void setCommand(String command) {
-        this.command = command;
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
+	@Override
+	public String getType() {
+		return this.type;
+	}
+
+	@Override
+	public Map getProperties() {
+		if (this.properties == null) {
+			this.properties = new HashMap();
+	        this.properties.put(BUILDPROPERTIES, new StringProperty(BUILDPROPERTIES, buildProperties));
+	        if (System.getProperty("os.name").startsWith("Windows")) {
+	        	this.properties.put(COMMAND, "\"C:\\maven-2.0.5\\bin\\mvn.bat\"");
+	        } else {
+	        	this.properties.put(COMMAND, "/usr/local/bin/mvn");
+	        }
+		}
+		return this.properties;
+	}
+
+	@Override
+	public void setProperties(Map m) {
+		this.properties = m;
+	}
+
+    public String getCommand() {
+    	Map props = getProperties();
+    	String command = (String)props.get(COMMAND);
+        return (command == null) ? "" : command;
     }
 
     public String getDirToRunMaven() {
-        return dirToRunMaven;
-    }
-
-    public void setDirToRunMaven(String dirToRunMaven) {
-        this.dirToRunMaven = dirToRunMaven;
+    	Map props = getProperties();
+    	String dirToRunMaven = (String)props.get(DIRTORUNMAVEN);
+    	return (dirToRunMaven == null) ? "" : dirToRunMaven;
     }
 
     public String getGoals() {
-        return goals;
-    }
-
-    public void setGoals(String goals) {
-        this.goals = goals;
+    	Map props = getProperties();
+    	String goals = (String)props.get(GOALS);
+    	return (goals == null) ? "" : goals;
     }
 
     public String getBuildProperties() {
-        return buildProperties;
-    }
-
-    public void setBuildProperties(String buildProperties) {
-        this.buildProperties = buildProperties;
+    	Map props = getProperties();
+    	String buildprops = (String)props.get(BUILDPROPERTIES);
+    	return (buildprops == null) ? "" : buildprops;
     }
 
     public String getDisplayName() {
-        return "Maven2 builder";
-    }
-
-    public String getIconName() {
-        return "maven.png";
-    }
-
-    public List getBuilderSpecificProperties() {
-        List properties = getMaven2Properties();
-        return properties;
+    	Map props = getProperties();
+    	String displayName = (String)props.get(DISPLAYNAME);
+    	return (displayName == null) ? "" : displayName;
     }
 
     public void validate() {
@@ -205,29 +216,24 @@ public class Maven2Builder extends Builder {
         return build.getSchedule().resolveAbsolutePath(getDirToRunMaven());
     }
 
-    public com.luntsys.luntbuild.facades.lb12.BuilderFacade constructFacade() {
-        return new com.luntsys.luntbuild.facades.lb12.Maven2BuilderFacade();
+    public com.luntsys.luntbuild.facades.lb20.BuilderFacade constructFacade() {
+        return new com.luntsys.luntbuild.facades.lb20.Maven2BuilderFacade();
     }
 
-    public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.Maven2BuilderFacade))
+    public void loadFromFacade(com.luntsys.luntbuild.facades.lb20.BuilderFacade facade) {
+        if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.Maven2BuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.Maven2BuilderFacade mavenBuilderFacade =
-            (com.luntsys.luntbuild.facades.lb12.Maven2BuilderFacade) facade;
-        setCommand(mavenBuilderFacade.getCommand());
-        setDirToRunMaven(mavenBuilderFacade.getDirToRunMaven());
-        setGoals(mavenBuilderFacade.getGoals());
-        setBuildProperties(mavenBuilderFacade.getBuildProperties());
+        com.luntsys.luntbuild.facades.lb20.Maven2BuilderFacade mavenBuilderFacade =
+            (com.luntsys.luntbuild.facades.lb20.Maven2BuilderFacade) facade;
+        copyProperties(mavenBuilderFacade.getProperties(), getProperties());
     }
 
-    public void saveToFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.Maven2BuilderFacade))
+    public void saveToFacade(com.luntsys.luntbuild.facades.lb20.BuilderFacade facade) {
+        if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.Maven2BuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.Maven2BuilderFacade mavenBuilderFacade =
-            (com.luntsys.luntbuild.facades.lb12.Maven2BuilderFacade) facade;
-        mavenBuilderFacade.setCommand(getCommand());
-        mavenBuilderFacade.setDirToRunMaven(getDirToRunMaven());
-        mavenBuilderFacade.setGoals(getGoals());
-        mavenBuilderFacade.setBuildProperties(getBuildProperties());
+        com.luntsys.luntbuild.facades.lb20.Maven2BuilderFacade mavenBuilderFacade =
+            (com.luntsys.luntbuild.facades.lb20.Maven2BuilderFacade) facade;
+        copyProperties(getProperties(), mavenBuilderFacade.getProperties());
     }
+
 }

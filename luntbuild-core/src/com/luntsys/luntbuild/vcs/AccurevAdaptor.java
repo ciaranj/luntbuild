@@ -5,12 +5,12 @@ package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.IStringProperty;
 import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.AccurevModuleFacade;
-import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.utility.IStringProperty;
+import com.luntsys.luntbuild.facades.lb20.AccurevAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb20.AccurevModuleFacade;
+import com.luntsys.luntbuild.facades.lb20.ModuleFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.vcs.accurev.AccurevHelper;
@@ -113,17 +113,17 @@ public class AccurevAdaptor extends Vcs {
     }
 
     public void saveToFacade(VcsFacade facade) {
-        com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade accuFacade =
-            (com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade) facade;
+        com.luntsys.luntbuild.facades.lb20.AccurevAdaptorFacade accuFacade =
+            (com.luntsys.luntbuild.facades.lb20.AccurevAdaptorFacade) facade;
         accuFacade.setUser(getUser());
         accuFacade.setPassword(getPassword());
     }
 
     public void loadFromFacade(VcsFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade))
+        if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.AccurevAdaptorFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade accuFacade =
-            (com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade) facade;
+        com.luntsys.luntbuild.facades.lb20.AccurevAdaptorFacade accuFacade =
+            (com.luntsys.luntbuild.facades.lb20.AccurevAdaptorFacade) facade;
         setUser(accuFacade.getUser());
         setPassword(accuFacade.getPassword());
     }

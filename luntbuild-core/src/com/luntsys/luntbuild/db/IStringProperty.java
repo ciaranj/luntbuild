@@ -1,4 +1,4 @@
-package com.luntsys.luntbuild.utility;
+package com.luntsys.luntbuild.db;
 
 public interface IStringProperty {
 

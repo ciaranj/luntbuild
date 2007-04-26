@@ -75,7 +75,7 @@ public abstract class Notifier {
 
 	/**
 	 * Get system level properties of current notifier
-	 * @return list of {@link com.luntsys.luntbuild.utility.IStringProperty}
+	 * @return list of {@link com.luntsys.luntbuild.db.IStringProperty}
 	 */
 	public abstract List getSystemLevelProperties();
 

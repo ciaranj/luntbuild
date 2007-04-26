@@ -28,7 +28,7 @@
 package com.luntsys.luntbuild.dao;
 
 import com.luntsys.luntbuild.db.*;
-import com.luntsys.luntbuild.facades.lb12.DataCollection;
+import com.luntsys.luntbuild.facades.lb20.DataCollection;
 
 import java.util.Date;
 import java.util.List;
@@ -352,9 +352,9 @@ public interface Dao {
 
 	void removeBuildsBefore(Schedule schedule, Date date);
 
-	DataCollection loadDataCollection12();
+	DataCollection loadDataCollection20();
 
-	void saveDataCollection12(DataCollection data12);
+	void saveDataCollection20(DataCollection data12);
 
 	void eraseExistingData();
 }

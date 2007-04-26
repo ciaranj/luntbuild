@@ -27,11 +27,11 @@
  */
 package com.luntsys.luntbuild.vcs;
 
-import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.facades.lb20.ModuleFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.IStringProperty;
 import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.utility.IStringProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.utility.ValidationException;
@@ -140,7 +140,7 @@ public abstract class Vcs implements Serializable, Cloneable {
 	 */
 	public abstract Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject);
 
-	public com.luntsys.luntbuild.facades.lb12.VcsFacade getFacade() {
+	public com.luntsys.luntbuild.facades.lb20.VcsFacade getFacade() {
 		VcsFacade facade = constructFacade();
 		facade.setQuietPeriod(getQuietPeriod());
 		saveToFacade(facade);
@@ -158,7 +158,7 @@ public abstract class Vcs implements Serializable, Cloneable {
 		getModules().clear();
 		Iterator it = facade.getModules().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.ModuleFacade moduleFacade = (ModuleFacade) it.next();
+			com.luntsys.luntbuild.facades.lb20.ModuleFacade moduleFacade = (ModuleFacade) it.next();
 			Module module = createNewModule();
 			module.setFacade(moduleFacade);
 			getModules().add(module);
@@ -172,7 +172,7 @@ public abstract class Vcs implements Serializable, Cloneable {
 	public abstract VcsFacade constructFacade();
 
 	/**
-	 * Check vcs properties against {@link com.luntsys.luntbuild.utility.IStringProperty#isRequired()}
+	 * Check vcs properties against {@link com.luntsys.luntbuild.db.IStringProperty#isRequired()}
 	 * sub-class who override this method should call this implementation first
 	 */
 	public void validateProperties() {
@@ -326,7 +326,7 @@ public abstract class Vcs implements Serializable, Cloneable {
 		 */
 		public abstract List getProperties();
 
-		public abstract com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade();
+		public abstract com.luntsys.luntbuild.facades.lb20.ModuleFacade getFacade();
 
 		public abstract void setFacade(ModuleFacade facade);
 

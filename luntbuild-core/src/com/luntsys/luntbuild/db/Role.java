@@ -9,7 +9,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.facades.lb12.RoleFacade;
+import com.luntsys.luntbuild.facades.lb20.RoleFacade;
 
 /**
  *

@@ -28,9 +28,9 @@
 package com.luntsys.luntbuild.notifiers;
 
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.IStringProperty;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.db.User;
-import com.luntsys.luntbuild.utility.IStringProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 
 import org.apache.tools.ant.Project;

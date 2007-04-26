@@ -36,12 +36,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.Project;
 
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.IStringProperty;
 import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.facades.lb12.MksAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.MksModuleFacade;
-import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.utility.IStringProperty;
+import com.luntsys.luntbuild.facades.lb20.MksAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb20.MksModuleFacade;
+import com.luntsys.luntbuild.facades.lb20.ModuleFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.Revisions;
 
@@ -159,7 +159,7 @@ public class MksAdaptor extends Vcs {
 		/**
 		 * @inheritDoc
 		 *
-		 * @see com.luntsys.luntbuild.vcs.Vcs.Module#setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade)
+		 * @see com.luntsys.luntbuild.vcs.Vcs.Module#setFacade(com.luntsys.luntbuild.facades.lb20.ModuleFacade)
 		 */
 		public void setFacade(ModuleFacade facade) {
 
@@ -467,7 +467,7 @@ public class MksAdaptor extends Vcs {
 	/**
 	 * @inheritDoc
 	 *
-	 * @see com.luntsys.luntbuild.vcs.Vcs#saveToFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade)
+	 * @see com.luntsys.luntbuild.vcs.Vcs#saveToFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade)
 	 */
 	public void saveToFacade(VcsFacade facade) {
 
@@ -483,7 +483,7 @@ public class MksAdaptor extends Vcs {
 	/**
 	 * @inheritDoc
 	 *
-	 * @see com.luntsys.luntbuild.vcs.Vcs#loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade)
+	 * @see com.luntsys.luntbuild.vcs.Vcs#loadFromFacade(com.luntsys.luntbuild.facades.lb20.VcsFacade)
 	 */
 	public void loadFromFacade(VcsFacade facade) {
 

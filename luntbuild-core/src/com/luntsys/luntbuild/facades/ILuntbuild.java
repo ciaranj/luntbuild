@@ -3,8 +3,8 @@ package com.luntsys.luntbuild.facades;
 
 import java.util.List;
 
-import com.luntsys.luntbuild.facades.lb12.BuildFacade;
-import com.luntsys.luntbuild.facades.lb12.UserFacade;
+import com.luntsys.luntbuild.facades.lb20.BuildFacade;
+import com.luntsys.luntbuild.facades.lb20.UserFacade;
 
 /*
  * Copyright luntsys (c) 2004-2005,
@@ -46,20 +46,20 @@ import com.luntsys.luntbuild.facades.lb12.UserFacade;
 public interface ILuntbuild {
     /**
      * Return all projects configured in the system
-     * @return list of {@link com.luntsys.luntbuild.facades.lb12.ProjectFacade}
+     * @return list of {@link com.luntsys.luntbuild.facades.lb20.ProjectFacade}
      */
     List getAllProjects();
 
     /**
      * Return all schedules configured for all projects in the system
-     * @return list of {@link com.luntsys.luntbuild.facades.lb12.ScheduleFacade}
+     * @return list of {@link com.luntsys.luntbuild.facades.lb20.ScheduleFacade}
      */
     List getAllSchedules();
 
     /**
      * Return all schedules configured for specified project
      * @param projectName
-     * @return list of {@link com.luntsys.luntbuild.facades.lb12.ScheduleFacade}
+     * @return list of {@link com.luntsys.luntbuild.facades.lb20.ScheduleFacade}
      */
     List getAllSchedulesOfProject(String projectName);
 
@@ -69,7 +69,7 @@ public interface ILuntbuild {
      * @param projectName name of the returned project
      * @return one of the project with specified name, or null if no projects have this name
      */
-    com.luntsys.luntbuild.facades.lb12.ProjectFacade getProjectByName(String projectName);
+    com.luntsys.luntbuild.facades.lb20.ProjectFacade getProjectByName(String projectName);
 
     /**
      * Get schedule by project and schedule name.
@@ -78,7 +78,7 @@ public interface ILuntbuild {
      * @return schedule with specified project and name, or null if no schedules within specified project
      * have this specified name
      */
-    com.luntsys.luntbuild.facades.lb12.ScheduleFacade getScheduleByName(String projectName, String scheduleName);
+    com.luntsys.luntbuild.facades.lb20.ScheduleFacade getScheduleByName(String projectName, String scheduleName);
 
     /**
      * Trigger a build within specified project name, schedule name, and with specified build params
@@ -92,13 +92,13 @@ public interface ILuntbuild {
      * Update properties of a project based on its facade object
      * @param projectFacade
      */
-    void saveProject(com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade);
+    void saveProject(com.luntsys.luntbuild.facades.lb20.ProjectFacade projectFacade);
 
     /**
      * Update properties of a schedule based on its facade object
      * @param scheduleFacade
      */
-    void saveSchedule(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    void saveSchedule(com.luntsys.luntbuild.facades.lb20.ScheduleFacade scheduleFacade);
 
     /**
      * Get luntbuild system property value by specifying property name.
@@ -166,7 +166,7 @@ public interface ILuntbuild {
      * @param scheduleFacade
      * @return maybe null if there are not any builds inside this schedule
      */
-    com.luntsys.luntbuild.facades.lb12.BuildFacade getLastBuild(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    com.luntsys.luntbuild.facades.lb20.BuildFacade getLastBuild(com.luntsys.luntbuild.facades.lb20.ScheduleFacade scheduleFacade);
 
     /**
      * Get latest build for specified schedule
@@ -174,14 +174,14 @@ public interface ILuntbuild {
      * @param scheduleName
      * @return maybe null if there are not any builds inside this schedule
      */
-    com.luntsys.luntbuild.facades.lb12.BuildFacade getLastBuild(String projectName, String scheduleName);
+    com.luntsys.luntbuild.facades.lb20.BuildFacade getLastBuild(String projectName, String scheduleName);
 
     /**
      * Get last successful build for specified schedule
      * @param scheduleFacade
      * @return maybe null if there are not any successful builds inside this schedule
      */
-    com.luntsys.luntbuild.facades.lb12.BuildFacade getLastSuccessBuild(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    com.luntsys.luntbuild.facades.lb20.BuildFacade getLastSuccessBuild(com.luntsys.luntbuild.facades.lb20.ScheduleFacade scheduleFacade);
 
     /**
      * Get last successful build for specified schedule
@@ -189,14 +189,14 @@ public interface ILuntbuild {
      * @param scheduleName
      * @return maybe null if there are not any successful builds inside this schedule
      */
-    com.luntsys.luntbuild.facades.lb12.BuildFacade getLastSuccessBuild(String projectName, String scheduleName);
+    com.luntsys.luntbuild.facades.lb20.BuildFacade getLastSuccessBuild(String projectName, String scheduleName);
 
     /**
      * Create project based on its facade object
      * @param projectFacade
      * @since 1.3
      */
-    void createProject(com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade);
+    void createProject(com.luntsys.luntbuild.facades.lb20.ProjectFacade projectFacade);
 
     /**
      *  Delete project by project name
@@ -210,14 +210,14 @@ public interface ILuntbuild {
      * @param scheduleFacade
      * @since 1.3
      */
-    void createSchedule(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    void createSchedule(com.luntsys.luntbuild.facades.lb20.ScheduleFacade scheduleFacade);
 
     /**
      *  Delete schedule by schedule object
      * @param scheduleFacade
      * @since 1.3
      */
-    void deleteSchedule(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    void deleteSchedule(com.luntsys.luntbuild.facades.lb20.ScheduleFacade scheduleFacade);
 
     /**
      * Delete all schedules configured for specified project
@@ -232,7 +232,7 @@ public interface ILuntbuild {
      * @return build log as array of strings
      * @since 1.3
      */
-    String[] getBuildLog(com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade);
+    String[] getBuildLog(com.luntsys.luntbuild.facades.lb20.BuildFacade buildFacade);
 
     /**
      * Get build log of the specified build in Html
@@ -248,7 +248,7 @@ public interface ILuntbuild {
      * @return revision log as array of strings
      * @since 1.3
      */
-    String[] getRevisionLog(com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade);
+    String[] getRevisionLog(com.luntsys.luntbuild.facades.lb20.BuildFacade buildFacade);
 
     /**
      * Get revision log of the specified build in Html

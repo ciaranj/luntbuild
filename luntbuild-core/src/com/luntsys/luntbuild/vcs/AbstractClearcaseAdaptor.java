@@ -46,8 +46,8 @@ import org.apache.tools.ant.Project;
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.facades.lb12.BaseClearcaseAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.facades.lb20.BaseClearcaseAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb20.VcsFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.MyExecTask;
 import com.luntsys.luntbuild.utility.Revisions;
@@ -273,6 +273,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
         try {
             new MyExecTask("rmview", antProject, cmdLine, Project.MSG_INFO)
                     .execute();
+        } catch (final BuildException e) {
         } finally {
             this.m_viewExists = null;
         }
@@ -544,7 +545,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
     }
 
     public final void saveToFacade(
-            final com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
+            final com.luntsys.luntbuild.facades.lb20.VcsFacade facade) {
         final BaseClearcaseAdaptorFacade baseClearcaseFacade =
                 (BaseClearcaseAdaptorFacade) facade;
         baseClearcaseFacade.setMkviewExtraOpts(getMkviewExtraOpts());

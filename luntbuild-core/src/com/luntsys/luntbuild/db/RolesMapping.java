@@ -3,7 +3,7 @@ package com.luntsys.luntbuild.db;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import com.luntsys.luntbuild.facades.lb12.RolesMappingFacade;
+import com.luntsys.luntbuild.facades.lb20.RolesMappingFacade;
 
 public class RolesMapping {
     /** identifier field */
@@ -88,7 +88,7 @@ public class RolesMapping {
     }
 
 	public RolesMappingFacade getFacade() {
-		RolesMappingFacade facade = new com.luntsys.luntbuild.facades.lb12.RolesMappingFacade();
+		RolesMappingFacade facade = new com.luntsys.luntbuild.facades.lb20.RolesMappingFacade();
 		facade.setId(getId());
 		facade.setProjectId(getProject().getId());
 		facade.setRoleId(getRole().getId());

@@ -12,17 +12,19 @@
 
 	<class name="Project" table="LB_PROJECT">
 		<cache usage="read-write"/>
+
 		<id name="id" type="long" unsaved-value="0">
 			<column name="ID" not-null="true"/>
 			<generator class="increment"/>
 		</id>
+
 		<property name="name" column="NAME" unique="true" not-null="true" length="255" />
+
 		<property name="description" column="DESCRIPTION" length="255" />
 
 		<property name="notifiers" column="NOTIFIERS" type="serializable" length="4096" />
 
-		<set name="notifyMappings" table="LB_NOTIFY_MAPPING" cascade="all-delete-orphan"
-			inverse="true" >
+		<set name="notifyMappings" table="LB_NOTIFY_MAPPING" cascade="all-delete-orphan" inverse="true" >
 			<key column="FK_PROJECT_ID"/>
 			<one-to-many class="NotifyMapping"/>
 		</set>
@@ -30,13 +32,17 @@
 		<!-- serialized form of version control systems configured for this project -->
 		<property name="vcsList" type="serializable" column="VCS_LIST" length="65535" />
 
-		<!-- serialized form of builders configured for this project-->
-		<property name="builderList" type="serializable" column="BUILDER_LIST" length="65535" />
+		<!-- builders configured for this project-->
+		<set name="builders" table="LB_BUILDER" cascade="delete" inverse="true" lazy="false">
+			<key column="FK_PROJECT_ID"/>
+			<one-to-many class="Builder"/>
+		</set>
 
 		<set name="schedules" table="LB_SCHEDULE" cascade="delete" inverse="true" >
 			<key column="FK_PROJECT_ID"/>
 			<one-to-many class="Schedule"/>
 		</set>
+
 		<set name="vcsLogins" table="LB_VCS_LOGIN" cascade="delete" inverse="true" >
 			<key column="FK_PROJECT_ID"/>
 			<one-to-many class="VcsLogin"/>
@@ -49,6 +55,128 @@
 		</set>
 		<property name="variables" column="VARIABLES" length="2048" />
 		<property name="logLevel" column="LOG_LEVEL"/>
+	</class>
+
+	<class name="Builder" table="LB_BUILDER">
+		<cache usage="read-write"/>
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<many-to-one name="project" class="Project" outer-join="true" fetch="join" >
+			<column name="FK_PROJECT_ID" not-null="true" unique-key="PROJECT_BUILDER"/>
+		</many-to-one>
+
+		<property name="name">
+			<column name="NAME" length="255" not-null="true" unique-key="PROJECT_BUILDER"/>
+		</property>
+
+		<property name="buildSuccessCondition" column="BUILD_SUCCESS_CONDITION" length="255" />
+
+		<property name="environments" column="ENVIRONMENTS" length="4096" />
+
+		<property name="type" column="TYPE"/>
+
+        <map name="properties">
+            <key column="PROPERTY_ID"/>
+            <index column="PROPERTY_NAME" type="string"/>
+            <composite-element class="StringProperty">
+				<property name="name" column="PROPERTY_NAME" not-null="true"/>
+				<property name="displayName" column="PROPERTY_DISPLAY_NAME"/>
+				<property name="secret" column="PROPERTY_SECRET" type="boolean"/>
+				<property name="required" column="PROPERTY_REQUIRED" type="boolean"/>
+				<property name="multiline" column="PROPERTY_MULTILINE" type="boolean"/>
+				<property name="value" column="PROPERTY_VALUE"/>
+			</composite-element>
+        </map>
+
+	</class>
+
+	<class name="Vcs" table="LB_VCS">
+		<cache usage="read-write"/>
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<many-to-one name="project" class="Project" outer-join="true" fetch="join" >
+			<column name="FK_PROJECT_ID" not-null="true" unique-key="PROJECT_VCS"/>
+		</many-to-one>
+
+		<property name="name">
+			<column name="NAME" length="255" not-null="true" unique-key="PROJECT_VCS"/>
+		</property>
+
+		<property name="quietPeriod" column="QUIET_PERIOD" length="255" />
+
+		<property name="type" column="TYPE"/>
+
+        <map name="properties">
+            <key column="PROPERTY_ID"/>
+            <index column="PROPERTY_NAME" type="string"/>
+            <composite-element class="StringProperty">
+				<property name="name" column="PROPERTY_NAME" not-null="true"/>
+				<property name="displayName" column="PROPERTY_DISPLAY_NAME"/>
+				<property name="secret" column="PROPERTY_SECRET" type="boolean"/>
+				<property name="required" column="PROPERTY_REQUIRED" type="boolean"/>
+				<property name="multiline" column="PROPERTY_MULTILINE" type="boolean"/>
+				<property name="value" column="PROPERTY_VALUE"/>
+			</composite-element>
+        </map>
+
+		<!-- modules attached to this vcs -->
+		<list name="modules" table="LB_VCS_MODULES" cascade="delete" inverse="true" lazy="false">
+			<key column="FK_VCS_MODULES_ID"/>
+			<list-index column="VCS_MODULE_POSITION"/>
+			<one-to-many class="VcsModule"/>
+		</list>
+
+	</class>
+
+	<class name="VcsModule" table="LB_VCS_MODULES">
+		<cache usage="read-write"/>
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<many-to-one name="vcs" class="Vcs" outer-join="true" fetch="join" >
+			<column name="FK_VCS_ID" not-null="true" unique-key="VCS_MODULE"/>
+		</many-to-one>
+
+		<property name="type" column="TYPE"/>
+
+        <map name="properties">
+            <key column="PROPERTY_ID"/>
+            <index column="PROPERTY_NAME" type="string"/>
+            <composite-element class="StringProperty">
+				<property name="name" column="PROPERTY_NAME" not-null="true"/>
+				<property name="displayName" column="PROPERTY_DISPLAY_NAME"/>
+				<property name="secret" column="PROPERTY_SECRET" type="boolean"/>
+				<property name="required" column="PROPERTY_REQUIRED" type="boolean"/>
+				<property name="multiline" column="PROPERTY_MULTILINE" type="boolean"/>
+				<property name="value" column="PROPERTY_VALUE"/>
+			</composite-element>
+        </map>
+
+	</class>
+
+	<class name="VcsLogin" table="LB_VCS_LOGIN">
+		<cache usage="read-write"/>
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<many-to-one name="project" class="Project" outer-join="true" fetch="join" >
+			<column name="FK_PROJECT_ID" not-null="true" unique-key="PROJECT_LOGIN"/>
+		</many-to-one>
+		<property name="login" not-null="true">
+			<column name="LOGIN" unique-key="PROJECT_LOGIN"/>
+		</property>
+		<many-to-one name="user" class="User" outer-join="true" fetch="join" >
+			<column name="FK_USER_ID" not-null="true" />
+		</many-to-one>
 	</class>
 
 	<class name="Schedule" table="LB_SCHEDULE">
@@ -86,42 +214,10 @@
 		<property name="buildCleanupStrategy" column="BUILD_CLEANUP_STRATEGY"/>
 		<property name="buildCleanupStrategyData" column="BUILD_CLEANUP_STRATEGY_DATA" length="255" />
 		<property name="workingPath" column="WORKING_PATH" length="255" />
-		<set name="builds" table="LB_BUILD" inverse="true" cascade="delete"
-			>
+		<set name="builds" table="LB_BUILD" inverse="true" cascade="delete">
 			<key column="FK_SCHEDULE_ID"/>
 			<one-to-many class="Build"/>
 		</set>
-	</class>
-
-	<class name="VcsLogin" table="LB_VCS_LOGIN">
-		<cache usage="read-write"/>
-		<id name="id" type="long" unsaved-value="0">
-			<column name="ID" not-null="true"/>
-			<generator class="increment"/>
-		</id>
-		<many-to-one name="project" class="Project" outer-join="true" fetch="join" >
-			<column name="FK_PROJECT_ID" not-null="true" unique-key="PROJECT_LOGIN"/>
-		</many-to-one>
-		<property name="login" not-null="true">
-			<column name="LOGIN" unique-key="PROJECT_LOGIN"/>
-		</property>
-		<many-to-one name="user" class="User" outer-join="true" fetch="join" >
-			<column name="FK_USER_ID" not-null="true" />
-		</many-to-one>
-	</class>
-
-	<class name="NotifyMapping" table="LB_NOTIFY_MAPPING" >
-		<cache usage="read-write"/>
-		<id name="id" type="long" unsaved-value="0">
-			<column name="ID" not-null="true"/>
-			<generator class="increment"/>
-		</id>
-		<many-to-one name="project" class="Project" fetch="join" >
-			<column name="FK_PROJECT_ID" not-null="true" />
-		</many-to-one>
-		<many-to-one name="user" class="User" fetch="join" >
-			<column name="FK_USER_ID" not-null="true" />
-		</many-to-one>
 	</class>
 
 	<class name="Build" table="LB_BUILD">
@@ -141,12 +237,38 @@
 		<property name="rebuild" column="REBUILD"/>
 		<!-- serialized form of version control systems attached to this build -->
 		<property name="vcsList" type="serializable" column="VCS_LIST" length="65535" />
-		<!-- serialized form of builders attached to this build-->
-		<property name="builderList" type="serializable" column="BUILDER_LIST" length="65535" />
-		<!-- serialized form of post-builders attached to this build-->
-		<property name="postbuilderList" type="serializable" column="POSTBUILDER_LIST" length="65535" />
+
+		<!-- builders attached to this build-->
+		<list name="builderList" table="LB_BUILDER" cascade="delete" inverse="true" lazy="false">
+			<key column="FK_BUILDER_ID"/>
+			<list-index column="BUILDER_POSITION"/>
+			<one-to-many class="Builder"/>
+		</list>
+
+		<!-- post-builders attached to this build-->
+		<list name="postbuilderList" table="LB_BUILDER" cascade="delete" inverse="true" lazy="false">
+			<key column="FK_BUILDER_ID"/>
+			<list-index column="POSTBUILDER_POSITION"/>
+			<one-to-many class="Builder"/>
+		</list>
+
 		<many-to-one name="schedule" class="Schedule"
 			column="FK_SCHEDULE_ID" outer-join="true" fetch="join" not-null="true" />
+
+	</class>
+
+	<class name="NotifyMapping" table="LB_NOTIFY_MAPPING" >
+		<cache usage="read-write"/>
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+		<many-to-one name="project" class="Project" fetch="join" >
+			<column name="FK_PROJECT_ID" not-null="true" />
+		</many-to-one>
+		<many-to-one name="user" class="User" fetch="join" >
+			<column name="FK_USER_ID" not-null="true" />
+		</many-to-one>
 	</class>
 
 	<class name="User" table="LB_USER">
@@ -158,9 +280,12 @@
 		<property name="name" column="NAME" unique="true" not-null="true" length="255" />
 		<property name="password" column="PASSWORD" length="255" />
 		<property name="canCreateProject" column="CAN_CREATE_PROJECT"/>
-		<property name="contacts" column="CONTACTS" type="serializable" length="65535" />
 		<property name="fullname" column="FULLNAME" length="255" />
 
+		<set name="contacts" table="LB_CONTACTS" cascade="delete" inverse="true" >
+			<key column="FK_USER_ID"/>
+			<one-to-many class="Contacts"/>
+		</set>
 		<set name="vcsLogins" table="LB_VCS_LOGIN" cascade="delete" inverse="true" >
 			<key column="FK_USER_ID"/>
 			<one-to-many class="VcsLogin"/>
@@ -174,6 +299,32 @@
 			<key column="FK_USER_ID"/>
 			<one-to-many class="RolesMapping"/>
 		</set>
+	</class>
+
+	<class name="Contacts" table="LB_CONTACTS">
+		<cache usage="read-write"/>
+		<id name="id" type="long" unsaved-value="0">
+			<column name="ID" not-null="true"/>
+			<generator class="increment"/>
+		</id>
+
+		<many-to-one name="user" class="User" outer-join="true" fetch="join" >
+			<column name="FK_USER_ID" not-null="true" />
+		</many-to-one>
+
+        <map name="properties">
+            <key column="PROPERTY_ID"/>
+            <index column="PROPERTY_NAME" type="string"/>
+            <composite-element class="StringProperty">
+				<property name="name" column="PROPERTY_NAME" not-null="true"/>
+				<property name="displayName" column="PROPERTY_DISPLAY_NAME"/>
+				<property name="secret" column="PROPERTY_SECRET" type="boolean"/>
+				<property name="required" column="PROPERTY_REQUIRED" type="boolean"/>
+				<property name="multiline" column="PROPERTY_MULTILINE" type="boolean"/>
+				<property name="value" column="PROPERTY_VALUE"/>
+			</composite-element>
+        </map>
+
 	</class>
 
 	<class name="Role" table="LB_ROLE">

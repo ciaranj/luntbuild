@@ -25,11 +25,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-package com.luntsys.luntbuild.builders;
+package com.luntsys.luntbuild.db;
 
 import com.luntsys.luntbuild.ant.Commandline;
-import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
+import com.luntsys.luntbuild.builders.CommandBuilder;
+import com.luntsys.luntbuild.facades.lb20.BuilderFacade;
 import com.luntsys.luntbuild.utility.*;
 import ognl.Ognl;
 import ognl.OgnlException;
@@ -39,7 +39,7 @@ import org.apache.tools.ant.types.Environment;
 
 import java.io.*;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * The base class for all builders.
@@ -56,6 +56,7 @@ public abstract class Builder implements Serializable {
 
     public static final String JUNIT_HTML_REPORT_DIR = "junit_html_report";
 
+	private long id;
     /**
      * Name of the builder
      */
@@ -79,6 +80,39 @@ public abstract class Builder implements Serializable {
     private String buildSuccessCondition;
     private String environments;
 
+	/**
+	 * set the unique identity of this builder, will be called by hibernate
+	 *
+	 * @param id
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	/**
+	 * Get identifer of this builder
+	 * @return identifer of this builder
+	 */
+	public long getId() {
+		return id;
+	}
+
+    /**
+     * Get name of this builder
+     * @return name of this builder
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set name of this builder
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Get display name for current builders
      *
@@ -86,25 +120,11 @@ public abstract class Builder implements Serializable {
      */
     public abstract String getDisplayName();
 
-    /**
-     * @return name of the icon for this version control system. Icon should be put into
-     *         the images directory of the web application.
-     */
-    public abstract String getIconName();
+    public abstract void setProperties(Map m);
 
-    /**
-     * Get properties of this builders. These properites will be shown to user and expect
-     * input from user.
-     *
-     * @return list of properties can be configured by user
-     */
-    public List getProperties() {
-        List properties = getBuilderSpecificProperties();
-        properties.addAll(getBuilderProperties());
-        return properties;
-    }
+    public abstract Map getProperties();
 
-    public abstract List getBuilderSpecificProperties();
+    public abstract String getType();
 
     /**
      * Validates properties of this builders
@@ -113,18 +133,10 @@ public abstract class Builder implements Serializable {
      *
      */
     public void validate() {
-        Iterator it = getProperties().iterator();
         if (Luntbuild.isEmpty(getName())) {
             throw new ValidationException("Builder name should not be empty!");
         }
         setName(getName().trim());
-        while (it.hasNext()) {
-        	IStringProperty property = (IStringProperty) it.next();
-            if (property.isRequired() && (Luntbuild.isEmpty(property.getValue())))
-                throw new ValidationException("Property \"" + property.getDisplayName() + "\" can not be empty!");
-            if (!property.isMultiline() && !property.isSecret() && property.getValue() != null)
-                property.setValue(property.getValue().trim());
-        }
         if (!Luntbuild.isEmpty(getEnvironments())) {
             BufferedReader reader = new BufferedReader(new StringReader(getEnvironments()));
             try {
@@ -149,6 +161,20 @@ public abstract class Builder implements Serializable {
                         ", reason: " + e.getMessage());
             }
         }
+        Map props = getProperties();
+        Iterator it = props.keySet().iterator();
+        while(it.hasNext()) {
+        	String key = (String)it.next();
+        	String value = (String)props.get(key);
+        	if (!Luntbuild.isEmpty(value)) {
+                try {
+                    Ognl.parseExpression(value);
+                } catch (OgnlException e) {
+                    throw new ValidationException("Invalid property \"" + key + "\": " + value +
+                            ", reason: " + e.getMessage());
+                }
+        	}
+        }
     }
 
     /**
@@ -156,11 +182,12 @@ public abstract class Builder implements Serializable {
      *
      * @return facade object of this builders
      */
-    public com.luntsys.luntbuild.facades.lb12.BuilderFacade getFacade() {
-        com.luntsys.luntbuild.facades.lb12.BuilderFacade facade = constructFacade();
+    public com.luntsys.luntbuild.facades.lb20.BuilderFacade getFacade() {
+        com.luntsys.luntbuild.facades.lb20.BuilderFacade facade = constructFacade();
         facade.setName(getName());
         facade.setEnvironments(getEnvironments());
         facade.setBuildSuccessCondition(getBuildSuccessCondition());
+        facade.setProperties(getProperties());
         saveToFacade(facade);
         return facade;
     }
@@ -170,7 +197,7 @@ public abstract class Builder implements Serializable {
      *
      * @return builders facade object
      */
-    public abstract com.luntsys.luntbuild.facades.lb12.BuilderFacade constructFacade();
+    public abstract com.luntsys.luntbuild.facades.lb20.BuilderFacade constructFacade();
 
     /**
      * Load value from builders facade
@@ -184,17 +211,18 @@ public abstract class Builder implements Serializable {
      *
      * @param facade
      */
-    public abstract void saveToFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade);
+    public abstract void saveToFacade(com.luntsys.luntbuild.facades.lb20.BuilderFacade facade);
 
     /**
      * Set facade object of this builders
      *
      * @param facade
      */
-    public void setFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
+    public void setFacade(com.luntsys.luntbuild.facades.lb20.BuilderFacade facade) {
         setName(facade.getName());
         setEnvironments(facade.getEnvironments());
         setBuildSuccessCondition(facade.getBuildSuccessCondition());
+        setProperties(facade.getProperties());
         loadFromFacade(facade);
     }
 
@@ -202,11 +230,9 @@ public abstract class Builder implements Serializable {
         try {
             Builder copy = (Builder) getClass().newInstance();
             copy.setName(getName());
-            for (int i = 0; i < getProperties().size(); i++) {
-            	IStringProperty property = (IStringProperty) getProperties().get(i);
-            	IStringProperty propertyCopy = (IStringProperty) copy.getProperties().get(i);
-                propertyCopy.setValue(property.getValue());
-            }
+            copy.setEnvironments(getEnvironments());
+            copy.setBuildSuccessCondition(getBuildSuccessCondition());
+            copy.setProperties(getProperties());
             return copy;
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
@@ -219,12 +245,15 @@ public abstract class Builder implements Serializable {
         this.build = build;
         OgnlHelper.setAntProject(antProject);
         OgnlHelper.setTestMode(false);
-        for (int i = 0; i < getProperties().size(); i++) {
-        	IStringProperty property = (IStringProperty) getProperties().get(i);
-            if (property.getValue() != null)
-                property.setValue(Luntbuild.evaluateExpression(this, property.getValue()));
-            else
-                property.setValue("");
+        Map props = getProperties();
+        Iterator it = props.keySet().iterator();
+        while(it.hasNext()) {
+        	String key = (String)it.next();
+        	String value = (String)props.get(key);
+        	if (!Luntbuild.isEmpty(value))
+        		props.put(key, Luntbuild.evaluateExpression(this, value));
+        	else
+        		props.put(key, "");
         }
     }
 
@@ -275,7 +304,10 @@ public abstract class Builder implements Serializable {
             new MyExecTask(getDisplayName(), antProject, constructBuildCmdDir(build), cmdLine, env,
                 null, Project.MSG_INFO);
 
-        boolean waitForFinish = !(this instanceof CommandBuilder && ((CommandBuilder)this).getWaitForFinish() != null && ((CommandBuilder)this).getWaitForFinish().equals("No"));
+        boolean waitForFinish =
+        	!(this instanceof CommandBuilder &&
+        			((CommandBuilder)this).getWaitForFinish() != null &&
+        			((CommandBuilder)this).getWaitForFinish().equalsIgnoreCase("no"));
         result = exec.executeAndGetResult(waitForFinish);
 
         buildLogger.setDirectMode(false);
@@ -403,33 +435,24 @@ public abstract class Builder implements Serializable {
         return new OgnlHelper();
     }
 
-    /**
-     * Get name of this builder
-     * @return name of this builder
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Set name of this builder
-     * @param name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String toString() {
         String summary = "Builder name: " + getName() + "\n";
         summary += "Builder type: " + getDisplayName() + "\n";
-        Iterator it = getProperties().iterator();
-        while (it.hasNext()) {
-            IStringProperty property = (IStringProperty) it.next();
-            if (!property.isSecret())
-                summary += "    " + property.getDisplayName() + ": " + property.getValue() + "\n";
-            else
-                summary += "    " + property.getDisplayName() + ":*****\n";
+        Map props = getProperties();
+        Iterator it = props.keySet().iterator();
+        while(it.hasNext()) {
+        	String key = (String)it.next();
+        	String value = (String)props.get(key);
+            summary += "    " + key + ": " + value + "\n";
         }
         return summary;
+    }
+
+    public void copyProperties(Map srcProps, Map destProps) {
+        Iterator it = srcProps.keySet().iterator();
+        while(it.hasNext()) {
+        	String key = (String)it.next();
+        	destProps.put(key, srcProps.get(key));
+        }
     }
 }

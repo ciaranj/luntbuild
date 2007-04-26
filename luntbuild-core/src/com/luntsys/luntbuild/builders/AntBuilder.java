@@ -28,8 +28,10 @@
 package com.luntsys.luntbuild.builders;
 
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Builder;
+import com.luntsys.luntbuild.db.StringProperty;
 import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.facades.lb12.AntBuilderFacade;
+import com.luntsys.luntbuild.facades.lb20.AntBuilderFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
 
@@ -37,8 +39,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Ant builder implementation
@@ -50,83 +52,95 @@ public class AntBuilder extends Builder {
      */
     static final long serialVersionUID = 1L;
 
-    /**
-     * The command to run ant
-     */
-    private String command;
+    public static final String COMMAND = "command";
+    public static final String BUILDSCRIPTPATH = "buildscriptpath";
+    public static final String TARGETS = "targets";
+    public static final String BUILDPROPERTIES = "buildproperties";
+    public static final String DISPLAYNAME = "displayname";
 
-    /**
-     * Path to ant build script
-     */
-    private String buildScriptPath;
-
-    /**
-     * Targets to build
-     */
-    private String targets;
+    private String type = "antbuilder";
 
     /**
      * Extra properties transfered into the build script
      */
-    private String buildProperties =
+    private static final String buildProperties =
             "buildVersion=\"${build.version}\"\n" +
             "artifactsDir=\"${build.artifactsDir}\"\n" +
             "buildDate=\"${build.startDate}\"\n" +
             "junitHtmlReportDir=\"${build.junitHtmlReportDir}\"";
 
+    private Map properties;
+
+
     public AntBuilder() {
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            this.command = "C:\\apache-ant-1.6.2\\bin\\ant.bat";
-        } else {
-            this.command = "/usr/local/bin/ant";
-        }
         setBuildSuccessCondition("result==0 and logContainsLine(\"BUILD SUCCESSFUL\")");
     }
 
-    public String getCommand() {
-        return command;
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof AntBuilder) {
+            if (getName().equals(((AntBuilder)obj).getName()))
+                return true;
+        }
+        return false;
     }
 
-    public void setCommand(String command) {
-        this.command = command;
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
+    public String getCommand() {
+    	Map props = getProperties();
+    	String command = (String)props.get(COMMAND);
+        return (command == null) ? "" : command;
     }
 
     public String getBuildScriptPath() {
-        return buildScriptPath;
-    }
-
-    public void setBuildScriptPath(String buildScriptPath) {
-        this.buildScriptPath = buildScriptPath;
+    	Map props = getProperties();
+    	String buildScriptPath = (String)props.get(BUILDSCRIPTPATH);
+    	return (buildScriptPath == null) ? "" : buildScriptPath;
     }
 
     public String getTargets() {
-        return targets;
-    }
-
-    public void setTargets(String targets) {
-        this.targets = targets;
+    	Map props = getProperties();
+    	String targets = (String)props.get(TARGETS);
+    	return (targets == null) ? "" : targets;
     }
 
     public String getBuildProperties() {
-        return buildProperties;
-    }
-
-    public void setBuildProperties(String buildProperties) {
-        this.buildProperties = buildProperties;
+    	Map props = getProperties();
+    	String buildprops = (String)props.get(BUILDPROPERTIES);
+    	return (buildprops == null) ? "" : buildprops;
     }
 
     public String getDisplayName() {
-        return "Ant builder";
+    	Map props = getProperties();
+    	String displayName = (String)props.get(DISPLAYNAME);
+    	return (displayName == null) ? "" : displayName;
     }
 
-    public String getIconName() {
-        return "ant.gif";
-    }
+	@Override
+	public Map getProperties() {
+		if (this.properties == null) {
+			this.properties = new HashMap();
+	        this.properties.put(BUILDPROPERTIES, new StringProperty(BUILDPROPERTIES, buildProperties));
+	        if (System.getProperty("os.name").startsWith("Windows")) {
+	        	this.properties.put(COMMAND, "C:\\apache-ant-1.6.2\\bin\\ant.bat");
+	        } else {
+	        	this.properties.put(COMMAND, "/usr/local/bin/ant");
+	        }
+		}
+		return this.properties;
+	}
 
-    public List getBuilderSpecificProperties() {
-        List properties = getAntProperties();
-        return properties;
-    }
+	@Override
+	public String getType() {
+		return this.type;
+	}
+
+	@Override
+	public void setProperties(Map m) {
+		this.properties = m;
+	}
 
     public void validate() {
         super.validate();
@@ -211,27 +225,23 @@ public class AntBuilder extends Builder {
         return new File(buildScriptAbsolutePath).getParent();
     }
 
-    public com.luntsys.luntbuild.facades.lb12.BuilderFacade constructFacade() {
+    public com.luntsys.luntbuild.facades.lb20.BuilderFacade constructFacade() {
         return new AntBuilderFacade();
     }
 
-    public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.AntBuilderFacade))
+    public void loadFromFacade(com.luntsys.luntbuild.facades.lb20.BuilderFacade facade) {
+        if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.AntBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.AntBuilderFacade antBuilderFacade = (com.luntsys.luntbuild.facades.lb12.AntBuilderFacade) facade;
-        setCommand(antBuilderFacade.getCommand());
-        setBuildScriptPath(antBuilderFacade.getBuildScriptPath());
-        setTargets(antBuilderFacade.getBuildTargets());
-        setBuildProperties(antBuilderFacade.getBuildProperties());
+        com.luntsys.luntbuild.facades.lb20.AntBuilderFacade antBuilderFacade =
+        	(com.luntsys.luntbuild.facades.lb20.AntBuilderFacade) facade;
+        copyProperties(antBuilderFacade.getProperties(), getProperties());
     }
 
-    public void saveToFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.AntBuilderFacade))
+    public void saveToFacade(com.luntsys.luntbuild.facades.lb20.BuilderFacade facade) {
+        if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.AntBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.AntBuilderFacade antBuilderFacade = (AntBuilderFacade) facade;
-        antBuilderFacade.setCommand(getCommand());
-        antBuilderFacade.setBuildScriptPath(getBuildScriptPath());
-        antBuilderFacade.setBuildTargets(getTargets());
-        antBuilderFacade.setBuildProperties(getBuildProperties());
+        com.luntsys.luntbuild.facades.lb20.AntBuilderFacade antBuilderFacade = (AntBuilderFacade) facade;
+        copyProperties(getProperties(), antBuilderFacade.getProperties());
     }
+
 }

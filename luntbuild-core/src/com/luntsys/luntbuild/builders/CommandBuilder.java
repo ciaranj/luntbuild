@@ -28,14 +28,16 @@
 package com.luntsys.luntbuild.builders;
 
 import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
-import com.luntsys.luntbuild.utility.IStringProperty;
+import com.luntsys.luntbuild.db.Builder;
+import com.luntsys.luntbuild.db.StringProperty;
+import com.luntsys.luntbuild.facades.lb20.BuilderFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Implements for a command line builder
@@ -46,65 +48,63 @@ public class CommandBuilder extends Builder {
 	 */
 	static final long serialVersionUID = 1L;
 
-	/**
-	 * The command to run command script
-	 */
-	private String command =
+    public static final String COMMAND = "command";
+    public static final String DIRTORUN = "dirtorun";
+    public static final String WAITFORFINISH = "waitforfinish";
+    public static final String BUILDPROPERTIES = "buildproperties";
+    public static final String DISPLAYNAME = "displayname";
+
+    private String type = "cmdbuilder";
+
+	private static final String buildProperties =
         " \"${build.version}\" \"${build.artifactsDir}\" \"${build.startDate}\" \"${build.junitHtmlReportDir}\"";
 
-	/**
-	 * The directory to run command, defaults to be current project's work directory if left empty
-	 */
-	private String dirToRunCmd;
+    private Map properties;
 
-	/**
-	 * A Yes/No value determining whether to wait for the command to complete or to fork and continue
-	 */
-	private String waitForFinish;
 
     public CommandBuilder() {
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            this.command = "\"${build.schedule.workingDir}\\build\\build.bat\"" + this.command;
-        } else {
-            this.command = "\"${build.schedule.workingDir}/build/build\"" + this.command;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof CommandBuilder) {
+            if (getName().equals(((CommandBuilder)obj).getName()))
+                return true;
         }
+        return false;
+    }
+
+    public int hashCode() {
+        return getName().hashCode();
     }
 
 	public String getCommand() {
-		return command;
-	}
-
-	public void setCommand(String command) {
-		this.command = command;
+    	Map props = getProperties();
+    	String command = (String)props.get(COMMAND);
+    	return (command == null) ? "" : command;
 	}
 
 	public String getDirToRunCmd() {
-		return dirToRunCmd;
-	}
-
-	public void setDirToRunCmd(String dirToRunCmd) {
-		this.dirToRunCmd = dirToRunCmd;
+    	Map props = getProperties();
+    	String dirToRunCmd = (String)props.get(DIRTORUN);
+    	return (dirToRunCmd == null) ? "" : dirToRunCmd;
 	}
 
 	public String getWaitForFinish() {
-		return waitForFinish;
+    	Map props = getProperties();
+    	String waitForFinish = (String)props.get(WAITFORFINISH);
+    	return (waitForFinish == null) ? "" : waitForFinish;
 	}
 
-	public void setWaitForFinish(String waitForFinish) {
-		this.waitForFinish = waitForFinish;
-	}
+    public String getBuildProperties() {
+    	Map props = getProperties();
+    	String buildprops = (String)props.get(BUILDPROPERTIES);
+    	return (buildprops == null) ? "" : buildprops;
+    }
 
 	public String getDisplayName() {
-		return "Command builder";
-	}
-
-	public String getIconName() {
-		return "command.gif";
-	}
-
-	public List getBuilderSpecificProperties() {
-		List properties = getCommandBuilderProperties();
-		return properties;
+    	Map props = getProperties();
+    	String displayName = (String)props.get(DISPLAYNAME);
+    	return (displayName == null) ? "" : displayName;
 	}
 
 	public void validate() {
@@ -122,7 +122,7 @@ public class CommandBuilder extends Builder {
 	 * @return command to run cmd
 	 */
 	public String constructBuildCmd(Build build) throws IOException {
-		String buildCmd = getCommand();
+		String buildCmd = getCommand() + " " + getBuildProperties();
 		buildCmd = buildCmd.replace('\n', ' ');
 		buildCmd = buildCmd.replace('\r', ' ');
 
@@ -137,25 +137,47 @@ public class CommandBuilder extends Builder {
 	}
 
 	public BuilderFacade constructFacade() {
-		return new com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade();
+		return new com.luntsys.luntbuild.facades.lb20.CommandBuilderFacade();
 	}
 
 	public void loadFromFacade(BuilderFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade))
+		if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.CommandBuilderFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade cmdBuilderFacade = (com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade) facade;
-		setCommand(cmdBuilderFacade.getCommand());
-		setDirToRunCmd(cmdBuilderFacade.getDirToRunCmd());
-		setWaitForFinish(cmdBuilderFacade.getWaitForFinish());
+		com.luntsys.luntbuild.facades.lb20.CommandBuilderFacade cmdBuilderFacade =
+			(com.luntsys.luntbuild.facades.lb20.CommandBuilderFacade) facade;
+        copyProperties(cmdBuilderFacade.getProperties(), getProperties());
 	}
 
 	public void saveToFacade(BuilderFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade))
+		if (!(facade instanceof com.luntsys.luntbuild.facades.lb20.CommandBuilderFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade cmdBuilderFacade = (com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade) facade;
-		cmdBuilderFacade.setCommand(getCommand());
-		cmdBuilderFacade.setDirToRunCmd(getDirToRunCmd());
-		cmdBuilderFacade.setWaitForFinish(getWaitForFinish());
+		com.luntsys.luntbuild.facades.lb20.CommandBuilderFacade cmdBuilderFacade =
+			(com.luntsys.luntbuild.facades.lb20.CommandBuilderFacade) facade;
+        copyProperties(getProperties(), cmdBuilderFacade.getProperties());
+	}
+
+	@Override
+	public Map getProperties() {
+		if (this.properties == null) {
+			this.properties = new HashMap();
+	        this.properties.put(BUILDPROPERTIES, new StringProperty(BUILDPROPERTIES, buildProperties));
+	        if (System.getProperty("os.name").startsWith("Windows")) {
+	        	this.properties.put(COMMAND, "\"${build.schedule.workingDir}\\build\\build.bat\"");
+	        } else {
+	        	this.properties.put(COMMAND, "\"${build.schedule.workingDir}/build/build\"");
+	        }
+		}
+		return this.properties;
+	}
+
+	@Override
+	public String getType() {
+		return this.type;
+	}
+
+	@Override
+	public void setProperties(Map m) {
+		this.properties = m;
 	}
 
 }
