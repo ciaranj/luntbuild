@@ -339,7 +339,10 @@ public class SvnAdaptor extends Vcs {
         createLabelParentDir(mapped, clientManager, antProject);
 
         try {
-            clientManager.getCopyClient().doCopy(srcUrl, SVNRevision.HEAD, url, false, "Labeled: " + label);
+        	String path = workingDir;
+        	if (module.getSrcPath() != null && module.getSrcPath().trim().length() > 0)
+        		path += File.separatorChar + module.getSrcPath().trim();
+            clientManager.getCopyClient().doCopy(new File(path), SVNRevision.WORKING, url, false, "Labeled: " + label);
         } catch (SVNException e) {
             throw new RuntimeException("Error executing copy svn command", e);
         }

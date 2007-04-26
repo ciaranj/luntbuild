@@ -478,6 +478,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
         try {
             new MyExecTask("rmview", antProject, cmdLine, Project.MSG_INFO)
                     .execute();
+        } catch (final BuildException e) {
         } finally {
             this.m_viewExists = null;
         }
