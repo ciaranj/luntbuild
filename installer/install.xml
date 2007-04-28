@@ -20,12 +20,13 @@
 
     <variables>
         <variable name="appServerWebapps" value=""/>
+        <variable name="JDKPathPanel.skipIfValid" value="yes" />
     </variables>
 
     <!--
         The gui preferences indication.
     -->
-    <guiprefs width="700" height="500" resizable="yes"/>
+    <guiprefs width="700" height="550" resizable="yes"/>
 
     <!--  The locale section. -->
     <locale>
@@ -48,6 +49,8 @@
     -->
     <panels>
         <panel classname="HelloPanel"/>
+        <!-- Fix for JDK panel: http://lists.berlios.de/pipermail/izpack-devel/2006-December/002262.html -->
+        <!--<panel classname="JDKPathPanel"/> This does not work well-->
         <panel classname="InfoPanel"/>
         <panel classname="LicencePanel"/>
         <panel classname="TargetPanel"/>
@@ -105,10 +108,10 @@
             <parsable targetfile="$INSTALL_PATH/bin/stop-luntbuild.bat" os="windows"/>
             <parsable targetfile="$INSTALL_PATH/bin/luntbuild.sh" os="unix"/>
             <parsable targetfile="$INSTALL_PATH/bin/stop-luntbuild.sh" os="unix"/>
-            <executable targetfile="$INSTALL_PATH/configure-jdbc.bat" stage="postinstall" os="windows"/>
-            <executable targetfile="$INSTALL_PATH/configure-jdbc.sh" stage="postinstall" os="unix"/>
-            <executable targetfile="$INSTALL_PATH/configure-war.bat" stage="postinstall" os="windows"/>
-            <executable targetfile="$INSTALL_PATH/configure-war.sh" stage="postinstall" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/configure-jdbc.bat" stage="postinstall" failure="abort" os="windows"/>
+            <executable targetfile="$INSTALL_PATH/configure-jdbc.sh" stage="postinstall" failure="abort" os="unix"/>
+            <executable targetfile="$INSTALL_PATH/configure-war.bat" stage="postinstall" failure="abort" os="windows"/>
+            <executable targetfile="$INSTALL_PATH/configure-war.sh" stage="postinstall" failure="abort" os="unix"/>
         </pack>
         <pack name="Docs" required="no">
             <description>The Luntbuild documentation.</description>

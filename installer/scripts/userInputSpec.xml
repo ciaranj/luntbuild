@@ -17,18 +17,58 @@
         <field type="search" variable="appServerWebapps">
             <description align="left" txt="Application server web applications install directory." id="input.webapps"/>
             <spec txt="Path to war deploy dir:" type="directory" result="directory" size="30" set="">
-                <choice value="/usr/local/tomcat/webapps" os="unix" />
-                <choice value="/usr/local/jetty-4.2.23/webapps" os="unix" />
-                <choice value="/usr/local/jetty-5.1.2/webapps" os="unix" />
-                <choice value="/usr/local/jboss-3.2.7/server/default/deploy" os="unix" />
-                <choice value="/usr/local/jboss-4.0.1RC2/server/default/deploy" os="unix" />
-                <choice value="/usr/local/resin-3.0.12/webapps" os="unix" />
-                <choice value="C:\Program Files\Tomcat 5.5\webapps" os="windows" />
-                <choice value="C:\jetty-4.2.23\webapps" os="windows" />
-                <choice value="C:\jetty-5.1.2\webapps" os="windows" />
-                <choice value="C:\jboss-3.2.7\server\default\deploy" os="windows" />
-                <choice value="C:\jboss-4.0.1RC2\server\default\deploy" os="windows" />
-                <choice value="C:\resin-3.0.12\webapps" os="windows" />
+                <choice txt="/usr/local/tomcat/webapps"
+                    value="/usr/local/tomcat/webapps" os="unix" />
+                <choice txt="/usr/local/jetty-4.2.23/webapps"
+                    value="/usr/local/jetty-4.2.23/webapps" os="unix" />
+                <choice txt="/usr/local/jetty-5.1.2/webapps"
+                    value="/usr/local/jetty-5.1.2/webapps" os="unix" />
+                <choice txt="/usr/local/jboss-3.2.7/server/default/deploy"
+                    value="/usr/local/jboss-3.2.7/server/default/deploy" os="unix" />
+                <choice txt="/usr/local/jboss-4.0.1RC2/server/default/deploy"
+                    value="/usr/local/jboss-4.0.1RC2/server/default/deploy" os="unix" />
+                <choice txt="/usr/local/resin-3.0.12/webapps"
+                    value="/usr/local/resin-3.0.12/webapps" os="unix" />
+                <choice txt="C:\Program Files\Apache Software Foundation\Tomcat 5.5\webapps"
+                    value="C:\Program Files\Apache Software Foundation\Tomcat 5.5\webapps" os="windows" />
+                <choice txt="C:\Program Files\Tomcat 5.5\webapps"
+                    value="C:\Program Files\Tomcat 5.5\webapps" os="windows" />
+                <choice txt="C:\Program Files\Tomcat 5.5.17\webapps"
+                    value="C:\Program Files\Tomcat 5.5.17\webapps" os="windows" />
+                <choice txt="C:\Tomcat 5.5.17\webapps"
+                    value="C:\Tomcat 5.5.17\webapps" os="windows" />
+                <choice txt="C:\jetty-4.2.23\webapps"
+                    value="C:\jetty-4.2.23\webapps" os="windows" />
+                <choice txt="C:\jetty-5.1.2\webapps"
+                    value="C:\jetty-5.1.2\webapps" os="windows" />
+                <choice txt="C:\jetty-6.1.1\webapps"
+                    value="C:\jetty-6.1.1\webapps" os="windows" />
+                <choice txt="C:\jboss-3.2.7\server\default\deploy"
+                    value="C:\jboss-3.2.7\server\default\deploy" os="windows" />
+                <choice txt="C:\jboss-4.0.1RC2\server\default\deploy"
+                    value="C:\jboss-4.0.1RC2\server\default\deploy" os="windows" />
+                <choice txt="C:\resin-3.0.12\webapps"
+                    value="C:\resin-3.0.12\webapps" os="windows" />
+                <choice txt="D:\Program Files\Apache Software Foundation\Tomcat 5.5\webapps"
+                    value="D:\Program Files\Apache Software Foundation\Tomcat 5.5\webapps" os="windows" />
+                <choice txt="D:\Program Files\Tomcat 5.5\webapps"
+                    value="D:\Program Files\Tomcat 5.5\webapps" os="windows" />
+                <choice txt="D:\Program Files\Tomcat 5.5.17\webapps"
+                    value="D:\Program Files\Tomcat 5.5.17\webapps" os="windows" />
+                <choice txt="D:\Tomcat 5.5.17\webapps"
+                    value="D:\Tomcat 5.5.17\webapps" os="windows" />
+                <choice txt="D:\jetty-4.2.23\webapps"
+                    value="D:\jetty-4.2.23\webapps" os="windows" />
+                <choice txt="D:\jetty-5.1.2\webapps"
+                    value="D:\jetty-5.1.2\webapps" os="windows" />
+                <choice txt="D:\jetty-6.1.1\webapps"
+                    value="D:\jetty-6.1.1\webapps" os="windows" />
+                <choice txt="D:\jboss-3.2.7\server\default\deploy"
+                    value="D:\jboss-3.2.7\server\default\deploy" os="windows" />
+                <choice txt="D:\jboss-4.0.1RC2\server\default\deploy"
+                    value="D:\jboss-4.0.1RC2\server\default\deploy" os="windows" />
+                <choice txt="D:\resin-3.0.12\webapps"
+                    value="D:\resin-3.0.12\webapps" os="windows" />
             </spec>
         </field>
         <field type="space"/>
@@ -40,8 +80,8 @@
         <field type="space"/>
         <field type="combo" variable="databaseType">
             <spec txt="Database Type:" id="input.dbtype">
-                <choice processor="" txt="H2 Embedded" id="database.radio.h2-embedded" value="h2-embedded" set="true"/>
-                <choice processor="" txt="HSQLDB Embedded" id="database.radio.hsqldb" value="hsqldb"/>
+                <choice processor="" txt="HSQLDB Embedded" id="database.radio.hsqldb" value="hsqldb" set="true"/>
+                <choice processor="" txt="H2 Embedded" id="database.radio.h2-embedded" value="h2-embedded"/>
                 <choice processor="" txt="H2 Client" id="database.radio.h2-cs" value="h2-cs"/>
                 <choice processor="" txt="Derby Client" id="database.radio.derby-cs" value="derby-cs"/>
                 <choice processor="" txt="MySQL" id="database.radio.mysql" value="mysql"/>
