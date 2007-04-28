@@ -1,11 +1,13 @@
 <project name="luntbuild" default="installer" basedir="..">
 
+    <property environment="env"/>
+
     <tstamp>
       <format property="currentDate" pattern="MM-dd-yyyy" locale="en"/>
     </tstamp>
 
-    <property name="buildVersion" value="1.3.6"/>
-	<property name="fileVersion" value="1.3.6"/>
+    <property name="buildVersion" value="1.3.7"/>
+	<property name="fileVersion" value="1.3.7"/>
     <property name="buildId" value=""/>
     <property name="artifactsDir" value="${basedir}/distribute"/>
 	<property name="junitHtmlReportDir" value="test/junitHtmlReport"/>
@@ -15,6 +17,7 @@
     <property name="compile-with-debug" value="on"/>
     <property name="compile-source-level" value="1.4"/>
     <property name="compile-target-level" value="1.4"/>
+    <property name="javadoc-source-level" value="1.4.2"/>
 
     <patternset id="web.images">
         <include name="**/*.gif"/>
@@ -35,6 +38,7 @@
         <include name="**/*.page"/>
         <include name="**/*.jwc"/>
         <include name="**/*.xml"/>
+        <include name="**/*.xsl"/>
         <include name="**/*.properties"/>
         <include name="**/*.library"/>
         <include name="**/*.application"/>
@@ -57,7 +61,8 @@
 		<pathelement location="test/classes"/>
 	</path>
 
-	<target name="webstage_compile">
+	<target name="webstage_compile"
+        description="Compiles Luntbuild">
 		<mkdir dir="stage/web/WEB-INF/classes"/>
         <echo message="Compiling using source level: ${compile-source-level}, target level: ${compile-target-level}"/>
         <javac sourcepath="" srcdir="src" destdir="stage/web/WEB-INF/classes"
@@ -66,7 +71,8 @@
         </javac>
 	</target>
 
-    <target name="webstage" depends="webstage_compile, compile-standalone" >
+    <target name="webstage" depends="webstage_compile, compile-standalone"
+        description="Stages web resources">
 		<filter token="installDir" value="${luntbuild-install-build}"/>
 		<filter token="sessionTimeout" value="30"/>
 		<copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
@@ -113,7 +119,8 @@
     <!-- Used for development, please do not remove. lubosp.
     The luntbuild.war deployment file is in stage/luntbuild.war.
       -->
-    <target name="war" depends="webstage">
+    <target name="war" depends="webstage"
+        description="Builds Luntbuild webapp deployment package">
         <delete file="stage/web/WEB-INF/web.xml"/>
         <delete file="stage/web/WEB-INF/applicationContext.xml"/>
         <filter token="installDir" value="${luntbuild-install-dir}"/>
@@ -148,7 +155,8 @@
     Deploy J2EE Project to Server... and selecting luntbuild-deploy deployment.
     Now you can start Tomcat (or your favorite servlet container).
       -->
-    <target name="deploy" depends="war">
+    <target name="deploy" depends="war"
+        description="Deploys the webapp deployment package to the webapp server">
         <fail unless="app.server.webapps"
             message="Please specify servlet container webapps directory, where to copy luntbuild.war." />
         <delete dir="${app.server.webapps}/luntbuild" failonerror="false"/>
@@ -158,7 +166,8 @@
             overwrite="true" />
     </target>
 
-	<target name="api" depends="webstage_compile">
+	<target name="api" depends="webstage_compile, api_docs"
+        description="Builds remote API">
 		<copy todir="remoting">
 			<fileset dir="lib" includes="hessian*.jar"/>
 		</copy>
@@ -173,19 +182,41 @@
 				<fileset dir="remoting" includes="*.jar"/>
 			</classpath>
 		</javac>
-		<javadoc sourcepath="src" classpathref="classpath" destdir="remoting/javadoc"
-			author="true" version="true" use="true" windowtitle="Luntbuild remoting API">
+	</target>
+
+	<target name="api_docs" depends=""
+        description="Builds API related documentation">
+		<echo level="info">Generating API JavaDoc</echo>
+		<javadoc sourcepath="src" classpathref="classpath" destdir="stage/docs/api/javadoc"
+			source="${compile-source-level}" author="true" version="true" use="true" windowtitle="Luntbuild API">
 			<fileset dir="src" defaultexcludes="yes">
 				<include name="com/luntsys/luntbuild/facades/*.java"/>
 				<include name="com/luntsys/luntbuild/facades/lb12/*.java"/>
 			</fileset>
+			<link href="http://java.sun.com/j2se/${javadoc-source-level}/docs/api/"/>
+			<link href="http://www.opensymphony.com/quartz/api/"/>
+			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
+		</javadoc>
+		<echo level="info">Generating remoting example JavaDoc</echo>
+		<javadoc sourcepath="src" classpathref="classpath" destdir="remoting/javadoc"
+			source="${compile-source-level}" author="true" version="true" use="true" windowtitle="Luntbuild Remoting Samples">
+			<fileset dir="remoting" defaultexcludes="yes">
+				<include name="samples/src/*.java"/>
+			</fileset>
+			<fileset dir="src" defaultexcludes="yes">
+				<include name="com/luntsys/luntbuild/facades/*.java"/>
+				<include name="com/luntsys/luntbuild/facades/lb12/*.java"/>
+			</fileset>
+			<link href="http://java.sun.com/j2se/${javadoc-source-level}/docs/api/"/>
+			<link href="http://www.opensymphony.com/quartz/api/"/>
 			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
 			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
 		</javadoc>
 	</target>
 
     <target name="compile-standalone" depends="webstage_compile"
-        description="Compiles standalone launcher">
+        description="Builds Luntbuild standalone launcher">
         <pathconvert property="luntbuild-standalone.lib.path" pathsep=" ">
           <path>
               <fileset dir="standalone/lib" includes="**/*.jar"/>
@@ -215,17 +246,34 @@
         </jar>
     </target>
 
-	<target name="stage_docs">
+	<target name="stage_docs"
+        description="Builds primary documentation">
 		<copy todir="stage/docs/guide">
 			<fileset dir="docs/guide">
 				<exclude name="*.xsl"/>
-				 <exclude name="*.docbook"/>
+				<exclude name="*.docbook"/>
 				<exclude name="*.pdf"/>
 				<exclude name="*.project"/>
 			</fileset>
 		</copy>
 		<copy todir="stage/docs/faq">
 			<fileset dir="docs/faq">
+				<exclude name="*.xsl"/>
+				<exclude name="*.docbook"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/docs/installguide">
+			<fileset dir="docs/installguide">
+				<exclude name="*.xsl"/>
+				<exclude name="*.docbook"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/docs/quickstart">
+			<fileset dir="docs/quickstart">
 				<exclude name="*.xsl"/>
 				<exclude name="*.docbook"/>
 				<exclude name="*.pdf"/>
@@ -239,23 +287,27 @@
 			<fileset dir="docs/zh-cn"/>
 		</copy>
 
+		<echo level="info">Generating full JavaDoc</echo>
 		<mkdir dir="stage/docs/javadoc"/>
 		<javadoc sourcepath="src" classpathref="classpath" destdir="stage/docs/javadoc"
-			author="true" version="true" use="true" windowtitle="Luntbuild Java Documentation">
+			source="${compile-source-level}" author="true" version="true" use="true" windowtitle="Luntbuild Java Documentation">
 			<fileset dir="src" defaultexcludes="yes">
-				<include name="com/luntsys/luntbuild/facades/*.java"/>
-				<include name="com/luntsys/luntbuild/db/**/*.java"/>
-				<include name="com/luntsys/luntbuild/builders/**/*.java"/>
-				<include name="com/luntsys/luntbuild/utility/OgnlHelper.java"/>
-				<include name="com/luntsys/luntbuild/utility/Variable.java"/>
-				<include name="com/luntsys/luntbuild/utility/VariableHolder.java"/>
+				<include name="**/*.java"/>
 			</fileset>
+			<link href="http://java.sun.com/j2se/${javadoc-source-level}/docs/api/"/>
+			<link href="http://www.opensymphony.com/quartz/api/"/>
+			<link href="http://www.springframework.org/docs/api/"/>
+			<link href="http://www.dpml.net/api/ant/1.6.4/"/>
+			<link href="http://java.sun.com/products/servlet/2.3/javadoc/"/>
+			<link href="http://tapestry.apache.org/tapestry3/doc/api/"/>
+			<!--<link href="http://acegisecurity.org/multiproject/acegi-security/apidocs/"/>-->
 			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
 			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
 		</javadoc>
 	</target>
 
-    <target name="stage" depends="webstage, api, stage_docs">
+    <target name="stage" depends="webstage, api, stage_docs"
+        description="Stages Luntbuild for packaging">
         <!--
                 Writes some important informations about this build into a property file which
                 will be used by the application to show build version, date, etc.
@@ -334,7 +386,8 @@
         </delete>
     </target>
 
-    <target name="clean">
+    <target name="clean"
+        description="Cleans the build tree of files created by the build">
         <delete dir="stage" failonerror="no"/>
         <delete dir="remoting/samples/classes" failonerror="no"/>
         <delete dir="remoting/javadoc" failonerror="no"/>
@@ -351,14 +404,16 @@
         <delete file="db/luntbuild.script.demo"/>
     </target>
 
-	<target name="test_compile" depends="webstage_compile">
+	<target name="test_compile" depends="webstage"
+        description="Compiles Luntbuild test cases">
 		<mkdir dir="test/classes"/>
 		<javac srcdir="test/src" destdir="test/classes" classpathref="classpath.test"
             source="${compile-source-level}" target="${compile-target-level}"
         />
 	</target>
 
-	<target name="test" depends="test_compile">
+	<target name="test" depends="test_compile"
+        description="Runs JUnit tests on Luntbuild using test cases">
 		<mkdir dir="test/junitReports"/>
 		<junit printsummary="yes">
 			<formatter type="xml"/>

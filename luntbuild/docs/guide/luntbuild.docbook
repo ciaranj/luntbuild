@@ -15,6 +15,7 @@
   <!ENTITY editschedule-section SYSTEM "editschedule-section.docbook">
   <!ENTITY builds-chapter SYSTEM "builds-chapter.docbook">
   <!ENTITY clearcaseadaptor-section SYSTEM "clearcase-section.docbook">
+  <!ENTITY notificationtemplates-chapter SYSTEM "notificationtemplates-chapter.docbook">
 ]>
 
 <book>
@@ -2125,6 +2126,8 @@ ${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), project.va
     </para></note></para>
 </section>
 </chapter>
+
+&notificationtemplates-chapter;
 
 <chapter id="loginmap">
 <title>Defining Login Mapping for a Project</title>
