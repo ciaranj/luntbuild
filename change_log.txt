@@ -1,3 +1,27 @@
+Luntbuild 1.3.7
+
+Contribution from Jason Archer, thanks Jason!
+
+Installer
+- Fixed the "webapps folder" search box in the installer (wasn't showing titles for the options).
+- Fixed installation scripts failing without message.
+
+UI/Help/Documentation
+- Added chapter to documentation on notification templates and their use.
+
+Build System
+- Expanded JavaDoc to include all classes.
+- Added links to external JavaDocs.
+- Added separate API JavaDocs.
+- Added descriptions to all targets.
+- Separated API documentation generation from API compiling.
+
+Other changes:
+
+- Fixed EHCache configuration
+- Improved Clearcase mview delete/recreate
+- Fixed SVN adaptor labeling (label working copy, not a HEAD copy)
+
 Luntbuild 1.3.6
 
 Bugs fixed:
