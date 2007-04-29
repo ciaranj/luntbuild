@@ -240,6 +240,7 @@ public class MigrationManager {
 					scheduleFacade111.getName()));
 			logger.info("Creating new schedule: " + projectFacade12.getName() + "/" +
 					scheduleFacade12.getName());
+			scheduleFacade12.setScheduleDisabled("false");
 			scheduleFacade12.setProjectId(projectFacade12.getId());
 			scheduleFacade12.setStatus(buildScheduleFacade111.getStatus());
 			scheduleFacade12.setStatusDate(buildScheduleFacade111.getStatusDate());

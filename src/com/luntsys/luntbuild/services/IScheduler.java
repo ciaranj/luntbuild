@@ -100,5 +100,7 @@ public interface IScheduler {
 
 	boolean isTriggerAvailable(Trigger trigger);
 
+	void scheduleSystemBackup();
+
 	void scheduleSystemCare();
 }

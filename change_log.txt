@@ -8,6 +8,10 @@ Installer
 
 UI/Help/Documentation
 - Added chapter to documentation on notification templates and their use.
+- Updated the link to the cron trigger help on schedule edit page.
+- Added ability for interface tabs to hide themselves.
+- Added catch for MigrationExceptions to the AdministrationTab so that common errors show up as error messages rather than execption pages (rather annoying).
+- Added links to the quickstart guide, FAQ, and JavaDoc on the website.
 
 Build System
 - Expanded JavaDoc to include all classes.
@@ -16,11 +20,27 @@ Build System
 - Added descriptions to all targets.
 - Separated API documentation generation from API compiling.
 
+General
+- Fix for system properties not immediately updating when importing a new config.  The webapp was not updating its copy of the properties.
+- Fix to allow relative paths when specifing an import config file, export already did this.
+- Added automated backup/export of database (configurable with a cron trigger).
+
+Scheduling
+- Added ability to enable/disable schedules with one click.  Disabled schedules will not run and you don't have to change trigger information.
+
+Notification
+- Added luntbuild servlet URL as an available variable for templates.
+- Added ability to configure templates for specific schedules (this could be better done though).
+- Added new notification strategy "Notify if failed or status changed".
+- Fixed error messages in TemplatedNotifier.
+
+
 Other changes:
 
 - Fixed EHCache configuration
 - Improved Clearcase mview delete/recreate
 - Fixed SVN adaptor labeling (label working copy, not a HEAD copy)
+- Updated IzPack installer to version 3.10.1
 
 Luntbuild 1.3.6
 

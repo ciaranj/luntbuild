@@ -32,11 +32,13 @@ import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.facades.Constants;
 import org.apache.tapestry.IRequestCycle;
+import org.quartz.CronTrigger;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.io.File;
+import java.text.ParseException;
 
 /**
  * This component shows and edits system wide properties
@@ -77,6 +79,16 @@ public abstract class PropertiesTab extends TabPageComponent {
 				return;
 			}
 		}
+		String backupCronExpression = (String) getProperties().get(Constants.BACKUP_CRON_EXPRESSION);
+		if (!Luntbuild.isEmpty(backupCronExpression)) {
+			CronTrigger cronTrigger = new CronTrigger();
+			try {
+				cronTrigger.setCronExpression(backupCronExpression);
+			} catch (ParseException e) {
+				setErrorMsg("Invalid database backup cron expression: " + backupCronExpression);
+				return;
+			}
+		}
 
 		Iterator it = getProperties().keySet().iterator();
 		while (it.hasNext()) {
@@ -88,6 +100,7 @@ public abstract class PropertiesTab extends TabPageComponent {
 		Luntbuild.getDao().saveProperties(getProperties());
 		Luntbuild.setProperties(getProperties());
 		Luntbuild.getSchedService().rescheduleBuilds();
+		Luntbuild.getSchedService().scheduleSystemBackup();
 		setSuccessMsg("Properties updated successfully!");
 	}
 

@@ -12,8 +12,10 @@
     <td height="25" bgcolor="#FFFFFF"><table width="100%" height="100%"  border="0" cellpadding="0" cellspacing="0" bordercolor="#FFFFFF"> 
         <tr bordercolor="#FFFFFF"> 
 		<span jwcid="@Foreach" source="ognl:tabs" value="ognl:currentTab">
-          <td width="120" height="25" align="center" class="ognl:tabClass" jwcid="@Any"> <a jwcid="@DirectLink" listener="ognl:listeners.selectTab" parameters="ognl:currentTab.id"> <span jwcid="@Insert" value="ognl:currentTab.tabName">tab page</span> </a> </td> 
-          <td width="5" class="tabSpace">&nbsp;</td> 
+          <span jwcid="@Conditional" condition="ognl:currentTab.isVisible()">
+            <td width="120" height="25" align="center" class="ognl:tabClass" jwcid="@Any"> <a jwcid="@DirectLink" listener="ognl:listeners.selectTab" parameters="ognl:currentTab.id"> <span jwcid="@Insert" value="ognl:currentTab.tabName">tab page</span> </a> </td>
+            <td width="5" class="tabSpace">&nbsp;</td>
+          </span>
 		</span> 
           <td bgcolor="#EEEEEE" class="tabSpace">&nbsp;</td>
           <td width="100" bgcolor="#EEEEEE" class="tabSpace">&nbsp;</td>
@@ -28,8 +30,9 @@
     <td height="11" class="borderBottom">&nbsp;</td> 
   </tr> 
   
-  <tr bgcolor="#CCCCCC"> 
-    <td height="10" align="center" valign="top" bgcolor="#EEEEEE"><strong>Powered by <a href="http://luntbuild.javaforge.com/">Luntbuild</a> - <a href="http://www.javaforge.com/proj/doc/displayWikiDocument.do?doc_id=1306">Help us</a> </strong></td> 
-  </tr> 
+  <tr bgcolor="#CCCCCC">
+    <td height="10" align="center" valign="top" bgcolor="#EEEEEE"><strong><a href="/luntbuild/docs/quickstart/quickstart.html">Quick Start Guide</a> - <a href="/luntbuild/docs/faq/index.html">FAQ</a> - <a href="/luntbuild/docs/javadoc/index.html">JavaDoc</a><br/>
+Powered by <a href="http://luntbuild.javaforge.com/">Luntbuild</a> - <a href="http://www.javaforge.com/proj/doc/displayWikiDocument.do?doc_id=1306">Help us</a></strong></td>
+  </tr>
 </table> 
 </span>

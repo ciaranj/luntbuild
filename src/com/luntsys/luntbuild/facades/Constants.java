@@ -87,13 +87,14 @@ public class Constants {
 	/**
 	 * Notify strategy constants
 	 */
-	public static final int NUM_NOTIFY_STRATEGY = 5;
+	public static final int NUM_NOTIFY_STRATEGY = 6;
 
 	public static final int NOTIFY_WHEN_STATUS_CHANGED = 0;
 	public static final int NOTIFY_IF_SUCCESS = 1;
 	public static final int NOTIFY_IF_FAILED = 2;
 	public static final int NOTIFY_ALWAYS = 3;
 	public static final int NOTIFY_NONE = 4;
+	public static final int NOTIFY_IF_FAILED_OR_CHANGED = 5;
 
 	/**
 	 * Trigger dependents strategy
@@ -159,6 +160,8 @@ public class Constants {
 	public static final String PUBLISH_DIR = "publishDir";
 	public static final String PAGE_REFRESH_INTERVAL = "pageRefreshInterval";
 	public static final String BUILD_THREAD_COUNT = "buildThreadCount";
+	public static final String BACKUP_FILE_NAME = "backupFileName";
+	public static final String BACKUP_CRON_EXPRESSION = "backupCronExpression";
 
 	/**
 	 * Special build version constants
@@ -210,6 +213,8 @@ public class Constants {
 			return "do not notify";
 		else if (notifyStrategy == NOTIFY_WHEN_STATUS_CHANGED)
 			return "notify when status changed";
+		else if (notifyStrategy == NOTIFY_IF_FAILED_OR_CHANGED)
+			return "notify when failed or status changed";
 		else
 			return "";
 	}

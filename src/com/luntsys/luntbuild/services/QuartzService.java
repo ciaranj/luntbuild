@@ -30,6 +30,7 @@ package com.luntsys.luntbuild.services;
 import com.luntsys.luntbuild.BuildGenerator;
 import com.luntsys.luntbuild.facades.BuildParams;
 import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.maintenance.SystemBackup;
 import com.luntsys.luntbuild.maintenance.SystemCare;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
@@ -87,7 +88,7 @@ public class QuartzService implements IScheduler {
 				ListIterator itSchedule = Luntbuild.getDao().loadSchedules().listIterator();
 				while (itSchedule.hasNext()) {
 					Schedule schedule = (Schedule) itSchedule.next();
-					if (schedule.getTrigger() == null)
+					if (schedule.getTrigger() == null || schedule.isDisabled())
 						continue;
                     String jobName = schedule.getJobName();
 					JobDetail jobDetail = sched.getJobDetail(jobName, Scheduler.DEFAULT_GROUP);
@@ -418,6 +419,39 @@ public class QuartzService implements IScheduler {
 					return false;
 			} catch (SchedulerException e) {
 				return false;
+			}
+		}
+	}
+
+	public void scheduleSystemBackup() {
+		validateSched();
+		synchronized (schedLock) {
+			try {
+				if (sched.getTriggerState(SystemBackup.TRIGGER_NAME, SystemBackup.TRIGGER_GROUP) != Trigger.STATE_NONE)
+					sched.unscheduleJob(SystemBackup.TRIGGER_NAME, SystemBackup.TRIGGER_GROUP);
+				String cronExpression = (String) Luntbuild.getProperties().get(Constants.BACKUP_CRON_EXPRESSION);
+				if (!Luntbuild.isEmpty(cronExpression)) {
+					JobDetail jobDetail = sched.getJobDetail(SystemBackup.JOB_NAME, SystemBackup.JOB_GROUP);
+					if (jobDetail == null) {
+						jobDetail = new JobDetail();
+						jobDetail.setDurability(true);
+						jobDetail.setGroup(SystemBackup.JOB_GROUP);
+						jobDetail.setName(SystemBackup.JOB_NAME);
+						jobDetail.setJobClass(SystemBackup.class);
+						sched.addJob(jobDetail, false);
+					}
+					CronTrigger trigger = new CronTrigger();
+					trigger.setGroup(SystemBackup.TRIGGER_GROUP);
+					trigger.setName(SystemBackup.TRIGGER_NAME);
+					trigger.setJobGroup(SystemBackup.JOB_GROUP);
+					trigger.setJobName(SystemBackup.JOB_NAME);
+					trigger.setCronExpression(cronExpression);
+					trigger.setStartTime(new Date(System.currentTimeMillis()));
+					sched.scheduleJob(trigger);
+				}
+			} catch (Exception e) {
+				logger.error("Error in scheduleSystemBackup: ", e);
+				throw new RuntimeException(e);
 			}
 		}
 	}

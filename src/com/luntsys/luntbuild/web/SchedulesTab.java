@@ -219,6 +219,64 @@ public abstract class SchedulesTab extends TabPageComponent implements PageDetac
 	}
 
 	/**
+	 * Enable all schedules
+	 * @param cycle
+	 */
+	public void enableAllBuilds(IRequestCycle cycle) {
+		ensureCurrentTab(); // in case user go back to this page through browser's back button and click on this
+		List schedules = getSchedules();
+		for (int i = 0; i < schedules.size(); i++)
+		{
+			Schedule schedule = (Schedule) schedules.get(i);
+			schedule.setScheduleDisabled("false");
+			Luntbuild.getDao().saveSchedule(schedule);
+		}
+		Luntbuild.getSchedService().rescheduleBuilds();
+	}
+
+	/**
+	 * Disable all schedules
+	 * @param cycle
+	 */
+	public void disableAllBuilds(IRequestCycle cycle) {
+		ensureCurrentTab(); // in case user go back to this page through browser's back button and click on this
+		List schedules = getSchedules();
+		for (int i = 0; i < schedules.size(); i++)
+		{
+			Schedule schedule = (Schedule) schedules.get(i);
+			schedule.setScheduleDisabled("true");
+        	Luntbuild.getDao().saveSchedule(schedule);
+    	}
+		Luntbuild.getSchedService().rescheduleBuilds();
+	}
+
+	/**
+	 * Enable a particular schedule
+	 * @param cycle
+	 */
+	public void enableBuild(IRequestCycle cycle) {
+		ensureCurrentTab(); // in case user go back to this page through browser's back button and click on this
+		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
+		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
+		schedule.setScheduleDisabled("false");
+        Luntbuild.getDao().saveSchedule(schedule);
+		Luntbuild.getSchedService().rescheduleBuilds();
+	}
+
+	/**
+	 * Disable a particular schedule
+	 * @param cycle
+	 */
+	public void disableBuild(IRequestCycle cycle) {
+		ensureCurrentTab(); // in case user go back to this page through browser's back button and click on this
+		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
+		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
+		schedule.setScheduleDisabled("true");
+        Luntbuild.getDao().saveSchedule(schedule);
+		Luntbuild.getSchedService().rescheduleBuilds();
+	}
+
+	/**
 	 * Manually trigger a build
 	 *
 	 * @param cycle
@@ -227,7 +285,10 @@ public abstract class SchedulesTab extends TabPageComponent implements PageDetac
 		ensureCurrentTab(); // in case user go back to this page through browser's back button and click on this
 		ManualBuildEditor manualBuildEditor = (ManualBuildEditor) getComponent("manualBuildEditorComponent");
 		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
-		manualBuildEditor.setSchedule(Luntbuild.getDao().loadSchedule(scheduleId));
+		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
+		if (schedule.isDisabled())
+			return;
+		manualBuildEditor.setSchedule(schedule);
 		manualBuildEditor.setWhereFrom(ManualBuildEditor.BUILD_FROM_SCHEDULESTAB);
 		setAction("buildManually");
 	}

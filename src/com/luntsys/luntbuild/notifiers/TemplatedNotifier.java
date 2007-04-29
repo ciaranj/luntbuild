@@ -63,6 +63,10 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     }
 
     private void setTemplateFiles() {
+    	setTemplateFiles("");
+    }
+
+    private void setTemplateFiles(String templatePropertyName) {
         File f = new File(this.templateDir + File.separator + TEMPLATE_DEF_FILE);
         if (!f.exists()) {
             this.logger.error("Unable to find template definition file " + f.getPath());
@@ -83,8 +87,10 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         } finally {
             if (in != null) try { in.close(); } catch (Exception e) {/*Ignore*/}
         }
-        this.templateBuildFile = props.getProperty("buildTemplate");
-        this.templateScheduleFile = props.getProperty("scheduleTemplate");
+        this.templateBuildFile = props.getProperty(templatePropertyName + "_buildTemplate");
+        this.templateScheduleFile = props.getProperty(templatePropertyName + "_scheduleTemplate");
+        if (this.templateBuildFile == null) this.templateBuildFile = props.getProperty("buildTemplate");
+        if (this.templateScheduleFile == null) this.templateScheduleFile = props.getProperty("scheduleTemplate");
         if (this.templateBuildFile == null) this.templateBuildFile = DEFAULT_TEMPLATE_BUILD;
         if (this.templateScheduleFile == null) this.templateScheduleFile = DEFAULT_TEMPLATE_SCHEDULE;
     }
@@ -93,12 +99,16 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      *
      * Initialize velocity
      */
-    private void init() throws Exception {
+    private void init(String templatePropertyName) throws Exception {
         Properties props = new Properties();
-        props.put("file.resource.loader.path", TEMPLATE_BASE_DIR);
+        props.put("file.resource.loader.path", this.templateDir);
         props.put("runtime.log", "velocity.log");
         Velocity.init(props);
-        setTemplateFiles();
+        setTemplateFiles(templatePropertyName);
+    }
+
+    private void init() throws Exception {
+        init("");
     }
 
     /**
@@ -230,6 +240,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
                 com.luntsys.luntbuild.facades.Constants.getBuildTypeText(build.getBuildType()));
         context.put("build_labelstrategy",
                 com.luntsys.luntbuild.facades.Constants.getLabelStrategyText(build.getLabelStrategy()));
+        context.put("luntbuild_servlet_url", Luntbuild.getServletUrl());
 
         this.visualStudioScraper.scrape(buildText, build, context);
 
@@ -273,6 +284,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
                 com.luntsys.luntbuild.facades.Constants.getBuildTypeText(schedule.getBuildType()));
         context.put("schedule_labelstrategy",
                 com.luntsys.luntbuild.facades.Constants.getLabelStrategyText(schedule.getLabelStrategy()));
+        context.put("luntbuild_servlet_url", Luntbuild.getServletUrl());
 
         return context;
     }
@@ -310,7 +322,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
 
     private String constructNotificationBody(Build build, VelocityContext ctx) {
         try {
-            init();
+            init(build.getSchedule().getProject().getName().replaceAll(" ","_") + "_" + build.getSchedule().getName().replaceAll(" ","_"));
             return processTemplate(build, ctx);
         }
         catch (ResourceNotFoundException rnfe) {
@@ -334,19 +346,19 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
 
     private String constructNotificationBody(Schedule schedule, VelocityContext ctx) {
         try {
-            init();
+            init(schedule.getProject().getName().replaceAll(" ","_") + "_" + schedule.getName().replaceAll(" ","_"));
             return processTemplate(schedule, ctx);
         }
         catch (ResourceNotFoundException rnfe) {
-            this.logger.error("Could not load template file: " + this.templateBuildFile
+            this.logger.error("Could not load template file: " + this.templateScheduleFile
                     + "\nTemplateDir = " + this.templateDir, rnfe);
-            return "Could not load template file: " + this.templateBuildFile + "\nTemplateDir = " +
+            return "Could not load template file: " + this.templateScheduleFile + "\nTemplateDir = " +
             this.templateDir;
         }
         catch (ParseErrorException pee) {
-            this.logger.error("Unable to parse template file: " + this.templateBuildFile +
+            this.logger.error("Unable to parse template file: " + this.templateScheduleFile +
                     "\nTemplateDir = " + this.templateDir, pee);
-            return "Unable to parse template file: " + this.templateBuildFile + "\nTemplateDir = " +
+            return "Unable to parse template file: " + this.templateScheduleFile + "\nTemplateDir = " +
             this.templateDir;
         }
         catch(Exception ex) {

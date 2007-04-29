@@ -297,6 +297,11 @@ public class BuildGenerator implements StatefulJob {
                     // notify when build status changes
                     if (lastBuild == null || currentBuild.getStatus() != lastBuild.getStatus())
                         sendBuildNotification(currentBuild, revisions.getChangeLogins(), antProject);
+                } else if (notifyStrategy == Constants.NOTIFY_IF_FAILED_OR_CHANGED) {
+                    // notify when build fails or status changes
+                    if (lastBuild == null || currentBuild.getStatus() == com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_FAILED
+                    	|| currentBuild.getStatus() != lastBuild.getStatus())
+                        sendBuildNotification(currentBuild, revisions.getChangeLogins(), antProject);
                 }
             }
 

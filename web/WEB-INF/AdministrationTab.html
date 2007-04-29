@@ -53,7 +53,9 @@
               <input jwcid="@Submit" name="import" type="submit" id="import" value="Import"/>
               <br>
               This operation will first erase all existing data(build artifacts under publish directory will not be deleted), and then import data from specified file.
-              It may take a long time depending on the size of the file being imported. </td>
+              It may take a long time depending on the size of the file being imported.
+              If relative path is specified, the file will be located relative to the Luntbuild installation directory.
+            </td>
           </tr> 
         </form> 
       </table>

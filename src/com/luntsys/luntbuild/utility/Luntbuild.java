@@ -1134,6 +1134,7 @@ public class Luntbuild {
                 DefaultMultipartDecoder.getSharedInstance().setThresholdSize(FILE_BLOCK_SIZE);
 
                 getSchedService().startup();
+                getSchedService().scheduleSystemBackup();
                 getSchedService().scheduleSystemCare();
                 getSchedService().rescheduleBuilds();
 
