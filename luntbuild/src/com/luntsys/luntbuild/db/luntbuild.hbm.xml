@@ -60,6 +60,7 @@
 		<many-to-one name="project" class="Project" outer-join="true" fetch="join" >
 			<column name="FK_PROJECT_ID" not-null="true" unique-key="PROJECT_SCHEDULE"/>
 		</many-to-one>
+		<property name="scheduleDisabled" column="SCHED_DISABLED" not-null="true" length="255" />
 		<property name="name">
 			<column name="NAME" length="255" not-null="true" unique-key="PROJECT_SCHEDULE"/>
 		</property>

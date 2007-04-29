@@ -27,6 +27,7 @@
  */
 package com.luntsys.luntbuild.web;
 
+import com.luntsys.luntbuild.migration.MigrationException;
 import com.luntsys.luntbuild.migration.MigrationManager;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.thoughtworks.xstream.XStream;
@@ -104,12 +105,13 @@ public abstract class AdministrationTab extends TabPageComponent {
 
 	public void importData(IRequestCycle cycle) {
 		ensureCurrentTab();
-		if (Luntbuild.isEmpty(getFilePathToImport())) {
+        String fileName = getFilePathToImport().trim();
+		if (Luntbuild.isEmpty(fileName)) {
 			setErrorMsg("You should specify the file to import from!");
 			return;
 		}
 		File xmlDataFile = new File(getFilePathToImport().trim());
-		if (!xmlDataFile.exists()) {
+		if (!(xmlDataFile.exists())) {
             if (!xmlDataFile.isAbsolute()) {
                 xmlDataFile = new File(Luntbuild.installDir + File.separator + getFilePathToImport().trim());
                 if (!xmlDataFile.exists()) {
@@ -128,20 +130,21 @@ public abstract class AdministrationTab extends TabPageComponent {
 		ensureCurrentTab();
 		if (getFilePathToImport() == null)
 			return;
-        File f = new File(getFilePathToImport().trim());
-        if (!f.isAbsolute()) {
-            f = new File(Luntbuild.installDir + File.separator + getFilePathToImport().trim());
-            if (!f.exists()) return;
-        }
-		com.luntsys.luntbuild.facades.lb12.DataCollection dataCollection =
-				MigrationManager.importAsDataCollection12(f);
-        try {
-            Luntbuild.getDao().eraseExistingData();
-        } catch (Exception e) {
-            logger.error("Unable to delete existing data, import might fail ", e);
-        }
-		Luntbuild.getDao().saveDataCollection12(dataCollection);
-		setSuccessMsg("Data has been imported successfully!");
+		try {
+			com.luntsys.luntbuild.facades.lb12.DataCollection dataCollection =
+					MigrationManager.importAsDataCollection12(new File(getFilePathToImport()));
+	        try {
+	            Luntbuild.getDao().eraseExistingData();
+	        } catch (Exception e) {
+	            logger.error("Unable to delete existing data, import might fail ", e);
+	        }
+			Luntbuild.getDao().saveDataCollection12(dataCollection);
+			Luntbuild.setProperties(Luntbuild.getDao().loadProperties());
+			Luntbuild.getSchedService().rescheduleBuilds();
+			setSuccessMsg("Data has been imported successfully!");
+		} catch (MigrationException me) {
+			setErrorMsg(me.getMessage());
+		}
 		setFilePathToImport(null);
 	}
 

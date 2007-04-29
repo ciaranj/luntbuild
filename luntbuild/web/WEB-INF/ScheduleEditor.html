@@ -89,7 +89,7 @@
       <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/time.gif" width="17" height="14" align="absmiddle"> Cron expression</td> 
       <td jwcid="@Any" colspan="3" align="left" valign="top" bordercolor="#FFFFFF" class="ognl:propertyValueCssClass" scope="col"> <input class="inputBox" value="ognl:cronExpression" jwcid="@TextField"/> 
         *<br>
-        Set the cron expression for this schedule, the format is &lt;seconds&gt; &lt;minutes&gt; &lt;hours&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt;. For example, 0 0 1 * * ? means 1:00am every day. For details of the format, refer to <a href="http://www.opensymphony.com/quartz/tutorial.html#cronTriggers">http://www.opensymphony.com/quartz/tutorial.html#cronTriggers</a>.
+        Set the cron expression for this schedule, the format is &lt;seconds&gt; &lt;minutes&gt; &lt;hours&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt;. For example, 0 0 1 * * ? means 1:00am every day. For details of the format, refer to <a href="http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html">http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html</a>.
 	  </td> 
     </tr> 
     </span>
@@ -188,7 +188,8 @@
     <strong>notify when failed</strong>: send notification only when the build failed. <br>
     <strong>notify when success</strong>: send  notification only when the build succeeded. <br>
     <strong>do not notify</strong>: do not send notification after the build.<br>
-    <strong>notify always</strong>: always send notification after the build.</td>
+    <strong>notify always</strong>: always send notification after the build.<br>
+    <strong>notify when failed or status changed</strong>: send notification only when the build failed or when the status of the current build changes against the last build.</td>
     </tr>
 	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
 

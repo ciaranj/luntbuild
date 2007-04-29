@@ -39,6 +39,7 @@ import java.util.ArrayList;
  */
 public class ScheduleFacade {
 	private long id;
+	private String scheduleDisabled = "false";
 	private String name;
 	private String description;
 	private String nextVersion;
@@ -82,6 +83,22 @@ public class ScheduleFacade {
 	 */
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	/**
+	 * Get disabled state of this schedule
+	 * @return disabled state
+	 */
+	public String getScheduleDisabled() {
+		return scheduleDisabled;
+	}
+
+	/**
+	 * Set disabled state of this schedule
+	 * @param scheduleDisabled state
+	 */
+	public void setScheduleDisabled(String scheduleDisabled) {
+		this.scheduleDisabled = scheduleDisabled;
 	}
 
 	/**

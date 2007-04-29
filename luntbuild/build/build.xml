@@ -398,7 +398,6 @@
 		<delete dir="test/classes"/>
 		<delete dir="${artifactsDir}"/>
 		<delete dir="${junitHtmlReportDir}"/>
-		<delete file="installer/install.xml.temp"/>
         <delete file="db/luntbuild.script"/>
         <delete file="db/luntbuild.script.base"/>
         <delete file="db/luntbuild.script.demo"/>
@@ -484,11 +483,18 @@
 		<filter token="appVersion" value="${buildVersion}" />
 		<copy file="installer/install.xml" tofile="installer/install.xml.temp"
 			overwrite="true" filtering="true" />
+		<copy file="installer/target.dir.windows" tofile="installer/target.dir.windows.temp"
+			overwrite="true" filtering="true" />
+		<copy file="installer/target.dir.unix" tofile="installer/target.dir.unix.temp"
+			overwrite="true" filtering="true" />
         <izpack input="${basedir}/installer/install.xml.temp"
             output="${artifactsDir}/luntbuild-${fileVersion}-installer.jar"
             installerType="standard"
             basedir="${basedir}/stage">
             </izpack>
+		<delete file="installer/install.xml.temp"/>
+		<delete file="installer/target.dir.windows.temp"/>
+		<delete file="installer/target.dir.unix.temp"/>
     </target>
 
     <target name="weekly" depends="weekly.installer, weekly.source">

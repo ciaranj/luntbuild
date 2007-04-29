@@ -90,6 +90,60 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 	}
 
 	/**
+	 * Enable all schedules
+	 * @param cycle
+	 */
+	public void enableAllBuilds(IRequestCycle cycle) {
+		List schedules = getSchedules();
+		for (int i = 0; i < schedules.size(); i++)
+		{
+			Schedule schedule = (Schedule) schedules.get(i);
+			schedule.setScheduleDisabled("false");
+			Luntbuild.getDao().saveSchedule(schedule);
+		}
+		Luntbuild.getSchedService().rescheduleBuilds();
+	}
+
+	/**
+	 * Disable all schedules
+	 * @param cycle
+	 */
+	public void disableAllBuilds(IRequestCycle cycle) {
+		List schedules = getSchedules();
+		for (int i = 0; i < schedules.size(); i++)
+		{
+			Schedule schedule = (Schedule) schedules.get(i);
+			schedule.setScheduleDisabled("true");
+        	Luntbuild.getDao().saveSchedule(schedule);
+    	}
+		Luntbuild.getSchedService().rescheduleBuilds();
+	}
+
+	/**
+	 * Enable a particular schedule
+	 * @param cycle
+	 */
+	public void enableBuild(IRequestCycle cycle) {
+		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
+		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
+		schedule.setScheduleDisabled("false");
+        Luntbuild.getDao().saveSchedule(schedule);
+		Luntbuild.getSchedService().rescheduleBuilds();
+	}
+
+	/**
+	 * Disable a particular schedule
+	 * @param cycle
+	 */
+	public void disableBuild(IRequestCycle cycle) {
+		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
+		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
+		schedule.setScheduleDisabled("true");
+        Luntbuild.getDao().saveSchedule(schedule);
+		Luntbuild.getSchedService().rescheduleBuilds();
+	}
+
+	/**
 	 * Trigger a build for a particular schedule
 	 * @param cycle
 	 */
@@ -97,6 +151,8 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
 		ProjectPage projectPage = (ProjectPage)cycle.getPage("ProjectPage");
 		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
+		if (schedule.isDisabled())
+			return;
 		projectPage.setProjectId(schedule.getProject().getId());
 		projectPage.setProject(schedule.getProject());
 		TabControl tabs = (TabControl)projectPage.getComponent("tabs");

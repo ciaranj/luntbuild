@@ -11,14 +11,16 @@
         <appname>luntbuild</appname>
 		<appversion>@appVersion@</appversion>
         <authors>
-            <author name="robinshine" email="robinshine@users.sourceforge.com"/>
             <author name="lubosp" email="lubosp@users.sourceforge.com"/>
+            <author name="robinshine" email="robinshine@users.sourceforge.com"/>
             <author name="others - see http://sourceforge.net/projects/luntbuild/" email="luntbuild-developers@lists.sourceforge.net"/>
         </authors>
         <url>http://luntbuild.javaforge.com/</url>
+		<javaversion>1.4</javaversion>
     </info>
 
     <variables>
+    	<variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/luntbuild-@appVersion@-install.log"/>
         <variable name="appServerWebapps" value=""/>
         <variable name="JDKPathPanel.skipIfValid" value="yes" />
     </variables>
@@ -26,7 +28,25 @@
     <!--
         The gui preferences indication.
     -->
-    <guiprefs width="700" height="550" resizable="yes"/>
+    <guiprefs width="620" height="620" resizable="yes">
+	    <laf name="metouia">
+	        <os family="unix" />
+	    </laf>
+	    <laf name="looks">
+	        <os family="windows" />
+	        <param name="variant" value="extwin" />
+	    </laf>
+		<modifier key="useButtonIcons" value="yes"/>
+		<modifier key="useLabelIcons" value="yes"/>
+		<modifier key="labelGap" value="2"/>
+		<modifier key="layoutAnchor" value="CENTER"/>
+		<modifier key="useHeadingPanel" value="yes"/>
+		<modifier key="headingLineCount" value="1"/>
+		<modifier key="headingFontSize" value="1.5"/>
+		<modifier key="headingBackgroundColor" value="0x00ffffff"/>
+		<modifier key="headingPanelCounter" value="text"/>
+		<modifier key="headingPanelCounterPos" value="inHeading"/>
+	</guiprefs>
 
     <!--  The locale section. -->
     <locale>
@@ -38,9 +58,23 @@
         The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
     -->
     <resources>
+		<res id="Installer.image.0" src="../installer/img/border1.png" />
+		<res id="Installer.image.1" src="../installer/img/border2.png" />
+		<res id="Installer.image.2" src="../installer/img/border3.png" />
+		<res id="Installer.image.3" src="../installer/img/border4.png" />
+		<res id="Installer.image.4" src="../installer/img/border5.png" />
+		<res id="Installer.image.5" src="../installer/img/border5.png" />
+		<res id="Installer.image.6" src="../installer/img/border5.png" />
+		<res id="Installer.image.7" src="../installer/img/border6.png" />
+		<res id="Installer.image.8" src="../installer/img/border6.png" />
+		<res id="Installer.image.9" src="../installer/img/border6.png" />
+		<res id="Installer.image.10" src="../installer/img/border8.png" />
+		<res id="Heading.image" src="../installer/img/heading-image.gif"/>
         <res id="LicencePanel.licence" src="license.txt"/>
         <res id="InfoPanel.info" src="release_notes.txt"/>
         <res id="userInputSpec.xml" src="scripts/userInputSpec.xml"/>
+        <res id="TargetPanel.dir.windows" src="../installer/target.dir.windows.temp"/>
+        <res id="TargetPanel.dir.unix" src="../installer/target.dir.unix.temp"/>
     </resources>
 
     <!--
@@ -48,7 +82,7 @@
         We indicate here which panels we want to use. The order will be respected.
     -->
     <panels>
-        <panel classname="HelloPanel"/>
+        <panel classname="CheckedHelloPanel"/>
         <!-- Fix for JDK panel: http://lists.berlios.de/pipermail/izpack-devel/2006-December/002262.html -->
         <!--<panel classname="JDKPathPanel"/> This does not work well-->
         <panel classname="InfoPanel"/>
@@ -58,6 +92,7 @@
         <panel classname="UserInputPanel"/>
         <panel classname="UserInputPanel"/>
         <panel classname="PacksPanel"/>
+        <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
         <panel classname="FinishPanel"/>
     </panels>
@@ -66,17 +101,6 @@
         The packs section.
     -->
     <packs>
-    	<logfiledir>$INSTALL_PATH/luntbuild-@appVersion@-installer.log</logfiledir>
-		<pack name="Initialization" required="yes">
-			<description>Lunbuild initialization files - required</description>
-			<singlefile src="scripts/initialize.bat" target="$INSTALL_PATH/initialize.bat" override="true" os="windows"/>
-			<parsable targetfile="$INSTALL_PATH/initialize.bat" os="windows"/>
-			<singlefile src="scripts/initialize.sh" target="$INSTALL_PATH/initialize.sh" override="true" os="unix"/>
-			<parsable targetfile="$INSTALL_PATH/initialize.sh" os="unix"/>
-			<executable targetfile="$INSTALL_PATH/initialize.bat" stage="postinstall" os="windows"/>
-			<executable targetfile="$INSTALL_PATH/initialize.sh" stage="postinstall" os="unix"/>
-            <parsable targetfile="$INSTALL_PATH/initialize.sh" os="unix"/>
-		</pack>
         <pack name="Base" required="yes">
             <description>Lunbuild base installation files - required</description>
             <fileset dir="." override="true" targetdir="$INSTALL_PATH">

@@ -67,6 +67,8 @@ public class Schedule implements DependentNode {
 
     private long id;
 
+    private String scheduleDisabled = "false";
+
     private String name;
 
     private String description;
@@ -139,6 +141,7 @@ public class Schedule implements DependentNode {
      */
     public Schedule(Schedule schedule) {
         setName(getName());
+        setScheduleDisabled(schedule.getScheduleDisabled());
         setProject(schedule.getProject());
         setDescription(schedule.getDescription());
         setNextVersion(schedule.getNextVersion());
@@ -232,6 +235,37 @@ public class Schedule implements DependentNode {
      */
     public Trigger getTrigger() {
         return trigger;
+    }
+
+    /**
+     * Returns true if this schedule is disabled
+     * @return true if disabled
+     */
+    public boolean isDisabled() {
+        if (scheduleDisabled.equalsIgnoreCase("true"))
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * Set disabled state of this schedule
+     *
+     * @param scheduleDisabled state
+     */
+    public void setScheduleDisabled(String scheduleDisabled) {
+        if (scheduleDisabled != null)
+        {
+            this.scheduleDisabled = scheduleDisabled;
+        }
+    }
+
+    /**
+     * Get disabled state of this schedule
+     * @return disabled state
+     */
+    public String getScheduleDisabled() {
+        return scheduleDisabled;
     }
 
     /**
@@ -504,6 +538,7 @@ public class Schedule implements DependentNode {
         com.luntsys.luntbuild.facades.lb12.ScheduleFacade facade = new ScheduleFacade();
         facade.setId(getId());
         facade.setName(getName());
+        facade.setScheduleDisabled(getScheduleDisabled());
         facade.setDescription(getDescription());
         facade.setNextVersion(getNextVersion());
 
@@ -538,6 +573,7 @@ public class Schedule implements DependentNode {
     }
 
     public void setFacade(ScheduleFacade facade) {
+    	setScheduleDisabled(facade.getScheduleDisabled());
         setDescription(facade.getDescription());
         setNextVersion(facade.getNextVersion());
         if (facade.getTriggerType() == Constants.TRIGGER_TYPE_MANUAL)
@@ -696,7 +732,7 @@ public class Schedule implements DependentNode {
     public static void validateNotifyStrategy(int notifyStrategy) {
         if (notifyStrategy != Constants.NOTIFY_WHEN_STATUS_CHANGED && notifyStrategy != Constants.NOTIFY_ALWAYS &&
                 notifyStrategy != Constants.NOTIFY_IF_FAILED && notifyStrategy != Constants.NOTIFY_IF_SUCCESS &&
-                notifyStrategy != Constants.NOTIFY_NONE)
+                notifyStrategy != Constants.NOTIFY_NONE && notifyStrategy != Constants.NOTIFY_IF_FAILED_OR_CHANGED)
             throw new ValidationException("Invalid notify strategy");
     }
 

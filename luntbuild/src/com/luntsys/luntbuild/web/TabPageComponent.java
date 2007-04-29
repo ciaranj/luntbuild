@@ -52,4 +52,11 @@ public abstract class TabPageComponent extends SecuritySupportComponent {
 		TabControl tabs = (TabControl) getPage().getComponent("tabs");
 		tabs.setSelectedTabId(getId());
 	}
+
+	/**
+	 * @return true if this tab should be visible
+	 */
+	public boolean isVisible() {
+		return true;
+	}
 }

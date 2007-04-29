@@ -6,11 +6,11 @@
   <table width="100%"  border="0" cellpadding="0" cellspacing="0">
     <tr>
     <td height="13" align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="iconTable">
-        <tr> 
-          <td>&nbsp;</td> 
-          <td width="25">&nbsp;</td> 
-        </tr> 
-      </table></td> 
+        <tr>
+          <td>&nbsp;</td>
+          <td width="25">&nbsp;</td>
+        </tr>
+      </table></td>
     </tr>
     <tr>
       <td>
@@ -67,13 +67,29 @@
       You can optionally specify a page refresh interval in seconds. If left empty, the default value will be 15 seconds.</td>
           </tr>
 		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/file.gif" width="16" height="16" align="absmiddle"> Database backup file </td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.backupFileName" size="75" jwcid="@TextField"/>
+                <br>
+      You can optionally specify a file to store the regular database backup. The default file is "database.xml".<br>
+      If relative path is specified, the file will be placed relative to the "backup" directory in the Luntbuild installation directory.</td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/time.gif" width="17" height="14" align="absmiddle"> Database backup cron expression </td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.backupCronExpression" size="75" jwcid="@TextField"/>
+                <br>
+      Set a cron expression to control when the Luntbuild database will be backed up. If blank, no backup will occur.<br>
+      The format is &lt;seconds&gt; &lt;minutes&gt; &lt;hours&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt;. For example, 0 0 1 * * ? means 1:00am every day. For details of the format, refer to <a href="http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html">http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html</a>.</td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
 		  <span jwcid="@Foreach" source="ognl:notifierInstances" value="ognl:notifier">
 		    <tr>
 		  	  <td jwcid="@Any" align="left" valign="top" class="ognl:notifierTitleCssClass" colspan="2">
 			  <img src="images/hint.gif" width="19" height="19" align="absmiddle"> <span jwcid="@InsertText" value="ognl:notifierTitle">Set email related properties here if you want to notify user by email</span>
 			  </td>
 		    </tr>
-		    <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>		
+		    <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
    	  	    <span jwcid="@Foreach" source="ognl:notifier.systemLevelProperties" value="ognl:property">
 	          <tr>
 	            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass">
@@ -81,21 +97,21 @@
 	                <span jwcid="@Insert" value="ognl:property.displayName">SMTP host</span>
 	            </td>
 	            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">
-	                <span jwcid="@Conditional" condition="ognl:property.secret"> 
+	                <span jwcid="@Conditional" condition="ognl:property.secret">
 	                  <input class="inputBox" value="ognl:property.value[properties]" size="75" jwcid="@TextField" hidden="ognl:true"/>
 	                </span>
 			        <span jwcid="@Conditional" condition="ognl:!property.secret">
-				        <span jwcid="@Conditional" condition="ognl:(!property.multiLine && !property.select)"> 
-				          <input class="inputBox" value="ognl:property.value[properties]" size="75" jwcid="@TextField"/> 
+				        <span jwcid="@Conditional" condition="ognl:(!property.multiLine && !property.select)">
+				          <input class="inputBox" value="ognl:property.value[properties]" size="75" jwcid="@TextField"/>
 				        </span>
-				        <span jwcid="@Conditional" condition="ognl:property.multiLine"> 
+				        <span jwcid="@Conditional" condition="ognl:property.multiLine">
 				          <textarea cols="70" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:property.value[properties]"/>
 				        </span>
-				        <span jwcid="@Conditional" condition="ognl:property.select"> 
+				        <span jwcid="@Conditional" condition="ognl:property.select">
 				          <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:property.selectionModel" value="ognl:property.value"/>
 				        </span>
 			        </span>
-			        <br> 
+			        <br>
 	                <span jwcid="@InsertText" value="ognl:property.description">
 	                    You can optionally specify the SMTP mail host to be used by Luntbuild to send email notifications. If this property is not specified, Luntbuild will use localhost as the default value.
 	                </span>
@@ -115,7 +131,7 @@
 		<span jwcid="@Conditional" condition="ognl:!isSiteAdmin()">
 		<div align="left" class="exceptionMsg">
 			  <img src="images/sigh.gif" width="32" height="32" align="absmiddle"> Only site admin can access this page!
-		</div>		
+		</div>
 		</span>
       </td>
     </tr>
