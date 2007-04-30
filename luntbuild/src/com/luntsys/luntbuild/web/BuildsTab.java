@@ -4,7 +4,7 @@
  * Time: 6:46:18
  *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 1.
  * Redistributions of source code must retain the above copyright notice, this
@@ -12,7 +12,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,7 +23,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
+ *
  */
 package com.luntsys.luntbuild.web;
 
@@ -98,7 +98,7 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 		for (int i = 0; i < schedules.size(); i++)
 		{
 			Schedule schedule = (Schedule) schedules.get(i);
-			schedule.setScheduleDisabled("false");
+			schedule.setScheduleDisabled(false);
 			Luntbuild.getDao().saveSchedule(schedule);
 		}
 		Luntbuild.getSchedService().rescheduleBuilds();
@@ -113,7 +113,7 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 		for (int i = 0; i < schedules.size(); i++)
 		{
 			Schedule schedule = (Schedule) schedules.get(i);
-			schedule.setScheduleDisabled("true");
+			schedule.setScheduleDisabled(true);
         	Luntbuild.getDao().saveSchedule(schedule);
     	}
 		Luntbuild.getSchedService().rescheduleBuilds();
@@ -126,7 +126,7 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 	public void enableBuild(IRequestCycle cycle) {
 		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
 		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
-		schedule.setScheduleDisabled("false");
+		schedule.setScheduleDisabled(false);
         Luntbuild.getDao().saveSchedule(schedule);
 		Luntbuild.getSchedService().rescheduleBuilds();
 	}
@@ -138,7 +138,7 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 	public void disableBuild(IRequestCycle cycle) {
 		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
 		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
-		schedule.setScheduleDisabled("true");
+		schedule.setScheduleDisabled(true);
         Luntbuild.getDao().saveSchedule(schedule);
 		Luntbuild.getSchedService().rescheduleBuilds();
 	}
