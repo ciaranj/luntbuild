@@ -1,9 +1,12 @@
 body {
 	margin: 0px;
-	background-color: #EEEEEE;
-	border: 0px none;
-	padding: 0px;
+	background-color: #fff;
 	color: #444444;
+	font-family:verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+	font-size:13px;
+}
+strong {
+    font-size:12px;
 }
 .hierarchyNavigation {
 	background-color: #CCCCCC;
@@ -16,13 +19,14 @@ body {
 	margin: 0px;
 	padding-top: 0px;
 	padding-bottom: 0px;
+	font-size: 12px;
 }
 a:link {
-	color: #336699;
+	color: #1188cc;
 	text-decoration: none;
 }
 a:visited {
-	color: #336699;
+	color: #1188cc;
 	text-decoration: none;
 }
 .hierarchySymbol {
@@ -30,21 +34,26 @@ a:visited {
 	color: #333333;
 }
 .productVersion {
-	color: #FFFFFF;
+	color: #000;
 	font-weight: bold;
 	font-size: 16px;
 }
 .selectedTab {
 	background-color: #EEEEEE;
 	font-weight: bold;
+	font-size: 12px;
 	border: 0px none #999999;
 	background-image: url(../images/tab_selected.gif);
 }
 .unselectedTab {
 	background-color: #EEEEEE;
 	font-weight: bold;
+	font-size: 12px;
 	border: 0px none #999999;
 	background-image: url(../images/tab_unselected.gif);
+}
+.unselectedTab a {
+	color: #000;
 }
 .tabSpace {
 	border-top-width: 0px;
@@ -79,7 +88,7 @@ a:active {
 .centerTableDescriptionRow {
 	font-style: normal;
 	font-size: 12px;
-	color: #336699;
+	/* color: #336699; */
 	float: none;
 	border-top: 0px none #CCCCCC;
 	border-right: 0px none #CCCCCC;
@@ -129,6 +138,13 @@ a:active {
 	padding-left: 4px;
 	padding-top: 4px;
 	padding-bottom: 4px;
+	line-height: 2em;
+}
+.dataTableTitleRow th {
+	padding-left: 4px;
+}
+.dataTableTitleRow td {
+	padding-left: 4px;
 }
 .dataTableRow1 {
 	background-color: #FFFFFF;
@@ -426,10 +442,10 @@ a:active {
 }
 .iconTable {
 	line-height: 18px;
-	background-color: #CCCCCC;
+	background-color: #fff;
 	border-top-width: 0px;
 	border-right-width: 0px;
-	border-bottom-width: 1px;
+	border-bottom-width: 0px;
 	border-left-width: 0px;
 	border-top-style: none;
 	border-right-style: none;
@@ -612,16 +628,15 @@ a:active {
 	border: 1px solid #6397CB;
 }
 .refreshText {
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: bold;
 	color: #444444;
 }
 .logoText {
+	font-family: Trebuchet MS;
 	font-weight: bolder;
-	color: #FFFFFF;
-	font-size: 24px;
-	font-style: italic;
-	text-decoration: underline;
+	color: #88bbdd;
+	font-size: 36px;
 }
 
 TABLE.palette1 TH
