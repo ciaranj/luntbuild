@@ -67,7 +67,7 @@ public class Schedule implements DependentNode {
 
     private long id;
 
-    private String scheduleDisabled = "false";
+    private boolean scheduleDisabled;
 
     private String name;
 
@@ -141,7 +141,7 @@ public class Schedule implements DependentNode {
      */
     public Schedule(Schedule schedule) {
         setName(getName());
-        setScheduleDisabled(schedule.getScheduleDisabled());
+        setScheduleDisabled(schedule.isScheduleDisabled());
         setProject(schedule.getProject());
         setDescription(schedule.getDescription());
         setNextVersion(schedule.getNextVersion());
@@ -242,10 +242,7 @@ public class Schedule implements DependentNode {
      * @return true if disabled
      */
     public boolean isDisabled() {
-        if (scheduleDisabled.equalsIgnoreCase("true"))
-            return true;
-        else
-            return false;
+        return scheduleDisabled;
     }
 
     /**
@@ -253,18 +250,15 @@ public class Schedule implements DependentNode {
      *
      * @param scheduleDisabled state
      */
-    public void setScheduleDisabled(String scheduleDisabled) {
-        if (scheduleDisabled != null)
-        {
-            this.scheduleDisabled = scheduleDisabled;
-        }
+    public void setScheduleDisabled(boolean scheduleDisabled) {
+    	this.scheduleDisabled = scheduleDisabled;
     }
 
     /**
      * Get disabled state of this schedule
      * @return disabled state
      */
-    public String getScheduleDisabled() {
+    public boolean isScheduleDisabled() {
         return scheduleDisabled;
     }
 
@@ -538,7 +532,7 @@ public class Schedule implements DependentNode {
         com.luntsys.luntbuild.facades.lb12.ScheduleFacade facade = new ScheduleFacade();
         facade.setId(getId());
         facade.setName(getName());
-        facade.setScheduleDisabled(getScheduleDisabled());
+        facade.setScheduleDisabled(isScheduleDisabled());
         facade.setDescription(getDescription());
         facade.setNextVersion(getNextVersion());
 
@@ -573,7 +567,7 @@ public class Schedule implements DependentNode {
     }
 
     public void setFacade(ScheduleFacade facade) {
-    	setScheduleDisabled(facade.getScheduleDisabled());
+    	setScheduleDisabled(facade.isScheduleDisabled());
         setDescription(facade.getDescription());
         setNextVersion(facade.getNextVersion());
         if (facade.getTriggerType() == Constants.TRIGGER_TYPE_MANUAL)

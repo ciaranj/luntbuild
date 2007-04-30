@@ -228,7 +228,7 @@ public abstract class SchedulesTab extends TabPageComponent implements PageDetac
 		for (int i = 0; i < schedules.size(); i++)
 		{
 			Schedule schedule = (Schedule) schedules.get(i);
-			schedule.setScheduleDisabled("false");
+			schedule.setScheduleDisabled(false);
 			Luntbuild.getDao().saveSchedule(schedule);
 		}
 		Luntbuild.getSchedService().rescheduleBuilds();
@@ -244,7 +244,7 @@ public abstract class SchedulesTab extends TabPageComponent implements PageDetac
 		for (int i = 0; i < schedules.size(); i++)
 		{
 			Schedule schedule = (Schedule) schedules.get(i);
-			schedule.setScheduleDisabled("true");
+			schedule.setScheduleDisabled(true);
         	Luntbuild.getDao().saveSchedule(schedule);
     	}
 		Luntbuild.getSchedService().rescheduleBuilds();
@@ -258,7 +258,7 @@ public abstract class SchedulesTab extends TabPageComponent implements PageDetac
 		ensureCurrentTab(); // in case user go back to this page through browser's back button and click on this
 		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
 		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
-		schedule.setScheduleDisabled("false");
+		schedule.setScheduleDisabled(false);
         Luntbuild.getDao().saveSchedule(schedule);
 		Luntbuild.getSchedService().rescheduleBuilds();
 	}
@@ -271,7 +271,7 @@ public abstract class SchedulesTab extends TabPageComponent implements PageDetac
 		ensureCurrentTab(); // in case user go back to this page through browser's back button and click on this
 		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
 		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
-		schedule.setScheduleDisabled("true");
+		schedule.setScheduleDisabled(true);
         Luntbuild.getDao().saveSchedule(schedule);
 		Luntbuild.getSchedService().rescheduleBuilds();
 	}
