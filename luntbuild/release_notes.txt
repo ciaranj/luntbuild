@@ -41,6 +41,13 @@ Contribution from Dominique Leducq. Thanks Dominique!
 - Added variables support for a schedule. Variables can be used in the similar fashion as project variables in OGNL expressions.
 - Added OGNL support to VCS.
 
+Contribution from David Roussel. Thanks David!
+
+- Changed style sheet to specify font settings as before it used to reply on browser default serif font.
+- Changed text and link colour scheme to be lighter.
+- Changed tab graphics to match colour scheme.
+- Made banner mixed case rather than all upper case.
+
 Other changes:
 
 - Fixed EHCache configuration
