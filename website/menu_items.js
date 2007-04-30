@@ -13,20 +13,13 @@ var MENU_ITEMS = [
 	['<strong>You can help!</strong>', 'http://www.javaforge.com/proj/doc/displayWikiDocument.do?doc_id=1306', null],
 	['Documentation', null, null,
 		['Features List', 'feature_list.html', null],
-		['Install Guide', null, null,
-			['Html', 'doc/installguide/installguide.html', null],
-			['PDF', 'doc/installguide/installguide.pdf', null]
-		],
-		['Quick Start', null, null,
-			['Html', 'doc/quickstart/quickstart.html', null],
-			['PDF', 'doc/quickstart/quickstart.pdf', null]
-		],
+		['Install Guide', 'doc/installguide/installguide.html', null],
+		['Quick Start',  'doc/quickstart/quickstart.html', null],
 		['Quotes', 'quotes.html', null],
 		['Eclipse Plugin', 'doc/luntclipse/index.html', null],
 		['English User\'s Guide', null, null,
 			['Single Html', 'manual/guide/manual.html', null],
-			['Html', 'manual/guide/index.html', null],
-			['PDF', 'manual/guide/luntbuild.pdf', null]
+			['Html', 'manual/guide/index.html', null]
 		],
 		['Chinese User\'s Guide', null, null,
 			['Single Html', 'http://luntbuilddoc.redsaga.com/zh-cn/html_single/', null],
