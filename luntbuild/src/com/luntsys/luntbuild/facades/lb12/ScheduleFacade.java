@@ -43,6 +43,7 @@ public class ScheduleFacade {
 	private String name;
 	private String description;
 	private String nextVersion;
+    private String variables;
 	private int triggerType;
 	private long repeatInterval;
 	private String cronExpression;
@@ -394,6 +395,20 @@ public class ScheduleFacade {
 	 */
 	public void setNextVersion(String nextVersion) {
 		this.nextVersion = nextVersion;
+	}
+
+	/**
+	 * @return variables
+	 */
+	public String getVariables() {
+		return this.variables;
+	}
+
+	/** Set variables
+	 * @param variables
+	 */
+	public void setVariables(String variables) {
+		this.variables = variables;
 	}
 
 	/**

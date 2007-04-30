@@ -1,5 +1,5 @@
 ==============================================
-luntbuild 1.3.7 Release Notes
+luntbuild 1.4.0 Release Notes
 ==============================================
 
 Contribution from Jason Archer, thanks Jason!
@@ -36,6 +36,10 @@ Notification
 - Added new notification strategy "Notify if failed or status changed".
 - Fixed error messages in TemplatedNotifier.
 
+Contribution from Dominique Leducq. Thanks Dominique!
+
+- Added variables support for a schedule. Variables can be used in the similar fashion as project variables in OGNL expressions.
+- Added OGNL support to VCS.
 
 Other changes:
 

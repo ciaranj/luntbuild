@@ -36,6 +36,9 @@ import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.*;
+
+import ognl.OgnlException;
+
 import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
