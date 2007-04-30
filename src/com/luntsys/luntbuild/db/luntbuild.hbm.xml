@@ -69,6 +69,8 @@
 
 		<property name="nextVersion" column="NEXT_VERSION" length="4096" />
 
+        <property name="variables" column="VARIABLES" length="2048" />
+
 		<!-- the serialized form of a Quartz trigger to represents the time schedule(refer
 		 to http://www.opensymphony.com/quartz/)
 		 The schedule can only be triggered manually -->

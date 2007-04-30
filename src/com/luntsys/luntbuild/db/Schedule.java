@@ -38,17 +38,23 @@ import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.utility.ValidationException;
+import com.luntsys.luntbuild.utility.Variable;
+import com.luntsys.luntbuild.utility.VariableHolder;
 import com.luntsys.luntbuild.web.ProjectPage;
 import ognl.Ognl;
 import ognl.OgnlException;
+
+import org.acegisecurity.AccessDeniedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.CronTrigger;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.text.ParseException;
 import java.util.*;
 
@@ -60,7 +66,7 @@ import java.util.*;
  *
  * @author robin shine
  */
-public class Schedule implements DependentNode {
+public class Schedule implements DependentNode, VariableHolder {
     private static Log logger = LogFactory.getLog(Schedule.class);
 
     private static Map currentThreads = Collections.synchronizedMap(new HashMap());
@@ -74,6 +80,8 @@ public class Schedule implements DependentNode {
     private String description;
 
     private String nextVersion;
+
+    private String variables = "";
 
     private List associatedBuilderNames;
 
@@ -145,6 +153,7 @@ public class Schedule implements DependentNode {
         setProject(schedule.getProject());
         setDescription(schedule.getDescription());
         setNextVersion(schedule.getNextVersion());
+        setVariables(schedule.getVariables());
         if (schedule.trigger != null)
             setTrigger((Trigger)schedule.getTrigger().clone());
         setBuildNecessaryCondition(schedule.getBuildNecessaryCondition());
@@ -535,6 +544,7 @@ public class Schedule implements DependentNode {
         facade.setScheduleDisabled(isScheduleDisabled());
         facade.setDescription(getDescription());
         facade.setNextVersion(getNextVersion());
+        facade.setVariables(getVariables());
 
         if (getTrigger() == null)
             facade.setTriggerType(Constants.TRIGGER_TYPE_MANUAL);
@@ -570,6 +580,7 @@ public class Schedule implements DependentNode {
     	setScheduleDisabled(facade.isScheduleDisabled());
         setDescription(facade.getDescription());
         setNextVersion(facade.getNextVersion());
+        setVariables(facade.getVariables());
         if (facade.getTriggerType() == Constants.TRIGGER_TYPE_MANUAL)
             setTrigger(null);
         else if (facade.getTriggerType() == Constants.TRIGGER_TYPE_SIMPLE) {
@@ -1124,6 +1135,85 @@ public class Schedule implements DependentNode {
                     ", reason: "+ Luntbuild.getExceptionMessage(e));
         }
     }
+
+    /**
+     * Get all variables encoded in a string
+     * @return all variables encoded in a string
+     */
+    public String getVariables() {
+    	return variables;
+    }
+
+    /**
+     * Set all variables encoded in a string
+     * @param variables
+     */
+    public void setVariables(String variables) {
+    	this.variables = variables;
+    }
+
+    /**
+     * Get Variable with specified variable name
+     * @param name
+     * @return Variable with specified variable name
+     */
+    public Variable getVar(String name) {
+    	if (!Luntbuild.isEmpty(getVariables())) {
+    		BufferedReader reader = new BufferedReader(new StringReader(getVariables()));
+    		try {
+    			String line;
+    			while ((line = reader.readLine()) != null) {
+    				if (line.trim().equals(""))
+    					continue;
+    				String varName = Luntbuild.getAssignmentName(line);
+    				String varValue = Luntbuild.getAssignmentValue(line);
+    				if (name.trim().equals(varName)) {
+    					return new Variable(this, name.trim(), varValue);
+    				}
+    			}
+    		} catch (IOException e) {
+    			// ignores
+    		}
+    	}
+    	return new Variable(this, name.trim(), "");
+    }
+
+    /**
+     * Set value of specified variable
+     * @param name name of the variable to set
+     * @param var value of variable is stored in this parameter
+     */
+    public void setVar(String name, Variable var) {
+    	if (!SecurityHelper.isPrjAdministrable(getId()))
+    		throw new AccessDeniedException("Permission denied!");
+    	if (OgnlHelper.isTestMode())
+    		return;
+    	String newVariables = "";
+    	boolean varFound = false;
+    	if (!Luntbuild.isEmpty(getVariables())) {
+    		BufferedReader reader = new BufferedReader(new StringReader(getVariables()));
+    		try {
+    			String line;
+    			while ((line = reader.readLine()) != null) {
+    				if (line.trim().equals(""))
+    					continue;
+    				String varName = Luntbuild.getAssignmentName(line);
+    				if (name.trim().equals(varName)) {
+    					newVariables += name.trim() + "=" + var.getValue() + "\n";
+    					varFound = true;
+    				} else
+    					newVariables += line + "\n";
+    			}
+    		} catch (IOException e) {
+    			// ignores
+    		}
+    	}
+    	if (!varFound)
+    		newVariables += name.trim() + "=" + var.getValue() + "\n";
+    	setVariables(newVariables);
+    	Luntbuild.getDao().saveSchedule(this);
+    }
+
 
     /**
      * Get list of associated builder names

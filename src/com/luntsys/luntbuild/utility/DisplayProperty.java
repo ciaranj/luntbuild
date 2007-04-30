@@ -4,7 +4,7 @@
  * Time: 18:19:36
  *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 1.
  * Redistributions of source code must retain the above copyright notice, this
@@ -12,7 +12,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,7 +23,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
+ *
  */
 package com.luntsys.luntbuild.utility;
 
@@ -36,9 +36,9 @@ import org.apache.tapestry.form.IPropertySelectionModel;
  * @author robin shine
  */
 public abstract class DisplayProperty {
-    
+
     IPropertySelectionModel model = null;
-    
+
 	/**
 	 * @return the display name of this property
 	 */
@@ -79,26 +79,33 @@ public abstract class DisplayProperty {
 	 */
 	public abstract String getValue();
 
+	/** Returns current evaluated value for this property if applicable. By default returns plain value.
+	 * @return current evaluated value for this property
+	 */
+	public String getActualValue() {
+		return getValue();
+	}
+
 	/**
 	 * Set the current value for this proprety
 	 * @param value
 	 */
 	public abstract void setValue(String value);
-	
+
     /** Returns selection model.
      * @return selection model
      */
     public IPropertySelectionModel getSelectionModel() {
         return this.model;
     }
-    
+
     /** Sets selection model.
      * @param model model
      */
     public void setSelectionModel(IPropertySelectionModel model) {
         this.model = model;
     }
-    
+
 	/** Checks if two objects equal.
 	 * @param obj object
 	 * @return true if equal
@@ -109,9 +116,9 @@ public abstract class DisplayProperty {
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof DisplayProperty){
 			DisplayProperty displayProperty = (DisplayProperty) obj;
-			return (getValue() == null? displayProperty.getValue() == null: 
+			return (getValue() == null? displayProperty.getValue() == null:
 				getValue().equals(displayProperty.getValue()));
 		}
 		return false;
-	}	
+	}
 }

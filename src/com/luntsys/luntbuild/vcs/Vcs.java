@@ -326,7 +326,7 @@ public abstract class Vcs implements Serializable, Cloneable {
 				while (itProperty.hasNext()) {
 					DisplayProperty property = (DisplayProperty) itProperty.next();
 					if (!property.isSecret())
-						summary += property.getDisplayName() + ": " + property.getValue();
+						summary += property.getDisplayName() + ": " + property.getActualValue();
 					else
 						summary += property.getDisplayName() + ":*****";
 					if (itProperty.hasNext())
