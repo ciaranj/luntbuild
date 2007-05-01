@@ -52,6 +52,7 @@ import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.MyExecTask;
+import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.utility.ValidationException;
 
@@ -122,6 +123,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
         return this.modificationDetectionConfig;
     }
 
+    public final String getActualModificationDetectionConfig() {
+    	return OgnlHelper.evaluateScheduleValue(getModificationDetectionConfig());
+    }
+
     public final void setModificationDetectionConfig(
             final String modificationDetectionConfig) {
         this.modificationDetectionConfig = modificationDetectionConfig;
@@ -129,6 +134,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     public final String getViewStgLoc() {
         return this.viewStgLoc;
+    }
+
+    public final String getActualViewStgLoc() {
+    	return OgnlHelper.evaluateScheduleValue(getViewStgLoc());
     }
 
     public final void setViewStgLoc(final String viewStgLoc) {
@@ -139,12 +148,20 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
         return this.vws;
     }
 
+    private final String getActualVws() {
+    	return OgnlHelper.evaluateScheduleValue(getVws());
+    }
+
     public final void setVws(final String vws) {
         this.vws = vws;
     }
 
     public String getViewTag() {
         return viewTag;
+    }
+
+    public String getActualViewTag() {
+    	return OgnlHelper.evaluateScheduleValue(getViewTag());
     }
 
     public void setViewTag(String viewTag) {
@@ -154,11 +171,15 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
     public final String getViewName(final Schedule schedule) {
         return (null == getViewTag() || getViewTag().length() == 0)
                 ? (Luntbuild.getHostName() + "-" + schedule.getJobName())
-                : getViewTag();
+                : getActualViewTag();
     }
 
     public final String getViewCfgSpec() {
         return this.viewCfgSpec;
+    }
+
+    public final String getActualViewCfgSpec() {
+    	return OgnlHelper.evaluateScheduleValue(getViewCfgSpec());
     }
 
     public final void setViewCfgSpec(final String viewCfgSpec) {
@@ -167,6 +188,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     public final String getMkviewExtraOpts() {
         return this.mkviewExtraOpts;
+    }
+
+    public final String getActualMkviewExtraOpts() {
+    	return OgnlHelper.evaluateScheduleValue(getMkviewExtraOpts());
     }
 
     public final void setMkviewExtraOpts(final String mkviewExtraOpts) {
@@ -198,6 +223,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 return getViewTag();
             }
 
+            public String getActualValue() {
+                return getActualViewTag();
+            }
+
             public void setValue(String value) {
                 setViewTag(value);
             }
@@ -225,6 +254,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 return getViewStgLoc();
             }
 
+            public String getActualValue() {
+                return getActualViewStgLoc();
+            }
+
             public void setValue(final String value) {
                 setViewStgLoc(value);
             }
@@ -249,6 +282,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 return getVws();
             }
 
+            public String getActualValue() {
+                return getActualVws();
+            }
+
             public void setValue(final String value) {
                 setVws(value);
             }
@@ -268,6 +305,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
             public String getValue() {
                 return getViewCfgSpec();
+            }
+
+            public String getActualValue() {
+                return getActualViewCfgSpec();
             }
 
             public void setValue(final String value) {
@@ -303,6 +344,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 return getModificationDetectionConfig();
             }
 
+            public String getActualValue() {
+                return getActualModificationDetectionConfig();
+            }
+
             public void setValue(final String value) {
                 setModificationDetectionConfig(value);
             }
@@ -326,6 +371,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
             public String getValue() {
                 return getMkviewExtraOpts();
+            }
+
+            public String getActualValue() {
+                return getActualMkviewExtraOpts();
             }
 
             public void setValue(final String value) {
@@ -372,6 +421,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 return getFormatParams();
             }
 
+            public String getActualValue() {
+                return getActualFormatParams();
+            }
+
             public void setValue(final String value) {
                 setFormatParams(value);
             }
@@ -402,7 +455,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
         if (!Luntbuild.isEmpty(getModificationDetectionConfig())) {
             final BufferedReader reader =
                     new BufferedReader(
-                            new StringReader(getModificationDetectionConfig()
+                            new StringReader(getActualModificationDetectionConfig()
                                     .replace(';', '\n')));
             try {
                 String line;
@@ -508,7 +561,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
         final Commandline cmdLine = buildCleartoolExecutable();
         String options = "-tag " + getViewName(schedule);
         if (!Luntbuild.isEmpty(getMkviewExtraOpts())) {
-            options += getMkviewExtraOpts();
+            options += getActualMkviewExtraOpts();
         }
         if (!Luntbuild.isEmpty(getUcmStream())) {
             options += " -stream " + getUcmStream();
@@ -677,7 +730,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
         final BufferedReader reader =
                 new BufferedReader(new StringReader(
-                        getModificationDetectionConfig().replace(';', '\n')));
+                        getActualModificationDetectionConfig().replace(';', '\n')));
         try {
             String line;
             String path, branch;
@@ -704,7 +757,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 final Commandline cmdLine = buildCleartoolExecutable();
                 cmdLine.createArgument().setLine(
                         "lshistory -fmt \"date:%d user:%u action:%e %n\n"
-                                + getFormatParams() + "\" -nco -r");
+                                + getActualFormatParams() + "\" -nco -r");
                 if (branch != null) {
                     cmdLine.createArgument().setLine("-branch " + branch);
                 }
@@ -735,6 +788,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 
     public final String getFormatParams() {
         return this.formatParams;
+    }
+
+    public final String getActualFormatParams() {
+    	return OgnlHelper.evaluateScheduleValue(getFormatParams());
     }
 
     public final void setFormatParams(final String logFormat) {

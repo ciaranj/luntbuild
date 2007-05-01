@@ -1,8 +1,8 @@
 /*
  * Copyright luntsys (c) 2004-2005, Date: 2004-7-23 Time: 10:06
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright notice,
@@ -10,7 +10,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -21,7 +21,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  */
 package com.luntsys.luntbuild.vcs;
 
@@ -44,6 +44,7 @@ import com.luntsys.luntbuild.facades.lb12.DynamicClearcaseAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.MyExecTask;
+import com.luntsys.luntbuild.utility.OgnlHelper;
 
 public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
 
@@ -57,6 +58,10 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
         return projectPath;
     }
 
+    public String getActualProjectPath() {
+		return OgnlHelper.evaluateScheduleValue(getProjectPath());
+    }
+
     public void setProjectPath(String projectPath) {
         this.projectPath = projectPath;
     }
@@ -65,7 +70,7 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
      * After creating a view, we need to setup its config spec.
      */
     protected void postCreateCcView(Schedule schedule, Project antProject) {
-        setCcViewCfgSpec(schedule, getViewCfgSpec(), Project.MSG_INFO,
+        setCcViewCfgSpec(schedule, getActualViewCfgSpec(), Project.MSG_INFO,
                 antProject);
     }
 
@@ -74,7 +79,7 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
         if (build.isCleanBuild()) {
             cleanViewPrivateFiles(build, antProject);
         }
-        setCcViewCfgSpec(build.getSchedule(), getViewCfgSpec(),
+        setCcViewCfgSpec(build.getSchedule(), getActualViewCfgSpec(),
                 Project.MSG_INFO, antProject);
     }
 
@@ -163,6 +168,10 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
                 return getMvfsPath();
             }
 
+            public String getActualValue() {
+                return getActualMvfsPath();
+            }
+
             public void setValue(String value) {
                 setMvfsPath(value);
             }
@@ -183,6 +192,10 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
 
             public String getValue() {
                 return getProjectPath();
+            }
+
+            public String getActualValue() {
+                return getActualProjectPath();
             }
 
             public void setValue(String value) {
@@ -226,7 +239,7 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
     protected String getClearcaseWorkDirRaw(Schedule schedule) {
         String sep = File.separator; // TODO:handle unset mvfs path
         StringBuffer result = new StringBuffer();
-        String mvfs = getMvfsPath();
+        String mvfs = getActualMvfsPath();
         if (null == mvfs || 0 == mvfs.length()) {
             if (System.getProperty("os.name").startsWith("Windows")) {
                 mvfs = "M:";
@@ -238,13 +251,17 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
         }
         result.append(getViewName(schedule));
         if (!(null == getProjectPath() || 0 == getProjectPath().length())) {
-            result.append(sep).append(getProjectPath());
+            result.append(sep).append(getActualProjectPath());
         }
         return result.toString();
     }
 
     public String getMvfsPath() {
         return mvfsPath;
+    }
+
+    public String getActualMvfsPath() {
+		return OgnlHelper.evaluateScheduleValue(getMvfsPath());
     }
 
     public void setMvfsPath(String mvfsPath) {

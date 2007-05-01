@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormatSymbols;
 
+import ognl.OgnlException;
+
 /**
  * This class helps ognl evaluation
  *
@@ -102,6 +104,20 @@ public class OgnlHelper {
 
 	public static void setWorkingSchedule(Schedule workingSchedule) {
 		OgnlHelper.workingSchedule.set(workingSchedule);
+	}
+
+	public static String evaluateScheduleValue(String val) {
+		if (val == null || val.trim().length() == 0) return "";
+		Schedule workingSchedule = OgnlHelper.getWorkingSchedule();
+		if (workingSchedule != null) {
+			try {
+				return Luntbuild.evaluateExpression(workingSchedule, val);
+			}  catch (OgnlException e) {
+				throw new RuntimeException("Unable to evaluate expression \"" + val +
+						"\".", e);
+			}
+		} else
+			return val;
 	}
 
 	/**

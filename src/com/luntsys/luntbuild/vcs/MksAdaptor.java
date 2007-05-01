@@ -44,6 +44,7 @@ import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
 
 /**
@@ -59,11 +60,11 @@ public class MksAdaptor extends Vcs {
 	/**
 	 * Sanbox Search Status Definitions
 	 */
-	public static final int NO_SANDBOX_FOUND = 0; 
-	public static final int MATCHING_SANDBOX_FOUND = 1; 
-	public static final int SANDBOX_DEVPATH_DIFFER = 2; 
-	public static final int SANDBOX_VERSION_DIFFER = 3; 
-	
+	public static final int NO_SANDBOX_FOUND = 0;
+	public static final int MATCHING_SANDBOX_FOUND = 1;
+	public static final int SANDBOX_DEVPATH_DIFFER = 2;
+	public static final int SANDBOX_VERSION_DIFFER = 3;
+
 	/**
 	 * Internal logger.
 	 */
@@ -180,6 +181,10 @@ public class MksAdaptor extends Vcs {
 					return getSubproject();
 				}
 
+				public String getActualValue() {
+					return getActualSubproject();
+				}
+
 				public void setValue(String value) {
 					setSubproject(value);
 				}
@@ -208,6 +213,10 @@ public class MksAdaptor extends Vcs {
 					return getVersion();
 				}
 
+				public String getActualValue() {
+					return getActualVersion();
+				}
+
 				public void setValue(String value) {
 					setVersion(value);
 				}
@@ -228,6 +237,10 @@ public class MksAdaptor extends Vcs {
 					return getProjectFileName();
 				}
 
+				public String getActualValue() {
+					return getActualProjectFileName();
+				}
+
 				public void setValue(String value) {
 					setProjectFileName(value);
 				}
@@ -245,6 +258,10 @@ public class MksAdaptor extends Vcs {
 
 				public String getValue() {
 					return getDevelopmentPath();
+				}
+
+				public String getActualValue() {
+					return getActualDevelopmentPath();
 				}
 
 				public void setValue(String value) {
@@ -283,6 +300,10 @@ public class MksAdaptor extends Vcs {
 				}
 
 				public String getValue() {
+					return isExternal() ? "yes" : "no";
+				}
+
+				public String getActualValue() {
 					return isExternal() ? "yes" : "no";
 				}
 
@@ -357,7 +378,7 @@ public class MksAdaptor extends Vcs {
 			// However MKS API does not provide way to get the this information.
 			// So assume the server is Unix based.
 
-			return rootProject + "/" + getSubproject() + "/" + getProjectFileName();
+			return getActualRootProject() + "/" + getActualSubproject() + "/" + getActualProjectFileName();
 		}
 
 		/**
@@ -371,7 +392,7 @@ public class MksAdaptor extends Vcs {
 		 */
 		public String getSandbox(String workingDir) {
 
-			return getSandboxBaseDir(workingDir) + File.separator + getProjectFileName();
+			return getSandboxBaseDir(workingDir) + File.separator + getActualProjectFileName();
 		}
 
 		/**
@@ -391,6 +412,10 @@ public class MksAdaptor extends Vcs {
 			return version;
 		}
 
+		public String getActualVersion() {
+			return OgnlHelper.evaluateScheduleValue(getVersion());
+		}
+
 		public void setVersion(String label) {
 
 			this.version = label;
@@ -401,9 +426,13 @@ public class MksAdaptor extends Vcs {
 			return subproject;
 		}
 
+		public String getActualSubproject() {
+			return OgnlHelper.evaluateScheduleValue(getSubproject());
+		}
+
 		public String getSubprojectOsDependant() {
 			// replace all \ and / with the OS depedant direcotry separator.
-			return getSubproject().replaceAll("[/\\\\]", "\\" + File.separator);
+			return getActualSubproject().replaceAll("[/\\\\]", "\\" + File.separator);
 		}
 
 		public void setSubproject(String srcPath) {
@@ -414,6 +443,10 @@ public class MksAdaptor extends Vcs {
 		public String getProjectFileName() {
 
 			return projectFileName;
+		}
+
+		public String getActualProjectFileName() {
+			return OgnlHelper.evaluateScheduleValue(getProjectFileName());
 		}
 
 		public void setProjectFileName(String subprojectName) {
@@ -434,6 +467,10 @@ public class MksAdaptor extends Vcs {
 		public String getDevelopmentPath() {
 
 			return developmentPath;
+		}
+
+		public String getActualDevelopmentPath() {
+			return OgnlHelper.evaluateScheduleValue(getDevelopmentPath());
 		}
 
 		public void setDevelopmentPath(String developmentPath) {
@@ -613,6 +650,10 @@ public class MksAdaptor extends Vcs {
 
 			public String getValue() {
 				return getRootProject();
+			}
+
+			public String getActualValue() {
+				return getActualRootProject();
 			}
 
 			public void setValue(String value) {
@@ -822,6 +863,10 @@ public class MksAdaptor extends Vcs {
 		return rootProject;
 	}
 
+	public String getActualRootProject() {
+		return OgnlHelper.evaluateScheduleValue(getRootProject());
+	}
+
 	public void setRootProject(String rootProject) {
 
 		this.rootProject = rootProject;
@@ -881,14 +926,14 @@ public class MksAdaptor extends Vcs {
 			if( sandboxStatus == MksAdaptor.NO_SANDBOX_FOUND )
 			{
 				logDual(antProject, "Creating sandbox:" + sandboxDir, Project.MSG_INFO);
-				mks.createSandbox(project, sandboxDir, module.getVersion(), module.getDevelopmentPath());
+				mks.createSandbox(project, sandboxDir, module.getActualVersion(), module.getActualDevelopmentPath());
 			}
 			else if( sandboxStatus == MksAdaptor.SANDBOX_DEVPATH_DIFFER || sandboxStatus == MksAdaptor.SANDBOX_VERSION_DIFFER )
 			{
 				logDual(antProject, "Droping sandbox: " + sandbox, Project.MSG_INFO);
 				mks.dropSandbox(sandbox);
 				logDual(antProject, "Creating sandbox:" + sandboxDir, Project.MSG_INFO);
-				mks.createSandbox(project, sandboxDir, module.getVersion(), module.getDevelopmentPath());
+				mks.createSandbox(project, sandboxDir, module.getActualVersion(), module.getActualDevelopmentPath());
 			}
 			else if( sandboxStatus == MksAdaptor.MATCHING_SANDBOX_FOUND )
 			{
@@ -898,7 +943,7 @@ public class MksAdaptor extends Vcs {
 					logDual(antProject, "Droping sandbox: " + sandbox, Project.MSG_INFO);
 					mks.dropSandbox(sandbox);
 					logDual(antProject, "Creating sandbox:" + sandboxDir, Project.MSG_INFO);
-					mks.createSandbox(project, sandboxDir, module.getVersion(), module.getDevelopmentPath());
+					mks.createSandbox(project, sandboxDir, module.getActualVersion(), module.getActualDevelopmentPath());
 				}
 				else
 				{
@@ -907,7 +952,7 @@ public class MksAdaptor extends Vcs {
 					mks.resyncSandbox(sandbox, true);
 				}
 			}
-			
+
 		}
 		finally {
 			mks.release();
@@ -936,7 +981,7 @@ public class MksAdaptor extends Vcs {
 
 		final MksServiceProvider mks = new MksServiceProvider(defaultHostname, defaultPort, defaultUsername, defaultPassword);
 		try {
-			mks.getRevisionsSince(revisions, sinceDate, project, module.getDevelopmentPath());
+			mks.getRevisionsSince(revisions, sinceDate, project, module.getActualDevelopmentPath());
 		}
 		finally {
 			mks.release();
@@ -964,7 +1009,7 @@ public class MksAdaptor extends Vcs {
 		// checkpoint
 		final MksServiceProvider mks = new MksServiceProvider(defaultHostname, defaultPort, defaultUsername, defaultPassword);
 		try {
-			mks.checkpointProject(project, checkpointDescription, module.getDevelopmentPath());
+			mks.checkpointProject(project, checkpointDescription, module.getActualDevelopmentPath());
 		}
 		finally {
 			mks.release();

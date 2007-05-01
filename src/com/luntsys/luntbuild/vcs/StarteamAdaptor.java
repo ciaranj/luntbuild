@@ -35,13 +35,11 @@ import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.*;
 import com.luntsys.luntbuild.ant.starteam.StarTeamCheckout;
 import com.luntsys.luntbuild.ant.starteam.StarTeamLabel;
-import com.luntsys.luntbuild.ant.Commandline;
 import com.starbase.starteam.*;
 import com.starbase.util.OLEDate;
 import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.Environment;
 
 import java.util.*;
 
@@ -114,6 +112,10 @@ public class StarteamAdaptor extends Vcs {
 
 			public String getValue() {
 				return getProjectLocation();
+			}
+
+			public String getActualValue() {
+				return getActualProjectLocation();
 			}
 
 			public void setValue(String value) {
@@ -235,14 +237,14 @@ public class StarteamAdaptor extends Vcs {
 	 */
 	private void retrieveModule(String workingDir, StarteamModule module, boolean isClean, Project antProject) {
 		if (isClean)
-			antProject.log("Retrieve source path \"" + module.getSrcPath() + "\" of StarTeam view \"" + module.getStarteamView() + "\"");
+			antProject.log("Retrieve source path \"" + module.getActualSrcPath() + "\" of StarTeam view \"" + module.getActualStarteamView() + "\"");
 		else
-			antProject.log("Update source path \"" + module.getSrcPath() + "\" of StarTeam view \"" + module.getStarteamView() + "\"");
+			antProject.log("Update source path \"" + module.getActualSrcPath() + "\" of StarTeam view \"" + module.getActualStarteamView() + "\"");
 		String destDir;
 		if (Luntbuild.isEmpty(module.getDestPath()))
-			destDir = Luntbuild.concatPath(workingDir, module.getSrcPath());
+			destDir = Luntbuild.concatPath(workingDir, module.getActualSrcPath());
 		else
-			destDir = Luntbuild.concatPath(workingDir, module.getDestPath());
+			destDir = Luntbuild.concatPath(workingDir, module.getActualDestPath());
 
 		// for a clean retrieve, we first delete the module directory, we need to do this
 		// because we do not want retrieve of this module be disturbed by pre-retrieved
@@ -261,17 +263,17 @@ public class StarteamAdaptor extends Vcs {
 			starteamTask.setPassword(getPassword());
 
 		if (Luntbuild.isEmpty(module.getStarteamView()))
-			starteamTask.setURL(getProjectLocation() + "/" + getStarteamProject());
+			starteamTask.setURL(getActualProjectLocation() + "/" + getStarteamProject());
 		else
-			starteamTask.setURL(getProjectLocation() + "/" + module.getStarteamView());
+			starteamTask.setURL(getActualProjectLocation() + "/" + module.getActualStarteamView());
 
     if (!Luntbuild.isEmpty(module.getStarteamPromotionState()))
-      starteamTask.setPromotionState(module.getStarteamPromotionState());
+      starteamTask.setPromotionState(module.getActualStarteamPromotionState());
     else if (!Luntbuild.isEmpty(module.getLabel()))
-			starteamTask.setLabel(module.getLabel());
+			starteamTask.setLabel(module.getActualLabel());
 		else
 			starteamTask.setAsOfDate(checkoutDate);
-		starteamTask.setRootStarteamFolder(Luntbuild.concatPath("/", module.getSrcPath()));
+		starteamTask.setRootStarteamFolder(Luntbuild.concatPath("/", module.getActualSrcPath()));
 		starteamTask.setRootLocalFolder(destDir);
 		if (Luntbuild.isEmpty(getConvertEOL()) || getConvertEOL().equalsIgnoreCase("yes"))
 			starteamTask.setConvertEOL(true);
@@ -291,7 +293,7 @@ public class StarteamAdaptor extends Vcs {
 	 * @param antProject
 	 */
 	private void labelModule(StarteamModule module, String label, Project antProject) {
-		antProject.log("Label source path \"" + module.getSrcPath() + "\" of StarTeam view \"" + module.getStarteamView() + "\"");
+		antProject.log("Label source path \"" + module.getActualSrcPath() + "\" of StarTeam view \"" + module.getActualStarteamView() + "\"");
 
 		// call ant starteam task to label module
 		StarTeamLabel starteamTask = new StarTeamLabel();
@@ -303,9 +305,9 @@ public class StarteamAdaptor extends Vcs {
 			starteamTask.setPassword(getPassword());
 
 		if (Luntbuild.isEmpty(module.getStarteamView()))
-			starteamTask.setURL(getProjectLocation() + "/" + getStarteamProject());
+			starteamTask.setURL(getActualProjectLocation() + "/" + getStarteamProject());
 		else
-			starteamTask.setURL(getProjectLocation() + "/" + module.getStarteamView());
+			starteamTask.setURL(getActualProjectLocation() + "/" + module.getActualStarteamView());
 
 		starteamTask.setLastBuild(checkoutDate);
 		starteamTask.setLabel(label);
@@ -336,8 +338,8 @@ public class StarteamAdaptor extends Vcs {
 					if (Luntbuild.isEmpty(module.getStarteamView()))
 						viewName = getStarteamProject();
 					else
-						viewName = module.getStarteamView();
-					String viewUrl = getProjectLocation() + "/" + viewName;
+						viewName = module.getActualStarteamView();
+					String viewUrl = getActualProjectLocation() + "/" + viewName;
 
 					// get the specified floating view
 					View view;
@@ -364,14 +366,14 @@ public class StarteamAdaptor extends Vcs {
 					Map buildFiles = new HashMap();
 
 					Folder currentRoot = StarTeamFinder.findFolder(currentConfiguration.getRootFolder(),
-							Luntbuild.concatPath("/", module.getSrcPath()));
+							Luntbuild.concatPath("/", module.getActualSrcPath()));
 					if (currentRoot == null)
-						throw new BuildException("Source path \"" + module.getSrcPath() + "\" " +
+						throw new BuildException("Source path \"" + module.getActualSrcPath() + "\" " +
 								"does not exist in the current configuration of StarTeam view \"" + viewName + "\"");
 					Folder buildRoot = StarTeamFinder.findFolder(buildConfiguration.getRootFolder(),
-							Luntbuild.concatPath("/", module.getSrcPath()));
+							Luntbuild.concatPath("/", module.getActualSrcPath()));
 					if (buildRoot == null)
-						throw new BuildException("Source path \"" + module.getSrcPath() + "\" " +
+						throw new BuildException("Source path \"" + module.getActualSrcPath() + "\" " +
 								"does not exist in the last build's configuration of StarTeam view \"" + viewName + "\"");
 
 					// fill file maps with files recursively
@@ -446,6 +448,10 @@ public class StarteamAdaptor extends Vcs {
 		return projectLocation;
 	}
 
+	public String getActualProjectLocation() {
+		return OgnlHelper.evaluateScheduleValue(getProjectLocation());
+	}
+
 	public void setProjectLocation(String projectLocation) {
 		this.projectLocation = projectLocation;
 	}
@@ -475,17 +481,17 @@ public class StarteamAdaptor extends Vcs {
 	}
 
 	private String getStarteamProject() {
-		String[] fields = getProjectLocation().split("/");
+		String[] fields = getActualProjectLocation().split("/");
 		if (fields.length != 2 || fields[1].trim().equals(""))
-			throw new ValidationException("Invalid value for project location: " + getProjectLocation());
+			throw new ValidationException("Invalid value for project location: " + getActualProjectLocation());
 		return fields[1].trim();
 	}
 
 	public void validateProperties() {
 		super.validateProperties();
-		String[] fields = getProjectLocation().split("/");
+		String[] fields = getActualProjectLocation().split("/");
 		if (fields.length != 2 || fields[1].trim().equals(""))
-			throw new ValidationException("Invalid value for project location: " + getProjectLocation());
+			throw new ValidationException("Invalid value for project location: " + getActualProjectLocation());
 		if (!Luntbuild.isEmpty(getConvertEOL())) {
 			if (!getConvertEOL().trim().equalsIgnoreCase("yes") &&
 					!getConvertEOL().trim().equalsIgnoreCase("no"))
@@ -502,25 +508,25 @@ public class StarteamAdaptor extends Vcs {
 		static final long serialVersionUID = 1;
 
 		private String starteamView;
-    private String starteamPromotionState;
+		private String starteamPromotionState;
 		private String srcPath;
 		private String label;
 		private String destPath;
 
-        /**
-         * Constructor
-         */
-        public StarteamModule() {}
+		/**
+		 * Constructor
+		 */
+		public StarteamModule() {}
 
-        /**
-         * Copy Constructor
-         */
-        public StarteamModule(StarteamModule module) {
-            this.starteamView = module.starteamView;
-            this.srcPath = module.srcPath;
-            this.label = module.label;
-            this.destPath = module.destPath;
-        }
+		/**
+		 * Copy Constructor
+		 */
+		public StarteamModule(StarteamModule module) {
+			this.starteamView = module.starteamView;
+			this.srcPath = module.srcPath;
+			this.label = module.label;
+			this.destPath = module.destPath;
+		}
 
 		public List getProperties() {
 			List properties = new ArrayList();
@@ -531,7 +537,7 @@ public class StarteamAdaptor extends Vcs {
 
 				public String getDescription() {
 					return "Specify a StarTeam view. This property is optional. If it is left empty, the " +
-							"root view of the current StarTeam project will be used.";
+					"root view of the current StarTeam project will be used.";
 				}
 
 				public boolean isRequired() {
@@ -540,6 +546,10 @@ public class StarteamAdaptor extends Vcs {
 
 				public String getValue() {
 					return getStarteamView();
+				}
+
+				public String getActualValue() {
+					return getActualStarteamView();
 				}
 
 				public void setValue(String value) {
@@ -553,11 +563,15 @@ public class StarteamAdaptor extends Vcs {
 
 				public String getDescription() {
 					return "Specify a path relative to the root of the above StarTeam view. Enter \"/\" to " +
-							"specify the root.";
+					"specify the root.";
 				}
 
 				public String getValue() {
 					return getSrcPath();
+				}
+
+				public String getActualValue() {
+					return getActualSrcPath();
 				}
 
 				public void setValue(String value) {
@@ -571,9 +585,9 @@ public class StarteamAdaptor extends Vcs {
 
 				public String getDescription() {
 					return "Specify the label for the above StarTeam view. This property " +
-							"is optional. When left empty, the latest version of specified view is" +
-              " assumed.  NOTE: Only one of Promotion State or Label may be set.  " +
-              "Checkout will FAIL if both values are set!";
+					"is optional. When left empty, the latest version of specified view is" +
+					" assumed.  NOTE: Only one of Promotion State or Label may be set.  " +
+					"Checkout will FAIL if both values are set!";
 				}
 
 				public boolean isRequired() {
@@ -584,34 +598,42 @@ public class StarteamAdaptor extends Vcs {
 					return getLabel();
 				}
 
+				public String getActualValue() {
+					return getActualLabel();
+				}
+
 				public void setValue(String value) {
 					setLabel(value);
 				}
 			});
-      properties.add(new DisplayProperty() {
-        public String getDisplayName() {
-          return "Promotion State";
-        }
+			properties.add(new DisplayProperty() {
+				public String getDisplayName() {
+					return "Promotion State";
+				}
 
-        public String getDescription() {
-          return "Specify the promotion state for the above StarTeam view. This property " +
-              "is optional. When left empty, the latest version of specified view is" +
-              " assumed.  NOTE: Only one of Promotion State or Label may be set.  " +
-              "Checkout will FAIL if both values are set!";
-        }
+				public String getDescription() {
+					return "Specify the promotion state for the above StarTeam view. This property " +
+					"is optional. When left empty, the latest version of specified view is" +
+					" assumed.  NOTE: Only one of Promotion State or Label may be set.  " +
+					"Checkout will FAIL if both values are set!";
+				}
 
-        public boolean isRequired() {
-          return false;
-        }
+				public boolean isRequired() {
+					return false;
+				}
 
-        public String getValue() {
-          return getStarteamPromotionState();
-        }
+				public String getValue() {
+					return getStarteamPromotionState();
+				}
 
-        public void setValue(String value) {
-          setStarteamPromotionState(value);
-        }
-      });      
+				public String getActualValue() {
+					return getActualStarteamPromotionState();
+				}
+
+				public void setValue(String value) {
+					setStarteamPromotionState(value);
+				}
+			});
 			properties.add(new DisplayProperty() {
 				public String getDisplayName() {
 					return "Destination path";
@@ -619,9 +641,9 @@ public class StarteamAdaptor extends Vcs {
 
 				public String getDescription() {
 					return "Specify the destination directory relative to the project work directory, where " +
-							"the contents under the above source path should be retrieved to. This property " +
-							"is optional. When left empty, retrieved code will be put into directory specified in " +
-							"source path, relative to the project work directory.";
+					"the contents under the above source path should be retrieved to. This property " +
+					"is optional. When left empty, retrieved code will be put into directory specified in " +
+					"source path, relative to the project work directory.";
 				}
 
 				public boolean isRequired() {
@@ -630,6 +652,10 @@ public class StarteamAdaptor extends Vcs {
 
 				public String getValue() {
 					return getDestPath();
+				}
+
+				public String getActualValue() {
+					return getActualDestPath();
 				}
 
 				public void setValue(String value) {
@@ -643,20 +669,32 @@ public class StarteamAdaptor extends Vcs {
 			return starteamView;
 		}
 
+		private String getActualStarteamView() {
+			return OgnlHelper.evaluateScheduleValue(getStarteamView());
+		}
+
 		public void setStarteamView(String starteamView) {
 			this.starteamView = starteamView;
 		}
-    
-    public String getStarteamPromotionState() {
-      return starteamPromotionState;
-    }
-    
-    public void setStarteamPromotionState(String starteamPromotionState) {
-      this.starteamPromotionState = starteamPromotionState;
-    }
+
+		public String getStarteamPromotionState() {
+			return starteamPromotionState;
+		}
+
+		private String getActualStarteamPromotionState() {
+			return OgnlHelper.evaluateScheduleValue(getStarteamPromotionState());
+		}
+
+		public void setStarteamPromotionState(String starteamPromotionState) {
+			this.starteamPromotionState = starteamPromotionState;
+		}
 
 		public String getSrcPath() {
 			return srcPath;
+		}
+
+		private String getActualSrcPath() {
+			return OgnlHelper.evaluateScheduleValue(getSrcPath());
 		}
 
 		public void setSrcPath(String srcPath) {
@@ -667,12 +705,20 @@ public class StarteamAdaptor extends Vcs {
 			return label;
 		}
 
+		private String getActualLabel() {
+			return OgnlHelper.evaluateScheduleValue(getLabel());
+		}
+
 		public void setLabel(String label) {
 			this.label = label;
 		}
 
 		public String getDestPath() {
 			return destPath;
+		}
+
+		private String getActualDestPath() {
+			return OgnlHelper.evaluateScheduleValue(getDestPath());
 		}
 
 		public void setDestPath(String destPath) {
@@ -684,7 +730,7 @@ public class StarteamAdaptor extends Vcs {
 			facade.setStarteamView(getStarteamView());
 			facade.setDestPath(getDestPath());
 			facade.setLabel(getLabel());
-      facade.setStarteamPromotionState(getStarteamPromotionState());
+			facade.setStarteamPromotionState(getStarteamPromotionState());
 			facade.setSrcPath(getSrcPath());
 			return facade;
 		}
@@ -694,7 +740,7 @@ public class StarteamAdaptor extends Vcs {
 				StarteamModuleFacade starteamModuleFacade = (StarteamModuleFacade) facade;
 				setStarteamView(starteamModuleFacade.getStarteamView());
 				setLabel(starteamModuleFacade.getLabel());
-        setStarteamPromotionState(starteamModuleFacade.getStarteamPromotionState());
+				setStarteamPromotionState(starteamModuleFacade.getStarteamPromotionState());
 				setSrcPath(starteamModuleFacade.getSrcPath());
 				setDestPath(starteamModuleFacade.getDestPath());
 			} else

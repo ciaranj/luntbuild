@@ -33,6 +33,7 @@ import com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.utility.*;
+
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Environment;
 
@@ -63,6 +64,10 @@ public class VssAdaptor extends Vcs {
 
 	public String getVssPath() {
 		return vssPath;
+	}
+
+	private String getActualVssPath() {
+		return OgnlHelper.evaluateScheduleValue(getVssPath());
 	}
 
 	public void setVssPath(String vssPath) {
@@ -97,6 +102,10 @@ public class VssAdaptor extends Vcs {
 		return dateTimeFormat;
 	}
 
+	public String getActualDateTimeFormat() {
+		return OgnlHelper.evaluateScheduleValue(getDateTimeFormat());
+	}
+
 	public void setDateTimeFormat(String dateTimeFormat) {
 		this.dateTimeFormat = dateTimeFormat;
 	}
@@ -119,14 +128,14 @@ public class VssAdaptor extends Vcs {
 	 */
 	private void retrieveModule(String workingDir, VssModule module, boolean isClean, Project antProject) {
 		if (isClean)
-			antProject.log("Retrieve source path: " + module.getSrcPath(), Project.MSG_INFO);
+			antProject.log("Retrieve source path: " + module.getActualSrcPath(), Project.MSG_INFO);
 		else
-			antProject.log("Update source path: " + module.getSrcPath(), Project.MSG_INFO);
+			antProject.log("Update source path: " + module.getActualSrcPath(), Project.MSG_INFO);
 		String destDir;
 		if (Luntbuild.isEmpty(module.getDestPath()))
-			destDir = Luntbuild.concatPath(workingDir, module.getSrcPath());
+			destDir = Luntbuild.concatPath(workingDir, module.getActualSrcPath());
 		else
-			destDir = Luntbuild.concatPath(workingDir, module.getDestPath());
+			destDir = Luntbuild.concatPath(workingDir, module.getActualDestPath());
 
 		if (isClean)
 			Luntbuild.deleteDir(destDir);
@@ -134,10 +143,10 @@ public class VssAdaptor extends Vcs {
 
 		Commandline cmdLine = buildVssExecutable();
 		cmdLine.createArgument().setValue("Get");
-		cmdLine.createArgument().setValue(Luntbuild.concatPath("$", module.getSrcPath()));
+		cmdLine.createArgument().setValue(Luntbuild.concatPath("$", module.getActualSrcPath()));
 		cmdLine.createArgument().setLine("-I- -R");
 		if (!Luntbuild.isEmpty(module.getLabel()))
-			cmdLine.createArgument().setValue("-VL" + module.getLabel());
+			cmdLine.createArgument().setValue("-VL" + module.getActualLabel());
 		cmdLine.createArgument().setValue("-W");
 		LuntbuildLogger luntBuildLogger = Luntbuild.getLuntBuildLogger(antProject);
 		if (luntBuildLogger == null || luntBuildLogger.getMessageOutputLevel() <= Project.MSG_INFO)
@@ -158,10 +167,10 @@ public class VssAdaptor extends Vcs {
 	 * @param antProject
 	 */
 	private void labelModule(String workingDir, VssModule module, String label, Project antProject) {
-		antProject.log("Label source path: " + module.getSrcPath(), Project.MSG_INFO);
+		antProject.log("Label source path: " + module.getActualSrcPath(), Project.MSG_INFO);
 		Commandline cmdLine = buildVssExecutable();
 		cmdLine.createArgument().setValue("Label");
-		cmdLine.createArgument().setValue(Luntbuild.concatPath("$", module.getSrcPath()));
+		cmdLine.createArgument().setValue(Luntbuild.concatPath("$", module.getActualSrcPath()));
 		cmdLine.createArgument().setLine("-C- -I- -L" + label);
 		appendLoginInfo(cmdLine);
 		Environment env = buildVssEnvironment();
@@ -179,10 +188,10 @@ public class VssAdaptor extends Vcs {
 	 * @param antProject
 	 */
 	private void unlabelModule(String workingDir, VssModule module, String label, Project antProject) {
-		antProject.log("Unlabel source path: " + module.getSrcPath(), Project.MSG_INFO);
+		antProject.log("Unlabel source path: " + module.getActualSrcPath(), Project.MSG_INFO);
 		Commandline cmdLine = buildVssExecutable();
 		cmdLine.createArgument().setValue("Label");
-		cmdLine.createArgument().setValue(Luntbuild.concatPath("$", module.getSrcPath()));
+		cmdLine.createArgument().setValue(Luntbuild.concatPath("$", module.getActualSrcPath()));
 		cmdLine.createArgument().setValue("-VL" + label);
 		cmdLine.createArgument().setLine("-C- -I-Y -L");
 		appendLoginInfo(cmdLine);
@@ -262,6 +271,10 @@ public class VssAdaptor extends Vcs {
 				return getVssPath();
 			}
 
+			public String getActualValue() {
+				return getActualVssPath();
+			}
+
 			public void setValue(String value) {
 				setVssPath(value);
 			}
@@ -328,6 +341,10 @@ public class VssAdaptor extends Vcs {
 				return getDateTimeFormat();
 			}
 
+			public String getActualValue() {
+				return getActualDateTimeFormat();
+			}
+
 			public void setValue(String value) {
 				setDateTimeFormat(value);
 			}
@@ -362,7 +379,7 @@ public class VssAdaptor extends Vcs {
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
 			VssModule vssModule = (VssModule) it.next();
-			if (vssModule.getSrcPath().startsWith("$"))
+			if (vssModule.getActualSrcPath().startsWith("$"))
 				throw new ValidationException("Property \"source path\" in module definition should not start with $");
 		}
 	}
@@ -389,6 +406,10 @@ public class VssAdaptor extends Vcs {
 			return srcPath;
 		}
 
+		private String getActualSrcPath() {
+			return OgnlHelper.evaluateScheduleValue(getSrcPath());
+		}
+
 		public void setSrcPath(String srcPath) {
 			this.srcPath = srcPath;
 		}
@@ -397,12 +418,20 @@ public class VssAdaptor extends Vcs {
 			return label;
 		}
 
+		private String getActualLabel() {
+			return OgnlHelper.evaluateScheduleValue(getLabel());
+		}
+
 		public void setLabel(String label) {
 			this.label = label;
 		}
 
 		public String getDestPath() {
 			return destPath;
+		}
+
+		private String getActualDestPath() {
+			return OgnlHelper.evaluateScheduleValue(getDestPath());
 		}
 
 		public void setDestPath(String destPath) {
@@ -424,6 +453,10 @@ public class VssAdaptor extends Vcs {
 
 				public String getValue() {
 					return getSrcPath();
+				}
+
+				public String getActualValue() {
+					return getActualSrcPath();
 				}
 
 				public void setValue(String value) {
@@ -449,6 +482,10 @@ public class VssAdaptor extends Vcs {
 					return getLabel();
 				}
 
+				public String getActualValue() {
+					return getActualLabel();
+				}
+
 				public void setValue(String value) {
 					setLabel(value);
 				}
@@ -471,6 +508,10 @@ public class VssAdaptor extends Vcs {
 
 				public String getValue() {
 					return getDestPath();
+				}
+
+				public String getActualValue() {
+					return getActualDestPath();
 				}
 
 				public void setValue(String value) {
@@ -514,7 +555,7 @@ public class VssAdaptor extends Vcs {
 				cmdLine.createArgument().setLine("HISTORY -I- -R -#" + Revisions.MAX_ENTRIES);
 				appendLoginInfo(cmdLine);
 				cmdLine.createArgument().setValue("-V~d" + formatDateForVss(sinceDate));
-				cmdLine.createArgument().setValue(Luntbuild.concatPath("$", module.getSrcPath()));
+				cmdLine.createArgument().setValue(Luntbuild.concatPath("$", module.getActualSrcPath()));
 
 				// provide some inputs to avoid command halts in case provided passwords is not correct
 				new MyExecTask("history", antProject, null, cmdLine, env, COMMAND_INPUT, -1) {
@@ -618,7 +659,7 @@ public class VssAdaptor extends Vcs {
 		Environment env = new Environment();
 		Environment.Variable var = new Environment.Variable();
 		var.setKey("SSDIR");
-		var.setValue(getVssPath());
+		var.setValue(getActualVssPath());
 		env.addVariable(var);
 		return env;
 	}
@@ -632,7 +673,7 @@ public class VssAdaptor extends Vcs {
 	protected String formatDateForVss(Date date) {
 		String pattern = DEFAULT_DATETIME_FORMAT;
 		if (!Luntbuild.isEmpty(getDateTimeFormat()))
-			pattern = getDateTimeFormat();
+			pattern = getActualDateTimeFormat();
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 		DateFormatSymbols dfs = new DateFormatSymbols();
 		dfs.setAmPmStrings(new String[]{"a", "p"});

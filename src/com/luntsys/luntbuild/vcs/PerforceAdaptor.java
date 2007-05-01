@@ -36,6 +36,7 @@ import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.facades.lb12.PerforceModuleFacade;
 import com.luntsys.luntbuild.utility.*;
+
 import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -281,8 +282,8 @@ public class PerforceAdaptor extends Vcs {
         Iterator it = getModules().iterator();
         while (it.hasNext()) {
             PerforceModule perforceModule = (PerforceModule) it.next();
-			String clientPath = perforceModule.getClientPath().replaceFirst(clientNamePattern, "//" + getClient(schedule) + "/");
-            p4Client.addViewValue(perforceModule.getDepotPath() + " " + clientPath);
+			String clientPath = perforceModule.getActualClientPath().replaceFirst(clientNamePattern, "//" + getClient(schedule) + "/");
+            p4Client.addViewValue(perforceModule.getActualDepotPath() + " " + clientPath);
         }
         if (Luntbuild.isEmpty(getLineEnd()))
             p4Client.setLineEndValue("local");
@@ -322,7 +323,7 @@ public class PerforceAdaptor extends Vcs {
             if (Luntbuild.isEmpty(perforceModule.getLabel())) {
                 if (!labelView.equals(""))
                     labelView += ":";
-                labelView += perforceModule.getDepotPath();
+                labelView += perforceModule.getActualDepotPath();
             }
         }
 
@@ -350,9 +351,9 @@ public class PerforceAdaptor extends Vcs {
      */
     private void retrieveModule(Schedule schedule, PerforceModule module, Project antProject, boolean force) {
         if (force)
-            antProject.log("Retrieve depot path: " + module.getDepotPath(), Project.MSG_INFO);
+            antProject.log("Retrieve depot path: " + module.getActualDepotPath(), Project.MSG_INFO);
         else
-            antProject.log("Update depot path: " + module.getDepotPath(), Project.MSG_INFO);
+            antProject.log("Update depot path: " + module.getActualDepotPath(), Project.MSG_INFO);
 
         P4Sync p4Sync = new P4Sync();
 		p4Sync.setP4Dir(getP4Dir());
@@ -360,9 +361,9 @@ public class PerforceAdaptor extends Vcs {
         p4Sync.setClient(getClient(schedule));
         if (force)
             p4Sync.setForce("yes");
-        p4Sync.setView(module.getDepotPath());
+        p4Sync.setView(module.getActualDepotPath());
         if (module.getLabel() != null && !module.getLabel().trim().equals(""))
-            p4Sync.setLabel(module.getLabel());
+            p4Sync.setLabel(module.getActualLabel());
         p4Sync.setTaskType("P4Sync");
         p4Sync.setTaskName("P4Sync");
         p4Sync.execute();
@@ -376,14 +377,14 @@ public class PerforceAdaptor extends Vcs {
      * @param antProject
      */
     private void labelModule(Schedule schedule, PerforceModule module, String label, Project antProject) {
-        antProject.log("Label depot path: " + module.getDepotPath(), Project.MSG_INFO);
+        antProject.log("Label depot path: " + module.getActualDepotPath(), Project.MSG_INFO);
 
         P4Labelsync p4LabelSync = new P4Labelsync();
 		p4LabelSync.setP4Dir(getP4Dir());
         initP4Cmd(p4LabelSync, antProject);
         p4LabelSync.setClient(getClient(schedule));
         p4LabelSync.setAdd(true);
-        p4LabelSync.setView(module.getDepotPath());
+        p4LabelSync.setView(module.getActualDepotPath());
         p4LabelSync.setName(label);
         p4LabelSync.setTaskType("P4LabelSync");
         p4LabelSync.setTaskName("P4LabelSync");
@@ -397,7 +398,7 @@ public class PerforceAdaptor extends Vcs {
         Iterator it = getModules().iterator();
         while (it.hasNext()) {
             PerforceModule module = (PerforceModule) Luntbuild.cloneModule(this, (Vcs.Module) it.next());
-			if (module.getDepotPath().startsWith("-"))
+			if (module.getActualDepotPath().startsWith("-"))
 				continue;
             if (build.isRebuild() && Luntbuild.isEmpty(module.getLabel()))
                 module.setLabel(Luntbuild.getLabelByVersion(build.getVersion()));
@@ -413,7 +414,7 @@ public class PerforceAdaptor extends Vcs {
         Iterator it = getModules().iterator();
         while (it.hasNext()) {
             PerforceModule module = (PerforceModule) it.next();
-			if (module.getDepotPath().startsWith("-"))
+			if (module.getActualDepotPath().startsWith("-"))
 				continue;
             if (Luntbuild.isEmpty(module.getLabel()))
                 labelModule(build.getSchedule(), module, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
@@ -492,17 +493,17 @@ public class PerforceAdaptor extends Vcs {
 
     private String getClient(Schedule schedule) {
 		PerforceModule firstModule = (PerforceModule) getModules().get(0);
-		return getP4Client(firstModule.getClientPath()) + "-" + schedule.getJobName();
+		return getP4Client(firstModule.getActualClientPath()) + "-" + schedule.getJobName();
     }
 
     public void validateModules() {
         super.validateModules();
         PerforceModule firstModule = (PerforceModule) getModules().get(0);
-        String clientName = getP4Client(firstModule.getClientPath());
+        String clientName = getP4Client(firstModule.getActualClientPath());
         Iterator it = getModules().iterator();
         while (it.hasNext()) {
             PerforceModule perforceModule = (PerforceModule) it.next();
-            if (!getP4Client(perforceModule.getClientPath()).equals(clientName))
+            if (!getP4Client(perforceModule.getActualClientPath()).equals(clientName))
                 throw new ValidationException("P4 Client name not consistent in modules definition!");
         }
     }
@@ -519,10 +520,10 @@ public class PerforceAdaptor extends Vcs {
         Iterator it = getModules().iterator();
         while (it.hasNext()) {
             PerforceModule module = (PerforceModule) it.next();
-			if (module.getDepotPath().startsWith("-"))
+			if (module.getActualDepotPath().startsWith("-"))
 				continue;
             if (Luntbuild.isEmpty(module.getLabel())) {
-                cmdLine.createArgument().setValue(module.getClientPath().replaceFirst(clientNamePattern,
+                cmdLine.createArgument().setValue(module.getActualClientPath().replaceFirst(clientNamePattern,
 						"//" + getClient(workingSchedule) + "/") + "@" + P4_DATE_FORMAT.format(sinceDate) +
 						"," + P4_DATE_FORMAT.format(new Date()));
             }
@@ -619,6 +620,10 @@ public class PerforceAdaptor extends Vcs {
                     return getDepotPath();
                 }
 
+                public String getActualValue() {
+                    return getActualDepotPath();
+                }
+
                 public void setValue(String value) {
                     setDepotPath(value);
                 }
@@ -636,6 +641,10 @@ public class PerforceAdaptor extends Vcs {
 
                 public String getValue() {
                     return getLabel();
+                }
+
+                public String getActualValue() {
+                    return getActualLabel();
                 }
 
                 public boolean isRequired() {
@@ -659,6 +668,10 @@ public class PerforceAdaptor extends Vcs {
                     return getClientPath();
                 }
 
+                public String getActualValue() {
+                    return getActualClientPath();
+                }
+
                 public void setValue(String value) {
                     setClientPath(value);
                 }
@@ -670,6 +683,10 @@ public class PerforceAdaptor extends Vcs {
             return depotPath;
         }
 
+        private String getActualDepotPath() {
+        	return OgnlHelper.evaluateScheduleValue(getDepotPath());
+        }
+
         public void setDepotPath(String depotPath) {
             this.depotPath = depotPath;
         }
@@ -678,12 +695,20 @@ public class PerforceAdaptor extends Vcs {
             return label;
         }
 
+        private String getActualLabel() {
+        	return OgnlHelper.evaluateScheduleValue(getLabel());
+        }
+
         public void setLabel(String label) {
             this.label = label;
         }
 
         public String getClientPath() {
             return clientPath;
+        }
+
+        private String getActualClientPath() {
+        	return OgnlHelper.evaluateScheduleValue(getClientPath());
         }
 
         public void setClientPath(String clientPath) {

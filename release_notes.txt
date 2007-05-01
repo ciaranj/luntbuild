@@ -39,7 +39,8 @@ Notification
 Contribution from Dominique Leducq. Thanks Dominique!
 
 - Added variables support for a schedule. Variables can be used in the similar fashion as project variables in OGNL expressions.
-- Added OGNL support to VCS.
+- Added OGNL support for VCS adaptor modules (for example ${var["cvsBranch"]}) and most of the VCS adaptor properties
+  like root path, url etc.
 
 Contribution from David Roussel. Thanks David!
 
@@ -54,6 +55,7 @@ Other changes:
 - Improved Clearcase mview delete/recreate
 - Fixed SVN adaptor labeling (label working copy, not a HEAD copy)
 - Updated IzPack installer to version 3.10.1
+- Changed Luntbuild license to Apache License, Version 2.0
 
 ==============================================
 luntbuild 1.3.6 Release Notes
