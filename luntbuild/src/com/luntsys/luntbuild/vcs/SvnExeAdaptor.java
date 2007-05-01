@@ -129,6 +129,10 @@ public class SvnExeAdaptor extends Vcs {
 				return getUrlBase();
 			}
 
+			public String getActualValue() {
+				return getActualUrlBase();
+			}
+
 			public void setValue(String value) {
 				setUrlBase(value);
 			}
@@ -150,6 +154,10 @@ public class SvnExeAdaptor extends Vcs {
 
 			public String getValue() {
 				return getTrunk();
+			}
+
+			public String getActualValue() {
+				return getActualTrunk();
 			}
 
 			public void setValue(String value) {
@@ -175,6 +183,10 @@ public class SvnExeAdaptor extends Vcs {
 				return getBranches();
 			}
 
+			public String getActualValue() {
+				return getActualBranches();
+			}
+
 			public void setValue(String value) {
 				setBranches(value);
 			}
@@ -196,6 +208,10 @@ public class SvnExeAdaptor extends Vcs {
 
 			public String getValue() {
 				return getTags();
+			}
+
+			public String getActualValue() {
+				return getActualTags();
 			}
 
 			public void setValue(String value) {
@@ -309,11 +325,11 @@ public class SvnExeAdaptor extends Vcs {
 	private void retrieveModule(String workingDir, SvnExeModule module, Project antProject) {
 		String destDir;
 		if (Luntbuild.isEmpty(module.getDestPath()))
-			destDir = Luntbuild.concatPath(workingDir, module.getSrcPath());
+			destDir = Luntbuild.concatPath(workingDir, module.getActualSrcPath());
 		else
-			destDir = Luntbuild.concatPath(workingDir, module.getDestPath());
-		String url = Luntbuild.concatPath(getUrlBase(), mapPathByBranchLabel(module.getSrcPath(),
-				module.getBranch(), module.getLabel()));
+			destDir = Luntbuild.concatPath(workingDir, module.getActualDestPath());
+		String url = Luntbuild.concatPath(getActualUrlBase(), mapPathByBranchLabel(module.getActualSrcPath(),
+				module.getActualBranch(), module.getActualLabel()));
 
 		antProject.log("Retrieve url: " + url);
 
@@ -340,22 +356,22 @@ public class SvnExeAdaptor extends Vcs {
 	}
 
 	private void labelModule(String workingDir, SvnExeModule module, String label, Project antProject) {
-		String normalizedModule = Luntbuild.concatPath("/", module.getSrcPath());
+		String normalizedModule = Luntbuild.concatPath("/", module.getActualSrcPath());
 		String normalizedTagsDir = Luntbuild.concatPath("/", getTagsDir());
 
 		// no need to label this module cause this module is fetched from tags directory
 		if (normalizedModule.startsWith(normalizedTagsDir))
 			return;
 
-		antProject.log("Label url: " + Luntbuild.concatPath(getUrlBase(), mapPathByBranch(module.getSrcPath(), module.getBranch())),
+		antProject.log("Label url: " + Luntbuild.concatPath(getActualUrlBase(), mapPathByBranch(module.getActualSrcPath(), module.getActualBranch())),
 				Project.MSG_INFO);
 
-		String mapped = mapPathByLabel(module.getSrcPath(), label);
+		String mapped = mapPathByLabel(module.getActualSrcPath(), label);
 		Commandline cmdLine = buildSvnExecutable();
 
 		// Is this mapped path already exists?
 		cmdLine.createArgument().setValue("list");
-		String url = Luntbuild.concatPath(getUrlBase(), mapped);
+		String url = Luntbuild.concatPath(getActualUrlBase(), mapped);
 		cmdLine.createArgument().setValue(url);
 		addSvnSwitches(cmdLine, antProject, true);
 		try {
@@ -368,7 +384,7 @@ public class SvnExeAdaptor extends Vcs {
 		// make sure parent of mapped path exists
 		String mappedParent = StringUtils.substringBeforeLast(StringUtils.stripEnd(mapped, "/"), "/");
 		String[] fields = mappedParent.split("/");
-		url = getUrlBase();
+		url = getActualUrlBase();
 		for (int i = 0; i < fields.length; i++) {
 			String field = fields[i];
 			if (!field.trim().equals("")) {
@@ -400,14 +416,14 @@ public class SvnExeAdaptor extends Vcs {
 
 		String destDir;
 		if (Luntbuild.isEmpty(module.getDestPath()))
-			destDir = Luntbuild.concatPath(workingDir, module.getSrcPath());
+			destDir = Luntbuild.concatPath(workingDir, module.getActualSrcPath());
 		else
-			destDir = Luntbuild.concatPath(workingDir, module.getDestPath());
+			destDir = Luntbuild.concatPath(workingDir, module.getActualDestPath());
 
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("copy");
 		cmdLine.createArgument().setValue(destDir);
-		cmdLine.createArgument().setValue(Luntbuild.concatPath(getUrlBase(), mapped));
+		cmdLine.createArgument().setValue(Luntbuild.concatPath(getActualUrlBase(), mapped));
 		cmdLine.createArgument().setLine("-m \"\"");
 		addSvnSwitches(cmdLine, antProject, false);
 		new MyExecTask("copy", antProject, workingDir, cmdLine, null, SVN_COMMAND_INPUT,
@@ -415,16 +431,16 @@ public class SvnExeAdaptor extends Vcs {
 	}
 
 	private void updateModule(String workingDir, SvnExeModule module, Project antProject) {
-		String url = Luntbuild.concatPath(getUrlBase(), mapPathByBranchLabel(module.getSrcPath(),
-				module.getBranch(), module.getLabel()));
+		String url = Luntbuild.concatPath(getActualUrlBase(), mapPathByBranchLabel(module.getActualSrcPath(),
+				module.getActualBranch(), module.getActualLabel()));
 
 		antProject.log("Update url: " + url);
 
 		String destDir;
 		if (Luntbuild.isEmpty(module.getDestPath()))
-			destDir = Luntbuild.concatPath(workingDir, module.getSrcPath());
+			destDir = Luntbuild.concatPath(workingDir, module.getActualSrcPath());
 		else
-			destDir = Luntbuild.concatPath(workingDir, module.getDestPath());
+			destDir = Luntbuild.concatPath(workingDir, module.getActualDestPath());
 
 		Commandline cmdLine = buildSvnExecutable();
 		cmdLine.createArgument().setValue("update");
@@ -436,6 +452,10 @@ public class SvnExeAdaptor extends Vcs {
 
 	public String getUrlBase() {
 		return this.urlBase;
+	}
+
+	public String getActualUrlBase() {
+		return OgnlHelper.evaluateScheduleValue(getUrlBase());
 	}
 
 	public void setUrlBase(String urlBase) {
@@ -460,6 +480,10 @@ public class SvnExeAdaptor extends Vcs {
 
 	public String getTrunk() {
 		return this.trunk;
+	}
+
+	private String getActualTrunk() {
+		return OgnlHelper.evaluateScheduleValue(getTrunk());
 	}
 
 	public void setTrunk(String trunk) {
@@ -493,8 +517,8 @@ public class SvnExeAdaptor extends Vcs {
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
             SvnExeModule module = (SvnExeModule) it.next();
-			if (module.getSrcPath().indexOf('\\') != -1)
-				throw new ValidationException("Source path \"" + module.getSrcPath() + "\" should not contain character '\\'");
+			if (module.getActualSrcPath().indexOf('\\') != -1)
+				throw new ValidationException("Source path \"" + module.getActualSrcPath() + "\" should not contain character '\\'");
 		}
 	}
 
@@ -508,8 +532,8 @@ public class SvnExeAdaptor extends Vcs {
 			if (Luntbuild.isEmpty(module.getLabel())) {
 				cmdLine.clearArgs();
 				cmdLine.createArgument().setValue("log");
-				String url = Luntbuild.concatPath(getUrlBase(), mapPathByBranchLabel(module.getSrcPath(),
-						module.getBranch(), module.getLabel()));
+				String url = Luntbuild.concatPath(getActualUrlBase(), mapPathByBranchLabel(module.getActualSrcPath(),
+						module.getActualBranch(), module.getActualLabel()));
 				cmdLine.createArgument().setValue(url);
 				if (getUser() != null && !getUser().trim().equals("")) {
 					cmdLine.createArgument().setValue("--username");
@@ -630,12 +654,20 @@ public class SvnExeAdaptor extends Vcs {
 		return this.branches;
 	}
 
+	private String getActualBranches() {
+		return OgnlHelper.evaluateScheduleValue(getBranches());
+	}
+
 	public void setBranches(String branches) {
 		this.branches = branches;
 	}
 
 	public String getTags() {
 		return this.tags;
+	}
+
+	private String getActualTags() {
+		return OgnlHelper.evaluateScheduleValue(getTags());
 	}
 
 	public void setTags(String tags) {
@@ -646,21 +678,21 @@ public class SvnExeAdaptor extends Vcs {
 		if (Luntbuild.isEmpty(getTrunk()))
 			return "";
 		else
-			return getTrunk();
+			return getActualTrunk();
 	}
 
 	public String getBranchesDir() {
 		if (Luntbuild.isEmpty(getBranches()))
 			return "branches";
 		else
-			return getBranches();
+			return getActualBranches();
 	}
 
 	public String getTagsDir() {
 		if (Luntbuild.isEmpty(getTags()))
 			return "tags";
 		else
-			return getTags();
+			return getActualTags();
 	}
 
 	public class SvnExeModule extends Module {
@@ -693,12 +725,20 @@ public class SvnExeAdaptor extends Vcs {
 			return this.srcPath;
 		}
 
+		private String getActualSrcPath() {
+			return OgnlHelper.evaluateScheduleValue(getSrcPath());
+		}
+
 		public void setSrcPath(String srcPath) {
 			this.srcPath = srcPath;
 		}
 
 		public String getBranch() {
 			return this.branch;
+		}
+
+		private String getActualBranch() {
+			return OgnlHelper.evaluateScheduleValue(getBranch());
 		}
 
 		public void setBranch(String branch) {
@@ -709,12 +749,20 @@ public class SvnExeAdaptor extends Vcs {
 			return this.label;
 		}
 
+		private String getActualLabel() {
+			return OgnlHelper.evaluateScheduleValue(getLabel());
+		}
+
 		public void setLabel(String label) {
 			this.label = label;
 		}
 
 		public String getDestPath() {
 			return this.destPath;
+		}
+
+		private String getActualDestPath() {
+			return OgnlHelper.evaluateScheduleValue(getDestPath());
 		}
 
 		public void setDestPath(String destPath) {
@@ -743,6 +791,10 @@ public class SvnExeAdaptor extends Vcs {
 					return getSrcPath();
 				}
 
+				public String getActualValue() {
+					return getActualSrcPath();
+				}
+
 				public void setValue(String value) {
 					setSrcPath(value);
 				}
@@ -767,6 +819,10 @@ public class SvnExeAdaptor extends Vcs {
 
 				public String getValue() {
 					return getBranch();
+				}
+
+				public String getActualValue() {
+					return getActualBranch();
 				}
 
 				public void setValue(String value) {
@@ -796,6 +852,10 @@ public class SvnExeAdaptor extends Vcs {
 					return getLabel();
 				}
 
+				public String getActualValue() {
+					return getActualLabel();
+				}
+
 				public void setValue(String value) {
 					setLabel(value);
 				}
@@ -818,6 +878,10 @@ public class SvnExeAdaptor extends Vcs {
 
 				public String getValue() {
 					return getDestPath();
+				}
+
+				public String getActualValue() {
+					return getActualDestPath();
 				}
 
 				public void setValue(String value) {

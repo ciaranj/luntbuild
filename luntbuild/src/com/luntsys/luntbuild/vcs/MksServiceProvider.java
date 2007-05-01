@@ -2,7 +2,7 @@
  * Copyright TRX Inc(c) 2006,
  *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 1.
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -21,7 +21,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
+ *
  */
 package com.luntsys.luntbuild.vcs;
 
@@ -60,7 +60,7 @@ import com.mks.api.util.ResponseUtil;
 
 /**
  * A collection of MKS services, requried by the MksAdaptor.
- * 
+ *
  * @author Stefan Baramov (TRX Inc.)
  */
 public class MksServiceProvider {
@@ -80,7 +80,7 @@ public class MksServiceProvider {
 	 * of this user.
 	 */
 	private final String defaultUsername;
-	
+
 	/**
 	 * Default hostname of the MKS repo server used to initialize the command runner.
 	 */
@@ -90,7 +90,7 @@ public class MksServiceProvider {
 	 * Default port of the MKS repo server used to initialize the command runner.
 	 */
 	private final int defaultPort;
-	
+
 	/**
 	 * The command runner.
 	 */
@@ -103,7 +103,7 @@ public class MksServiceProvider {
 
 	/**
 	 * Initialize a new object with its default settings and constructs a session with the MKS client.
-	 * 
+	 *
 	 * @param defaultHostname
 	 *        default hostname.
 	 * @param defaultPort
@@ -112,7 +112,7 @@ public class MksServiceProvider {
 	 *        default username.
 	 * @param defaultPassword
 	 *        default password.
-	 * 
+	 *
 	 * @throws BuildException
 	 *         in case it fails to construct a session or a command runner.
 	 */
@@ -132,7 +132,7 @@ public class MksServiceProvider {
 	/**
 	 * Updates the given revisions object with all revisions of after the given date for the given
 	 * project.
-	 * 
+	 *
 	 * @param revisions
 	 *        the revisions data holder to be updated.
 	 * @param sinceDate
@@ -151,11 +151,11 @@ public class MksServiceProvider {
 		addDevelopmentPath(vproject, devPath);
 
 		Response response = null;
-		try 
+		try
 		{
 			response = runner.execute(vproject);
 		}
-		catch (APIException ex) 
+		catch (APIException ex)
 		{
 			logger.error("Failed to retrieve project revisions. Cannot view project: " + exceptionString(ex), ex);
 			revisions.getChangeLogs().add("Checking For Revisions Error \n"
@@ -171,26 +171,26 @@ public class MksServiceProvider {
 			WorkItemIterator projectItemIter = response.getWorkItems();
 			while (projectItemIter.hasNext()) {
 				WorkItem projectItem = projectItemIter.next();
-				
+
 				if (projectItem.getModelType().equals(SIModelTypeName.MEMBER)) {
 					// found a member lets go and view the memeber history.
 					String member = projectItem.getId();
 					String parentProject = projectItem.getField("parent").getValueAsString();
-					
+
 					Command vhistory = new Command(Command.SI, "viewhistory");
 					vhistory.addOption(new Option("project", parentProject));
 					vhistory.addSelection(member);
 					addDevelopmentPath(vhistory, devPath);
-					
+
 					Response memberRevHistory = runner.execute(vhistory);
-					
+
 					Field revisionData = memberRevHistory.getWorkItem(member).getField("revisions");
 					// each item in the feild is a individual revision
 					for (Iterator iterator = revisionData.getList().iterator(); iterator.hasNext();) {
-						
+
 						Item revisionItem = (Item) iterator.next();
 						Date revisionDate = (Date) revisionItem.getField("date").getValue();
-						
+
 						if (sinceDate.before(revisionDate)) {
 							// newer revisions - record info
 							addRevision(revisions, member, revisionItem);
@@ -217,7 +217,7 @@ public class MksServiceProvider {
 
 	/**
 	 * Returns the corresponding project revision to the given checkpoint description.
-	 * 
+	 *
 	 * @param project
 	 *        the project full name.
 	 * @param checkpointDescription
@@ -271,31 +271,31 @@ public class MksServiceProvider {
 
 	/**
 	 * Returns true if the sandbox already exist.
-	 * 
+	 *
 	 * @param sandbox
 	 *        the sandbox name.
-	 *        
+	 *
 	 * @return <code>true</code> if the sandbox exists.
-	 * 
+	 *
 	 * @throws BuildException
 	 *         if it fails to retrieve the list of sandboxes.
 	 */
-	public int isSandboxExist(String sandbox, MksModule module) 
+	public int isSandboxExist(String sandbox, MksModule module)
 	{
 		int foundSandbox = MksAdaptor.NO_SANDBOX_FOUND;
-		try 
+		try
 		{
 			final boolean windowsOs = isWindowsOs();
 			final Response sboxes = runner.execute(new Command(Command.SI, "sandboxes"));
-			
+
 			//ResponseUtil.printResponse(sboxes, 4, System.out );
-			
-			// log the list of checkboxes 
-			try 
+
+			// log the list of checkboxes
+			try
 			{
 				logger.debug("[isSandboxExist]The following sandboxes were found on the build machine:"+ responseString(sboxes));
 			}
-			catch (Throwable ex) 
+			catch (Throwable ex)
 			{
 				// ignore me.
 				logger.error("Failed to log the list of checkboxes");
@@ -303,44 +303,44 @@ public class MksServiceProvider {
 
 			// look for the given checkbox.
 			WorkItemIterator iter = sboxes.getWorkItems();
-			while ( iter.hasNext() && (foundSandbox == MksAdaptor.NO_SANDBOX_FOUND) ) 
+			while ( iter.hasNext() && (foundSandbox == MksAdaptor.NO_SANDBOX_FOUND) )
 			{
 				WorkItem item = iter.next();
 				final String existingSandbox = item.getId();
 				boolean nameMatches = false;
-				if (windowsOs) 
+				if (windowsOs)
 				{
-					if (sandbox.equalsIgnoreCase(existingSandbox)) 
+					if (sandbox.equalsIgnoreCase(existingSandbox))
 						nameMatches = true;
 				}
-				else 
+				else
 				{
-					if (sandbox.equals(existingSandbox)) 
+					if (sandbox.equals(existingSandbox))
 						nameMatches = true;
 				}
-				
+
 				if( nameMatches )
 				{
 					foundSandbox = MksAdaptor.MATCHING_SANDBOX_FOUND;
 					Field devpath = item.getField("developmentPath");
 					Field version = item.getField("buildRevision");
-					
+
 					if( !Luntbuild.isEmpty( module.getVersion()) || !Luntbuild.isEmpty(version.getValueAsString()) )
 					{
-						// MKS Gives no way to find out what version/chekpoint was used to create the build sandbox, 
+						// MKS Gives no way to find out what version/chekpoint was used to create the build sandbox,
 						// so we have to drop and recreate... if sandbox or module has a version specified.....
 						foundSandbox = MksAdaptor.SANDBOX_VERSION_DIFFER ;
 					}
-					else 
+					else
 					{
-						if ( !Luntbuild.isEmpty(module.getDevelopmentPath()) || devpath.getValue()!= null  )
-							if ( !module.getDevelopmentPath().equals( devpath.getValueAsString() ) )
-								// Dev Paths are different or either one does not exist.... 
+						if ( !Luntbuild.isEmpty(module.getActualDevelopmentPath()) || devpath.getValue()!= null  )
+							if ( !module.getActualDevelopmentPath().equals( devpath.getValueAsString() ) )
+								// Dev Paths are different or either one does not exist....
 								foundSandbox = MksAdaptor.SANDBOX_DEVPATH_DIFFER ;
 					}
 				}
 			}
-			
+
 			// at this point if the sandbox was not found to be registered with the SI client.
 			// clean up the file if it exists
 			if( foundSandbox == MksAdaptor.NO_SANDBOX_FOUND )
@@ -358,7 +358,7 @@ public class MksServiceProvider {
 
 	/**
 	 * Deletes the content of a old sandbox. The content might be of an unregistered sandbox.
-	 * 
+	 *
 	 * @param sandbox
 	 *        the sandbox to be cleaned up.
 	 */
@@ -366,28 +366,28 @@ public class MksServiceProvider {
 
 		File sandboxFile = new File(sandbox);
 		if (sandboxFile.exists()) {
-			
+
 			logger.info("Cleaning up a phantom sandbox : " + sandbox);
-			
+
 			try {
-				
+
 				deleteFileMask(sandboxFile.getParentFile(), "**/*.*");
-				
+
 			}
 			catch (Throwable ex) {
 				logger.warn("Failed to clean up sandbox " + sandbox, ex);
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns true if the given directory is a part of a sandbox.
-	 * 
+	 *
 	 * @param dir
 	 *        the directory to check.
-	 *        
+	 *
 	 * @return <code>true</code> if the directory is contains a valid sandbox.
-	 * 
+	 *
 	 * @throws BuildException
 	 *         if it fails to retrieve the list of sandboxes.
 	 */
@@ -396,8 +396,8 @@ public class MksServiceProvider {
 		try {
 			final boolean windowsOs = isWindowsOs();
 			final Response sboxes = runner.execute(new Command(Command.SI, "sandboxes"));
-			
-			// log the list of checkboxes 
+
+			// log the list of checkboxes
 			try {
 				logger.debug("[isPartOfSandbox]The following sandboxes were found on the build machine:"+ responseString(sboxes));
 			}
@@ -409,7 +409,7 @@ public class MksServiceProvider {
 			WorkItemIterator iter = sboxes.getWorkItems();
 			while (iter.hasNext()) {
 				String existingSandbox = iter.next().getId();
-				
+
 				if (windowsOs) {
 					if (existingSandbox.toLowerCase().startsWith(dir.toLowerCase())) {
 						return true;
@@ -434,7 +434,7 @@ public class MksServiceProvider {
 
 	/**
 	 * Creates a sand box for the given project in the given directory.
-	 * 
+	 *
 	 * @param project
 	 *        the MKS project.
 	 * @param targetDir
@@ -443,14 +443,14 @@ public class MksServiceProvider {
 	 *        the project revision to be used. If it is null, then the top of the trunk is retrieved.
 	 * @param devPath
 	 *        the development path of the given project. Optional parameter.
-	 *        
+	 *
 	 * @return the newly created sandbox name.
-	 * 
+	 *
 	 * @throws BuildException
 	 *         if it fails to create the sandbox.
 	 */
 	public String createSandbox(String project, String targetDir, String revision, String devPath) {
-		
+
 		/*
 		 * si createsandbox [(-R|--[no|confirm]recurse)] [--lineTerminator=[lf|crlf|native]]
 		 * [--[no]populate] [--[no]sparse] [--[no]openView] [--[no]shared]
@@ -460,14 +460,14 @@ public class MksServiceProvider {
 		 * [--forceConfirm=[yes|no]] [(-g|--gui)] [--quiet] [--settingsUI=[gui|default]]
 		 * [--status=[none|gui|default]] [--xmlapi] directory
 		 */
-		
+
 		// --- log info ---
 		logger.info(MessageFormat.format(
 				"Creating a sandbox for project {0} into {1} directory, project revision is {2}.",
 				new Object[]{project, targetDir, revision}));
-		
+
 		// CREATE SANDBOX
-		
+
 		Command cmd = new Command(Command.SI, "createsandbox");
 		cmd.addOption(new Option("project", project));
 		cmd.addOption(new Option("recurse"));
@@ -481,24 +481,24 @@ public class MksServiceProvider {
 		cmd.addSelection(targetDir);
 
 		try {
-			
+
 			Response response = runner.execute(cmd);
-			
+
 			// return the sandbox name.
 			return response.getResult().getField("resultant").getItem().getId();
 		}
 		catch (APIException ex) {
-			
+
 			logger.warn("Failed to create a sandbox for project: " + project
 					+ ". Error:\n" + exceptionString(ex));
-			
+
 			throw new BuildException(getExceptionMessage(ex), ex);
 		}
 	}
 
 	/**
 	 * Drops a particular sandbox.
-	 * 
+	 *
 	 * @param sandbox
 	 *        the sandbox to be dropped.
 	 * @throws BuildException
@@ -506,8 +506,8 @@ public class MksServiceProvider {
 	 */
 	public void dropSandbox(String sandbox) {
 
-		// [Apr 21, 2006] drop sandbox is uncertified API command. we just hope it will work. 
-		
+		// [Apr 21, 2006] drop sandbox is uncertified API command. we just hope it will work.
+
 		try {
 
 			doDropSandbox(sandbox, "all");
@@ -519,11 +519,11 @@ public class MksServiceProvider {
 					+ ". Error:\n"
 					+ exceptionString(ex), ex);
 
-			// exception name -- see if it is known exception. 
+			// exception name -- see if it is known exception.
 			String exceptionName = ex.getField("exception-name").getValueAsString();
-			
+
 			if ("common.CommandFailed".equals(exceptionName)) {
-				// try to recover  if possible 
+				// try to recover  if possible
 
 				// try to drop it without deleting the sandbox memebers
 				try {
@@ -546,8 +546,8 @@ public class MksServiceProvider {
 			}
 		}
 	}
-	
-	
+
+
 	private void doDropSandbox(String sandbox, String memeberOp) throws APIException {
 
 		/*
@@ -561,14 +561,14 @@ public class MksServiceProvider {
 		cmd.addOption(new Option("delete", memeberOp));
 		cmd.addOption(new Option("forceConfirm", "yes"));
 		cmd.addSelection(sandbox);
-		
+
 
 		runner.execute(cmd);
 	}
 
 	/**
 	 * Resynchronize existing sandbox.
-	 * 
+	 *
 	 * @param sandbox
 	 *        the sandbox to resynchronize
 	 * @param recurse
@@ -597,7 +597,7 @@ public class MksServiceProvider {
 		if (recurse) {
 			cmd.addOption(new Option("recurse"));
 		}
-		
+
 		try {
 
 			runner.execute(cmd);
@@ -607,7 +607,7 @@ public class MksServiceProvider {
 			logger.error("Failed to resynchronize sandbox: " + sandbox
 					+ ". Error:\n"
 					+ exceptionString(ex), ex);
-			
+
 			throw new BuildException(getExceptionMessage(ex), ex);
 		}
 	}
@@ -615,13 +615,13 @@ public class MksServiceProvider {
 	/**
 	 * Creates a checkpoint for the given project on the given development path. The development path
 	 * is option. If omitted, then it is assumed it is the main trunck project.
-	 * 
+	 *
 	 * <p>
 	 * The method does not create a label for the particular checkpoint. According to MKS consultant,
 	 * the label only "polute" the database and does not bring any additional information. Checkpoint
 	 * description should be suffiant.
 	 * </p>
-	 * 
+	 *
 	 * @param project
 	 *        the project full name. required.
 	 * @param description
@@ -630,7 +630,7 @@ public class MksServiceProvider {
 	 *        the development path. optional.
 	 */
 	public void checkpointProject(String project, String description, String devPath) {
-		
+
 		/*
 		 * si checkpoint [--author=name] [(-d desc|--description=desc)] [--descriptionFile=file]
 		 * [--[no]labelMembers] [--[no]notify] [(-L label| --label=label)] [(-s state|--state =state)]
@@ -640,25 +640,25 @@ public class MksServiceProvider {
 		 * [--forceConfirm=[yes|no]] [(-g|--gui)] [--quiet] [--settingsUI=[gui|default]]
 		 * [--status=[none|gui|default]]
 		 */
-		
+
 		Command cmd = new Command(Command.SI, "checkpoint");
 		cmd.addOption(new Option("project", project));
 		cmd.addOption(new Option("description", description));
 		cmd.addOption(new Option("forceConfirm", "yes"));
 		addDevelopmentPath(cmd, devPath);
-		
+
 		try {
-			
+
 			runner.execute(cmd);
-			
+
 		}
 		catch (APIException ex) {
 			logger.error("Failed to checkpoint project: " + project + ". Error:\n" + exceptionString(ex),
 					ex);
-			
+
 			throw new BuildException(getExceptionMessage(ex), ex);
 		}
-		
+
 	}
 
 	/**
@@ -710,7 +710,7 @@ public class MksServiceProvider {
 
 	/**
 	 * Adds a revision information.
-	 * 
+	 *
 	 * @param revisions
 	 *        the revisions data.
 	 * @param member
@@ -754,7 +754,7 @@ public class MksServiceProvider {
 
 	/**
 	 * Adds a development path option to the given command.
-	 * 
+	 *
 	 * @param cmd
 	 *        the command to be modified.
 	 * @param devPath
@@ -769,7 +769,7 @@ public class MksServiceProvider {
 
 	/**
 	 * Returns the exception message or exception ID if the message is missing.
-	 * 
+	 *
 	 * @param ex
 	 *        the MKS exception.
 	 * @return the error message.
@@ -792,7 +792,7 @@ public class MksServiceProvider {
 	/**
 	 * Returns a session with the MKS client app. It will automatically start the client if it is not
 	 * available.
-	 * 
+	 *
 	 * @return the session object.
 	 */
 	private Session initClientSession() {
@@ -803,7 +803,7 @@ public class MksServiceProvider {
 			 * files\mks\sourceintegrity\bin should be in the system path. Need to test this to see how it
 			 * will work in service environment. We can always fall back to -Djava.library.path option if
 			 * we need to.
-			 * 
+			 *
 			 * A server integration point will not requires a client but it will not be able to work with
 			 * local paths.
 			 */
@@ -827,14 +827,14 @@ public class MksServiceProvider {
 
 	/**
 	 * Returns a runner based on the current session.
-	 * 
+	 *
 	 * @return a new command runner.
 	 */
 	private CmdRunner initCommandRunner() {
 
 		try {
 			runner = session.createCmdRunner();
-			
+
 			if (!Luntbuild.isEmpty(defaultUsername)) {
 				runner.setDefaultUsername(defaultUsername);
 			}
@@ -871,34 +871,34 @@ public class MksServiceProvider {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Deletes a file masked with ANT wildcard mask from the given base directory. This method should
 	 * be in the Luntbuild class.
-	 * 
+	 *
 	 * @param baseDir
 	 *        the base directory
 	 * @param mask
 	 *        the file mask. e.g. ** / *.pj
 	 */
 	private void deleteFileMask(File baseDir, String mask) {
-		
+
 		Delete deleteTask = new Delete();
 		deleteTask.setProject(new Project());
 		deleteTask.getProject().init();
 		deleteTask.setDir(baseDir);
-		
+
 		FilenameSelector selector = new FilenameSelector();
 		selector.setName(mask);
 		deleteTask.add(selector);
-		
+
 		deleteTask.execute();
 	}
-	
+
 
 	/**
 	 * Debug method, useful to analyse the MKS resposne object.
-	 * 
+	 *
 	 * @param response
 	 *        the response to analayse
 	 * @return the string version.
@@ -921,18 +921,18 @@ public class MksServiceProvider {
 
 	/**
 	 * Debug method used to analyse the exception.
-	 * 
+	 *
 	 * @param ex
 	 *        the exception.
 	 * @return the complete string representation.
 	 */
 	protected String exceptionString(APIException ex) {
-		
+
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		PrintStream print = new PrintStream(output);
 
 		ResponseUtil.printAPIException(ex, 0, print);
-		
+
 		print.println("\nStack Trace:");
 		ex.printStackTrace(print);
 
@@ -944,7 +944,7 @@ public class MksServiceProvider {
 		catch (IOException io) {
 			return "";
 		}
-		
+
 	}
 }
 

@@ -33,8 +33,10 @@ import com.luntsys.luntbuild.facades.lb12.SvnAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.SvnModuleFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.utility.ValidationException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -104,6 +106,10 @@ public class SvnAdaptor extends Vcs {
                 return getUrlBase();
             }
 
+            public String getActualValue() {
+                return getActualUrlBase();
+            }
+
             public void setValue(String value) {
                 setUrlBase(value);
             }
@@ -125,6 +131,10 @@ public class SvnAdaptor extends Vcs {
 
             public String getValue() {
                 return getTrunk();
+            }
+
+            public String getActualValue() {
+                return getActualTrunk();
             }
 
             public void setValue(String value) {
@@ -150,6 +160,10 @@ public class SvnAdaptor extends Vcs {
                 return getBranches();
             }
 
+            public String getActualValue() {
+                return getActualBranches();
+            }
+
             public void setValue(String value) {
                 setBranches(value);
             }
@@ -171,6 +185,10 @@ public class SvnAdaptor extends Vcs {
 
             public String getValue() {
                 return getTags();
+            }
+
+            public String getActualValue() {
+                return getActualTags();
             }
 
             public void setValue(String value) {
@@ -285,8 +303,8 @@ public class SvnAdaptor extends Vcs {
     }
 
     private SVNURL getModuleUrl(SvnModule module) {
-        String urlString = Luntbuild.concatPath(getUrlBase(), mapPathByBranchLabel(module.getSrcPath(),
-                module.getBranch(), module.getLabel()));
+        String urlString = Luntbuild.concatPath(getActualUrlBase(), mapPathByBranchLabel(module.getActualSrcPath(),
+                module.getActualBranch(), module.getActualLabel()));
         try {
             return SVNURL.parseURIEncoded(urlString);
         } catch (SVNException e) {
@@ -302,7 +320,7 @@ public class SvnAdaptor extends Vcs {
      */
     public synchronized void labelModule(String workingDir, SvnModule module, String label, Project antProject) {
         // no need to label this module cause this module is fetched from tags directory
-        File dir = new File("/", module.getSrcPath());
+        File dir = new File("/", module.getActualSrcPath());
         File tagsDir = new File("/", getTagsDir());
 
         boolean isParent = false;
@@ -320,8 +338,8 @@ public class SvnAdaptor extends Vcs {
 
         initLogger(antProject);
 
-        String mapped = mapPathByLabel(module.getSrcPath(), label);
-        String urlString = Luntbuild.concatPath(getUrlBase(), mapped);
+        String mapped = mapPathByLabel(module.getActualSrcPath(), label);
+        String urlString = Luntbuild.concatPath(getActualUrlBase(), mapped);
 
         SVNURL url = parseUrl(urlString);
         SVNClientManager clientManager = getClientManager();
@@ -341,7 +359,7 @@ public class SvnAdaptor extends Vcs {
         try {
         	String path = workingDir;
         	if (module.getSrcPath() != null && module.getSrcPath().trim().length() > 0)
-        		path += File.separatorChar + module.getSrcPath().trim();
+        		path += File.separatorChar + module.getActualSrcPath().trim();
             clientManager.getCopyClient().doCopy(new File(path), SVNRevision.WORKING, url, false, "Labeled: " + label);
         } catch (SVNException e) {
             throw new RuntimeException("Error executing copy svn command", e);
@@ -361,7 +379,7 @@ public class SvnAdaptor extends Vcs {
     private void createLabelParentDir(String mapped, SVNClientManager clientManager, Project antProject) {
         String mappedParent = StringUtils.substringBeforeLast(StringUtils.stripEnd(mapped, "/"), "/");
         String[] fields = mappedParent.split("/");
-        SVNURL baseUrl = parseUrl(getUrlBase());
+        SVNURL baseUrl = parseUrl(getActualUrlBase());
         try {
             SVNRepository repository = clientManager.createRepository(baseUrl, true);
 
@@ -405,9 +423,9 @@ public class SvnAdaptor extends Vcs {
     private File getModuleDestDir(SvnModule module, String workingDir) {
         File destDir;
         if (Luntbuild.isEmpty(module.getDestPath()))
-            destDir = new File(workingDir, module.getSrcPath());
+            destDir = new File(workingDir, module.getActualSrcPath());
         else
-            destDir = new File(workingDir, module.getDestPath());
+            destDir = new File(workingDir, module.getActualDestPath());
         return destDir;
     }
 
@@ -416,6 +434,10 @@ public class SvnAdaptor extends Vcs {
      */
     public String getUrlBase() {
         return this.urlBase;
+    }
+
+    private String getActualUrlBase() {
+		return OgnlHelper.evaluateScheduleValue(getUrlBase());
     }
 
     /**
@@ -460,6 +482,10 @@ public class SvnAdaptor extends Vcs {
         return this.trunk;
     }
 
+    private String getActualTrunk() {
+    	return OgnlHelper.evaluateScheduleValue(getTrunk());
+    }
+
     /**
      * @param trunk
      */
@@ -472,8 +498,8 @@ public class SvnAdaptor extends Vcs {
         Iterator it = getModules().iterator();
         while (it.hasNext()) {
             SvnModule module = (SvnModule) it.next();
-            if (module.getSrcPath().indexOf('\\') != -1)
-                throw new ValidationException("Source path \"" + module.getSrcPath() + "\" should not contain character '\\'");
+            if (module.getActualSrcPath().indexOf('\\') != -1)
+                throw new ValidationException("Source path \"" + module.getActualSrcPath() + "\" should not contain character '\\'");
         }
     }
 
@@ -575,6 +601,10 @@ public class SvnAdaptor extends Vcs {
         return this.branches;
     }
 
+    private String getActualBranches() {
+		return OgnlHelper.evaluateScheduleValue(getBranches());
+    }
+
     /**
      * @param branches
      */
@@ -587,6 +617,10 @@ public class SvnAdaptor extends Vcs {
      */
     public String getTags() {
         return this.tags;
+    }
+
+    private String getActualTags() {
+		return OgnlHelper.evaluateScheduleValue(getTags());
     }
 
     /**
@@ -603,7 +637,7 @@ public class SvnAdaptor extends Vcs {
         if (Luntbuild.isEmpty(getTrunk()))
             return "";
         else
-            return getTrunk();
+            return getActualTrunk();
     }
 
     /**
@@ -613,7 +647,7 @@ public class SvnAdaptor extends Vcs {
         if (Luntbuild.isEmpty(getBranches()))
             return "branches";
         else
-            return getBranches();
+            return getActualBranches();
     }
 
     /**
@@ -623,7 +657,7 @@ public class SvnAdaptor extends Vcs {
         if (Luntbuild.isEmpty(getTags()))
             return "tags";
         else
-            return getTags();
+            return getActualTags();
     }
 
     private void initLogger(Project antProject) {
@@ -669,6 +703,10 @@ public class SvnAdaptor extends Vcs {
             return this.srcPath;
         }
 
+        private String getActualSrcPath() {
+			return OgnlHelper.evaluateScheduleValue(getSrcPath());
+        }
+
         /**
          * @param srcPath
          */
@@ -682,6 +720,10 @@ public class SvnAdaptor extends Vcs {
         public String getBranch() {
             return this.branch;
         }
+
+		private String getActualBranch() {
+			return OgnlHelper.evaluateScheduleValue(getBranch());
+		}
 
         /**
          * @param branch
@@ -697,6 +739,10 @@ public class SvnAdaptor extends Vcs {
             return this.label;
         }
 
+		private String getActualLabel() {
+			return OgnlHelper.evaluateScheduleValue(getLabel());
+		}
+
         /**
          * @param label
          */
@@ -709,6 +755,10 @@ public class SvnAdaptor extends Vcs {
          */
         public String getDestPath() {
             return this.destPath;
+        }
+
+        private String getActualDestPath() {
+			return OgnlHelper.evaluateScheduleValue(getDestPath());
         }
 
         /**
@@ -740,6 +790,10 @@ public class SvnAdaptor extends Vcs {
                     return getSrcPath();
                 }
 
+				public String getActualValue() {
+					return getActualSrcPath();
+				}
+
                 public void setValue(String value) {
                     setSrcPath(value);
                 }
@@ -765,6 +819,10 @@ public class SvnAdaptor extends Vcs {
                 public String getValue() {
                     return getBranch();
                 }
+
+				public String getActualValue() {
+					return getActualBranch();
+				}
 
                 public void setValue(String value) {
                     setBranch(value);
@@ -793,6 +851,10 @@ public class SvnAdaptor extends Vcs {
                     return getLabel();
                 }
 
+				public String getActualValue() {
+					return getActualLabel();
+				}
+
                 public void setValue(String value) {
                     setLabel(value);
                 }
@@ -816,6 +878,10 @@ public class SvnAdaptor extends Vcs {
                 public String getValue() {
                     return getDestPath();
                 }
+
+				public String getActualValue() {
+					return getActualDestPath();
+				}
 
                 public void setValue(String value) {
                     setDestPath(value);

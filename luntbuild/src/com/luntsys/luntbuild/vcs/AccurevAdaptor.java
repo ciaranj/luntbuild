@@ -12,6 +12,7 @@ import com.luntsys.luntbuild.remoting.facade.AccurevAdaptorFacade;
 import com.luntsys.luntbuild.remoting.facade.AccurevModuleFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.vcs.accurev.AccurevHelper;
 import com.luntsys.luntbuild.vcs.accurev.AccurevModuleInterface;
@@ -196,8 +197,8 @@ public class AccurevAdaptor extends Vcs {
             cmdLine.setExecutable("accurev");
             cmdLine.createArgument().setValue("hist");
             cmdLine.createArgument().setValue("-a");
-            cmdLine.createArgument().setLine("-p " + module. getDepot());
-            cmdLine.createArgument().setLine("-s " + module.getBackingStream());
+            cmdLine.createArgument().setLine("-p " + module.getActualDepot());
+            cmdLine.createArgument().setLine("-s " + module.getActualBackingStream());
             cmdLine.createArgument().setLine("-k promote");
             cmdLine.createArgument().setLine("-t \"now-" + ACCUREV_DATE_FORMAT.format(sinceDate) + "\"");
             cmdLine.createArgument().setValue("-fx");
@@ -287,7 +288,7 @@ public class AccurevAdaptor extends Vcs {
     }
 
     private void retrieveModule(String workingDir, AccurevModule module, boolean isClean, boolean isRebuild, Project antProject) {
-        final String srcPath = module.getSrcPath();
+        final String srcPath = module.getActualSrcPath();
         if (isClean)
             antProject.log("Clean build of source path: " + srcPath, Project.MSG_INFO);
         if (isRebuild)
@@ -295,10 +296,10 @@ public class AccurevAdaptor extends Vcs {
         if (!(isClean || isRebuild))
             antProject.log("Incremental build of source path: " + srcPath, Project.MSG_INFO);
 
-        final String depot = module.getDepot();
-        final String buildStreamName = module.getBuildStream();
+        final String depot = module.getActualDepot();
+        final String buildStreamName = module.getActualBuildStream();
         StreamInfo buildStreamInfo = StreamInfo.findStreamInfo(depot, buildStreamName, antProject);
-        if ((buildStreamInfo != null) && (!buildStreamInfo.getBackingStream().equals(module.getBackingStream()))) {
+        if ((buildStreamInfo != null) && (!buildStreamInfo.getBackingStream().equals(module.getActualBackingStream()))) {
             antProject.log("Found build stream is not based on backing stream, updating.");
             buildStreamInfo.updateStream(null, antProject);
         }
@@ -326,7 +327,7 @@ public class AccurevAdaptor extends Vcs {
             if ((buildStreamInfo == null) || (referenceTreeInfo == null)) {
                 throw new BuildException("Cannot rebuild a module which hasn't been built before. Do a clean build first.");
             }
-            buildStreamInfo.updateStream(Long.valueOf(module.getLabel()), antProject);
+            buildStreamInfo.updateStream(Long.valueOf(module.getActualLabel()), antProject);
             AccurevHelper.forceWorkingDirRefresh(workingDir, module, antProject);
         } else {
             if (buildStreamInfo == null) {
@@ -376,12 +377,20 @@ public class AccurevAdaptor extends Vcs {
             return depot;
         }
 
+        private String getActualDepot() {
+			return OgnlHelper.evaluateScheduleValue(getDepot());
+        }
+
         public void setDepot(String depot) {
             this.depot = depot;
         }
 
         public String getSrcPath() {
             return srcPath;
+        }
+
+        private String getActualSrcPath() {
+			return OgnlHelper.evaluateScheduleValue(getSrcPath());
         }
 
         public void setSrcPath(String srcPath) {
@@ -392,12 +401,20 @@ public class AccurevAdaptor extends Vcs {
             return backingStream;
         }
 
+        private String getActualBackingStream() {
+			return OgnlHelper.evaluateScheduleValue(getBackingStream());
+        }
+
         public void setBackingStream(String backingStream) {
             this.backingStream = backingStream;
         }
 
         public String getBuildStream() {
             return buildStream;
+        }
+
+        private String getActualBuildStream() {
+			return OgnlHelper.evaluateScheduleValue(getBuildStream());
         }
 
         public void setBuildStream(String buildStream) {
@@ -408,12 +425,16 @@ public class AccurevAdaptor extends Vcs {
             return label;
         }
 
+        private String getActualLabel() {
+			return OgnlHelper.evaluateScheduleValue(getLabel());
+        }
+
         public void setLabel(String label) {
             this.label = label;
         }
 
         public String getReferenceTree() {
-            return buildStream + "_reference";
+            return getActualBuildStream() + "_reference";
         }
 
         public List getProperties() {
@@ -433,6 +454,10 @@ public class AccurevAdaptor extends Vcs {
 
                 public String getValue() {
                     return getSrcPath();
+                }
+
+                public String getActualValue() {
+                    return getActualSrcPath();
                 }
 
                 public void setValue(String value) {
@@ -456,6 +481,10 @@ public class AccurevAdaptor extends Vcs {
                     return getLabel();
                 }
 
+                public String getActualValue() {
+                    return getActualLabel();
+                }
+
                 public void setValue(String value) {
                     setLabel(value);
                 }
@@ -471,6 +500,10 @@ public class AccurevAdaptor extends Vcs {
 
                 public String getValue() {
                     return getDepot();
+                }
+
+                public String getActualValue() {
+                    return getActualDepot();
                 }
 
                 public boolean isRequired() {
@@ -495,6 +528,10 @@ public class AccurevAdaptor extends Vcs {
                     return getBackingStream();
                 }
 
+                public String getActualValue() {
+                    return getActualBackingStream();
+                }
+
                 public boolean isRequired() {
                     return true;
                 }
@@ -516,6 +553,10 @@ public class AccurevAdaptor extends Vcs {
 
                 public String getValue() {
                     return getBuildStream();
+                }
+
+                public String getActualValue() {
+                    return getActualBuildStream();
                 }
 
                 public boolean isRequired() {

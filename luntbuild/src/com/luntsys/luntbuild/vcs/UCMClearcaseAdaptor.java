@@ -33,6 +33,7 @@ import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.utility.*;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
@@ -106,6 +107,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 				return getViewStgLoc();
 			}
 
+			public String getActualValue() {
+				return getActualViewStgLoc();
+			}
+
 			public void setValue(String value) {
 				setViewStgLoc(value);
 			}
@@ -121,6 +126,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 
 			public String getValue() {
 				return getProjectVob();
+			}
+
+			public String getActualValue() {
+				return getActualProjectVob();
 			}
 
 			public void setValue(String value) {
@@ -146,6 +155,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 				return getVws();
 			}
 
+			public String getActualValue() {
+				return getActualVws();
+			}
+
 			public void setValue(String value) {
 				setVws(value);
 			}
@@ -161,6 +174,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 
 			public String getValue() {
 				return getStream();
+			}
+
+			public String getActualValue() {
+				return getActualStream();
 			}
 
 			public void setValue(String value) {
@@ -183,6 +200,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 
 			public String getValue() {
 				return getWhatToBuild();
+			}
+
+			public String getActualValue() {
+				return getActualWhatToBuild();
 			}
 
 			public void setValue(String value) {
@@ -217,6 +238,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 				return getModificationDetectionConfig();
 			}
 
+			public String getActualValue() {
+				return getActualModificationDetectionConfig();
+			}
+
 			public void setValue(String modificationDetectionConfig) {
 				setModificationDetectionConfig(modificationDetectionConfig);
 			}
@@ -240,6 +265,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 
 			public String getValue() {
 				return getMkviewExtraOpts();
+			}
+
+			public String getActualValue() {
+				return getActualMkviewExtraOpts();
 			}
 
 			public void setValue(String value) {
@@ -297,18 +326,22 @@ public class UCMClearcaseAdaptor extends Vcs {
 		return modificationDetectionConfig;
 	}
 
+	public String getActualModificationDetectionConfig() {
+		return OgnlHelper.evaluateScheduleValue(getModificationDetectionConfig());
+	}
+
 	public void setModificationDetectionConfig(String modificationDetectionConfig) {
 		this.modificationDetectionConfig = modificationDetectionConfig;
 	}
 
 	public Vcs deriveBuildTimeVcs(Project antProject) {
 		BaseClearcaseAdaptor baseClearcaseAdaptor = new BaseClearcaseAdaptor();
-		baseClearcaseAdaptor.setViewStgLoc(getViewStgLoc());
-		baseClearcaseAdaptor.setVws(getVws());
+		baseClearcaseAdaptor.setViewStgLoc(getActualViewStgLoc());
+		baseClearcaseAdaptor.setVws(getActualVws());
 		baseClearcaseAdaptor.setViewCfgSpec(constructCfgSpec(antProject));
-		baseClearcaseAdaptor.setModificationDetectionConfig(getModificationDetectionConfig());
-		baseClearcaseAdaptor.setMkviewExtraOpts(getMkviewExtraOpts());
-		baseClearcaseAdaptor.setUcmStream(getStream() + "@" + getProjectVob());
+		baseClearcaseAdaptor.setModificationDetectionConfig(getActualModificationDetectionConfig());
+		baseClearcaseAdaptor.setMkviewExtraOpts(getActualMkviewExtraOpts());
+		baseClearcaseAdaptor.setUcmStream(getActualStream() + "@" + getActualProjectVob());
 		baseClearcaseAdaptor.setCleartoolDir(getCleartoolDir());
 		return baseClearcaseAdaptor;
 	}
@@ -329,12 +362,20 @@ public class UCMClearcaseAdaptor extends Vcs {
 		return projectVob;
 	}
 
+	public String getActualProjectVob() {
+		return OgnlHelper.evaluateScheduleValue(getProjectVob());
+	}
+
 	public void setProjectVob(String projectVob) {
 		this.projectVob = projectVob;
 	}
 
 	public String getStream() {
 		return stream;
+	}
+
+	public String getActualStream() {
+		return OgnlHelper.evaluateScheduleValue(getStream());
 	}
 
 	public void setStream(String stream) {
@@ -345,12 +386,20 @@ public class UCMClearcaseAdaptor extends Vcs {
 		return whatToBuild;
 	}
 
+	public String getActualWhatToBuild() {
+		return OgnlHelper.evaluateScheduleValue(getWhatToBuild());
+	}
+
 	public void setWhatToBuild(String whatToBuild) {
 		this.whatToBuild = whatToBuild;
 	}
 
 	public String getMkviewExtraOpts() {
 		return mkviewExtraOpts;
+	}
+
+	public String getActualMkviewExtraOpts() {
+		return OgnlHelper.evaluateScheduleValue(getMkviewExtraOpts());
 	}
 
 	public void setMkviewExtraOpts(String mkviewExtraOpts) {
@@ -360,7 +409,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 	public void validateProperties() {
 		super.validateProperties();
 		Pattern reservedPattern = Pattern.compile("^<(.*)>$");
-		Matcher matcher = reservedPattern.matcher(getWhatToBuild());
+		Matcher matcher = reservedPattern.matcher(getActualWhatToBuild());
 		if (matcher.find()) {
 			String reserved = matcher.group(1).trim();
 			if (!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES) &&
@@ -373,7 +422,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 			throw new ValidationException("Both \"Clearcase view storage name\" and \"Explicit path for view storage\" " +
 					"are empty. You should specify at least one of them to store the view information");
 		if (!Luntbuild.isEmpty(getModificationDetectionConfig())) {
-			BufferedReader reader = new BufferedReader(new StringReader(getModificationDetectionConfig().replace(';', '\n')));
+			BufferedReader reader = new BufferedReader(new StringReader(getActualModificationDetectionConfig().replace(';', '\n')));
 			try {
 				String line;
 				while ((line = reader.readLine()) != null) {
@@ -398,12 +447,12 @@ public class UCMClearcaseAdaptor extends Vcs {
 		String cfgSpec = "element * CHECKEDOUT\n";
 		List baselines;
 		Pattern reservedPattern = Pattern.compile("^<(.*)>$");
-		Matcher matcher = reservedPattern.matcher(getWhatToBuild());
+		Matcher matcher = reservedPattern.matcher(getActualWhatToBuild());
 		if (matcher.find()) {
 			String reserved = matcher.group(1).trim();
 			if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST)) {
 				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_LATEST, antProject);
-				cfgSpec += "element * .../" + getStream() + "/LATEST\n";
+				cfgSpec += "element * .../" + getActualStream() + "/LATEST\n";
 			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES)) {
 				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_FOUNDATION, antProject);
 			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST_BASELINES)) {
@@ -412,9 +461,9 @@ public class UCMClearcaseAdaptor extends Vcs {
 				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_RECOMMENDED, antProject);
 			} else
 				throw new BuildException("Invalid reserved value for what to build property: " +
-						getWhatToBuild());
+						getActualWhatToBuild());
 		} else {
-			String fields[] = getWhatToBuild().trim().split("\\s");
+			String fields[] = getActualWhatToBuild().trim().split("\\s");
 			baselines = new ArrayList();
 			for (int i = 0; i < fields.length; i++) {
 				baselines.add(fields[i]);
@@ -444,12 +493,20 @@ public class UCMClearcaseAdaptor extends Vcs {
 		return viewStgLoc;
 	}
 
+	public String getActualViewStgLoc() {
+		return OgnlHelper.evaluateScheduleValue(getViewStgLoc());
+	}
+
 	public void setViewStgLoc(String viewStgLoc) {
 		this.viewStgLoc = viewStgLoc;
 	}
 
 	public String getVws() {
 		return vws;
+	}
+
+	public String getActualVws() {
+		return OgnlHelper.evaluateScheduleValue(getVws());
 	}
 
 	public void setVws(String vws) {
@@ -474,7 +531,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 		Commandline cmdLine = buildCleartoolExecutable();
 		cmdLine.createArgument().setLine("lsstream -fmt");
 		cmdLine.createArgument().setValue("\"%[" + baselineType + "]p\"");
-		cmdLine.createArgument().setValue(getStream() + "@" + getProjectVob());
+		cmdLine.createArgument().setValue(getActualStream() + "@" + getActualProjectVob());
 
 		new MyExecTask("lsstream", antProject, cmdLine, Project.MSG_VERBOSE) {
 			public void handleStdout(String line) {
@@ -503,7 +560,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 		Commandline cmdLine = buildCleartoolExecutable();
 		cmdLine.createArgument().setLine("lsbl -fmt");
 		cmdLine.createArgument().setValue("\"%[component]p\"");
-		cmdLine.createArgument().setValue(baseline + "@" + getProjectVob());
+		cmdLine.createArgument().setValue(baseline + "@" + getActualProjectVob());
 
 		new MyExecTask("lsbl", antProject, cmdLine, Project.MSG_VERBOSE) {
 			public void handleStdout(String line) {
@@ -543,7 +600,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 			baseline = baseline.substring(0, baseline.length() - 1);
 		}
 
-		cmdLine.createArgument().setValue(baseline + "@" + getProjectVob());
+		cmdLine.createArgument().setValue(baseline + "@" + getActualProjectVob());
 
 		new MyExecTask("lsbl", antProject, cmdLine, Project.MSG_VERBOSE) {
 			public void handleStdout(String line) {
@@ -584,7 +641,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 			component = component.substring(0, component.length() - 1);
 		}
 
-		cmdLine.createArgument().setValue(component + "@" + getProjectVob());
+		cmdLine.createArgument().setValue(component + "@" + getActualProjectVob());
 
 		new MyExecTask("lscomp", antProject, cmdLine, Project.MSG_VERBOSE) {
 			public void handleStdout(String line) {
@@ -620,7 +677,7 @@ public class UCMClearcaseAdaptor extends Vcs {
 		if (baseline.startsWith("\"") && baseline.endsWith("\"")) {
 			baseline = baseline.substring(1, baseline.length() - 1);
 		}
-		cmdLine.createArgument().setValue("baseline:" + baseline + "@" + getProjectVob());
+		cmdLine.createArgument().setValue("baseline:" + baseline + "@" + getActualProjectVob());
 
 		new MyExecTask("describe", antProject, cmdLine, Project.MSG_VERBOSE) {
 			public void handleStdout(String line) {

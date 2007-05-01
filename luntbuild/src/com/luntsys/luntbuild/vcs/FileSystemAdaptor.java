@@ -33,6 +33,7 @@ import com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.utility.ValidationException;
 import org.apache.tools.ant.Project;
@@ -69,6 +70,10 @@ public class FileSystemAdaptor extends Vcs {
 		return sourceDir;
 	}
 
+	public String getActualSourceDir() {
+		return OgnlHelper.evaluateScheduleValue(getSourceDir());
+	}
+
 	public void setSourceDir(String sourceDir) {
 		this.sourceDir = sourceDir;
 	}
@@ -86,7 +91,7 @@ public class FileSystemAdaptor extends Vcs {
 			copy.setTodir(new File(workingDir));
 			FileSet fileSet = new FileSet();
 			fileSet.setProject(antProject);
-			fileSet.setDir(new File(getSourceDir()));
+			fileSet.setDir(new File(getActualSourceDir()));
 			copy.addFileset(fileSet);
 			copy.setFailOnError(true);
 			copy.setPreserveLastModified(true);
@@ -114,7 +119,7 @@ public class FileSystemAdaptor extends Vcs {
 	public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		Revisions revisions = new Revisions();
 		if (!Luntbuild.isEmpty(getSourceDir()))
-			getRevisions(new File(getSourceDir()), sinceDate, revisions);
+			getRevisions(new File(getActualSourceDir()), sinceDate, revisions);
 		return revisions;
 	}
 
@@ -161,6 +166,10 @@ public class FileSystemAdaptor extends Vcs {
 
 			public String getValue() {
 				return getSourceDir();
+			}
+
+			public String getActualValue() {
+				return getActualSourceDir();
 			}
 
 			public void setValue(String value) {

@@ -37,8 +37,6 @@ import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.*;
 
-import ognl.OgnlException;
-
 import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -107,6 +105,10 @@ public class CvsAdaptor extends Vcs {
 	 */
 	public String getCvsRoot() {
 		return cvsRoot;
+	}
+
+	public String getActualCvsRoot() {
+		return OgnlHelper.evaluateScheduleValue(getCvsRoot());
 	}
 
 	public String getCvsDir() {
@@ -200,7 +202,7 @@ public class CvsAdaptor extends Vcs {
 
 		com.luntsys.luntbuild.ant.cvstask.CVSPass cvsPassTask = new CVSPass();
 		cvsPassTask.setProject(antProject);
-		cvsPassTask.setCvsroot(getCvsRoot());
+		cvsPassTask.setCvsroot(getActualCvsRoot());
 		cvsPassTask.setPassword(getCvsPassword());
 		cvsPassTask.setPassfile(new File(Luntbuild.installDir + "/" + passwdFileName));
 		cvsPassTask.setTaskType("CVSPass");
@@ -243,11 +245,11 @@ public class CvsAdaptor extends Vcs {
 						currentCvsRoot = line.substring(0, index);
 						currentEncryptedPasswd = line.substring(index + 1);
 					}
-					if (currentCvsRoot.equals(getCvsRoot())) {
+					if (currentCvsRoot.equals(getActualCvsRoot())) {
 						String cvsntPasswdExe = new File(Luntbuild.installDir + "/osdependent/cvsnt_passwd").getCanonicalPath();
 						Commandline cmdLine = new Commandline();
 						cmdLine.setExecutable(cvsntPasswdExe);
-						cmdLine.createArgument().setValue(getCvsRoot());
+						cmdLine.createArgument().setValue(getActualCvsRoot());
 						Commandline.Argument arg = cmdLine.createArgument();
 						arg.setValue(currentEncryptedPasswd.replaceAll("\"", "\\\\\""));
 						arg.setDescriptiveValue("******");
@@ -267,7 +269,7 @@ public class CvsAdaptor extends Vcs {
 			}
 			// we should not go this far
 			antProject.log("ERROR: Failed to find password for CVSROOT \"" +
-					getCvsRoot() + "\" in password file!", Project.MSG_ERR);
+					getActualCvsRoot() + "\" in password file!", Project.MSG_ERR);
 		}
 	}
 
@@ -317,27 +319,27 @@ public class CvsAdaptor extends Vcs {
 	 */
 	private void retrieveModule(String workingDir, CvsModule module, boolean isClean, Project antProject) {
 		if (isClean)
-			antProject.log("Retrieve source path: " + module.getSrcPath(), Project.MSG_INFO);
+			antProject.log("Retrieve source path: " + module.getActualSrcPath(), Project.MSG_INFO);
 		else
-			antProject.log("Update source path: " + module.getSrcPath(), Project.MSG_INFO);
+			antProject.log("Update source path: " + module.getActualSrcPath(), Project.MSG_INFO);
 
 		if (isClean)
-			Luntbuild.deleteDir(workingDir + "/" + module.getSrcPath());
+			Luntbuild.deleteDir(workingDir + "/" + module.getActualSrcPath());
 
 		// call ant cvs task to retrieve module
 		Cvs cvsTask = new Cvs();
 		cvsTask.setProject(antProject);
 		cvsTask.setCommand("checkout -P");
-		cvsTask.setCvsRoot(getCvsRoot());
-		cvsTask.setPackage(normalizeModulePath(module.getSrcPath()));
+		cvsTask.setCvsRoot(getActualCvsRoot());
+		cvsTask.setPackage(normalizeModulePath(module.getActualSrcPath()));
 		cvsTask.setPassfile(new File(Luntbuild.installDir + "/" + passwdFileName));
 		cvsTask.setCvsDir(getCvsDir());
 
 		// label takes precedence of branch if both of them are not empty
 		if (!Luntbuild.isEmpty(module.getLabel()))
-			cvsTask.setTag(module.getLabel());
+			cvsTask.setTag(module.getActualLabel());
 		else if (!Luntbuild.isEmpty(module.getBranch()))
-			cvsTask.setTag(module.getBranch());
+			cvsTask.setTag(module.getActualBranch());
 
 		cvsTask.setDest(new File(workingDir));
 		LuntbuildLogger luntBuildLogger = Luntbuild.getLuntBuildLogger(antProject);
@@ -359,15 +361,15 @@ public class CvsAdaptor extends Vcs {
 	 */
 	private void labelModule(String workingDir, CvsModule module, String label, Project antProject) {
 		// call ant cvs task to perform code labeling
-		antProject.log("Label source path: " + module.getSrcPath(), Project.MSG_INFO);
+		antProject.log("Label source path: " + module.getActualSrcPath(), Project.MSG_INFO);
 		Cvs cvsTask = new Cvs();
 		cvsTask.setProject(antProject);
 		cvsTask.setCommand("tag " + label);
-		cvsTask.setCvsRoot(getCvsRoot());
+		cvsTask.setCvsRoot(getActualCvsRoot());
 		cvsTask.setPassfile(new File(Luntbuild.installDir + "/" + passwdFileName));
 		cvsTask.setCvsDir(getCvsDir());
 
-		cvsTask.setDest(new File(Luntbuild.concatPath(workingDir, module.getSrcPath())));
+		cvsTask.setDest(new File(Luntbuild.concatPath(workingDir, module.getActualSrcPath())));
 		LuntbuildLogger luntBuildLogger = Luntbuild.getLuntBuildLogger(antProject);
 		if (luntBuildLogger == null || luntBuildLogger.getMessageOutputLevel() <= Project.MSG_INFO)
 			cvsTask.setReallyquiet(true);
@@ -379,14 +381,14 @@ public class CvsAdaptor extends Vcs {
 
 	public void checkoutActually(Build build, Project antProject) {
 		String workingDir = build.getSchedule().getWorkDirRaw();
-		if (getCvsRoot().startsWith(":pserver:"))
+		if (getActualCvsRoot().startsWith(":pserver:"))
 			login(antProject);
 
 		// retrieve modules
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
 			CvsAdaptor.CvsModule module = (CvsAdaptor.CvsModule) Luntbuild.cloneModule(this, (Vcs.Module) it.next());
-			if (build.isRebuild() && Luntbuild.isEmpty(module.getLabel()))
+			if (build.isRebuild() && Luntbuild.isEmpty(module.getActualLabel()))
 				module.setLabel(Luntbuild.getLabelByVersion(build.getVersion()));
 			if (build.isRebuild() || build.isCleanBuild())
 				retrieveModule(workingDir, module, true, antProject);
@@ -400,7 +402,7 @@ public class CvsAdaptor extends Vcs {
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
 			CvsModule module = (CvsModule) it.next();
-			if (Luntbuild.isEmpty(module.getLabel()))
+			if (Luntbuild.isEmpty(module.getActualLabel()))
 				labelModule(workingDir, module, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
 		}
 	}
@@ -423,7 +425,7 @@ public class CvsAdaptor extends Vcs {
 	 */
 	public boolean isVcsQuietSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		String workingDir = workingSchedule.getWorkDirRaw();
-		if (getCvsRoot().startsWith(":pserver:"))
+		if (getActualCvsRoot().startsWith(":pserver:"))
 			login(antProject);
 		Environment envs = new Environment();
 		Environment.Variable var = new Environment.Variable();
@@ -440,7 +442,7 @@ public class CvsAdaptor extends Vcs {
 			final boolean commitsHappened[] = new boolean[1];
 			commitsHappened[0] = true;
 			cmdLine.clearArgs();
-			cmdLine.createArgument().setValue("-d" + getCvsRoot());
+			cmdLine.createArgument().setValue("-d" + getActualCvsRoot());
 			cmdLine.createArgument().setLine("-q history -c -a");
 			cmdLine.createArgument().setValue("-D" + CMD_DATE_FORMAT.format(sinceDate));
 			new MyExecTask("history", antProject, null, cmdLine, envs, null, -1) {
@@ -468,7 +470,7 @@ public class CvsAdaptor extends Vcs {
 				}
 
 				cmdLine.clearArgs();
-				cmdLine.createArgument().setValue("-d" + getCvsRoot());
+				cmdLine.createArgument().setValue("-d" + getActualCvsRoot());
 				if (isDisableSuppressOption())
 					cmdLine.createArgument().setLine("-q log -N");
 				else
@@ -477,14 +479,14 @@ public class CvsAdaptor extends Vcs {
 				if (Luntbuild.isEmpty(module.getBranch()))
 					cmdLine.createArgument().setValue("-b");
 				else
-					cmdLine.createArgument().setValue("-r" + module.getBranch());
+					cmdLine.createArgument().setValue("-r" + module.getActualBranch());
 
 				final Revisions revisions = new Revisions();
 				// initialize blocks to help parse output when -S option is disabled for log command
 				final RevisionBlock block = new RevisionBlock();
 				block.setValid(false);
 				block.setReady(false);
-				new MyExecTask("log", antProject, Luntbuild.concatPath(workingDir, module.getSrcPath()),
+				new MyExecTask("log", antProject, Luntbuild.concatPath(workingDir, module.getActualSrcPath()),
 						cmdLine, envs, null, -1) {
 					public void handleStdout(String line) {
 						if (isDisableSuppressOption()) {
@@ -518,7 +520,7 @@ public class CvsAdaptor extends Vcs {
 
 	public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		String workingDir = workingSchedule.getWorkDirRaw();
-		if (getCvsRoot().startsWith(":pserver:"))
+		if (getActualCvsRoot().startsWith(":pserver:"))
 			login(antProject);
 		final Revisions revisions = new Revisions();
 		Environment envs = new Environment();
@@ -535,7 +537,7 @@ public class CvsAdaptor extends Vcs {
 			antProject.log("History command enabled.");
 			final boolean commitsHappened[] = new boolean[1];
 			commitsHappened[0] = true;
-			cmdLine.createArgument().setValue("-d" + getCvsRoot());
+			cmdLine.createArgument().setValue("-d" + getActualCvsRoot());
 			cmdLine.createArgument().setLine("-q history -c -a");
 			cmdLine.createArgument().setValue("-D" + CMD_DATE_FORMAT.format(sinceDate));
 			new MyExecTask("history", antProject, null, cmdLine, envs, null, -1) {
@@ -561,7 +563,7 @@ public class CvsAdaptor extends Vcs {
 		while (it.hasNext()) {
 			CvsModule module = (CvsModule) it.next();
 			if (Luntbuild.isEmpty(module.getLabel())) { // necessary to check revisions
-				antProject.log("Getting revisions for module \"" + module.getSrcPath() + "\"...");
+				antProject.log("Getting revisions for module \"" + module.getActualSrcPath() + "\"...");
 
 				// prepare working directory to run log command
 				antProject.log("Prepares the work directory for running of the log command...");
@@ -577,7 +579,7 @@ public class CvsAdaptor extends Vcs {
                 }
 
 				cmdLine.clearArgs();
-				cmdLine.createArgument().setValue("-d" + getCvsRoot());
+				cmdLine.createArgument().setValue("-d" + getActualCvsRoot());
 				if (isDisableSuppressOption())
 					cmdLine.createArgument().setLine("-q log -N");
 				else
@@ -586,9 +588,9 @@ public class CvsAdaptor extends Vcs {
 				if (Luntbuild.isEmpty(module.getBranch()))
 					cmdLine.createArgument().setValue("-b");
 				else
-					cmdLine.createArgument().setValue("-r" + module.getBranch());
+					cmdLine.createArgument().setValue("-r" + module.getActualBranch());
 				antProject.log("Run log command to get revisions for the current module...");
-				new MyExecTask("log", antProject, Luntbuild.concatPath(workingDir, module.getSrcPath()),
+				new MyExecTask("log", antProject, Luntbuild.concatPath(workingDir, module.getActualSrcPath()),
 						cmdLine, envs, null, -1) {
 					public void handleStdout(String line) {
 						if (isDisableSuppressOption()) {
@@ -664,6 +666,10 @@ public class CvsAdaptor extends Vcs {
 
 			public String getValue() {
 				return getCvsRoot();
+			}
+
+			public String getActualValue() {
+				return getActualCvsRoot();
 			}
 
 			public void setValue(String value) {
@@ -864,6 +870,10 @@ public class CvsAdaptor extends Vcs {
 			return srcPath;
 		}
 
+		private String getActualSrcPath() {
+			return OgnlHelper.evaluateScheduleValue(getSrcPath());
+		}
+
 		public void setSrcPath(String srcPath) {
 			this.srcPath = srcPath;
 		}
@@ -872,12 +882,20 @@ public class CvsAdaptor extends Vcs {
 			return branch;
 		}
 
+		private String getActualBranch() {
+			return OgnlHelper.evaluateScheduleValue(getBranch());
+		}
+
 		public void setBranch(String branch) {
 			this.branch = branch;
 		}
 
 		public String getLabel() {
 			return label;
+		}
+
+		private String getActualLabel() {
+			return OgnlHelper.evaluateScheduleValue(getLabel());
 		}
 
 		public void setLabel(String label) {
@@ -897,6 +915,10 @@ public class CvsAdaptor extends Vcs {
 
 				public String getValue() {
 					return getSrcPath();
+				}
+
+				public String getActualValue() {
+					return getActualSrcPath();
 				}
 
 				public void setValue(String value) {
@@ -921,6 +943,10 @@ public class CvsAdaptor extends Vcs {
 					return getBranch();
 				}
 
+				public String getActualValue() {
+					return getActualBranch();
+				}
+
 				public void setValue(String value) {
 					setBranch(value);
 				}
@@ -942,6 +968,10 @@ public class CvsAdaptor extends Vcs {
 
 				public String getValue() {
 					return getLabel();
+				}
+
+				public String getActualValue() {
+					return getActualLabel();
 				}
 
 				public void setValue(String value) {
