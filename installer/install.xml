@@ -35,7 +35,7 @@
 	    </laf>
 	    <laf name="looks">
 	        <os family="windows" />
-	        <param name="variant" value="plasticXP" />
+	        <param name="variant" value="extwin" />
 	    </laf>
 		<modifier key="useButtonIcons" value="yes"/>
 		<modifier key="useLabelIcons" value="yes"/>
