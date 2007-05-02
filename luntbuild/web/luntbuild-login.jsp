@@ -9,15 +9,14 @@
 </head>
 
 <body>
-
 <form method="POST" action="j_acegi_security_check.do">
   <table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tr bordercolor="0">
       <td bordercolor="0">
-      <table width="100%" height="93%" border="0" cellpadding="6" cellspacing="0">
+      <table width="100%" height="93%" border="0" cellpadding="6" cellspacing="0" bgcolor="#336699">
         <tr>
-          <th width="84%" height="33" align="left" class="logoText">Luntbuild</th>
-          <th width="16%" align="right" nowrap>v<span class="productVersion"><%=com.luntsys.luntbuild.utility.Luntbuild.buildInfos.getProperty("buildVersion")%>
+          <th width="84%" height="33" align="left" class="logoText">LUNTBUILD</th>
+          <th width="16%" align="right" nowrap><span class="productVersion"><%=com.luntsys.luntbuild.utility.Luntbuild.buildInfos.getProperty("buildVersion")%>
           </span></th>
           <th width="4%" align="center">
           <a href="http://luntbuild.javaforge.com/" title="Goto Luntbuild's Home" >

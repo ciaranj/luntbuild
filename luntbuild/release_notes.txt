@@ -49,6 +49,11 @@ Contribution from David Roussel. Thanks David!
 - Changed tab graphics to match colour scheme.
 - Made banner mixed case rather than all upper case.
 
+The style theme is not installed by default. If you wish to install the theme, unzip <luntbuild-install>contrib/jira-theme.zip
+to <tomcat>/webapp/luntbuild. To reverse bask to original Luntbuild theme, unzip <luntbuild-install>contrib/classic-theme.zip
+to <tomcat>/webapp/luntbuild.
+
+
 Other changes:
 
 - Fixed EHCache configuration
