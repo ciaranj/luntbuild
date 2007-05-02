@@ -288,7 +288,7 @@
 		</copy>
 
 		<echo level="info">Generating full JavaDoc</echo>
-		<mkdir dir="stage/docs/javadoc"/>
+		<mkdir dir="stage/docs/javadoc"/>		
 		<javadoc sourcepath="src" classpathref="classpath" destdir="stage/docs/javadoc"
 			source="${compile-source-level}" author="true" version="true" use="true" windowtitle="Luntbuild Java Documentation">
 			<fileset dir="src" defaultexcludes="yes">
@@ -475,10 +475,10 @@
 		<delete dir="stage/db"/>
         <copy todir="stage/db">
             <fileset dir="db"/>
-        </copy>
-    	<exec executable="dos2unix" dir="${basedir}/stage/scripts">
+        </copy>       
+        <exec executable="dos2unix" dir="${basedir}/stage/scripts" failifexecutionfails="false">
     		<arg line="-U *.sh"/>
-    	</exec>
+    	</exec>    	
 		<mkdir dir="${artifactsDir}"/>
 		<filter token="appVersion" value="${buildVersion}" />
 		<copy file="installer/install.xml" tofile="installer/install.xml.temp"
