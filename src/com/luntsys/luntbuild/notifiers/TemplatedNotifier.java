@@ -38,8 +38,6 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     public String templateBuildFile = null;
     /** Schedule template file */
     public String templateScheduleFile = null;
-    /** Subdir */
-    public String subdir = null;
 
     private Object ognlRoot = null;
     private MSVSScraper visualStudioScraper = new MSVSScraper();
@@ -58,7 +56,6 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     public TemplatedNotifier(Class logClass, String subdir) {
         this.logger = LogFactory.getLog(logClass);
         this.templateDir = TEMPLATE_BASE_DIR + File.separator + subdir;
-        this.subdir = subdir;
         setTemplateFiles();
     }
 
@@ -115,12 +112,12 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      * Process the template.
      */
     private String processTemplate(Build build, VelocityContext ctx) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.subdir + "/" + this.templateBuildFile),
+        return processTemplate(Velocity.getTemplate(this.templateBuildFile),
                 build, ctx);
     }
 
     private String processTemplate(Schedule schedule, VelocityContext ctx) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.subdir + "/" + this.templateScheduleFile),
+        return processTemplate(Velocity.getTemplate(this.templateScheduleFile),
                 schedule, ctx);
     }
 
