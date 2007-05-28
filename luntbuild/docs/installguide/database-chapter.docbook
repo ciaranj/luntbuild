@@ -93,7 +93,7 @@ Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properti
 (see jdbc.mysql.properties in the same directory):
 <programlisting>
 jdbc.driverClassName=com.mysql.jdbc.Driver
-jdbc.url=jdbc.url=jdbc:mysql://localhost:3306/luntbuild
+jdbc.url=jdbc:mysql://localhost:3306/luntbuild
 jdbc.username=luntbuild
 jdbc.password=luntbuild
 hibernate.dialect=org.hibernate.dialect.MySQLDialect
