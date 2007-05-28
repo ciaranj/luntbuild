@@ -42,6 +42,8 @@ import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tapestry.spec.IComponentSpecification;
 import org.quartz.SimpleTrigger;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -50,7 +52,10 @@ import java.util.Date;
  * @author robin shine
  */
 public abstract class ManualBuildEditor extends BaseComponent implements PageDetachListener {
-	/**
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+    /**
 	 * Which page does the user trigger manual build from
 	 */
 	public static final int BUILD_FROM_BUILDSTAB = 1;
@@ -138,11 +143,19 @@ public abstract class ManualBuildEditor extends BaseComponent implements PageDet
 				setErrorMsg("Value of the property \"after\" should be of number format!");
 				return;
 			}
+		} else if (getBuildTiming() == com.luntsys.luntbuild.facades.Constants.BUILD_TIMING_AT){
+				try{
+					Date startTime = DATE_FORMAT.parse(getBuildTime());
+					trigger.setStartTime(startTime);
+				} catch (ParseException e){
+					setErrorMsg("Value of the property \"at\" is invalid: " + e.getMessage());
+					return;
+				}
 		} else {
 			try{
 				trigger.setStartTime(Luntbuild.getDateByHHMM(getBuildTime()));
 			} catch (RuntimeException e){
-				setErrorMsg("Value of the field \"at\" is invalid: " + e.getMessage());
+				setErrorMsg("Value of the field \"later at\" is invalid: " + e.getMessage());
 				return;
 			}
 		}

@@ -128,11 +128,12 @@ public class Constants {
 	/**
 	 * Build timing constants
 	 */
-	public static final int NUM_BUILD_TIMING = 3;
+	public static final int NUM_BUILD_TIMING = 4;
 
 	public static final int BUILD_TIMING_NOW = 0;
 	public static final int BUILD_TIMING_AFTER = 1;
 	public static final int BUILD_TIMING_AT = 2;
+	public static final int BUILD_TIMING_LATER = 3;
 
 	/**
 	 * Log level constants
@@ -274,6 +275,8 @@ public class Constants {
 			return "after";
 		else if (buildTiming == BUILD_TIMING_AT)
 			return "at";
+		else if (buildTiming == BUILD_TIMING_LATER)
+			return "later at";
 		else if (buildTiming == BUILD_TIMING_NOW)
 			return "now";
 		else

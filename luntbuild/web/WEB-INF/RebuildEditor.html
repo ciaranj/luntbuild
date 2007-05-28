@@ -63,8 +63,12 @@
 		<span jwcid="@contrib:When" condition="ognl: buildTiming == @com.luntsys.luntbuild.facades.Constants@BUILD_TIMING_AT">
         <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" submitOnChange="ognl:true">
         </select>
-        <input name="textfield" type="text" class="inputBox" value="ognl:buildTime" jwcid="@TextField"/>
-        (specify the time using hh:mm format)
+        <input name="textfield" type="text" class="inputBox" value="ognl:buildTime" jwcid="@TextField"/> (specify the time using "yyyy-MM-dd hh:mm" format)
+		</span>
+		<span jwcid="@contrib:When" condition="ognl: buildTiming == @com.luntsys.luntbuild.facades.Constants@BUILD_TIMING_LATER">
+        <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" submitOnChange="ognl:true">
+        </select>
+        <input name="textfield" type="text" class="inputBox" value="ognl:buildTime" jwcid="@TextField"/> (specify the time using "hh:mm" format)
 		</span>
 		<span jwcid="@contrib:Otherwise">
         <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" submitOnChange="ognl:true">
