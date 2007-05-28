@@ -138,7 +138,12 @@ NOTE. If a build is not labeled when it is initially built, it will not be rebui
 		<span jwcid="@contrib:When" condition="ognl: buildTiming == @com.luntsys.luntbuild.facades.Constants@BUILD_TIMING_AT">
         <select jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" name="select" submitOnChange="ognl:true">
         </select>
-        <input jwcid="@TextField" value="ognl:buildTime" type="text" name="textfield"/> (specify a time with hh:mm format)
+        <input jwcid="@TextField" value="ognl:buildTime" type="text" name="textfield"/> (specify a time with "yyyy-MM-dd hh:mm" format)
+		</span>
+		<span jwcid="@contrib:When" condition="ognl: buildTiming == @com.luntsys.luntbuild.facades.Constants@BUILD_TIMING_LATER">
+        <select jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" name="select" submitOnChange="ognl:true">
+        </select>
+        <input jwcid="@TextField" value="ognl:buildTime" type="text" name="textfield"/> (specify a time with "hh:mm" format)
 		</span>
 		<span jwcid="@contrib:Otherwise">
         <select jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" name="select" submitOnChange="ognl:true">
