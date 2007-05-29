@@ -559,22 +559,23 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
             final Project antProject) {
         final String workingDir = getClearcaseWorkDirRaw(schedule);
         final Commandline cmdLine = buildCleartoolExecutable();
-        String options = "-tag " + getViewName(schedule);
+        cmdLine.createArgument().setLine("mkview");
+        if (isSnapshot())
+         cmdLine.createArgument().setLine("-snapshot");
+        cmdLine.createArgument().setLine("-tag " + getViewName(schedule));
         if (!Luntbuild.isEmpty(getMkviewExtraOpts())) {
-            options += getActualMkviewExtraOpts();
+            cmdLine.createArgument().setLine(getActualMkviewExtraOpts());
         }
         if (!Luntbuild.isEmpty(getUcmStream())) {
-            options += " -stream " + getUcmStream();
+            cmdLine.createArgument().setLine("-stream " + getUcmStream());
         }
         if (!Luntbuild.isEmpty(this.vws)) {
             if (isSnapshot()) {
-                options += " -vws " + this.vws;
+                cmdLine.createArgument().setLine("-vws " + this.vws);
             }
         } else {
-            options += " -stgloc " + this.viewStgLoc;
+            cmdLine.createArgument().setLine("-stgloc " + this.viewStgLoc);
         }
-        cmdLine.createArgument().setLine(
-                "mkview " + (isSnapshot() ? "-snapshot " : "") + options);
 
         cmdLine.createArgument().setValue(isSnapshot() ? workingDir : this.vws);
         new MyExecTask("mkview", antProject, cmdLine, Project.MSG_INFO)
