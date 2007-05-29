@@ -226,10 +226,10 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
         if (authenticator.authenticate(name, password)){
             // Load Luntbuild user if exist, or create new user
             if (doCreateLuntbuildUser) {
-                if (!Luntbuild.getDao().isUserExist(name)) {
+                if (!Luntbuild.getDao().isUserExist(name.toLowerCase())) {
                     // create user
                     User user = new User();
-                    user.setName(name);
+                    user.setName(name.toLowerCase());
                     user.setCanCreateProject(canCreateProject);
                     user.setDecryptedPassword(password);
                     // set email
@@ -257,13 +257,13 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
                     if (canBuildProject) setProjectsPrivileges(user, Role.LUNTBUILD_PRJ_BUILDER);
                     if (canViewProject) setProjectsPrivileges(user, Role.LUNTBUILD_PRJ_VIEWER);
 
-                    userDetails = this.authenticationDao.loadUserByUsername(name);
+                    userDetails = this.authenticationDao.loadUserByUsername(name.toLowerCase());
 
                     this.userAuth = userDetails;
 
                 } else {
                     // Update password
-                    User user = Luntbuild.getDao().loadUser(name);
+                    User user = Luntbuild.getDao().loadUser(name.toLowerCase());
                     user.setDecryptedPassword(password);
                 }
 
