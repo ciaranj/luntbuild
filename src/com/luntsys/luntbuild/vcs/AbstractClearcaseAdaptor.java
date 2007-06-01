@@ -757,7 +757,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 }
                 final Commandline cmdLine = buildCleartoolExecutable();
                 cmdLine.createArgument().setLine(
-                        "lshistory -fmt \"date:%d user:%u action:%e %n\n"
+                        "lshistory -fmt \"date:%d user:%u action:%e %n\\n"
                                 + getActualFormatParams() + "\" -nco -r");
                 if (branch != null) {
                     cmdLine.createArgument().setLine("-branch " + branch);

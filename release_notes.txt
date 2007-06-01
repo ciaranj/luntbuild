@@ -1,4 +1,14 @@
 ==============================================
+luntbuild 1.4.1 Release Notes
+==============================================
+
+Contribution by David Roussel. Thanks David!
+
+- fixed VCS history for builds with dynamic and base clearcase views
+- fixed error "Unable to create view" when performing a clean build or rebuild on a base clearcase view
+
+
+==============================================
 luntbuild 1.4.0 Release Notes
 ==============================================
 
