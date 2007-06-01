@@ -83,8 +83,8 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 		if (loadElements.size() == 0)
 			throw new BuildException("ERROR: No elements configured for load in the view config spec!");
 		if (build.isCleanBuild() || build.isRebuild()) {
+			ensureViewPresent(build.getSchedule(), antProject);
 			Luntbuild.deleteDir(workingDir); // delete view path before create snapshot view
-			createCcView(build.getSchedule(), antProject);
 			antProject.log("Retrieving source code from Clearcase...", Project.MSG_INFO);
 		} else
 			antProject.log("Updating source code from Clearcase...", Project.MSG_INFO);
