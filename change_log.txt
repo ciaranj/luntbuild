@@ -1,4 +1,17 @@
-Luntbuild 1.3.7
+Luntbuild 1.4.1
+
+Contribution by David Roussel. Thanks David!
+
+- fixed VCS history for builds with dynamic and base clearcase views
+- fixed error "Unable to create view" when performing a clean build or rebuild on a base clearcase view
+
+Other:
+
+- Fixed Clearcase command line option handling
+- Improved manual build at/later handling to support date and hour
+- Improved build log pattern detection
+
+Luntbuild 1.4.0
 
 Contribution from Jason Archer, thanks Jason!
 
