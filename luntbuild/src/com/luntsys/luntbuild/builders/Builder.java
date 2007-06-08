@@ -38,6 +38,8 @@ import ognl.OgnlException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Environment;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.*;
 import java.util.Iterator;
@@ -74,9 +76,9 @@ public abstract class Builder implements Serializable {
     private transient int result;
 
     /**
-     * File path logging builder execution
+     * Build log
      */
-    private transient String logPath;
+    private transient Node build_log;
 
     private String buildSuccessCondition;
     private String environments;
@@ -287,7 +289,7 @@ public abstract class Builder implements Serializable {
      */
     public void build(Build build, LuntbuildLogger buildLogger) throws Throwable {
         this.build = build;
-        this.logPath = buildLogger.getOutputPath();
+        this.build_log = buildLogger.getLog();
 
         // create a ant project to receive log
         Project antProject = Luntbuild.createAntProject();
@@ -412,31 +414,50 @@ public abstract class Builder implements Serializable {
     }
 
     /**
-     * Whether or not the builder log contains specified line pattern
-     * @param linePattern
-     * @return Whether or not the builder log contains specified line pattern
+     * Checks if the builder log contains specified line pattern.
+     * 
+     * @param linePattern the linePattern to look for
+     * @return <code>true</code> if the builder log contains specified line pattern
+     * @throws RuntimeException if an error occurs while reading the log file
      */
     public boolean logContainsLine(String linePattern) {
-        File logFile = new File(logPath);
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(logFile));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.matches(linePattern))
-                    return true;
-            }
+    	try {
+        	NodeList messages = build_log.getChildNodes();
+        	for (int i = 0; i < messages.getLength(); i++) {
+        		Node message = messages.item(i);
+				if (message.getTextContent().matches(linePattern))
+					return true;
+        	}
             return false;
-        } catch (IOException e) {
+    	} catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-            try {
-                if (reader != null)
-                    reader.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    	}
+    }
+
+    /**
+     * Checks if the builder log contains specified line pattern from this builder.
+     * 
+     * @param linePattern the linePattern to look for
+     * @return <code>true</code> if the builder log contains specified line pattern from this builder
+     * @throws RuntimeException if an error occurs while reading the log file
+     */
+    public boolean builderLogContainsLine(String linePattern) {
+    	try {
+        	NodeList messages = build_log.getChildNodes();
+        	for (int i = 0; i < messages.getLength(); i++) {
+        		Node message = messages.item(i);
+        		Node builder = message.getAttributes().getNamedItem("builder");
+        		if (builder != null) {
+        			if (builder.getTextContent().equals(getName())) {
+        				if (message.getTextContent().matches(linePattern))
+        					return true;
+        			}
+        		}
+        	}
+            return false;
+    	} catch (Exception e) {
+            throw new RuntimeException(e);
+    	}
     }
 
     /**
