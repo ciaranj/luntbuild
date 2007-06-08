@@ -49,6 +49,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildEvent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 
@@ -216,6 +217,15 @@ public class LuntbuildLogger implements BuildLogger {
      */
     public String getOutputPath() {
         return this.outPath;
+    }
+
+    /**
+     * Gets the log.
+     * 
+     * @return the log
+     */
+    public Node getLog() {
+        return this.buildElement.element;
     }
 
     /**

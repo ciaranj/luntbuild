@@ -15,10 +15,10 @@
 			</span>
           </td>
           <td width="10%" align="center" class="buildTitleRight">
-          	<a jwcid="@DirectLink" listener="ognl:listeners.getBuildLog" title="build log">build log</a>
+          	<a jwcid="@GenericLink" href="ognl:build.getBuildLogUrl()" title="build log">build log</a>
           </td>
           <td width="10%" height="19" align="center" class="buildTitleRight">
-          	<a jwcid="@DirectLink" listener="ognl:listeners.getRevisionLog" title="revision log">revision log</a>
+          	<a jwcid="@GenericLink" href="ognl:build.getRevisionLogUrl()" title="revision log">revision log</a>
           </td>
         </tr>
       </table></td>
