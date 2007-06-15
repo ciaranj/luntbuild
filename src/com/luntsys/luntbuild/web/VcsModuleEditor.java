@@ -88,23 +88,23 @@ public abstract class VcsModuleEditor extends BaseComponent implements PageDetac
 
 	public String getPropertyNameCssClass() {
 		if (getPropertyIndex() % 2 == 0)
-			return "propertyEditorName1";
+			return "propertyEditorName propertyEditorName1";
 		else
-			return "propertyEditorName2";
+			return "propertyEditorName propertyEditorName2";
 	}
 
 	public String getPropertyValueCssClass() {
 		if (getPropertyIndex() % 2 == 0)
-			return "propertyEditorValue1";
+			return "propertyEditorValue propertyEditorValue1";
 		else
-			return "propertyEditorValue2";
+			return "propertyEditorValue propertyEditorValue2";
 	}
 
 	public String getPropertyEditorTailCssClass() {
 		if (getModuleToEdit().getProperties().size() % 2 == 0)
-			return "propertyEditorTail1";
+			return "propertyEditorTail propertyEditorTail1";
 		else
-			return "propertyEditorTail2";
+			return "propertyEditorTail propertyEditorTail2";
 	}
 
 	public abstract void setVcsToEdit(Vcs vcsToEdit);

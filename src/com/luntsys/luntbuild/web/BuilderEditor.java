@@ -133,23 +133,23 @@ public abstract class BuilderEditor extends BaseComponent {
 
 	public String getPropertyNameCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyEditorName1";
+			return "propertyEditorName propertyEditorName1";
 		else
-			return "propertyEditorName2";
+			return "propertyEditorName propertyEditorName2";
 	}
 
 	public String getPropertyValueCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyEditorValue1";
+			return "propertyEditorValue propertyEditorValue1";
 		else
-			return "propertyEditorValue2";
+			return "propertyEditorValue propertyEditorValue2";
 	}
 
 	public String getPropertyEditorTailCssClass() {
 		if (getCssIndex () % 2 == 0)
-			return "propertyEditorTail1";
+			return "propertyEditorTail propertyEditorTail1";
 		else
-			return "propertyEditorTail2";
+			return "propertyEditorTail propertyEditorTail2";
 	}
 
 	public IPropertySelectionModel getBuilderClassSelectionModel() {

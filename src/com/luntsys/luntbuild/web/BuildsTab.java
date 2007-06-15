@@ -332,9 +332,9 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 	 */
 	public String getRowClass() {
 		if (getScheduleIndex() % 2 == 0)
-			return "dataTableRow1";
+			return "dataTableRow dataTableRow1";
 		else
-			return "dataTableRow2";
+			return "dataTableRow dataTableRow2";
 	}
 
 	public String getLastBuildEndDate() {

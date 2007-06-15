@@ -119,23 +119,23 @@ public abstract class VcsEditor extends BaseComponent {
 
 	public String getPropertyNameCssClass() {
 		if (getPropertyIndex() % 2 == 0)
-			return "propertyEditorName2";
+			return "propertyEditorName propertyEditorName2";
 		else
-			return "propertyEditorName1";
+			return "propertyEditorName propertyEditorName1";
 	}
 
 	public String getPropertyValueCssClass() {
 		if (getPropertyIndex() % 2 == 0)
-			return "propertyEditorValue2";
+			return "propertyEditorValue propertyEditorValue2";
 		else
-			return "propertyEditorValue1";
+			return "propertyEditorValue propertyEditorValue1";
 	}
 
 	public String getPropertyEditorTailCssClass() {
 		if (getVcsToEdit().getProperties().size() % 2 == 0)
-			return "propertyEditorTail2";
+			return "propertyEditorTail propertyEditorTail2";
 		else
-			return "propertyEditorTail1";
+			return "propertyEditorTail propertyEditorTail1";
 	}
 
 	public IPropertySelectionModel getVcsAdaptorSelectionModel() {

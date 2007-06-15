@@ -77,16 +77,16 @@ public abstract class UserViewer extends SecuritySupportComponent implements Pag
 
 	public String getPropertyNameCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyListName2";
+			return "propertyListName propertyListName2";
 		else
-			return "propertyListName1";
+			return "propertyListName propertyListName1";
 	}
 
 	public String getPropertyValueCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyListValue2";
+			return "propertyListValue propertyListValue2";
 		else
-			return "propertyListValue1";
+			return "propertyListValue propertyListValue1";
 	}
 
 	public abstract long getUserId();

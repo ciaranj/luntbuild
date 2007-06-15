@@ -153,8 +153,8 @@ public abstract class ProjectsTab extends TabPageComponent implements PageDetach
 	 */
 	public String getRowClass() {
 		if (getProjectIndex() % 2 == 0)
-			return "dataTableRow1";
+			return "dataTableRow dataTableRow1";
 		else
-			return "dataTableRow2";
+			return "dataTableRow dataTableRow2";
 	}
 }

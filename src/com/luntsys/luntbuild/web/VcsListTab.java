@@ -142,39 +142,39 @@ public abstract class VcsListTab extends TabPageComponent {
 
 	public String getPropertyNameCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyListName2";
+			return "propertyListName propertyListName2";
 		else
-			return "propertyListName1";
+			return "propertyListName propertyListName1";
 	}
 
 	public String getPropertyValueCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyListValue2";
+			return "propertyListValue propertyListValue2";
 		else
-			return "propertyListValue1";
+			return "propertyListValue propertyListValue1";
 	}
 
 	public abstract int getCssIndex();
 
 	public String getModulesTitleCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "modulesTitle2";
+			return "modulesTitle modulesTitle2";
 		else
-			return "modulesTitle1";
+			return "modulesTitle modulesTitle1";
 	}
 
 	public String getModulePropertyTitleCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "modulePropertyTitle2";
+			return "modulePropertyTitle modulePropertyTitle2";
 		else
-			return "modulePropertyTitle1";
+			return "modulePropertyTitle modulePropertyTitle1";
 	}
 
 	public String getModuleCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "dataTableRow2";
+			return "dataTableRow dataTableRow2";
 		else
-			return "dataTableRow1";
+			return "dataTableRow dataTableRow1";
 	}
 
 	public abstract Vcs getVcs();

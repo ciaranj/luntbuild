@@ -380,9 +380,9 @@ public abstract class BuildViewer extends SecuritySupportComponent implements Pa
 
     public String getFileRowCssClass() {
         if (getCssIndex() % 2 == 0)
-            return "dataTableRow2";
-        else
-            return "dataTableRow1";
+			return "dataTableRow dataTableRow2";
+		else
+			return "dataTableRow dataTableRow1";
     }
 
     public String getArtifactsTailCssClass() {
