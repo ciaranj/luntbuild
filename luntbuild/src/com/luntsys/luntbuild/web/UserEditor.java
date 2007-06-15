@@ -145,9 +145,9 @@ public abstract class UserEditor extends SecuritySupportComponent implements Pag
 	 */
 	public String getPropertyNameCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyEditorName2";
+			return "propertyEditorName propertyEditorName2";
 		else
-			return "propertyEditorName1";
+			return "propertyEditorName propertyEditorName1";
 	}
 
 	/**
@@ -155,9 +155,9 @@ public abstract class UserEditor extends SecuritySupportComponent implements Pag
 	 */
 	public String getPropertyValueCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyEditorValue2";
+			return "propertyEditorValue propertyEditorValue2";
 		else
-			return "propertyEditorValue1";
+			return "propertyEditorValue propertyEditorValue1";
 	}
 
 	/**
@@ -165,9 +165,9 @@ public abstract class UserEditor extends SecuritySupportComponent implements Pag
 	 */
 	public String getTailCssClass() {
 		if (getCssIndex() % 2 ==0)
-			return "propertyEditorTail2";
+			return "propertyEditorTail propertyEditorTail2";
 		else
-			return "propertyEditorTail1";
+			return "propertyEditorTail propertyEditorTail1";
 	}
 
 	/**

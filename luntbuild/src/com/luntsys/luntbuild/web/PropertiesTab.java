@@ -124,30 +124,30 @@ public abstract class PropertiesTab extends TabPageComponent {
 
 	public String getNotifierTitleCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "notifierTitle2";
+			return "notifierTitle notifierTitle2";
 		else
-			return "notifierTitle1";
+			return "notifierTitle notifierTitle1";
 	}
 
 	public String getPropertyNameCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyEditorName2";
+			return "propertyEditorName propertyEditorName2";
 		else
-			return "propertyEditorName1";
+			return "propertyEditorName propertyEditorName1";
 	}
 
 	public String getPropertyValueCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyEditorValue2";
+			return "propertyEditorValue propertyEditorValue2";
 		else
-			return "propertyEditorValue1";
+			return "propertyEditorValue propertyEditorValue1";
 	}
 
 	public String getTailCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyEditorTail2";
+			return "propertyEditorTail propertyEditorTail2";
 		else
-			return "propertyEditorTail1";
+			return "propertyEditorTail propertyEditorTail1";
 	}
 
 	public List getNotifierInstances() {

@@ -124,8 +124,8 @@ public abstract class BuildList extends BaseComponent {
 
 	public String getRowCssClass() {
 		if (getBuildIndex() % 2 == 0)
-			return "dataTableRow1";
+			return "dataTableRow dataTableRow1";
 		else
-			return "dataTableRow2";
+			return "dataTableRow dataTableRow2";
 	}
 }

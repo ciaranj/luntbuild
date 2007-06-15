@@ -131,9 +131,9 @@ public abstract class LoginMappingTab extends TabPageComponent {
 
 	public String getLoginCssClass() {
 		if (getVcsLoginIndex() % 2 == 0)
-			return "dataTableRow1";
+			return "dataTableRow dataTableRow1";
 		else
-			return "dataTableRow2";
+			return "dataTableRow dataTableRow2";
 	}
 
 	public void gotoUser(IRequestCycle cycle) {

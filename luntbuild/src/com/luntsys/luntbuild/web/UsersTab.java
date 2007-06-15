@@ -141,9 +141,9 @@ public abstract class UsersTab extends TabPageComponent implements PageDetachLis
 	 */
 	public String getRowClass() {
 		if (getUserIndex() % 2 == 0)
-			return "dataTableRow1";
+			return "dataTableRow dataTableRow1";
 		else
-			return "dataTableRow2";
+			return "dataTableRow dataTableRow2";
 	}
 
 	public List getNotifierInstances() {
