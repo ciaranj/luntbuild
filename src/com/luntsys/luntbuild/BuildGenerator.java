@@ -195,6 +195,8 @@ public class BuildGenerator implements StatefulJob {
                         OgnlHelper.setAntProject(antProject);
                         OgnlHelper.setTestMode(false);
                         Schedule scheduleUpToDate = Luntbuild.getDao().loadSchedule(schedule.getId());
+                        // Reload project to initialize project lazy collection members
+                        scheduleUpToDate.setProject(Luntbuild.getDao().loadProject(scheduleUpToDate.getProject().getId()));
                         if (!buildParams.getBuildVersion().equals("")) {
                             currentBuild.setVersion(Luntbuild.evaluateExpression(scheduleUpToDate,
                                     buildParams.getBuildVersion()));
@@ -207,6 +209,7 @@ public class BuildGenerator implements StatefulJob {
                                 Luntbuild.getDao().saveSchedule(scheduleUpToDate);
                             }
                         }
+                        currentBuild.setSchedule(scheduleUpToDate);
                     }
 
                     currentBuild.setLabelStrategy(buildParams.getLabelStrategy());
