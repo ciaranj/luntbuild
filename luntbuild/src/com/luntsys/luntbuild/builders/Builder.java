@@ -35,6 +35,7 @@ import com.luntsys.luntbuild.utility.*;
 import ognl.Ognl;
 import ognl.OgnlException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Environment;
@@ -425,7 +426,7 @@ public abstract class Builder implements Serializable {
         	NodeList messages = build_log.getChildNodes();
         	for (int i = 0; i < messages.getLength(); i++) {
         		Node message = messages.item(i);
-				if (message.getTextContent().matches(linePattern))
+				if (getTextContent(message).matches(linePattern))
 					return true;
         	}
             return false;
@@ -448,8 +449,8 @@ public abstract class Builder implements Serializable {
         		Node message = messages.item(i);
         		Node builder = message.getAttributes().getNamedItem("builder");
         		if (builder != null) {
-        			if (builder.getTextContent().equals(getName())) {
-        				if (message.getTextContent().matches(linePattern))
+        			if (getTextContent(builder).equals(getName())) {
+        				if (getTextContent(message).matches(linePattern))
         					return true;
         			}
         		}
@@ -460,6 +461,17 @@ public abstract class Builder implements Serializable {
     	}
     }
 
+    private String getTextContent(Node node) {
+    	NodeList nodeList= node.getChildNodes();
+        String textContent= null;
+          for (int j=0; j < nodeList.getLength(); j++) {
+              Node k = nodeList.item(j);
+              textContent = k.getNodeValue();
+              if (StringUtils.isNotEmpty(textContent)) return textContent;
+          }
+          return "";
+    }
+    
     /**
      * Get build object using this builder
      * @return build object using this builder
