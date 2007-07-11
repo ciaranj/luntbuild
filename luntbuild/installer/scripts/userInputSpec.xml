@@ -37,6 +37,8 @@
                     value="C:\Program Files\Tomcat 5.5.17\webapps" os="windows" />
                 <choice txt="C:\Tomcat 5.5.17\webapps"
                     value="C:\Tomcat 5.5.17\webapps" os="windows" />
+                <choice txt="C:\apache-tomcat-5.5.17\webapps"
+                    value="C:\apache-tomcat-5.5.17\webapps" os="windows" />
                 <choice txt="C:\jetty-4.2.23\webapps"
                     value="C:\jetty-4.2.23\webapps" os="windows" />
                 <choice txt="C:\jetty-5.1.2\webapps"
@@ -57,6 +59,8 @@
                     value="D:\Program Files\Tomcat 5.5.17\webapps" os="windows" />
                 <choice txt="D:\Tomcat 5.5.17\webapps"
                     value="D:\Tomcat 5.5.17\webapps" os="windows" />
+                <choice txt="D:\apache-tomcat-5.5.17\webapps"
+                    value="D:\apache-tomcat-5.5.17\webapps" os="windows" />
                 <choice txt="D:\jetty-4.2.23\webapps"
                     value="D:\jetty-4.2.23\webapps" os="windows" />
                 <choice txt="D:\jetty-5.1.2\webapps"
