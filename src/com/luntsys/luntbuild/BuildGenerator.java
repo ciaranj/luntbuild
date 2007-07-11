@@ -253,7 +253,7 @@ public class BuildGenerator implements StatefulJob {
                 currentBuild.setStartDate(new Date());
                 currentBuild.setEndDate(null);
                 logger.info("Perform rebuild for \"" + currentBuild.getSchedule().getProject().getName() +
-                        "/" + currentBuild.getSchedule().getName() + "/" + currentBuild.getVersionNoSpace() + "\"");
+                        "/" + currentBuild.getSchedule().getName() + "/" + currentBuild.getVersion() + "\"");
             }
 
             if (currentBuild != null) {
