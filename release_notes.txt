@@ -1,5 +1,6 @@
 Changes from David Roussel:
 
+ - Fixed IzPack installer look & feel Linux issues
  - Changes to the UI that do not alter the look of luntbuild, but just make it easier to theme.
  - Refactor of web interface to remove colours from HTML to make it easier to theme via CSS
  - Simplifications to odd/even table row colourings to reduce duplication in CSS
