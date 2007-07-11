@@ -55,6 +55,7 @@ import org.jivesoftware.smack.XMPPException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -87,8 +88,6 @@ public class JabberNotifier  extends TemplatedNotifier
 
     private XMPPConnection connection = null;
 
-    private static int jabberServerType = Constants.JABBER_SERVER_TYPE_NORMAL;
-
     /**
      * Constructor
      */
@@ -107,20 +106,6 @@ public class JabberNotifier  extends TemplatedNotifier
     public String getComment()
     {
         return "NOTE. Connecting using proxy is not yet supported.";
-    }
-
-    /**
-     * @return Returns the jabberServerType.
-     */
-    public String getJabberServerType() {
-        return Constants.getJabberServerType(jabberServerType);
-    }
-
-    /**
-     * @param type The jabberServerType to set.
-     */
-    public void setJabberServerType(String type) {
-        jabberServerType = Constants.getJabberServerTypeValue(type);
     }
 
     /**
@@ -201,6 +186,9 @@ public class JabberNotifier  extends TemplatedNotifier
 
         try
         {
+            property = (NotifierProperty) getSystemLevelProperties().get(JABBER_SERVERTYPE);
+            int jabberServerType = Constants.getJabberServerTypeValue(property.getValue(Luntbuild.getProperties()));
+
             if ( jabberServerType == Constants.JABBER_SERVER_TYPE_SSL) {
                 this.connection = new SSLXMPPConnection(jabberServer,Integer.parseInt(jabberServerPort));
                 this.connection.login(luntJabberAccount, jabberPasswd,
@@ -317,12 +305,15 @@ public class JabberNotifier  extends TemplatedNotifier
                 return true;
             }
 
-            public String getValue() {
-                return getJabberServerType();
+            public String getValue(Map properties) {
+                String value = (String) properties.get(getKey());
+                if (Luntbuild.isEmpty(value))
+                    value = "0";
+                return Constants.getJabberServerType(Integer.parseInt(value));
             }
 
-            public void setValue(String value) {
-                setJabberServerType(value);
+            public void setValue(Map properties, String value) {
+                properties.put(getKey(), Integer.toString(Constants.getJabberServerTypeValue(value)));
             }
         };
         // Set selection model

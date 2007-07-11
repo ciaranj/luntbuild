@@ -33,6 +33,7 @@ import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.NotifierProperty;
 
+import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SendEmail;
 
@@ -60,7 +61,8 @@ public class EmailNotifier extends TemplatedNotifier {
     private static final int SMTP_HOST = 0;
     private static final int SMTP_USER = 1;
     private static final int SMTP_PASSWD = 2;
-    private static final int SENDER_EMAIL  = 3;
+    private static final int SMTP_SSL = 3;
+    private static final int SENDER_EMAIL  = 4;
 
     private static final int USER_EMAIL = 0;
 
@@ -108,6 +110,15 @@ public class EmailNotifier extends TemplatedNotifier {
 			if (!Luntbuild.isEmpty(smtpPassword))
 				mail.setPassword(smtpPassword);
 		}
+
+        property = (NotifierProperty) getSystemLevelProperties().get(SMTP_SSL);
+        String smtpSSL = property.getValue(Luntbuild.getProperties());
+        if (!Luntbuild.isEmpty(smtpSSL)) {
+            if (smtpSSL.equals("yes"))
+                mail.setSSL(true);
+            else
+                mail.setSSL(false);
+        }
 		mail.setMessageMimeType("text/html");
 		mail.setCharset("utf-8");
 		mail.setFailOnError(true);
@@ -220,6 +231,30 @@ public class EmailNotifier extends TemplatedNotifier {
 						"you should provide the password here.";
 			}
 		});
+
+        NotifierProperty p = new NotifierProperty() {
+            public Class getNotifierClass()
+            {
+                return EmailNotifier.class;
+            }
+
+            public String getDisplayName() {
+                return "SSL/TSL Authentication";
+            }
+
+            public String getDescription() {
+                return "Specify if SSL authentication should be used.";
+            }
+
+            public boolean isSelect() {
+                return true;
+            }
+        };
+        // Set selection model
+        p.setSelectionModel(new EmailYesNoSelectionModel());
+        // Add property to properties list
+        properties.add(p);
+
 		properties.add(new NotifierProperty() {
 			public Class getNotifierClass() {
 				return EmailNotifier.class;
@@ -257,5 +292,61 @@ public class EmailNotifier extends TemplatedNotifier {
 		});
         return properties;
 	}
+
+    /**
+     * Selection model used for user interface of <code>EmailNotifier</code>.
+     */
+    class EmailYesNoSelectionModel implements IPropertySelectionModel {
+        String[] values = {"no", "yes"};
+
+        /**
+         * Gets the number of options.
+         * 
+         * @return the number of options
+         */
+        public int getOptionCount() {
+            return this.values.length;
+        }
+
+        /**
+         * Gets an option.
+         * 
+         * @param index the index of the opiton
+         * @return the option
+         */
+        public Object getOption(int index) {
+            return this.values[index];
+        }
+
+        /**
+         * Gets the display label of an option.
+         * 
+         * @param index the index of the opiton
+         * @return the label
+         */
+        public String getLabel(int index) {
+            return this.values[index];
+        }
+
+        /**
+         * Gets the value of an option.
+         * 
+         * @param index the index of the opiton
+         * @return the value
+         */
+        public String getValue(int index) {
+            return this.values[index];
+        }
+
+        /**
+         * Gets the option that corresponds to a value.
+         * 
+         * @param value the value
+         * @return the option
+         */
+        public Object translateValue(String value) {
+            return value;
+        }
+    }
 }
 
