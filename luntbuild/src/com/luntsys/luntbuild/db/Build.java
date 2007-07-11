@@ -168,7 +168,7 @@ public class Build {
      * @return version of this build
      */
     public String getVersionNoSpace() {
-        return version.replaceAll("\\s", "_");
+        return version.replaceAll("\\s", "%20");
     }
 
     /**
@@ -417,7 +417,7 @@ public class Build {
      * @return the publish directory for current build
      */
     public String getPublishDir() {
-        String publishDir = getSchedule().getPublishDir() + File.separator + getVersionNoSpace();
+        String publishDir = getSchedule().getPublishDir() + File.separator + getVersion();
         try {
             publishDir = new File(publishDir).getCanonicalPath();
             return publishDir.replaceAll("\\\\", "\\\\\\\\"); // in order to keep back slash for ognl expression evaluation
@@ -548,7 +548,7 @@ public class Build {
     }
 
     public String toString() {
-        return getSchedule().getProject().getName() + "/" + getSchedule().getName() + "/" + getVersionNoSpace();
+        return getSchedule().getProject().getName() + "/" + getSchedule().getName() + "/" + getVersion();
     }
 
     /**
