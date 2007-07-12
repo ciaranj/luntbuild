@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.regex.Matcher;
@@ -601,11 +600,15 @@ public class LuntbuildLogger implements BuildLogger {
             PrintStream pout = null;
             try {
                 pout = new PrintStream(new FileOutputStream(outFilename));
+                trans.transform(xmlSource, new StreamResult(pout));
             } catch (Exception ex) {
                 this.err.println("Can't open output file " + outFilename);
                 logHtmlFromText(textFilename, outFilename);
+            } finally {
+            	if (pout != null) {
+            		pout.close();
+            	}
             }
-            trans.transform(xmlSource, new StreamResult(pout));
         } catch (Exception e) {
             logHtmlFromText(textFilename, outFilename);
         }
@@ -630,6 +633,19 @@ public class LuntbuildLogger implements BuildLogger {
             pout.println("</html>");
         } catch (Exception ex) {
             System.err.println("Can't open output file " + outFilename);
+        } finally {
+            if (pout != null) {
+                pout.close();
+            }
+        }
+    }
+    
+    public void close() {
+        if (err != null) {
+            err.close();
+        }
+        if (out != null) {
+            out.close();
         }
     }
 }

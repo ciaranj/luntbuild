@@ -1,10 +1,16 @@
-Changes from David Roussel:
+==============================================
+luntbuild 1.4.2 Release Notes
+==============================================
 
  - Fixed IzPack installer look & feel Linux issues
  - Changes to the UI that do not alter the look of luntbuild, but just make it easier to theme.
  - Refactor of web interface to remove colours from HTML to make it easier to theme via CSS
  - Simplifications to odd/even table row colourings to reduce duplication in CSS
-
+ - [# 5717] Log files are left open on build error
+ - [# 5777] Updated Project and Schedule variables not available to builders
+ - [# 5750] SSL/TSL support not configurable for Email Notification
+ - [# 5661] Links to build logs and revision logs in emails are invalid
+ 
 Changes from Jason Archer:
 
 - Improved ability to detect which builder failed among multiple builders, use the new "builderLogContainsLine()" function to look for messages from a specific builder
