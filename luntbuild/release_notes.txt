@@ -5,6 +5,14 @@ Changes from David Roussel:
  - Refactor of web interface to remove colours from HTML to make it easier to theme via CSS
  - Simplifications to odd/even table row colourings to reduce duplication in CSS
 
+Changes from Jason Archer:
+
+- Improved ability to detect which builder failed among multiple builders, use the new "builderLogContainsLine()" function to look for messages from a specific builder
+- Fixed build and revision log links to use "getBuildLogUrl()" and "getRevisionLogUrl()" so that the URLs are unique and user friendly
+- Fixed Project and Schedule variables not updating properly for builders after being changed during an OGNL expression (BUG 5777)
+- Fixed handling of spaces in build version numbers (BUG 5661)
+- Added system level option to enable SSL/TSL authentication for Email notifier (BUG 5750)
+
 ==============================================
 luntbuild 1.4.1 Release Notes
 ==============================================
