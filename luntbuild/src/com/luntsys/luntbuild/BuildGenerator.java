@@ -444,30 +444,29 @@ public class BuildGenerator implements StatefulJob {
         String revisionTextLogPath = publishDir + File.separator + BuildGenerator.REVISION_LOG;
 
         File xmlFile = new File(revisionXmlLogPath);
-        File xsltFile = new File(Luntbuild.installDir + "/revision.xsl");
+        File xsltFile = new File(Luntbuild.installDir + File.separator + "revision.xsl");
         // JAXP reads data using the Source interface
         Source xmlSource = new StreamSource(xmlFile);
         Source xsltSource = new StreamSource(xsltFile);
 
+        PrintStream pout = null;
         try {
             // the factory pattern supports different XSLT processors
             TransformerFactory transFact = TransformerFactory.newInstance();
             Transformer trans = transFact.newTransformer(xsltSource);
 
             // Output
-            PrintStream pout = null;
-            try {
-                pout = new PrintStream(new FileOutputStream(revisionHtmlLogPath));
-            } catch (Exception ex) {
-                logger.error("Can't open output file " + revisionHtmlLogPath);
-                LuntbuildLogger.logHtmlFromText(revisionTextLogPath, revisionHtmlLogPath);
-            }
+            pout = new PrintStream(new FileOutputStream(revisionHtmlLogPath));
             trans.transform(xmlSource, new StreamResult(pout));
         } catch (Exception e) {
             if (logger.isDebugEnabled())
                 logger.info("Can't transform file " + revisionXmlLogPath +
                         " using XSL " + xsltFile.getAbsolutePath() + " reason: " + e.getMessage());
             LuntbuildLogger.logHtmlFromText(revisionTextLogPath, revisionHtmlLogPath);
+        } finally {
+             if (pout != null) {
+                 pout.close();
+             }
         }
     }
 
@@ -806,6 +805,7 @@ public class BuildGenerator implements StatefulJob {
 
             buildLogger.logHtml(buildXmlPath, Luntbuild.installDir + "/log.xsl", buildHtmlPath, buildTextPath);
             build.removeLogger();
+            buildLogger.close();
         }
     }
 
