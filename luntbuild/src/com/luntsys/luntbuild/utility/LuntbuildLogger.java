@@ -609,7 +609,7 @@ public class LuntbuildLogger implements BuildLogger {
             		pout.close();
             	}
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logHtmlFromText(textFilename, outFilename);
         }
     }
