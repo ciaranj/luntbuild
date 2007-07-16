@@ -197,8 +197,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             query.setParameter("userId", new Long(userId));
             List results = query.list();
             if (results.size() == 0 || results.get(0) == null)
-                throw new DataRetrievalFailureException("Specified user can not " +
-                        "be found in the database!");
+                throw new DataRetrievalFailureException("Specified user ("
+                        + userId + ") can not " + "be found in the database!");
             User user = (User) results.get(0);
             Hibernate.initialize(user.getNotifyMappings());
             Hibernate.initialize(user.getRolesMappings());
@@ -254,8 +254,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                 query.setParameter("projectId", new Long(project.getId()));
                 List results = query.list();
                 if (results.size() == 0 || results.get(0) == null)
-                    throw new DataRetrievalFailureException("Specified project can not " +
-                            "be found in the database!");
+                    throw new DataRetrievalFailureException(
+                            "Specified project (" + project.getId()
+                                    + ") can not be found in the database!");
                 oldName = (String) results.get(0);
             }
             session.saveOrUpdate(project);
@@ -288,8 +289,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             query.setParameter("projectId", new Long(projectId));
             List results = query.list();
             if (results.size() == 0 || results.get(0) == null)
-                throw new DataRetrievalFailureException("Specified project can not " +
-                        "be found in the database!");
+                throw new DataRetrievalFailureException("Specified project ("
+                        + projectId + ") can not "
+                        + "be found in the database!");
             Project project = (Project) results.get(0);
             Hibernate.initialize(project.getVcsLogins());
             Hibernate.initialize(project.getNotifyMappings());
@@ -317,8 +319,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             query.setString("projectName", projectName);
             List results = query.list();
             if (results.size() == 0 || results.get(0) == null)
-                throw new DataRetrievalFailureException("Specified project can not " +
-                        "be found in the database!");
+                throw new DataRetrievalFailureException("Specified project ("
+                        + projectName + ") can not be found in the database!");
             Project project = (Project) results.get(0);
             Hibernate.initialize(project.getVcsLogins());
             Hibernate.initialize(project.getNotifyMappings());
@@ -395,8 +397,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             query.setParameter("scheduleId", new Long(scheduleId));
             List results = query.list();
             if (results.size() == 0 || results.get(0) == null)
-                throw new DataRetrievalFailureException("Specified schedule " +
-                        "can not be found in the database!");
+                throw new DataRetrievalFailureException("Specified schedule ("
+                        + scheduleId + ") can not be found in the database!");
             return (Schedule) results.get(0);
         } catch (HibernateException ex) {
             logger.error("Error in loadSchedule: ", ex);
@@ -423,8 +425,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             query.setString("projectName", projectName);
             List results = query.list();
             if (results.size() == 0 || results.get(0) == null)
-                throw new DataRetrievalFailureException("Specified schedule " +
-                        "can not be found in the database!");
+                throw new DataRetrievalFailureException("Specified schedule ("
+                        + projectName + ", " + scheduleName
+                        + ")can not be found in the database!");
             return (Schedule) results.get(0);
         } catch (HibernateException ex) {
             logger.error("Error in loadSchedule: ", ex);
@@ -448,8 +451,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                 query.setParameter("scheduleId", new Long(schedule.getId()));
                 List results = query.list();
                 if (results.size() == 0 || results.get(0) == null)
-                    throw new DataRetrievalFailureException("Specified schedule can not " +
-                            "be found in the database!");
+                    throw new DataRetrievalFailureException(
+                            "Specified schedule (" + schedule.getId()
+                                    + ") can not be found in the database!");
                 oldName = (String) results.get(0);
             }
             session.saveOrUpdate(schedule);
@@ -510,8 +514,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             query.setParameter("vcsLoginId", new Long(vcsLoginId));
             List results = query.list();
             if (results.size() == 0 || results.get(0) == null)
-                throw new DataRetrievalFailureException("Specified vcs login " +
-                        "can not be found in the database!");
+                throw new DataRetrievalFailureException("Specified vcs login ("
+                        + vcsLoginId + ") can not be found in the database!");
             return (VcsLogin) results.get(0);
         } catch (HibernateException ex) {
             logger.error("Error in loadVcsLogin: ", ex);
@@ -585,7 +589,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             query.setParameter("buildId", new Long(buildId));
             List results = query.list();
             if (results.size() == 0 || results.get(0) == null)
-                throw new DataRetrievalFailureException("Specified build can not be found in the database!");
+                throw new DataRetrievalFailureException("Specified build ("
+                        + buildId + ") can not be found in the database!");
             return (Build) results.get(0);
         } catch (HibernateException ex) {
             logger.error("Error in loadBuild: ", ex);
@@ -614,7 +619,10 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             query.setString("projectName", projectName);
             List results = query.list();
             if (results.size() == 0 || results.get(0) == null)
-                throw new DataRetrievalFailureException("Specified build can not be found in the database!");
+                throw new DataRetrievalFailureException("The build ("
+                        + projectName + ", " + scheduleName + ", "
+                        + buildVersion + ", "
+                        + ") can not be found in the database!");
             return (Build) results.get(0);
         } catch (HibernateException ex) {
             logger.error("Error in loadBuild: ", ex);
@@ -1121,8 +1129,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             List results = query.list();
 
             if (results.size() == 0 || results.get(0) == null)
-                throw new DataRetrievalFailureException("Specified user can not " +
-                        "be found in the database!");
+                throw new DataRetrievalFailureException("Specified user ("
+                        + userName + ") can not " + "be found in the database!");
 
             User user = (User) results.get(0);
             Hibernate.initialize(user.getNotifyMappings());
