@@ -52,7 +52,7 @@ public class OgnlHelper {
 	/**
 	 * Contains instances of extension classes keyed with extension names.
 	 */
-	private static Hashtable extensions;
+	private static Hashtable extensions = null;
 
 	/**
 	 * The schedule this build necessary condition evaluation trigged on behalf of
