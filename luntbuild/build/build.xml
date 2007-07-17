@@ -515,4 +515,20 @@
         />
     </target>
 
+	<target name="extension-test" description="Build extensions test jar">
+		<delete dir="examples/src/java/classes"/>
+		<mkdir dir="examples/src/java/classes"/>
+		<mkdir dir="stage"/>
+		<javac sourcepath="" srcdir="examples/src/java" destdir="examples/src/java/classes"
+			debug="${compile-with-debug}" source="${compile-source-level}" target="${compile-target-level}">
+		</javac>
+		<copy file="examples/src/java/luntbuild_extension.properties"
+			tofile="examples/src/java/classes/luntbuild_extension.properties"
+			overwrite="true"/>
+		<jar basedir="examples/src/java/classes" destfile="stage/extension-test.jar">
+			<include name="com/luntsys/luntbuild/extensions/*.class"/>
+			<include name="luntbuild_extension.properties"/>
+		</jar>
+	</target>
+
 </project>
