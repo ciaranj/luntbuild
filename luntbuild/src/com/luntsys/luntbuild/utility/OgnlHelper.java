@@ -40,6 +40,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormatSymbols;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import ognl.OgnlException;
 
 /**
@@ -49,6 +52,7 @@ import ognl.OgnlException;
  */
 public class OgnlHelper {
 
+    private static Log logger = LogFactory.getLog(OgnlHelper.class);
 	/**
 	 * Contains instances of extension classes keyed with extension names.
 	 */
@@ -313,6 +317,7 @@ public class OgnlHelper {
 			while (resourceEnum.hasMoreElements()) {
 
 				URL resourceURL = (URL) resourceEnum.nextElement();
+				logger.info("Loading extensions from " + resourceURL);
 
 				Properties extensionProperties = new Properties();
 
@@ -341,6 +346,7 @@ public class OgnlHelper {
 					throw new RuntimeException("Extension class for " + className + " luntbuild extension " + extensionName + " doesn't have a public constructor", e);
 				}
 
+				logger.info("Adding extension, name: \"" + extensionName + "\" class: " + className);
 				extensions.put(extensionName, extension);
 
 			}
