@@ -9,6 +9,11 @@
         <tr class="iconTable">
           <td class="iconTable">&nbsp;</td>
           <td width="25" class="iconTable">
+            <a jwcid="@GenericLink" href="ognl:'api/rss/builds/'+page.project.name">
+              <img src="images/feed.gif" width="16" height="16" border="0" align="absmiddle" title="feed: all builds from this project">
+            </a>
+          </td>
+          <td width="25" class="iconTable">
             <span jwcid="@Conditional" condition="ognl:isPrjAdministrable(page.project.id)">
             <a jwcid="@DirectLink" listener="ognl:listeners.enableAllBuilds" href="#">
             <img src="images/scheds_enable.gif" width="18" height="14" border="0" align="absmiddle" title="enable all schedules"></a>
@@ -75,6 +80,7 @@
 					<td width="25" align="center" valign="middle" class="subIconTable"><a jwcid="@DirectLink" listener="ognl:listeners.killRunningBuild" parameters="ognl:schedule.id" href="#"><img src="images/stop_sign.gif" title="kill running build" width="18" height="18" border="0"></a></td>
 					</span>
 					<td width="25" align="center" valign="middle" class="subIconTable"><a jwcid="@DirectLink" listener="ognl:listeners.listBuilds" parameters="ognl:schedule.id" href="#"><img src="images/history_builds.gif" title="history builds" width="18" height="18" border="0"></a></td>
+					<td width="25" align="center" valign="middle" class="subIconTable"><a jwcid="@GenericLink" href="ognl:'api/rss/builds/'+schedule.project.name+'/'+schedule.name"><img src="images/feed.gif" width="16" height="16" border="0" align="absmiddle" title="feed: builds from this schedule"></a></td>
 				</tr>
 				</table>
 			  </td>

@@ -25,12 +25,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.SvnAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.SvnModuleFacade;
+import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.OgnlHelper;
@@ -38,6 +41,7 @@ import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.utility.ValidationException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.tmatesoft.svn.core.*;
@@ -51,7 +55,7 @@ import java.io.File;
 import java.util.*;
 
 /**
- * The subversion adaptor
+ * Subversion VCS adaptor implementation.
  *
  * @author robin shine
  */
@@ -72,11 +76,21 @@ public class SvnAdaptor extends Vcs {
     private String tags;
     private String user;
     private String password;
+	/** Subversion web interface to itegrate with */
+	private String webInterface;
+	/** Subversion web interface URL */
+	private String webUrl;
 
+    /**
+     * @inheritDoc
+     */
     public String getDisplayName() {
         return "Subversion";
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getIconName() {
         return "svn.jpg";
     }
@@ -85,6 +99,9 @@ public class SvnAdaptor extends Vcs {
         return SVNClientManager.newInstance(SVNWCUtil.createDefaultOptions(true), this.user, this.password);
     }
 
+    /**
+     * @inheritDoc
+     */
     public List getVcsSpecificProperties() {
         List properties = new ArrayList();
         properties.add(new DisplayProperty() {
@@ -241,9 +258,65 @@ public class SvnAdaptor extends Vcs {
                 setPassword(value);
             }
         });
+        DisplayProperty p = new DisplayProperty() {
+            public String getDisplayName() {
+                return "Web interface";
+            }
+
+            public String getDescription() {
+                return "Set the web interface to integrate with.";
+            }
+
+            public boolean isRequired() {
+                return false;
+            }
+
+            public boolean isSelect() {
+                return true;
+            }
+
+            public String getValue() {
+                return getWebInterface();
+            }
+
+            public void setValue(String value) {
+                setWebInterface(value);
+            }
+        };
+        // Create selection model
+        IPropertySelectionModel model = new SvnWebInterfaceSelectionModel();
+        // Set selection model
+        p.setSelectionModel(model);
+        // Add property to properties list
+        properties.add(p);
+        properties.add(new DisplayProperty() {
+            public String getDisplayName() {
+                return "URL to web interface";
+            }
+
+            public String getDescription() {
+                return "The URL to access the repository in your chosen web interface. " +
+                    "NOTE: If using \"JavaForge\" enter the ID of your poject only.";
+            }
+
+            public boolean isRequired() {
+                return false;
+            }
+
+            public String getValue() {
+                return getWebUrl();
+            }
+
+            public void setValue(String value) {
+                setWebUrl(value);
+            }
+        });
         return properties;
     }
 
+	/**
+     * @inheritDoc
+	 */
     public void checkoutActually(Build build, Project antProject) {
         String workingDir = build.getSchedule().getWorkDirRaw();
         // retrieve modules
@@ -259,6 +332,9 @@ public class SvnAdaptor extends Vcs {
         }
     }
 
+	/**
+     * @inheritDoc
+	 */
     public void label(Build build, Project antProject) {
         String workingDir = build.getSchedule().getWorkDirRaw();
         Iterator it = getModules().iterator();
@@ -269,19 +345,29 @@ public class SvnAdaptor extends Vcs {
         }
     }
 
-    public Vcs.Module createNewModule() {
+	/**
+     * @inheritDoc
+	 * @see SvnModule
+	 */
+    public Module createNewModule() {
         return new SvnModule();
     }
 
-    public Vcs.Module createNewModule(Vcs.Module module) {
+	/**
+     * @inheritDoc
+	 * @see SvnModule
+	 */
+    public Module createNewModule(Module module) {
         return new SvnModule((SvnModule)module);
     }
 
-    /** Retrieve module
-     * @param workingDir
-     * @param module
-     * @param antProject
-     */
+	/**
+	 * Checks out the contents from a module.
+	 * 
+	 * @param workingDir the working directory
+	 * @param module the module
+	 * @param antProject the ant project used for logging
+	 */
     public void retrieveModule(String workingDir, SvnModule module, Project antProject) {
         File destDir = getModuleDestDir(module, workingDir);
         SVNURL url = getModuleUrl(module);
@@ -312,12 +398,14 @@ public class SvnAdaptor extends Vcs {
         }
     }
 
-    /** Label module
-     * @param workingDir
-     * @param module
-     * @param label
-     * @param antProject
-     */
+	/**
+	 * Labels the contents of a module.
+	 * 
+	 * @param workingDir the working directory
+	 * @param module the module
+	 * @param label the label
+	 * @param antProject the ant project used for logging
+	 */
     public synchronized void labelModule(String workingDir, SvnModule module, String label, Project antProject) {
         // no need to label this module cause this module is fetched from tags directory
         File dir = new File("/", module.getActualSrcPath());
@@ -403,11 +491,13 @@ public class SvnAdaptor extends Vcs {
         }
     }
 
-    /** Update module
-     * @param workingDir
-     * @param module
-     * @param antProject
-     */
+	/**
+	 * Updates the contents of a module.
+	 * 
+	 * @param workingDir the working directory
+	 * @param module the module
+	 * @param antProject the ant project used for logging
+	 */
     public void updateModule(String workingDir, SvnModule module, Project antProject) {
 		antProject.log("Update url: " + getModuleUrl(module));
 
@@ -429,70 +519,137 @@ public class SvnAdaptor extends Vcs {
         return destDir;
     }
 
-    /**
-     * @return url base
-     */
+	/**
+	 * Gets the repository URL base.
+	 * 
+	 * @return the URL base
+	 */
     public String getUrlBase() {
         return this.urlBase;
     }
 
+	/**
+	 * Gets the repository URL base. This method will parse OGNL variables.
+	 * 
+	 * @return the URL base
+	 */
     private String getActualUrlBase() {
-		return OgnlHelper.evaluateScheduleValue(getUrlBase());
+        return OgnlHelper.evaluateScheduleValue(getUrlBase());
     }
 
-    /**
-     * @param urlBase url base
-     */
+	/**
+	 * Sets the repository URL base.
+	 * 
+	 * @param urlBase the URL base
+	 */
     public void setUrlBase(String urlBase) {
         this.urlBase = urlBase;
     }
 
-    /**
-     * @return user
-     */
+	/**
+	 * Gets the login user.
+	 * 
+	 * @return the login user
+	 */
     public String getUser() {
         return this.user;
     }
 
-    /**
-     * @param user
-     */
+	/**
+	 * Sets the login user.
+	 * 
+	 * @param user the login user
+	 */
     public void setUser(String user) {
         this.user = user;
     }
 
-    /**
-     * @return password
-     */
+	/**
+	 * Gets the login password.
+	 * 
+	 * @return the login password
+	 */
     public String getPassword() {
         return this.password;
     }
 
-    /**
-     * @param password
-     */
+	/**
+	 * Sets the login password.
+	 * 
+	 * @param password the login password
+	 */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /**
-     * @return trunk
-     */
+	/**
+	 * Gets the web interface to integrate with.
+	 * 
+	 * @return the web interface to integrate with
+	 */
+	public String getWebInterface() {
+		return webInterface;
+	}
+
+	/**
+	 * Sets the web interface to integrate with.
+	 * 
+	 * @param webInterface the web interface to integrate with
+	 */
+	public void setWebInterface(String webInterface) {
+		this.webInterface = webInterface;
+	}
+
+	/**
+	 * Gets the web interface URL.
+	 * 
+	 * @return the web interface URL
+	 */
+	public String getWebUrl() {
+		return webUrl;
+	}
+
+	/**
+	 * Sets the web interface URL.
+	 * 
+	 * @param webUrl the web interface URL
+	 */
+	public void setWebUrl(String webUrl) {
+		this.webUrl = webUrl;
+	}
+
+	/**
+	 * Gets the directory for the trunk.
+	 * 
+	 * @return the trunk directory
+	 */
     public String getTrunk() {
         return this.trunk;
     }
 
+	/**
+	 * Gets the directory for the trunk. This method will parse OGNL variables.
+	 * 
+	 * @return the trunk directory
+	 */
     private String getActualTrunk() {
-    	return OgnlHelper.evaluateScheduleValue(getTrunk());
+        return OgnlHelper.evaluateScheduleValue(getTrunk());
     }
 
-    /**
-     * @param trunk
-     */
+	/**
+	 * Sets the directory for the trunk.
+	 * 
+	 * @param trunk the trunk directory
+	 */
     public void setTrunk(String trunk) {
         this.trunk = trunk;
     }
 
+    /**
+     * Validates the modules of this VCS.
+     *
+     * @throws ValidationException if a module is not invalid
+     */
     public void validateModules() {
         super.validateModules();
         Iterator it = getModules().iterator();
@@ -503,9 +660,17 @@ public class SvnAdaptor extends Vcs {
         }
     }
 
+	/**
+     * @inheritDoc
+	 * @throws RuntimeException if an exception occurs while reading the SVN log
+	 */
     public Revisions getRevisionsSince(final Date sinceDate, Schedule workingSchedule, Project antProject) {
         SVNLogClient logClient = getClientManager().getLogClient();
-        final Revisions revisions = new Revisions();
+        final SvnRevisions revisions = new SvnRevisions();
+        revisions.addLog(this.getClass().getName(), toString());
+        revisions.getChangeLogs().add("*************************************************************");
+        revisions.getChangeLogs().add(toString());
+        revisions.getChangeLogs().add("");
 
         initLogger(antProject);
 
@@ -522,6 +687,8 @@ public class SvnAdaptor extends Vcs {
                         Date revisionDate = logEntry.getDate();
                         if (!revisionDate.before(sinceDate)) {
                             String author = logEntry.getAuthor();
+                        	revisions.addEntryToLastLog(Long.toString(logEntry.getRevision()), author,
+                        			revisionDate, logEntry.getMessage());
                             revisions.getChangeLogins().add(author);
                             List logs = revisions.getChangeLogs();
                             logs.add("----------------------------------------------------------------------------------------------------------------------");
@@ -530,6 +697,10 @@ public class SvnAdaptor extends Vcs {
                             Collection pathEntries = logEntry.getChangedPaths().values();
                             for (Iterator iterator = pathEntries.iterator(); iterator.hasNext();) {
                                 SVNLogEntryPath logEntryPath = (SVNLogEntryPath) iterator.next();
+                                revisions.addPathToLastEntry(logEntryPath.getPath(), String.valueOf(logEntryPath.getType()),
+                                		Long.toString(logEntry.getRevision()));
+                                if (!Luntbuild.isEmpty(logEntryPath.getCopyPath()))
+                                	revisions.addCopyToLastPath(logEntryPath.getCopyPath(), Long.toString(logEntryPath.getCopyRevision()));
                                 logs.add("    " + logEntryPath.getType() + " " + logEntryPath.getPath());
                                 revisions.setFileModified(true);
                             }
@@ -549,15 +720,15 @@ public class SvnAdaptor extends Vcs {
         return revisions;
     }
 
-    /**
-     * Map a subversion path to sub directory of tags or branches based on the branch or label name
-     * Label will take preference over branch
-     *
-     * @param path
-     * @param branch
-     * @param label
-     * @return calculated path
-     */
+	/**
+	 * Maps a Subversion path to a sub directory of tags or branches based on a branch or label name.
+	 * Label will take precedence over branch.
+	 *
+	 * @param path the Subversion path
+	 * @param branch the branch name
+	 * @param label the label name
+	 * @return the sub directory
+	 */
     private String mapPathByBranchLabel(String path, String branch, String label) {
         if (!Luntbuild.isEmpty(label))
             return mapPathByLabel(path, label);
@@ -565,26 +736,26 @@ public class SvnAdaptor extends Vcs {
             return mapPathByBranch(path, branch);
     }
 
-    /**
-     * Map a subversion path to sub directory of tags based on the label name
-     *
-     * @param path
-     * @param label should not be empty
-     * @return calculated path
-     */
+	/**
+	 * Maps a Subversion path to a sub directory of tags based on a label name.
+	 *
+	 * @param path the Subversion path
+	 * @param label the label name, should not be empty
+	 * @return the sub directory
+	 */
     private String mapPathByLabel(String path, String label) {
         String mapped = Luntbuild.concatPath(getTagsDir(), label);
         return Luntbuild.concatPath(mapped, path);
     }
 
-    /**
-     * Map a subversion path to sub directory of branches based on the branch name,
-     * or to sub directory under trunk if branch name is empty
-     *
-     * @param path
-     * @param branch maybe empty
-     * @return calculated path
-     */
+	/**
+	 * Maps a subversion path to a sub directory of branches based on a branch name,
+	 * or to a sub directory under trunk if branch name is empty.
+	 * 
+	 * @param path the Subversion path
+	 * @param branch the branch name, may be empty
+	 * @return the sub directory
+	 */
     private String mapPathByBranch(String path, String branch) {
         String mapped;
         if (!Luntbuild.isEmpty(branch))
@@ -594,45 +765,65 @@ public class SvnAdaptor extends Vcs {
         return Luntbuild.concatPath(mapped, path);
     }
 
-    /**
-     * @return branches
-     */
+	/**
+	 * Gets the directory for the branches.
+	 * 
+	 * @return the branches directory
+	 */
     public String getBranches() {
         return this.branches;
     }
 
+	/**
+	 * Gets the directory for the branches. This method will parse OGNL variables.
+	 * 
+	 * @return the branches directory
+	 */
     private String getActualBranches() {
-		return OgnlHelper.evaluateScheduleValue(getBranches());
+	    return OgnlHelper.evaluateScheduleValue(getBranches());
     }
 
-    /**
-     * @param branches
-     */
+	/**
+	 * Sets the directory for the branches.
+	 * 
+	 * @param branches the branches directory
+	 */
     public void setBranches(String branches) {
         this.branches = branches;
     }
 
-    /**
-     * @return tags
-     */
+	/**
+	 * Gets the directory for the tags.
+	 * 
+	 * @return the tags directory
+	 */
     public String getTags() {
         return this.tags;
     }
 
+	/**
+	 * Gets the directory for the tags. This method will parse OGNL variables.
+	 * 
+	 * @return the tags directory
+	 */
     private String getActualTags() {
-		return OgnlHelper.evaluateScheduleValue(getTags());
+        return OgnlHelper.evaluateScheduleValue(getTags());
     }
 
-    /**
-     * @param tags
-     */
+	/**
+	 * Sets the directory for the tags.
+	 * 
+	 * @param tags the tags directory
+	 */
     public void setTags(String tags) {
         this.tags = tags;
     }
 
-    /**
-     * @return trunk dir
-     */
+	/**
+	 * Gets the trunk directory.
+	 * 
+	 * @return the trunk directory
+	 */
     public String getTrunkDir() {
         if (Luntbuild.isEmpty(getTrunk()))
             return "";
@@ -640,9 +831,11 @@ public class SvnAdaptor extends Vcs {
             return getActualTrunk();
     }
 
-    /**
-     * @return branch dir
-     */
+	/**
+	 * Gets the branches directory.
+	 * 
+	 * @return the branches directory
+	 */
     public String getBranchesDir() {
         if (Luntbuild.isEmpty(getBranches()))
             return "branches";
@@ -650,14 +843,157 @@ public class SvnAdaptor extends Vcs {
             return getActualBranches();
     }
 
-    /**
-     * @return tags dir
-     */
+	/**
+	 * Gets the tags directory.
+	 * 
+	 * @return the tags directory
+	 */
     public String getTagsDir() {
         if (Luntbuild.isEmpty(getTags()))
             return "tags";
         else
             return getActualTags();
+    }
+
+    /**
+     * Creates a link to browse the repository.
+     * 
+     * @return the link
+     */
+    public String createLinkForRepository() {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl()))
+            return "&nbsp;";
+        if (getWebInterface().equals("JavaForge"))
+            return "<a href=\"http://www.javaforge.com/proj/sources/sccBrowse.do?proj_id=" + getWebUrl() + "\">browse</a>";
+        else
+            return "<a href=\"" + getWebUrl() + "\">browse</a>";
+    }
+
+    /**
+     * Creates a link to the specified revision.
+     * 
+     * @param revision the revision
+     * @return the link
+     */
+    public String createLinkForRevision(String revision) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl()) ||
+                Luntbuild.isEmpty(revision))
+            return revision;
+        if (getWebInterface().equals("Chora"))
+            return revision;
+        else if (getWebInterface().equals("Insurrection"))
+            return "<a href=\"" + getWebUrl() + "?Insurrection=log&r1=" + revision + "&r2=" + revision + "\">" + revision + "</a>";
+        else if (getWebInterface().equals("JavaForge"))
+            return revision;
+        else if (getWebInterface().equals("perl_svn"))
+            return "<a href=\"" + getWebUrl() + "&a=lr&r=" + revision + "\">" + revision + "</a>";
+        else if (getWebInterface().equals("SVN::Web"))
+            return "<a href=\"" + getWebUrl() + "/revision?rev=" + revision + "\">" + revision + "</a>";
+        else if (getWebInterface().equals("Trac"))
+            return "<a href=\"" + getWebUrl() + "/changeset/" + revision + "\">" + revision + "</a>";
+        else if (getWebInterface().equals("ViewVC"))
+            return "<a href=\"" + getWebUrl() + "?view=rev&revision=" + revision + "\">" + revision + "</a>";
+        else if (getWebInterface().equals("WebSVN"))
+            return "<a href=\"" + getWebUrl() + "/listing.php?rev=" + revision + "&sc=1\">" + revision + "</a>";
+        else
+            return revision;
+    }
+
+    /**
+     * Creates a link to the specified file revision.
+     * 
+     * @param path the path to the file
+     * @param revision the revision
+     * @return the link
+     */
+    public String createLinkForFile(String path, String revision) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl()) ||
+                Luntbuild.isEmpty(path) || Luntbuild.isEmpty(revision))
+            return path;
+        String clean_path = Luntbuild.removeLeadingSlash(path);
+        if (getWebInterface().equals("Chora"))
+            return path;
+        else if (getWebInterface().equals("Insurrection"))
+            return "<a href=\"" + getWebUrl() + "/" + clean_path + "?r=" + revision + "\">" + path + "</a>";
+        else if (getWebInterface().equals("JavaForge"))
+            return "<a href=\"http://www.javaforge.com/sccShowFileRevision/?proj_id=" + getWebUrl() + "&date=&tag=" + revision + "&filename=" + clean_path + "\">" + path + "</a>";
+        else if (getWebInterface().equals("perl_svn"))
+            return "<a href=\"" + getWebUrl() + "/" + clean_path + "&a=d&r=" + revision + "\">" + path + "</a>";
+        else if (getWebInterface().equals("SVN::Web"))
+            return "<a href=\"" + getWebUrl() + "/view/" + clean_path + "?rev=" + revision + "\">" + path + "</a>";
+        else if (getWebInterface().equals("Trac"))
+            return "<a href=\"" + getWebUrl() + "/browser/" + clean_path + "?rev=" + revision + "\">" + path + "</a>";
+        else if (getWebInterface().equals("ViewVC"))
+            return "<a href=\"" + getWebUrl() + "/" + clean_path + "?pathrev=" + revision + "&view=markup\">" + path + "</a>";
+        else if (getWebInterface().equals("WebSVN"))
+            return "<a href=\"" + getWebUrl() + "/filedetails.php?path=" + clean_path + "&rev=" + revision + "\">" + path + "</a>";
+        else
+            return path;
+    }
+
+    /**
+     * Creates a link to diff the specified file and revision with the previous revision.
+     * 
+     * @param path the path to the file
+     * @param revision the revision
+     * @return the link
+     */
+    public String createLinkForDiff(String path, String revision) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl()) ||
+                Luntbuild.isEmpty(path) || Luntbuild.isEmpty(revision))
+            return "";
+        String clean_path = Luntbuild.removeLeadingSlash(path);
+        if (getWebInterface().equals("Chora"))
+            return "";
+        else if (getWebInterface().equals("Insurrection"))
+            return "";
+        else if (getWebInterface().equals("JavaForge"))
+            return "";
+        else if (getWebInterface().equals("perl_svn"))
+            return "(<a href=\"" + getWebUrl() + "/" + clean_path + "&a=c&r=" + revision + "\">diff</a>)";
+        else if (getWebInterface().equals("SVN::Web"))
+            return "(<a href=\"" + getWebUrl() + "/revision?rev=" + revision + "#diff__" + clean_path.replaceAll("/","_") + "\">diff</a>)";
+        else if (getWebInterface().equals("Trac"))
+            return "";
+        else if (getWebInterface().equals("ViewVC"))
+            return "";
+        else if (getWebInterface().equals("WebSVN"))
+            return "(<a href=\"" + getWebUrl() + "/diff.php?path=" + clean_path + "&rev=" + revision + "\">diff</a>)";
+        else
+            return "";
+    }
+
+    /**
+     * Creates a link to diff the specified file between the specified revisions.
+     * 
+     * @param path the path to the file
+     * @param revision the revision (right hand side)
+     * @param prev_rev the previous revision (left hand side)
+     * @return the link
+     */
+    public String createLinkForDiff(String path, String revision, String prev_rev) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl()) ||
+                Luntbuild.isEmpty(path) || Luntbuild.isEmpty(revision) || Luntbuild.isEmpty(prev_rev))
+            return "";
+        String clean_path = Luntbuild.removeLeadingSlash(path);
+        if (getWebInterface().equals("Chora"))
+            return "";
+        else if (getWebInterface().equals("Insurrection"))
+            return "(<a href=\"" + getWebUrl() + "/" + clean_path + "?Insurrection=diff&r1=" + prev_rev + "&r2=" + revision + "\">diff</a>)";
+        else if (getWebInterface().equals("JavaForge"))
+            return "(<a href=\"http://www.javaforge.com/sccFileDiff?proj_id=" + getWebUrl() + "date=&revision1=" + revision + "&revision2=" + prev_rev + "&filename=" + clean_path + "\">diff</a>)";
+        else if (getWebInterface().equals("perl_svn"))
+            return "(<a href=\"" + getWebUrl() + "/" + clean_path + "&a=c&r=" + revision + "\">diff</a>)";
+        else if (getWebInterface().equals("SVN::Web"))
+            return "(<a href=\"" + getWebUrl() + "/revision?rev=" + revision + "#diff__" + clean_path.replaceAll("/","_") + "\">diff</a>)";
+        else if (getWebInterface().equals("Trac"))
+            return "(<a href=\"" + getWebUrl() + "/changeset/?new=" + clean_path + "@" + revision + "&old=" + clean_path + "@" + prev_rev + "\">diff</a>)";
+        else if (getWebInterface().equals("ViewVC"))
+            return "(<a href=\"" + getWebUrl() + "/" + clean_path + "?r1=" + prev_rev + "&r2=" + revision + "&view=markup\">diff</a>)";
+        else if (getWebInterface().equals("WebSVN"))
+            return "(<a href=\"" + getWebUrl() + "/comp.php?compare[]=" + clean_path + "@" + prev_rev + "&compare[]=" + clean_path + "@" + revision + "\">diff</a>)";
+        else
+            return "";
     }
 
     private void initLogger(Project antProject) {
@@ -666,9 +1002,87 @@ public class SvnAdaptor extends Vcs {
     }
 
     /**
-     * Svn Module
-     *
+     * Selection model used for user interface of <code>SvnAdaptor</code>.
      */
+    class SvnWebInterfaceSelectionModel implements IPropertySelectionModel {
+        String[] values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
+        String[] display_values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
+
+        /**
+         * Gets the number of options.
+         * 
+         * @return the number of options
+         */
+        public int getOptionCount() {
+            return this.values.length;
+        }
+
+        /**
+         * Gets an option.
+         * 
+         * @param index the index of the opiton
+         * @return the option
+         */
+        public Object getOption(int index) {
+            return this.values[index];
+        }
+
+        /**
+         * Gets the display label of an option.
+         * 
+         * @param index the index of the opiton
+         * @return the label
+         */
+        public String getLabel(int index) {
+            return this.display_values[index];
+        }
+
+        /**
+         * Gets the value of an option.
+         * 
+         * @param index the index of the opiton
+         * @return the value
+         */
+        public String getValue(int index) {
+            return this.values[index];
+        }
+
+        /**
+         * Gets the option that corresponds to a value.
+         * 
+         * @param value the value
+         * @return the option
+         */
+        public Object translateValue(String value) {
+            return value;
+        }
+    }
+
+    /**
+     * Revision (or change log) manager for Subversion.
+     */
+    public class SvnRevisions extends Revisions {
+        /**
+         * Adds a copyfrom path to the last path of the last entry added.
+         * 
+         * @param path the path
+         * @param revision the revision or version of the path
+         */
+        public void addCopyToLastPath(String path, String revision) {
+            if (lastEntry == null)
+               throw new BuildException("No entry exists to add path to.");
+            org.w3c.dom.NodeList paths = ((org.w3c.dom.Element) lastEntry.getElementsByTagName("paths").item(0)).getChildNodes();
+            org.w3c.dom.Element pathElement = (org.w3c.dom.Element) paths.item(paths.getLength() - 1);
+            pathElement.setAttribute("z_copyfrom-path", path);
+            pathElement.setAttribute("z_copyfrom-rev", revision);
+        }
+    }
+
+	/**
+	 * A Subversion module definition.
+	 *
+	 * @author robin shine
+	 */
     public class SvnModule extends Module {
         /**
          * Keep tracks of version of this class, used when do serialization-deserialization
@@ -681,13 +1095,14 @@ public class SvnAdaptor extends Vcs {
         private String destPath;
 
         /**
-         * Constructor
+         * Constructor, creates a blank Subversion module.
          */
         public SvnModule() {}
 
         /**
-         * Copy Constructor
-         * @param module
+         * Copy constructor, creates a Subversion module from another Subversion module.
+         * 
+         * @param module the module to create from
          */
         public SvnModule(SvnModule module) {
             this.srcPath = module.srcPath;
@@ -696,78 +1111,117 @@ public class SvnAdaptor extends Vcs {
             this.destPath = module.destPath;
         }
 
-        /**
-         * @return source path
-         */
+		/**
+		 * Gets the source path.
+		 * 
+		 * @return the source path
+		 */
         public String getSrcPath() {
             return this.srcPath;
         }
 
+		/**
+		 * Gets the source path. This method will parse OGNL variables.
+		 * 
+		 * @return the source path
+		 */
         private String getActualSrcPath() {
 			return OgnlHelper.evaluateScheduleValue(getSrcPath());
         }
 
-        /**
-         * @param srcPath
-         */
+		/**
+		 * Sets the source path.
+		 * 
+		 * @param srcPath the source path
+		 */
         public void setSrcPath(String srcPath) {
             this.srcPath = srcPath;
         }
 
-        /**
-         * @return branch
-         */
+		/**
+		 * Gets the branch.
+		 * 
+		 * @return the branch
+		 */
         public String getBranch() {
             return this.branch;
         }
 
-		private String getActualBranch() {
+		/**
+		 * Gets the branch. This method will parse OGNL variables.
+		 * 
+		 * @return the branch
+		 */
+        private String getActualBranch() {
 			return OgnlHelper.evaluateScheduleValue(getBranch());
 		}
 
-        /**
-         * @param branch
-         */
+		/**
+		 * Sets the branch.
+		 * 
+		 * @param branch the branch
+		 */
         public void setBranch(String branch) {
             this.branch = branch;
         }
 
-        /**
-         * @return label
-         */
+		/**
+		 * Gets the label.
+		 * 
+		 * @return the label
+		 */
         public String getLabel() {
             return this.label;
         }
 
-		private String getActualLabel() {
+		/**
+		 * Gets the label. This method will parse OGNL variables.
+		 * 
+		 * @return the label
+		 */
+        private String getActualLabel() {
 			return OgnlHelper.evaluateScheduleValue(getLabel());
 		}
 
-        /**
-         * @param label
-         */
+		/**
+		 * Sets the label.
+		 * 
+		 * @param label the label
+		 */
         public void setLabel(String label) {
             this.label = label;
         }
 
-        /**
-         * @return dest path
-         */
+		/**
+		 * Gets the destination path.
+		 * 
+		 * @return the destination path
+		 */
         public String getDestPath() {
             return this.destPath;
         }
 
+		/**
+		 * Gets the destination path. This method will parse OGNL variables.
+		 * 
+		 * @return the destination path
+		 */
         private String getActualDestPath() {
 			return OgnlHelper.evaluateScheduleValue(getDestPath());
         }
 
-        /**
-         * @param destPath
-         */
+		/**
+		 * Sets the destination path.
+		 * 
+		 * @param destPath the destination path
+		 */
         public void setDestPath(String destPath) {
             this.destPath = destPath;
         }
 
+		/**
+		 * @inheritDoc
+		 */
         public List getProperties() {
             List properties = new ArrayList();
             properties.add(new DisplayProperty() {
@@ -790,9 +1244,9 @@ public class SvnAdaptor extends Vcs {
                     return getSrcPath();
                 }
 
-				public String getActualValue() {
-					return getActualSrcPath();
-				}
+                public String getActualValue() {
+                    return getActualSrcPath();
+                }
 
                 public void setValue(String value) {
                     setSrcPath(value);
@@ -820,9 +1274,9 @@ public class SvnAdaptor extends Vcs {
                     return getBranch();
                 }
 
-				public String getActualValue() {
-					return getActualBranch();
-				}
+                public String getActualValue() {
+                    return getActualBranch();
+                }
 
                 public void setValue(String value) {
                     setBranch(value);
@@ -851,9 +1305,9 @@ public class SvnAdaptor extends Vcs {
                     return getLabel();
                 }
 
-				public String getActualValue() {
-					return getActualLabel();
-				}
+                public String getActualValue() {
+                    return getActualLabel();
+                }
 
                 public void setValue(String value) {
                     setLabel(value);
@@ -879,9 +1333,9 @@ public class SvnAdaptor extends Vcs {
                     return getDestPath();
                 }
 
-				public String getActualValue() {
-					return getActualDestPath();
-				}
+                public String getActualValue() {
+                    return getActualDestPath();
+                }
 
                 public void setValue(String value) {
                     setDestPath(value);
@@ -890,8 +1344,12 @@ public class SvnAdaptor extends Vcs {
             return properties;
         }
 
-        public com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade() {
-            SvnModuleFacade facade = new com.luntsys.luntbuild.facades.lb12.SvnModuleFacade();
+	    /**
+	     * @inheritDoc
+	     * @see SvnModuleFacade
+	     */
+        public ModuleFacade getFacade() {
+            SvnModuleFacade facade = new SvnModuleFacade();
             facade.setBranch(getBranch());
             facade.setDestPath(getDestPath());
             facade.setLabel(getLabel());
@@ -899,9 +1357,14 @@ public class SvnAdaptor extends Vcs {
             return facade;
         }
 
-        public void setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade facade) {
-            if (facade instanceof com.luntsys.luntbuild.facades.lb12.SvnModuleFacade) {
-                SvnModuleFacade svnModuleFacade = (com.luntsys.luntbuild.facades.lb12.SvnModuleFacade) facade;
+	    /**
+	     * @inheritDoc
+	     * @throws RuntimeException if the facade is not an <code>SvnModuleFacade</code>
+	     * @see SvnModuleFacade
+	     */
+        public void setFacade(ModuleFacade facade) {
+            if (facade instanceof SvnModuleFacade) {
+                SvnModuleFacade svnModuleFacade = (SvnModuleFacade) facade;
                 setBranch(svnModuleFacade.getBranch());
                 setLabel(svnModuleFacade.getLabel());
                 setSrcPath(svnModuleFacade.getSrcPath());
@@ -911,7 +1374,12 @@ public class SvnAdaptor extends Vcs {
         }
     }
 
-    public void saveToFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
+    /**
+     * @inheritDoc
+     * @see SvnAdaptorFacade
+     */
+    public void saveToFacade(VcsFacade facade) {
+    	// TODO throw RuntimeException if the facade is not the right class
         SvnAdaptorFacade svnFacade = (SvnAdaptorFacade) facade;
         svnFacade.setTrunk(getTrunk());
         svnFacade.setBranches(getBranches());
@@ -919,23 +1387,34 @@ public class SvnAdaptor extends Vcs {
         svnFacade.setTags(getTags());
         svnFacade.setUrlBase(getUrlBase());
         svnFacade.setUser(getUser());
+        svnFacade.setWebInterface(getWebInterface());
+        svnFacade.setWebUrl(getWebUrl());
     }
 
-    public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.SvnAdaptorFacade))
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>SvnAdaptorFacade</code>
+     * @see SvnAdaptorFacade
+     */
+    public void loadFromFacade(VcsFacade facade) {
+        if (!(facade instanceof SvnAdaptorFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.SvnAdaptorFacade svnFacade = (com.luntsys.luntbuild.facades.lb12.SvnAdaptorFacade) facade;
+        SvnAdaptorFacade svnFacade = (SvnAdaptorFacade) facade;
         setTrunk(svnFacade.getTrunk());
         setBranches(svnFacade.getBranches());
         setPassword(svnFacade.getPassword());
         setTags(svnFacade.getTags());
         setUrlBase(svnFacade.getUrlBase());
         setUser(svnFacade.getUser());
+		setWebInterface(svnFacade.getWebInterface());
+		setWebUrl(svnFacade.getWebUrl());
     }
 
-    public com.luntsys.luntbuild.facades.lb12.VcsFacade constructFacade() {
+    /**
+     * @inheritDoc
+     * @see SvnAdaptorFacade
+     */
+    public VcsFacade constructFacade() {
         return new SvnAdaptorFacade();
     }
-
 }
-

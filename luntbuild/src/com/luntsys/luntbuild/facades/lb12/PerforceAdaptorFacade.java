@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade of perforce adaptor
+ * Perforce VCS adaptor facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.PerforceAdaptor
  */
 public class PerforceAdaptorFacade extends VcsFacade {
 	/**
@@ -47,87 +50,169 @@ public class PerforceAdaptorFacade extends VcsFacade {
 	private String password;
 
 	/**
-	 * line end mode, possible values are "local", "unix", "mac", "win", "share". Refer
-	 * to user manual for detail information
+	 * Line end mode
 	 */
 	private String lineEnd;
 
 	private String p4Dir;
 
-	/**
-	 * Get the perforce port. This is a project level property
-	 * @return perforce port
-	 */
+    /** Perforce web interface to itegrate with */
+    private String webInterface;
+    /** Perforce web interface URL */
+    private String webUrl;
+
+	private String changelist;
+
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
+	public String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.PerforceAdaptor";
+	}
+
+    /**
+     * Gets the server name and port to connect to the Perforce server with.
+     * 
+     * @return the server name and port
+     */
 	public String getPort() {
 		return port;
 	}
 
-	/**
-	 * Set perforce port
-	 * @param port
-	 */
+    /**
+     * Sets the server name and port to connect to the Perforce server with.
+     * 
+     * @param port the server name and port
+     */
 	public void setPort(String port) {
 		this.port = port;
 	}
 
-	/**
-	 * Get user name to access perforce. This is a project level property
-	 * @return user name to access perforce
-	 */
+    /**
+     * Gets the login user to use.
+     * 
+     * @return the login user
+     */
 	public String getUser() {
 		return user;
 	}
 
-	/**
-	 * Set user name to access perforce
-	 * @param user
-	 */
+    /**
+     * Sets the login user to use.
+     * 
+     * @param user the login user
+     */
 	public void setUser(String user) {
 		this.user = user;
 	}
 
-	/**
-	 * Get password to access perforce. This is a project level property
-	 * @return password to access perforce
-	 */
+    /**
+     * Gets the login password to use.
+     * 
+     * @return the login password
+     */
 	public String getPassword() {
 		return password;
 	}
 
-	/**
-	 * Set password to access perforce
-	 * @param password
-	 */
+    /**
+     * Sets the login password to use.
+     * 
+     * @param password the login password
+     */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
 	/**
-	 * Get line end mode for checkouted text files. This is a project level property
-	 * @return one value of "local", "unix", "mac", "win", "share". Refer to
-	 * user manual for detail information
+	 * Gets the line end mode for checked-out text files.
+	 * 
+	 * @return the line end mode
 	 */
 	public String getLineEnd() {
 		return lineEnd;
 	}
 
 	/**
-	 * Set line end mode for checkouted text files
-	 * @param lineEnd one value of "local", "unix", "mac", "win", "share".
+	 * Sets the line end mode for checked-out text files.
+	 * 
+	 * @param lineEnd the line end mode
 	 */
 	public void setLineEnd(String lineEnd) {
 		this.lineEnd = lineEnd;
 	}
 
-	public String getVcsClassName() {
-		return "com.luntsys.luntbuild.vcs.PerforceAdaptor";
-	}
-
+	/**
+	 * Gets the path to the Perforce executable.
+	 * 
+	 * @return the path to the Perforce executable
+	 */
 	public String getP4Dir() {
 		return p4Dir;
 	}
 
+	/**
+	 * Sets the path to the Perforce executable.
+	 * 
+	 * @param p4Dir the path to the Perforce executable
+	 */
 	public void setP4Dir(String p4Dir) {
 		this.p4Dir = p4Dir;
+	}
+
+    /**
+     * Gets the web interface to integrate with.
+     * 
+     * @return the web interface to integrate with
+     */
+    public String getWebInterface() {
+        return webInterface;
+    }
+
+    /**
+     * Sets the web interface to integrate with.
+     * 
+     * @param webInterface the web interface to integrate with
+     */
+    public void setWebInterface(String webInterface) {
+        this.webInterface = webInterface;
+    }
+
+    /**
+     * Gets the web interface URL.
+     * 
+     * @return the web interface URL
+     */
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    /**
+     * Sets the web interface URL.
+     * 
+     * @param webUrl the web interface URL
+     */
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
+    }
+
+    /**
+     * Gets the tip changelist.
+     * 
+     * @return the tip changelist
+     */
+	public String getChangelist() {
+		return changelist;
+	}
+
+    /**
+     * Sets the tip changelist.
+     * 
+     * @param changelist the tip changelist
+     */
+	public void setChangelist(String changelist) {
+		this.changelist = changelist;
 	}
 }

@@ -1,7 +1,3 @@
-package com.luntsys.luntbuild.listeners;
-
-import com.luntsys.luntbuild.db.Build;
-
 /*
  * Copyright luntsys (c) 2004-2005,
  * Date: 2004-10-26
@@ -30,11 +26,25 @@ import com.luntsys.luntbuild.db.Build;
  *  
  */
 
+package com.luntsys.luntbuild.listeners;
+
+import com.luntsys.luntbuild.db.Build;
+
 /**
- * Listener interface to handle luntbuild messages
+ * Listener interface to handle Luntbuild messages.
  */
 public interface Listener {
+	/**
+	 * Executed when a build starts.
+	 * 
+	 * @param build the source of the event
+	 */
 	void buildStarted(Build build);
 
+	/**
+	 * Executed when a build finishes.
+	 * 
+	 * @param build the source of the event
+	 */
 	void buildFinished(Build build);
 }

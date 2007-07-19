@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.dependency;
 
 import java.util.*;
@@ -42,19 +43,44 @@ public class DependencyResolver {
 	private Object userData4DependsOn= null;
 	private Object userData4Visit = null;
 
+	/**
+	 * Creates a dependency resolver.
+	 * 
+	 * @param userData4DependsOn
+	 * @param userData4Visit
+	 */
 	public DependencyResolver(Object userData4DependsOn, Object userData4Visit) {
 		this.userData4DependsOn = userData4DependsOn;
 		this.userData4Visit = userData4Visit;
 	}
 
+	/**
+	 * Visits dependency nodes of this node.
+	 * 
+	 * @param thisNode this node
+	 * @throws DependencyLoopException from {@link #visitNodes(Set)}
+	 */
 	public void visitNodesThisNodeDependsOnRecursively(DependentNode thisNode) throws DependencyLoopException {
 		visitNodes(findNodesThisNodeDependsOnRecursively(thisNode));
 	}
 
+	/**
+	 * Visits dependent nodes for this node.
+	 * 
+	 * @param nodes the set of nodes
+	 * @param thisNode this node
+	 * @throws DependencyLoopException from {@link #visitNodes(Set)}
+	 */
 	public void visitNodesDependsOnThisNodeRecursively(Set nodes, DependentNode thisNode) throws DependencyLoopException {
 		visitNodes(findNodesDependsOnThisNodeRecursively(nodes, thisNode));
 	}
 
+	/**
+	 * Visits all dependent nodes recursively from leaf to head.
+	 * 
+	 * @param nodes the set of dependent nodes
+	 * @throws DependencyLoopException if a dependency loop exists
+	 */
 	public void visitNodes(Set nodes) throws DependencyLoopException {
 		synchronized (lock) {
 			remainedNodes = new HashSet(nodes);
@@ -76,6 +102,13 @@ public class DependencyResolver {
 		}
 	}
 
+	/**
+	 * Finds the first leaf node from a list of dependent nodes that isn't in a list of excluded nodes.
+	 * 
+	 * @param nodes the set of dependent nodes
+	 * @param excludedNodes the set of nodes to ignore
+	 * @return the leaf node or <code>null</code>
+	 */
 	public DependentNode findLeafNode(Set nodes, Set excludedNodes) {
 		Iterator it = nodes.iterator();
 		while (it.hasNext()) {
@@ -97,10 +130,23 @@ public class DependencyResolver {
 		return null;
 	}
 
+	/**
+	 * Finds the first leaf node from a list of dependent nodes.
+	 * 
+	 * @param nodes the set of dependent nodes
+	 * @return the leaf node or <code>null</code>
+	 */
 	public DependentNode findLeafNode(Set nodes) {
 		return findLeafNode(nodes, new HashSet());
 	}
 
+	/**
+	 * Finds nodes that depend on this node.
+	 * 
+	 * @param nodes the set of nodes
+	 * @param thisNode this node
+	 * @return the set of nodes that depend on this node
+	 */
 	public Set findNodesDependsOnThisNodeRecursively(Set nodes, DependentNode thisNode) {
 		Set nodesDependsOnThis = new HashSet(nodes);
 		nodesDependsOnThis.removeAll(findNodesThisNodeDependsOnRecursively(thisNode));
@@ -114,6 +160,12 @@ public class DependencyResolver {
 		return nodesDependsOnThis;
 	}
 
+	/**
+	 * Detects dependency loops.
+	 * 
+	 * @param nodes the set of nodes to check
+	 * @throws DependencyLoopException if a dependency loop exists
+	 */
 	public void detectDependencyLoop(Set nodes) throws DependencyLoopException {
 		Set availableNodes = new HashSet(nodes);
 		while (!availableNodes.isEmpty()) {
@@ -126,6 +178,12 @@ public class DependencyResolver {
 		}
 	}
 
+	/**
+	 * Finds nodes that this node depends on.
+	 * 
+	 * @param thisNode this node
+	 * @return the set of nodes that this node depends on
+	 */
 	public Set findNodesThisNodeDependsOnRecursively(DependentNode thisNode) {
 		Set nodes = new HashSet();
 		nodes.add(thisNode);
@@ -151,13 +209,25 @@ public class DependencyResolver {
 		return nodes;
 	}
 
+	/**
+	 * Class to delegate running of dependency nodes.
+	 * @author robin shine
+	 */
 	public class NodeRunner implements Runnable {
 		private DependentNode node;
 
+		/**
+		 * Creates a new node runner.
+		 * 
+		 * @param node the node to run
+		 */
 		public NodeRunner(DependentNode node) {
 			this.node = node;
 		}
 
+		/**
+		 * Executes the dependency node.
+		 */
 		public void run() {
 			node.visit(userData4Visit);
 			synchronized (lock) {

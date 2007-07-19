@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild;
 
 import org.apache.commons.logging.Log;
@@ -32,8 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.tapestry.ApplicationServlet;
 
 /**
- * This servlet overrides the tapestry {@link org.apache.tapestry.ApplicationServlet} to provides
- * some extra behaviors during servlet initialization and destroy
+ * Customized servlert to provide some extra behaviors during servlet initialization and destruction.
  *
  * @author robin shine
  */

@@ -1,12 +1,14 @@
 /*
- * Copyright luntsys (c) 2004-2005, Date: 2004-7-23 Time: 10:06
+ * Copyright luntsys (c) 2004-2005,
+ * Date: 2004-7-23
+ * Time: 10:06
  *
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 2. Redistributions in
+ * modification, are permitted provided that the following conditions are met: 1.
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer. 2. Redistributions in
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
@@ -19,10 +21,11 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import java.io.File;
@@ -46,22 +49,80 @@ import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.MyExecTask;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 
+/**
+ * Dynamic Clearcase VCS adaptor implementation.
+ * 
+ * <p>This adaptor is NOT safe for remote hosts.</p>
+ */
 public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
-
+	/**
+	 * Keep tracks of version of this class, used when do serialization-deserialization
+	 */
     static final long serialVersionUID = -5874620844092691665L;
 
     private String mvfsPath;
 
     private String projectPath;
 
+    /**
+     * @inheritDoc
+     */
+    public String getDisplayName() {
+        return "Dynamic Clearcase";
+    }
+
+    /**
+     * Gets the MVFS path, where all Clearcase views are accessible.
+     * 
+     * @return the MVFS path
+     */
+    public String getMvfsPath() {
+        return mvfsPath;
+    }
+
+    /**
+     * Gets the MVFS path, where all Clearcase views are accessible.
+     * This method will parse OGNL variables.
+     * 
+     * @return the MVFS path
+     */
+    public String getActualMvfsPath() {
+		return OgnlHelper.evaluateScheduleValue(getMvfsPath());
+    }
+
+    /**
+     * Sets the MVFS path, where all Clearcase views are accessible.
+     * 
+     * @param mvfsPath the MVFS path
+     */
+    public void setMvfsPath(String mvfsPath) {
+        this.mvfsPath = mvfsPath;
+    }
+
+    /**
+     * Gets the project path.
+     * 
+     * @return the project path
+     */
     public String getProjectPath() {
         return projectPath;
     }
 
+    /**
+     * Gets the project path.
+     * This method will parse OGNL variables.
+     * 
+     * @return the project path
+     */
     public String getActualProjectPath() {
 		return OgnlHelper.evaluateScheduleValue(getProjectPath());
     }
 
+    /**
+     * Sets the project path.
+     * 
+     * @param projectPath the project path
+     */
     public void setProjectPath(String projectPath) {
         this.projectPath = projectPath;
     }
@@ -74,6 +135,9 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
                 antProject);
     }
 
+	/**
+     * @inheritDoc
+	 */
     public void checkoutActually(Build build, Project antProject) {
         ensureViewPresent(build.getSchedule(), antProject);
         if (build.isCleanBuild()) {
@@ -139,18 +203,16 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
         del.execute();
     }
 
-    public VcsFacade constructFacade() {
-        return new DynamicClearcaseAdaptorFacade();
-    }
-
-    public String getDisplayName() {
-        return "Dynamic Clearcase";
-    }
-
+	/**
+     * @inheritDoc
+	 */
     public void label(Build build, Project antProject) {
         // TODO Auto-generated method stub
     }
 
+    /**
+     * @inheritDoc
+     */
     protected List getClearcaseAdaptorProperties() {
         List properties = new ArrayList();
         properties.add(new DisplayProperty() {
@@ -212,8 +274,7 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
 
     protected void loadAdditionalStuffFromFacade(VcsFacade facade) {
         setMvfsPath(((DynamicClearcaseAdaptorFacade) facade).getMvfsPath());
-        setProjectPath(((DynamicClearcaseAdaptorFacade) facade)
-                .getProjectPath());
+        setProjectPath(((DynamicClearcaseAdaptorFacade) facade).getProjectPath());
     }
 
     protected void postSetCs(Project antProject, String workingDir) {
@@ -256,15 +317,11 @@ public class DynamicClearcaseAdaptor extends AbstractClearcaseAdaptor {
         return result.toString();
     }
 
-    public String getMvfsPath() {
-        return mvfsPath;
-    }
-
-    public String getActualMvfsPath() {
-		return OgnlHelper.evaluateScheduleValue(getMvfsPath());
-    }
-
-    public void setMvfsPath(String mvfsPath) {
-        this.mvfsPath = mvfsPath;
+    /**
+     * @inheritDoc
+     * @see DynamicClearcaseAdaptorFacade
+     */
+    public VcsFacade constructFacade() {
+        return new DynamicClearcaseAdaptorFacade();
     }
 }

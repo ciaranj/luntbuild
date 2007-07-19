@@ -28,6 +28,8 @@
 package com.luntsys.luntbuild.builders;
 
 import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
+import com.luntsys.luntbuild.facades.lb12.MavenBuilderFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
@@ -39,7 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Maven builder implementation
+ * Maven builder implementation.
+ * 
  * @author robin shine
  */
 public class MavenBuilder extends Builder {
@@ -72,56 +75,107 @@ public class MavenBuilder extends Builder {
             "buildDate=\"${build.startDate}\"\n" +
             "junitHtmlReportDir=\"${build.junitHtmlReportDir}\"";
 
-
+	/**
+	 * Constructor, creates a new maven builder with default settings.
+	 */
     public MavenBuilder() {
         if (System.getProperty("os.name").startsWith("Windows")) {
             this.command = "\"C:\\Program Files\\Apache Software Foundation\\Maven 1.0.2\\bin\\maven.bat\"";
         } else {
             this.command = "/usr/local/bin/maven";
         }
-        setBuildSuccessCondition("result==0 and logContainsLine(\"BUILD SUCCESSFUL\")");
+        setBuildSuccessCondition("result==0 and builderLogContainsLine(\"BUILD SUCCESSFUL\")");
     }
 
+	/**
+	 * Gets the command to run maven.
+	 * 
+	 * @return the command to run maven
+	 */
     public String getCommand() {
         return command;
     }
 
+	/**
+	 * Sets the command to run maven.
+	 * 
+	 * @param command the command to run maven
+	 */
     public void setCommand(String command) {
         this.command = command;
     }
 
+	/**
+	 * Gets the directory to run maven in.
+	 * 
+	 * @return the directory to run maven in
+	 */
     public String getDirToRunMaven() {
         return dirToRunMaven;
     }
 
+	/**
+	 * Sets the directory to run maven in.
+	 * 
+	 * @param dirToRunMaven the directory to run maven in
+	 */
     public void setDirToRunMaven(String dirToRunMaven) {
         this.dirToRunMaven = dirToRunMaven;
     }
 
+	/**
+	 * Gets the goals.
+	 * 
+	 * @return the goals
+	 */
     public String getGoals() {
         return goals;
     }
 
+	/**
+	 * Sets the goals.
+	 * 
+	 * @param goals the goals
+	 */
     public void setGoals(String goals) {
         this.goals = goals;
     }
 
+	/**
+	 * Gets the build properties.
+	 * 
+	 * @return the build properties
+	 */
     public String getBuildProperties() {
         return buildProperties;
     }
 
+	/**
+	 * Sets the build properties.
+	 * 
+	 * @param buildProperties the build properties
+	 */
     public void setBuildProperties(String buildProperties) {
         this.buildProperties = buildProperties;
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getDisplayName() {
         return "Maven builder";
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getIconName() {
         return "maven.png";
     }
 
+    /**
+     * @inheritDoc
+     */
     public List getBuilderSpecificProperties() {
         List properties = new ArrayList();
         properties.add(new DisplayProperty() {
@@ -230,6 +284,9 @@ public class MavenBuilder extends Builder {
         return properties;
     }
 
+    /**
+     * @inheritDoc
+     */
     public void validate() {
         super.validate();
         try {
@@ -263,11 +320,9 @@ public class MavenBuilder extends Builder {
     }
 
     /**
-     * Construct command to run maven
-     *
-     * @return command to run maven
+     * @inheritDoc
      */
-    public String constructBuildCmd(Build build) throws IOException {
+    public String constructBuildCmd(Build build) {
         String mavenCmd = getCommand();
         mavenCmd = mavenCmd.replace('\n', ' ');
         mavenCmd = mavenCmd.replace('\r', ' ');
@@ -286,7 +341,7 @@ public class MavenBuilder extends Builder {
                     }
                 }
             } catch (IOException e) {
-                // ignores
+                // ignore
             }
         }
 
@@ -305,28 +360,45 @@ public class MavenBuilder extends Builder {
         return mavenCmd;
     }
 
+	/**
+     * @inheritDoc
+	 */
     public String constructBuildCmdDir(Build build) {
         return build.getSchedule().resolveAbsolutePath(getDirToRunMaven());
     }
 
-    public com.luntsys.luntbuild.facades.lb12.BuilderFacade constructFacade() {
-        return new com.luntsys.luntbuild.facades.lb12.MavenBuilderFacade();
+    /**
+     * @inheritDoc
+     * @see MavenBuilderFacade
+     */
+    public BuilderFacade constructFacade() {
+        return new MavenBuilderFacade();
     }
 
-    public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.MavenBuilderFacade))
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>MavenBuilderFacade</code>
+     * @see MavenBuilderFacade
+     */
+    public void loadFromFacade(BuilderFacade facade) {
+        if (!(facade instanceof MavenBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.MavenBuilderFacade mavenBuilderFacade = (com.luntsys.luntbuild.facades.lb12.MavenBuilderFacade) facade;
+        MavenBuilderFacade mavenBuilderFacade = (MavenBuilderFacade) facade;
         setCommand(mavenBuilderFacade.getCommand());
         setDirToRunMaven(mavenBuilderFacade.getDirToRunMaven());
         setGoals(mavenBuilderFacade.getGoals());
         setBuildProperties(mavenBuilderFacade.getBuildProperties());
     }
 
-    public void saveToFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.MavenBuilderFacade))
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>MavenBuilderFacade</code>
+     * @see MavenBuilderFacade
+     */
+    public void saveToFacade(BuilderFacade facade) {
+        if (!(facade instanceof MavenBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.MavenBuilderFacade mavenBuilderFacade = (com.luntsys.luntbuild.facades.lb12.MavenBuilderFacade) facade;
+        MavenBuilderFacade mavenBuilderFacade = (MavenBuilderFacade) facade;
         mavenBuilderFacade.setCommand(getCommand());
         mavenBuilderFacade.setDirToRunMaven(getDirToRunMaven());
         mavenBuilderFacade.setGoals(getGoals());

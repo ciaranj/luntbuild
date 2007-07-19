@@ -41,6 +41,10 @@ See the build log and the revision log for details.
 	  	<td>Revision Log</td>
 		<td><a href="${build_revisionlog_url}">${build_revisionlog_url}</a></td>
   	</tr>
+    <tr>
+	  	<td>Login Page</td>
+		<td><a href="${luntbuild_servlet_url}">${luntbuild_servlet_url}</a></td>
+  	</tr>
   </tbody>
 </table>
 

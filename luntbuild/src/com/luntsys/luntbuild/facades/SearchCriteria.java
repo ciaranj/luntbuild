@@ -25,12 +25,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.facades;
 
 import java.util.Date;
 
 /**
- * This class is used to stands for a search criteria when searching for builds
+ * This class is used to stands for a search criteria when searching for builds.
  *
  * @author robin shine
  */
@@ -65,99 +66,116 @@ public class SearchCriteria {
 	private long scheduleIds[] = new long[0];
 
 	/**
-	 * Get version to search
-	 * @return version to search
+	 * Gets the version to search for.
+	 * 
+	 * @return the version
 	 */
 	public String getVersion() {
 		return version;
 	}
 
 	/**
-	 * Get whether or not perform exact match on version when searches build
-	 * @return boolean value
+	 * Checks if search should perform exact matching on version when searching for builds.
+	 * 
+	 * @return <code>true</code> if only exact matches should be returned
 	 */
 	public boolean isExactMatch() {
 		return exactMatch;
 	}
 
 	/**
-	 * Set whether or not perform exact match on version when searches build
-	 * @param exactMatch
+	 * Sets the exact matching setting for search.
+	 * 
+	 * @param exactMatch if <code>true</code>, only exact matches should be returned
 	 */
 	public void setExactMatch(boolean exactMatch) {
 		this.exactMatch = exactMatch;
 	}
 
 	/**
-	 * Set version to search
-	 * @param version
+	 * Sets the version to search for.
+	 * 
+	 * @param version the version
 	 */
 	public void setVersion(String version) {
 		this.version = version;
 	}
 
 	/**
-	 * Get start date to search builds on
-	 * @return start date to search builds on
+	 * Gets the start date to search for builds from.
+	 * 
+	 * @return the start date
 	 */
 	public Date getFrom() {
 		return from;
 	}
 
 	/**
-	 * Set start date to search builds on
-	 * @param from
+	 * Sets the start date to search for builds from.
+	 * 
+	 * @param from the start date
 	 */
 	public void setFrom(Date from) {
 		this.from = from;
 	}
 
 	/**
-	 * Get end date to search builds on
-	 * @return end date to search builds on
+	 * Gets the end date to search for builds to.
+	 * 
+	 * @return the end date
 	 */
 	public Date getTo() {
 		return to;
 	}
 
 	/**
-	 * Set end date to search builds on
-	 * @param to
+	 * Sets the end date to search for builds to.
+	 * 
+	 * @param to the end date
 	 */
 	public void setTo(Date to) {
 		this.to = to;
 	}
 
 	/**
-	 * Get build status to search
-	 * @return one value of {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_ALL},
-	 * {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_FAILED},
-	 * {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_RUNNING},
-	 * {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_SUCCESS}
+	 * Gets the build status to search for.
+	 * 
+	 * @return the build status
+	 * @see Constants#BUILD_STATUS_ALL
+	 * @see Constants#BUILD_STATUS_FAILED
+	 * @see Constants#BUILD_STATUS_RUNNING
+	 * @see Constants#BUILD_STATUS_SUCCESS
 	 */
 	public int getStatus() {
 		return status;
 	}
 
 	/**
-	 * Set build status to search
-	 * @param status refer to return value of {@link #getStatus()}
+	 * Sets the build status to search for.
+	 * 
+	 * @param status the build status
+	 * @see Constants#BUILD_STATUS_ALL
+	 * @see Constants#BUILD_STATUS_FAILED
+	 * @see Constants#BUILD_STATUS_RUNNING
+	 * @see Constants#BUILD_STATUS_SUCCESS
 	 */
 	public void setStatus(int status) {
 		this.status = status;
 	}
 
 	/**
-	 * Get id array of schedules the search should be performed in
-	 * @return id array of schedules
+	 * Gets the array of identifiers for the schedules the search should be performed in.
+	 * 
+	 * @return the array of schedule identifiers
 	 */
 	public long[] getScheduleIds() {
 		return scheduleIds;
 	}
 
 	/**
-	 * Set id array of schedules
-	 * @param scheduleIds
+	 * Sets the array of identifiers for the schedules the search should be performed in.
+	 * 
+	 * @param scheduleIds the array of schedule identifiers
 	 */
 	public void setScheduleIds(long[] scheduleIds) {
 		this.scheduleIds = scheduleIds;

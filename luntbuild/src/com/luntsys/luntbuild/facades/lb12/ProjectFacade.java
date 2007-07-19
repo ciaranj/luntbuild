@@ -25,16 +25,19 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 import java.util.List;
 import java.util.ArrayList;
 
+import com.luntsys.luntbuild.db.Schedule;
+
 /**
- * Facade of a luntbuild project, this is mainly used by web service client to operate
- * project specific properties
+ * Project facade.
  *
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.Project
  */
 public class ProjectFacade {
 	private long id;
@@ -52,134 +55,165 @@ public class ProjectFacade {
     private String[] notifyUsers = null;
 
 	/**
-	 * Get name of this project
-	 * @return name of this project
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * Get id of this project
-	 * @return id of this project
+	 * Gets the identifer of this project.
+	 * 
+	 * @return the identifer of this project
 	 */
 	public long getId() {
 		return this.id;
 	}
 
 	/**
-	 * Set id of this project
-	 * @param id
+	 * Sets the identifier of this project.
+	 *
+	 * @param id the identifier of this project
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * Set name of this project
-	 * @param name
+	 * Gets the name of this project.
+	 * 
+	 * @return the name of this project
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * Sets the name of this project.
+	 * 
+	 * @param name the name of this project
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * Get description of this project
-	 * @return description of this project
+	 * Gets the description of this project.
+	 * 
+	 * @return the description of this project
 	 */
 	public String getDescription() {
 		return this.description;
 	}
 
 	/**
-	 * Set description of this project
-	 * @param description
+	 * Sets the description of this project.
+	 * 
+	 * @param description the description of this project
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * Get vcs list of this project
-	 * @return vcs list configured for this project
+	 * Gets the VCS list of this project.
+	 * 
+	 * @return the VCS list of this project
+	 * @see com.luntsys.luntbuild.vcs.Vcs
 	 */
 	public List getVcsList() {
 		return this.vcsList;
 	}
 
 	/**
-	 * Set vcs list of this project
-	 * @param vcsList
+	 * Sets the VCS list of this project.
+	 * 
+	 * @param vcsList the list of VCS adaptors
+	 * @see com.luntsys.luntbuild.vcs.Vcs
 	 */
 	public void setVcsList(List vcsList) {
 		this.vcsList = vcsList;
 	}
 
 	/**
-	 * Get builders configured for this project
-	 * @return builders configured for this project
+	 * Gets the builder list of this project.
+	 *
+	 * @return the builder list of this project
+	 * @see com.luntsys.luntbuild.builders.Builder
 	 */
 	public List getBuilderList() {
 		return this.builderList;
 	}
 
 	/**
-	 * Set builders configured for this project
-	 * @param builderList
+	 * Sets the builder list of this project.
+	 * 
+	 * @param builderList the list of builders
+	 * @see com.luntsys.luntbuild.builders.Builder
 	 */
 	public void setBuilderList(List builderList) {
 		this.builderList = builderList;
 	}
 
 	/**
-	 * @return variables
+	 * Gets all variables, encoded as a string.
+	 * 
+	 * @return all variables encoded as a string
 	 */
 	public String getVariables() {
 		return this.variables;
 	}
 
-	/** Set variables
-	 * @param variables
+	/**
+	 * Sets all variables, encoded as a string.
+	 * 
+	 * @param variables all variables encoded as a string
 	 */
 	public void setVariables(String variables) {
 		this.variables = variables;
 	}
 
 	/**
-	 * Get log level of this project
-	 * @return one value of
-	 * {@link com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_BRIEF},
-	 * {@link com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_NORMAL},
-	 * {@link com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_VERBOSE}
+	 * Gets the log level of this project.
+	 * 
+	 * @return the log level
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_BRIEF
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_NORMAL
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_VERBOSE
 	 */
 	public int getLogLevel() {
 		return this.logLevel;
 	}
 
-	/** Set log level
-	 * @param logLevel
+	/**
+	 * Sets the log level of this project.
+	 * 
+	 * @param logLevel the log level
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_BRIEF
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_NORMAL
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_VERBOSE
 	 */
 	public void setLogLevel(int logLevel) {
 		this.logLevel = logLevel;
 	}
 
 	/**
-	 * Get notifier list of this project
-	 * @return notifiers
+	 * Gets the notifiers configured for this project.
+	 * 
+	 * @return the notifiers configured for this project
+	 * @see com.luntsys.luntbuild.notifiers.Notifier
 	 */
 	public List getNotifiers() {
 		return this.notifiers;
 	}
 
-	/** Set notifier clas names
-	 * @param notifiers
+	/**
+	 * Sets list of configured notifiers.
+	 * 
+	 * @param notifiers the list of notifiers
+	 * @see com.luntsys.luntbuild.notifiers.Notifier
 	 */
 	public void setNotifiers(List notifiers) {
 		this.notifiers = notifiers;
 	}
 
     /**
-     * @return Returns the projectAdmins (array of names).
+     * Gets the list of project administrator user names.
+     * 
+     * @return the list of administrator names
      * @since 1.3
      */
     public final String[] getProjectAdmins() {
@@ -187,7 +221,9 @@ public class ProjectFacade {
     }
 
     /**
-     * @param projectAdmins The projectAdmins to set (array of names).
+     * Sets the list of project administrator user names.
+     * 
+     * @param projectAdmins the list of administrator names
      * @since 1.3
      */
     public final void setProjectAdmins(String[] projectAdmins) {
@@ -195,7 +231,9 @@ public class ProjectFacade {
     }
 
     /**
-     * @return Returns the projectBuilders (array of names).
+     * Gets the list of project builder user names.
+     * 
+     * @return the list of builder names
      * @since 1.3
      */
     public final String[] getProjectBuilders() {
@@ -203,7 +241,9 @@ public class ProjectFacade {
     }
 
     /**
-     * @param projectBuilders The projectBuilders to set (array of names).
+     * Sets the list of project builder user names.
+     * 
+     * @param projectBuilders the list of builder names
      * @since 1.3
      */
     public final void setProjectBuilders(String[] projectBuilders) {
@@ -211,7 +251,9 @@ public class ProjectFacade {
     }
 
     /**
-     * @return Returns the projectViewers (array of names).
+     * Gets the list of project viewer user names.
+     * 
+     * @return the list of viewer names
      * @since 1.3
      */
     public final String[] getProjectViewers() {
@@ -219,7 +261,9 @@ public class ProjectFacade {
     }
 
     /**
-     * @param projectViewers The projectViewers to set (array of names).
+     * Gets the list of project viewer user names.
+     * 
+     * @param projectViewers the list of viewer names
      * @since 1.3
      */
     public final void setProjectViewers(String[] projectViewers) {
@@ -227,7 +271,9 @@ public class ProjectFacade {
     }
 
     /**
-     * @return Returns the notifyUsers.
+     * Gets the list of user names to notify.
+     * 
+     * @return the list of notify user names
      * @since 1.3
      */
     public final String[] getNotifyUsers() {
@@ -235,27 +281,34 @@ public class ProjectFacade {
     }
 
     /**
-     * @param notifyUsers The notifyUsers to set.
+     * Sets the list of user names to notify.
+     * 
+     * @param notifyUsers the list of notify user names
      * @since 1.3
      */
     public final void setNotifyUsers(String[] notifyUsers) {
         this.notifyUsers = notifyUsers;
     }
 
-    /**
-     * @return Returns the scheduleList.
+	/**
+	 * Gets the list of schedules of this project.
+	 * 
+	 * @return the schedules list of this project
+	 * @see Schedule
      * @since 1.3
-     */
+	 */
     public final List getScheduleList() {
         return this.scheduleList;
     }
 
-    /**
-     * @param scheduleList The scheduleList to set.
+	/**
+	 * Sets the list of schedules of this project.
+	 * 
+	 * @param scheduleList the list of schedules
+	 * @see Schedule
      * @since 1.3
-     */
+	 */
     public final void setScheduleList(List scheduleList) {
         this.scheduleList = scheduleList;
     }
-
 }

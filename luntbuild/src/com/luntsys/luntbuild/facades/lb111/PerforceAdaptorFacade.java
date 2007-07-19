@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of perforce adaptor
+ * Perforce VCS adaptor facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.PerforceAdaptor
  */
 public class PerforceAdaptorFacade extends VcsFacade {
 	/**
@@ -47,77 +50,88 @@ public class PerforceAdaptorFacade extends VcsFacade {
 	private String password;
 
 	/**
-	 * line end mode, possible values are "local", "unix", "mac", "win", "share". Refer
-	 * to user manual for detail information
+	 * Perforce workspace name
 	 */
-	private String lineEnd;
+	private String workspace;
 
-	/**
-	 * Get the perforce port. This is a project level property
-	 * @return perforce port
-	 */
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
+	public String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.PerforceAdaptor";
+	}
+
+    /**
+     * Gets the server name and port to connect to the Perforce server with. This is a project level property.
+     * 
+     * @return the server name and port
+     */
 	public String getPort() {
 		return port;
 	}
 
-	/**
-	 * Set perforce port
-	 * @param port
-	 */
+    /**
+     * Sets the server name and port to connect to the Perforce server with. This is a project level property.
+     * 
+     * @param port the server name and port
+     */
 	public void setPort(String port) {
 		this.port = port;
 	}
 
-	/**
-	 * Get user name to access perforce. This is a project level property
-	 * @return user name to access perforce
-	 */
+    /**
+     * Gets the login user to use. This is a project level property.
+     * 
+     * @return the login user
+     */
 	public String getUser() {
 		return user;
 	}
 
-	/**
-	 * Set user name to access perforce
-	 * @param user
-	 */
+    /**
+     * Sets the login user to use. This is a project level property.
+     * 
+     * @param user the login user
+     */
 	public void setUser(String user) {
 		this.user = user;
 	}
 
-	/**
-	 * Get password to access perforce. This is a project level property
-	 * @return password to access perforce
-	 */
+    /**
+     * Gets the login password to use. This is a project level property.
+     * 
+     * @return the login password
+     */
 	public String getPassword() {
 		return password;
 	}
 
-	/**
-	 * Set password to access perforce
-	 * @param password
-	 */
+    /**
+     * Sets the login password to use. This is a project level property.
+     * 
+     * @param password the login password
+     */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	/**
-	 * Get line end mode for checkouted text files. This is a project level property
-	 * @return one value of "local", "unix", "mac", "win", "share". Refer to
-	 * user manual for detail information
-	 */
-	public String getLineEnd() {
-		return lineEnd;
+    /**
+     * Gets the existing workspace to use. This is a project level property.
+     * 
+     * @return the workspace
+     */
+	public String getWorkspace() {
+		return workspace;
 	}
 
-	/**
-	 * Set line end mode for checkouted text files
-	 * @param lineEnd one value of "local", "unix", "mac", "win", "share".
-	 */
-	public void setLineEnd(String lineEnd) {
-		this.lineEnd = lineEnd;
-	}
-
-	public String getVcsClassName() {
-		return "com.luntsys.luntbuild.vcs.PerforceAdaptor";
+    /**
+     * Sets the existing workspace to use. This is a project level property.
+     * 
+     * @param workspace the workspace
+     */
+	public void setWorkspace(String workspace) {
+		this.workspace = workspace;
 	}
 }

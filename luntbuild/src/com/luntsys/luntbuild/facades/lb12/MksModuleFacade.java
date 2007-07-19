@@ -23,12 +23,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Mks Module facade.
+ * MKS VCS module facade.
  * 
  * @author Stefan Baramov (TRX Inc.)
+ * @see com.luntsys.luntbuild.vcs.MksAdaptor.MksModule
  */
 public class MksModuleFacade extends ModuleFacade {
 
@@ -43,61 +45,99 @@ public class MksModuleFacade extends ModuleFacade {
 	private boolean external;
 
 	/**
-	 * Initialize a new object with its default settings.
+	 * Constructor, creates a new MKS VCS module facade.
 	 */
 	public MksModuleFacade() {
-
 		super();
 	}
 
+	/**
+	 * Checks if this is an external module.
+	 * 
+	 * @return <code>true</code> if this is an external module
+	 */
 	public boolean isExternal() {
-
 		return external;
 	}
 
+	/**
+	 * Sets if this is an external module.
+	 * 
+	 * @param external set <code>true</code> if this is an external module
+	 */
 	public void setExternal(boolean external) {
-
 		this.external = external;
 	}
 
+	/**
+	 * Gets the project file name.
+	 * 
+	 * @return the project file name
+	 */
 	public String getProjectFileName() {
-
 		return projectFileName;
 	}
 
+	/**
+	 * Sets the project file name.
+	 * 
+	 * @param projectFileName the project file name
+	 */
 	public void setProjectFileName(String projectFileName) {
-
 		this.projectFileName = projectFileName;
 	}
 
+	/**
+	 * Gets the subproject name.
+	 * 
+	 * @return the subproject name
+	 */
 	public String getSubproject() {
-
 		return subproject;
 	}
 
+	/**
+	 * Sets the subproject name.
+	 * 
+	 * @param subproject the subproject name
+	 */
 	public void setSubproject(String subproject) {
-
 		this.subproject = subproject;
 	}
 
+	/**
+	 * Gets the subproject version or checkpoint to be retrieved.
+	 * 
+	 * @return the subproject version
+	 */
 	public String getVersion() {
-
 		return version;
 	}
 
+	/**
+	 * Sets the subproject version or checkpoint to be retrieved.
+	 * 
+	 * @param version the subproject version
+	 */
 	public void setVersion(String version) {
-
 		this.version = version;
 	}
 
+	/**
+	 * Gets the development path.
+	 * 
+	 * @return the development path
+	 */
 	public String getDevelopmentPath() {
-
 		return developmentPath;
 	}
 
+	/**
+	 * Sets the development path.
+	 * 
+	 * @param developmentPath the development path
+	 */
 	public void setDevelopmentPath(String developmentPath) {
-
 		this.developmentPath = developmentPath;
 	}
-
 }

@@ -25,15 +25,19 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.ant.Commandline;
+import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb12.VssModuleFacade;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.utility.*;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Environment;
 
@@ -44,7 +48,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Microsoft visual source safe adaptor
+ * Microsoft Visual Source Safe VCS adaptor implementation.
+ * 
+ * <p>This adaptor is safe for remote hosts.</p>
  *
  * @author robin shine
  */
@@ -53,8 +59,9 @@ public class VssAdaptor extends Vcs {
 	 * Keep tracks of version of this class, used when do serialization-deserialization
 	 */
 	static final long serialVersionUID = 1;
+	/** Default date format for the <code>ss history</code> command */
 	public static final String DEFAULT_DATETIME_FORMAT = "M/dd/yy;h:mm:ssa";
-	// the input feed to any vss commands to avoid command hang
+	/** The input feed to any vss commands to avoid command hang */
 	public static final String COMMAND_INPUT = "\n\n\n\n\n\n\n\n";
 	private String vssPath; // path to srcsafe.ini file
 	private String vssUser; // user name
@@ -62,70 +69,136 @@ public class VssAdaptor extends Vcs {
 	private String dateTimeFormat; // datetime format for ss HISTORY command
 	private String ssDir; // path to ss.exe file, if blank, ss.exe is expected to be in the PATH environment variable
 
+	/**
+	 * Gets the SourceSafe path (SSDIR), location should contain srcsafe.ini.
+	 * 
+	 * @return the SourceSafe path
+	 */
 	public String getVssPath() {
 		return vssPath;
 	}
 
-	private String getActualVssPath() {
+	/**
+	 * Gets the SourceSafe path (SSDIR), location should contain srcsafe.ini. This method will parse OGNL variables.
+	 * 
+	 * @return the SourceSafe path
+	 */
+    private String getActualVssPath() {
 		return OgnlHelper.evaluateScheduleValue(getVssPath());
 	}
 
+	/**
+	 * Sets the SourceSafe path (SSDIR), location should contain srcsafe.ini.
+	 * 
+	 * @param vssPath the SourceSafe path
+	 */
 	public void setVssPath(String vssPath) {
 		this.vssPath = vssPath;
 	}
 
+	/**
+	 * Gets the login user.
+	 * 
+	 * @return the login user
+	 */
 	public String getVssUser() {
 		return vssUser;
 	}
 
+	/**
+	 * Sets the login user.
+	 * 
+	 * @param vssUser the login user
+	 */
 	public void setVssUser(String vssUser) {
 		this.vssUser = vssUser;
 	}
 
+	/**
+	 * Gets the login password.
+	 * 
+	 * @return the login password
+	 */
 	public String getVssPassword() {
 		return vssPassword;
 	}
 
+	/**
+	 * Sets the login password.
+	 * 
+	 * @param vssPassword the login password
+	 */
 	public void setVssPassword(String vssPassword) {
 		this.vssPassword = vssPassword;
 	}
 
+	/**
+	 * Gets the path to the SourceSafe executable.
+	 * 
+	 * @return the path to the SourceSafe executable
+	 */
 	public String getSsDir() {
 		return ssDir;
 	}
 
+	/**
+	 * Sets the path to the SourceSafe executable.
+	 * 
+	 * @param ssDir the path to the SourceSafe executable
+	 */
 	public void setSsDir(String ssDir) {
 		this.ssDir = ssDir;
 	}
 
+	/**
+	 * Gets the datetime format to use for the <code>ss history</code> command.
+	 * 
+	 * @return the datetime format
+	 */
 	public String getDateTimeFormat() {
 		return dateTimeFormat;
 	}
 
-	public String getActualDateTimeFormat() {
+	/**
+	 * Gets the datetime format to use for the <code>ss history</code> command. This method will parse OGNL variables.
+	 * 
+	 * @return the datetime format
+	 */
+    private String getActualDateTimeFormat() {
 		return OgnlHelper.evaluateScheduleValue(getDateTimeFormat());
 	}
 
+	/**
+	 * Sets the datetime format to use for the <code>ss history</code> command.
+	 * 
+	 * @param dateTimeFormat the datetime format
+	 */
 	public void setDateTimeFormat(String dateTimeFormat) {
 		this.dateTimeFormat = dateTimeFormat;
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public String getDisplayName() {
 		return "Visual Sourcesafe";
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public String getIconName() {
 		return "vss.jpg";
 	}
 
 	/**
-	 * Method may throw a BuildException to indicates a module retrieve exception
-	 *
-	 * @param workingDir
-	 * @param module
-	 * @param isClean
-	 * @param antProject
-	 */
+	 * Retrieves the contents of a module.
+	 * 
+	 * @param workingDir the working directory
+     * @param module the module
+	 * @param isClean set <code>true</code> if this is a clean build
+     * @param antProject the ant project used for logging
+     */
 	private void retrieveModule(String workingDir, VssModule module, boolean isClean, Project antProject) {
 		if (isClean)
 			antProject.log("Retrieve source path: " + module.getActualSrcPath(), Project.MSG_INFO);
@@ -159,12 +232,12 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-	 * Method may throw a BuildException to indicates errors while labeling
-	 *
-	 * @param workingDir
-	 * @param module
-	 * @param label
-	 * @param antProject
+	 * Labels the contents of a module.
+	 * 
+	 * @param workingDir the working directory
+	 * @param module the module
+	 * @param label the label
+	 * @param antProject the ant project used for logging
 	 */
 	private void labelModule(String workingDir, VssModule module, String label, Project antProject) {
 		antProject.log("Label source path: " + module.getActualSrcPath(), Project.MSG_INFO);
@@ -180,12 +253,12 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-	 * Delete specified label from specified module
-	 *
-	 * @param workingDir
-	 * @param module
-	 * @param label
-	 * @param antProject
+	 * Deletes the specified label from the specified module.
+	 * 
+	 * @param workingDir the working directory
+	 * @param module the module
+	 * @param label the label
+	 * @param antProject the ant project used for logging
 	 */
 	private void unlabelModule(String workingDir, VssModule module, String label, Project antProject) {
 		antProject.log("Unlabel source path: " + module.getActualSrcPath(), Project.MSG_INFO);
@@ -200,6 +273,9 @@ public class VssAdaptor extends Vcs {
 		new MyExecTask("label", antProject, workingDir, cmdLine, env, COMMAND_INPUT, Project.MSG_INFO).execute();
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public void checkoutActually(Build build, Project antProject) {
 		String workingDir = build.getSchedule().getWorkDirRaw();
 		// Because sourcesafe can not label based on current working
@@ -229,10 +305,16 @@ public class VssAdaptor extends Vcs {
 		}
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public void label(Build build, Project antProject) {
 		// does nothing
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public void unlabel(Build build, Project antProject) {
 		if (build.getLabelStrategy() != com.luntsys.luntbuild.facades.Constants.LABEL_NONE) {
 			String workingDir = build.getSchedule().getWorkDirRaw();
@@ -246,14 +328,25 @@ public class VssAdaptor extends Vcs {
 		}
 	}
 
-	public Vcs.Module createNewModule() {
+	/**
+     * @inheritDoc
+	 * @see VssModule
+	 */
+	public Module createNewModule() {
 		return new VssModule();
 	}
 
-    public Vcs.Module createNewModule(Vcs.Module module) {
+	/**
+     * @inheritDoc
+	 * @see VssModule
+	 */
+    public Module createNewModule(Module module) {
         return new VssModule((VssModule)module);
     }
 
+    /**
+     * @inheritDoc
+     */
 	public List getVcsSpecificProperties() {
 		List properties = new ArrayList();
 		properties.add(new DisplayProperty() {
@@ -374,6 +467,11 @@ public class VssAdaptor extends Vcs {
 		return properties;
 	}
 
+    /**
+     * Validates the modules of this VCS.
+     *
+     * @throws ValidationException if a module is not invalid
+     */
 	public void validateModules() {
 		super.validateModules();
 		Iterator it = getModules().iterator();
@@ -384,6 +482,11 @@ public class VssAdaptor extends Vcs {
 		}
 	}
 
+	/**
+	 * A SourceSafe module definition.
+	 *
+	 * @author robin shine
+	 */
 	public class VssModule extends Module {
 		/**
 		 * Keep tracks of version of this class, used when do serialization-deserialization
@@ -394,50 +497,106 @@ public class VssAdaptor extends Vcs {
 		private String label;
 		private String destPath;
 
+		/**
+		 * Constructor, creates a blank SourceSafe module.
+		 */
         public VssModule() {}
 
+		/**
+		 * Copy constructor, creates a SourceSafe module from another SourceSafe module.
+		 * 
+		 * @param module the module to create from
+		 */
         public VssModule(VssModule module) {
             this.srcPath = module.srcPath;
             this.label = module.label;
             this.destPath = module.destPath;
         }
 
+		/**
+		 * Gets the source path.
+		 * 
+		 * @return the source path
+		 */
 		public String getSrcPath() {
 			return srcPath;
 		}
 
-		private String getActualSrcPath() {
+		/**
+		 * Gets the source path. This method will parse OGNL variables.
+		 * 
+		 * @return the source path
+		 */
+        private String getActualSrcPath() {
 			return OgnlHelper.evaluateScheduleValue(getSrcPath());
 		}
 
+		/**
+		 * Sets the source path.
+		 * 
+		 * @param srcPath the source path
+		 */
 		public void setSrcPath(String srcPath) {
 			this.srcPath = srcPath;
 		}
 
+		/**
+		 * Gets the label to use.
+		 * 
+		 * @return the label
+		 */
 		public String getLabel() {
 			return label;
 		}
 
-		private String getActualLabel() {
+		/**
+		 * Gets the label to use. This method will parse OGNL variables.
+		 * 
+		 * @return the label
+		 */
+        private String getActualLabel() {
 			return OgnlHelper.evaluateScheduleValue(getLabel());
 		}
 
-		public void setLabel(String label) {
+		/**
+		 * Sets the label to use.
+		 * 
+		 * @param label the label
+		 */
+        private void setLabel(String label) {
 			this.label = label;
 		}
 
+		/**
+		 * Gets the destination path.
+		 * 
+		 * @return the destination path
+		 */
 		public String getDestPath() {
 			return destPath;
 		}
 
-		private String getActualDestPath() {
+		/**
+		 * Gets the destination path. This method will parse OGNL variables.
+		 * 
+		 * @return the destination path
+		 */
+        private String getActualDestPath() {
 			return OgnlHelper.evaluateScheduleValue(getDestPath());
 		}
 
+		/**
+		 * Sets the destination path.
+		 * 
+		 * @param destPath the destination path
+		 */
 		public void setDestPath(String destPath) {
 			this.destPath = destPath;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public List getProperties() {
 			List properties = new ArrayList();
 			properties.add(new DisplayProperty() {
@@ -521,17 +680,26 @@ public class VssAdaptor extends Vcs {
 			return properties;
 		}
 
-		public com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade() {
-			com.luntsys.luntbuild.facades.lb12.VssModuleFacade facade = new com.luntsys.luntbuild.facades.lb12.VssModuleFacade();
+	    /**
+	     * @inheritDoc
+	     * @see VssModuleFacade
+	     */
+		public ModuleFacade getFacade() {
+			VssModuleFacade facade = new VssModuleFacade();
 			facade.setDestPath(getDestPath());
 			facade.setLabel(getLabel());
 			facade.setSrcPath(getSrcPath());
 			return facade;
 		}
 
-		public void setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade facade) {
-			if (facade instanceof com.luntsys.luntbuild.facades.lb12.VssModuleFacade) {
-				com.luntsys.luntbuild.facades.lb12.VssModuleFacade vssModuleFacade = (com.luntsys.luntbuild.facades.lb12.VssModuleFacade) facade;
+	    /**
+	     * @inheritDoc
+	     * @throws RuntimeException if the facade is not an <code>VssModuleFacade</code>
+	     * @see VssModuleFacade
+	     */
+		public void setFacade(ModuleFacade facade) {
+			if (facade instanceof VssModuleFacade) {
+				VssModuleFacade vssModuleFacade = (VssModuleFacade) facade;
 				setLabel(vssModuleFacade.getLabel());
 				setSrcPath(vssModuleFacade.getSrcPath());
 				setDestPath(vssModuleFacade.getDestPath());
@@ -540,16 +708,27 @@ public class VssAdaptor extends Vcs {
 		}
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		final Revisions revisions = new Revisions();
+        revisions.addLog(this.getClass().getName(), toString());
+        revisions.getChangeLogs().add("*************************************************************");
+        revisions.getChangeLogs().add(toString());
+        revisions.getChangeLogs().add("");
 
 		Commandline cmdLine = buildVssExecutable();
 		Environment env = buildVssEnvironment();
 		final RevisionBlock block = new RevisionBlock();
-		final Pattern authorPattern = Pattern.compile("^User:(.*)Date:.*");
+        final Pattern folderPattern = Pattern.compile("^\\*\\*\\*\\*\\* (.*) \\*\\*\\*\\*$");
+        final Pattern rootPattern = Pattern.compile("^\\*.*Version (.*) \\*.*$");
+        final Pattern versionPattern = Pattern.compile("^Version (.*)$");
+		final Pattern authorDatePattern = Pattern.compile("^User:(.*)Date:(.*)Time:(.*)");
+        final Pattern commentPattern = Pattern.compile("^Comment:(.*)$");
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
-			VssModule module = (VssModule) it.next();
+			final VssModule module = (VssModule) it.next();
 			if (Luntbuild.isEmpty(module.getLabel())) { // detect changes in head versions
 				cmdLine.clearArgs();
 				cmdLine.createArgument().setLine("HISTORY -I- -R -#" + Revisions.MAX_ENTRIES);
@@ -580,14 +759,100 @@ public class VssAdaptor extends Vcs {
 						}
 						if (line.matches("^\\*\\*\\*\\*\\*.*\\*\\*\\*\\*$")) {
 							if (block.isValid()) {
+								SimpleDateFormat vss_date_format = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
+								String version = "";
+								String file_version = "";
+								String author = "";
+								Date date = null;
+								String comment = "";
+								String path = "";
+								String action = "";
+								boolean parseNextLine = false;
 								Iterator itBlockLine = block.getLines().iterator();
 								while (itBlockLine.hasNext()) {
 									String blockLine = (String) itBlockLine.next();
 									revisions.getChangeLogs().add(blockLine);
-									Matcher matcher = authorPattern.matcher(blockLine);
-									if (matcher.find())
-										revisions.getChangeLogins().add(matcher.group(1).trim());
+									if (blockLine.matches("^\\*\\*\\*\\*\\*.*\\*\\*\\*\\*$")) {
+										Matcher foldermatcher = folderPattern.matcher(blockLine);
+										Matcher rootmatcher = rootPattern.matcher(blockLine);
+										if (foldermatcher.find()) {
+											path = foldermatcher.group(1).trim();
+										} else if (rootmatcher.find()) {
+											path = Luntbuild.concatPath("$", module.getActualSrcPath());
+											version = rootmatcher.group(1).trim();
+										}
+									} else if (parseNextLine) {
+										parseNextLine = false;
+										if (blockLine.endsWith("added")) {
+											action = "A";
+											path = Luntbuild.concatPath(path,
+													blockLine.substring(0, blockLine.length() - 5).trim());
+											file_version = "";
+										}
+										else if (blockLine.endsWith("Created")) {
+											action = "C";
+											revisions.setFileModified(true);
+											file_version = "";
+										}
+										else if (blockLine.endsWith("deleted")) {
+											action = "D";
+											path = Luntbuild.concatPath(path,
+													blockLine.substring(0, blockLine.length() - 7).trim());
+											file_version = "";
+										}
+										else if (blockLine.endsWith("destroyed")) {
+											action = "P";  // or Purged
+											path = Luntbuild.concatPath(path,
+													blockLine.substring(0, blockLine.length() - 9).trim());
+											file_version = "";
+										}
+										else if (blockLine.startsWith("Checked in")) {
+											action = "E";  // or Editted
+											path = Luntbuild.concatPath(
+													blockLine.substring(10, blockLine.length()).trim(), path);
+											file_version = version;
+										}
+										else if (blockLine.endsWith("shared")) {
+											action = "S";
+											path = blockLine.substring(0, blockLine.length() - 6).trim();
+											file_version = "";
+										}
+										else if (blockLine.endsWith("recovered")) {
+											action = "O";  // or recOvered
+											path = Luntbuild.concatPath(path,
+													blockLine.substring(0, blockLine.length() - 9).trim());
+											file_version = "";
+										}
+										else if (blockLine.indexOf(" renamed to ") != -1) {
+											action = "R";
+											revisions.setFileModified(true);
+											file_version = "";
+										}
+									} else {
+										Matcher versionmatcher = versionPattern.matcher(blockLine);
+										Matcher authormatcher = authorDatePattern.matcher(blockLine);
+										Matcher commentmatcher = commentPattern.matcher(blockLine);
+										if (versionmatcher.find()) {
+											version = versionmatcher.group(1).trim();
+										} else if (authormatcher.find()) {
+											author = authormatcher.group(1).trim();
+											revisions.getChangeLogins().add(author);
+											String date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
+							                try {
+							                	date = vss_date_format.parse(date_text);
+							                } catch (Exception e) {
+							                	throw new BuildException("Failed to parse date from VSS history", e);
+							                }
+											parseNextLine = true;
+										} else if (commentmatcher.find()) {
+											comment = commentmatcher.group(1).trim();
+										} else {
+											comment += blockLine.trim() + "\r\n";
+										}
+									}
 								}
+								revisions.addEntryToLastLog(version, author, date, comment);
+								revisions.addPathToLastEntry(path, action, file_version);
 							}
 							block.setReady(true);
 							block.setValid(true);
@@ -603,14 +868,100 @@ public class VssAdaptor extends Vcs {
 					}
 				}.execute();
 				if (block.isValid()) {
+					SimpleDateFormat vss_date_format = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
+					String version = "";
+					String file_version = "";
+					String author = "";
+					Date date = null;
+					String comment = "";
+					String path = "";
+					String action = "";
+					boolean parseNextLine = false;
 					Iterator itBlockLine = block.getLines().iterator();
 					while (itBlockLine.hasNext()) {
 						String blockLine = (String) itBlockLine.next();
 						revisions.getChangeLogs().add(blockLine);
-						Matcher matcher = authorPattern.matcher(blockLine);
-						if (matcher.find())
-							revisions.getChangeLogins().add(matcher.group(1).trim());
+						if (blockLine.matches("^\\*\\*\\*\\*\\*.*\\*\\*\\*\\*$")) {
+							Matcher foldermatcher = folderPattern.matcher(blockLine);
+							Matcher rootmatcher = rootPattern.matcher(blockLine);
+							if (foldermatcher.find()) {
+								path = foldermatcher.group(1).trim();
+							} else if (rootmatcher.find()) {
+								path = Luntbuild.concatPath("$", module.getActualSrcPath());
+								version = rootmatcher.group(1).trim();
+							}
+						} else if (parseNextLine) {
+							parseNextLine = false;
+							if (blockLine.endsWith("added")) {
+								action = "A";
+								path = Luntbuild.concatPath(path,
+										blockLine.substring(0, blockLine.length() - 5).trim());
+								file_version = "";
+							}
+							else if (blockLine.endsWith("Created")) {
+								action = "C";
+								revisions.setFileModified(true);
+								file_version = "";
+							}
+							else if (blockLine.endsWith("deleted")) {
+								action = "D";
+								path = Luntbuild.concatPath(path,
+										blockLine.substring(0, blockLine.length() - 7).trim());
+								file_version = "";
+							}
+							else if (blockLine.endsWith("destroyed")) {
+								action = "P";  // or Purged
+								path = Luntbuild.concatPath(path,
+										blockLine.substring(0, blockLine.length() - 9).trim());
+								file_version = "";
+							}
+							else if (blockLine.startsWith("Checked in")) {
+								action = "E";  // or Editted
+								path = Luntbuild.concatPath(
+										blockLine.substring(10, blockLine.length()).trim(), path);
+								file_version = version;
+							}
+							else if (blockLine.endsWith("shared")) {
+								action = "S";
+								path = blockLine.substring(0, blockLine.length() - 6).trim();
+								file_version = "";
+							}
+							else if (blockLine.endsWith("recovered")) {
+								action = "O";  // or recOvered
+								path = Luntbuild.concatPath(path,
+										blockLine.substring(0, blockLine.length() - 9).trim());
+								file_version = "";
+							}
+							else if (blockLine.indexOf(" renamed to ") != -1) {
+								action = "R";
+								revisions.setFileModified(true);
+								file_version = "";
+							}
+						} else {
+							Matcher versionmatcher = versionPattern.matcher(blockLine);
+							Matcher authormatcher = authorDatePattern.matcher(blockLine);
+							Matcher commentmatcher = commentPattern.matcher(blockLine);
+							if (versionmatcher.find()) {
+								version = versionmatcher.group(1).trim();
+							} else if (authormatcher.find()) {
+								author = authormatcher.group(1).trim();
+								revisions.getChangeLogins().add(author);
+								String date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
+				                try {
+				                	date = vss_date_format.parse(date_text);
+				                } catch (Exception e) {
+				                	throw new BuildException("Failed to parse date from VSS history", e);
+				                }
+								parseNextLine = true;
+							} else if (commentmatcher.find()) {
+								comment = commentmatcher.group(1).trim();
+							} else {
+								comment += blockLine.trim() + "\r\n";
+							}
+						}
 					}
+					revisions.addEntryToLastLog(version, author, date, comment);
+					revisions.addPathToLastEntry(path, action, file_version);
 				}
 				block.setReady(false);
 				block.setValid(true);
@@ -621,9 +972,9 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-	 * Build the executable part of a commandline object
-	 *
-	 * @return
+	 * Constructs the executable part of a commandline object.
+	 * 
+	 * @return the commandline object
 	 */
 	protected Commandline buildVssExecutable() {
 		Commandline cmdLine = new Commandline();
@@ -635,9 +986,9 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-	 * Append login information to specified commandline object
+	 * Appends login information to the specified commandline object.
 	 *
-	 * @param cmdLine
+	 * @param cmdLine the commandline object to add to
 	 */
 	protected void appendLoginInfo(Commandline cmdLine) {
 		if (Luntbuild.isEmpty(getVssPassword()))
@@ -650,10 +1001,10 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-	 * Build necessary environment variable needed to run ss.exe, this typically includes
-	 * SSDIR
+	 * Builds the necessary environment variables needed to run ss.exe, this typically includes
+	 * "SSDIR".
 	 *
-	 * @return
+	 * @return the necessary environment variables
 	 */
 	protected Environment buildVssEnvironment() {
 		Environment env = new Environment();
@@ -665,10 +1016,10 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-	 * Format specified date to use in vss command line
+	 * Formats the specified date to use in the SourceSafe command line.
 	 *
-	 * @param date
-	 * @return
+	 * @param date the date to format
+	 * @return the formatted date
 	 */
 	protected String formatDateForVss(Date date) {
 		String pattern = DEFAULT_DATETIME_FORMAT;
@@ -681,8 +1032,13 @@ public class VssAdaptor extends Vcs {
 		return sdf.format(date);
 	}
 
+    /**
+     * @inheritDoc
+     * @see VssAdaptorFacade
+     */
 	public void saveToFacade(VcsFacade facade) {
-		com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade vssFacade = (VssAdaptorFacade) facade;
+    	// TODO throw RuntimeException if the facade is not the right class
+		VssAdaptorFacade vssFacade = (VssAdaptorFacade) facade;
 		vssFacade.setDateTimeFormat(getDateTimeFormat());
 		vssFacade.setSsDir(getSsDir());
 		vssFacade.setVssPassword(getVssPassword());
@@ -690,10 +1046,15 @@ public class VssAdaptor extends Vcs {
 		vssFacade.setVssUser(getVssUser());
 	}
 
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>VssAdaptorFacade</code>
+     * @see VssAdaptorFacade
+     */
 	public void loadFromFacade(VcsFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade))
+		if (!(facade instanceof VssAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade vssFacade = (com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade) facade;
+		VssAdaptorFacade vssFacade = (VssAdaptorFacade) facade;
 		setDateTimeFormat(vssFacade.getDateTimeFormat());
 		setSsDir(vssFacade.getSsDir());
 		setVssPassword(vssFacade.getVssPassword());
@@ -701,6 +1062,10 @@ public class VssAdaptor extends Vcs {
 		setVssUser(vssFacade.getVssUser());
 	}
 
+    /**
+     * @inheritDoc
+     * @see VssAdaptorFacade
+     */
 	public VcsFacade constructFacade() {
 		return new VssAdaptorFacade();
 	}

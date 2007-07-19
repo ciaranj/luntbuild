@@ -35,7 +35,7 @@
             <td jwcid="@Any" width="80%" align="left" valign="top" class="ognl:propertyValueCssClass"><p>
                 <input name="textfield3" type="text" class="inputBox" value="ognl:properties.servletUrl" size="75" jwcid="@TextField"/>
                 <br>
-        The servlet url should be specified correctly so Luntbuild can refer to this url in the notification messages. Normally this value should be http://&lt;server&gt;:&lt;port&gt;/luntbuild/app.do, where &lt;server&gt; is your build server name or ip address, and &lt;port&gt; is the port number you use to access Luntbuild. If this property is left empty, Luntbuild will default this value to be &quot;http://&lt;server_ip&gt;:8080/luntbuild/app.do&quot;, where &lt;server_ip&gt; is the ip address of the build server. </p></td>
+      The servlet url should be specified correctly so Luntbuild can refer to this url in the notification messages. Normally this value should be http://&lt;server&gt;:&lt;port&gt;/luntbuild/app.do, where &lt;server&gt; is your build server name or ip address, and &lt;port&gt; is the port number you use to access Luntbuild. If this property is left empty, Luntbuild will default this value to be &quot;http://&lt;server_ip&gt;:8080/luntbuild/app.do&quot;, where &lt;server_ip&gt; is the ip address of the build server. </p></td>
           </tr>
 		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
           <tr>
@@ -68,6 +68,12 @@
           </tr>
 		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
           <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:notifierTitleCssClass" colspan="2">
+            <img src="images/hint.gif" width="19" height="19" align="absmiddle"> Set automated backup related properties here
+            </td>
+          </tr>
+          <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
             <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/file.gif" width="16" height="16" align="absmiddle"> Database backup file </td>
             <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.backupFileName" size="75" jwcid="@TextField"/>
                 <br>
@@ -82,8 +88,8 @@
       Set a cron expression to control when the Luntbuild database will be backed up. If blank, no backup will occur.<br>
       The format is &lt;seconds&gt; &lt;minutes&gt; &lt;hours&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt;. For example, 0 0 1 * * ? means 1:00am every day. For details of the format, refer to <a href="http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html">http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html</a>.</td>
           </tr>
-		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
-		  <span jwcid="@Foreach" source="ognl:notifierInstances" value="ognl:notifier">
+          <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <span jwcid="@Foreach" source="ognl:notifierInstances" value="ognl:notifier">
 		    <tr>
 		  	  <td jwcid="@Any" align="left" valign="top" class="ognl:notifierTitleCssClass" colspan="2">
 			  <img src="images/hint.gif" width="19" height="19" align="absmiddle"> <span jwcid="@InsertText" value="ognl:notifierTitle">Set email related properties here if you want to notify user by email</span>

@@ -25,8 +25,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.utility;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.BuildException;
@@ -40,13 +43,19 @@ import java.io.IOException;
 import java.io.File;
 
 /**
- * This class supplies an altenate way to run external command with
- * the abibility to supply input to external command and process the
- * output of external command
+ * Executes an external command.
+ * 
+ * <p>This class supplies an altenate way to run external commands with
+ * the ability to supply input to the external command and process the
+ * output of the external command.</p>
+ * 
+ * <p>This class is safe for remote hosts.</p>
  *
  * @author robin shine
  */
 public class MyExecTask extends Task {
+    protected static Log logger = LogFactory.getLog(MyExecTask.class);
+
 	private Commandline cmdLine;
 	private String input;
 	Environment env;
@@ -54,17 +63,22 @@ public class MyExecTask extends Task {
 	int outputPriority = Project.MSG_INFO;
 
 	/**
-	 * The constructor supplies various parameter
-	 *
-	 * @param taskName       name of this task, will be used when log
-	 * @param project        the ant project for this task, will be used to log
-	 * @param workingDir     working directory to execute command line, maybe null
-	 * @param cmdLine        command line object for this task
-	 * @param env            environments to execute command line, maybe null
-	 * @param input          input to the command line, maybe null
-	 * @param outputPriority specify the log priority for command output. The log
-	 *                       priority is constants defined in {@link Project} such as {@link Project.MSG_INFO}, etc.
-	 *                       if this value is set to -1, then output will never be logged
+	 * Creates a new execution task.
+	 * 
+	 * @param taskName       the name of this task, will be used for logging
+	 * @param project        the ant project for this task, will be used for logging
+	 * @param workingDir     the working directory to execute this task in, may be <code>null</code>
+	 * @param cmdLine        the commandline object for this task
+	 * @param env            the environments for this task, may be <code>null</code>
+	 * @param input          the input to the task, may be <code>null</code>
+	 * @param outputPriority the log level for the task output. The log
+	 *                       priority constants are defined in {@link Project}.
+	 *                       If this value is set to <code>-1</code>, then output will never be logged.
+     * @see Project#MSG_ERR
+     * @see Project#MSG_WARN
+     * @see Project#MSG_INFO
+     * @see Project#MSG_VERBOSE
+     * @see Project#MSG_DEBUG
 	 */
 	public MyExecTask(String taskName, Project project, String workingDir, Commandline cmdLine,
 					  Environment env, String input, int outputPriority) {
@@ -85,26 +99,84 @@ public class MyExecTask extends Task {
 		this.outputPriority = outputPriority;
 	}
 
+	/**
+	 * Creates a new execution task.
+	 * 
+	 * @param taskName       the name of this task, will be used for logging
+	 * @param project        the ant project for this task, will be used for logging
+	 * @param cmdLine        the commandline object for this task
+	 * @param outputPriority the log level for the task output. The log
+	 *                       priority constants are defined in {@link Project}.
+	 *                       If this value is set to <code>-1</code>, then output will never be logged.
+     * @see Project#MSG_ERR
+     * @see Project#MSG_WARN
+     * @see Project#MSG_INFO
+     * @see Project#MSG_VERBOSE
+     * @see Project#MSG_DEBUG
+	 */
 	public MyExecTask(String taskName, Project project, Commandline cmdLine, int outputPriority) {
 		this(taskName, project, null, cmdLine, null, null, outputPriority);
 	}
 
+	/**
+	 * Creates a new execution task.
+	 * 
+	 * @param taskName       the name of this task, will be used for logging
+	 * @param project        the ant project for this task, will be used for logging
+	 * @param cmdLine        the commandline object for this task
+	 * @param input          the input to the task, may be <code>null</code>
+	 * @param outputPriority the log level for the task output. The log
+	 *                       priority constants are defined in {@link Project}.
+	 *                       If this value is set to <code>-1</code>, then output will never be logged.
+     * @see Project#MSG_ERR
+     * @see Project#MSG_WARN
+     * @see Project#MSG_INFO
+     * @see Project#MSG_VERBOSE
+     * @see Project#MSG_DEBUG
+	 */
 	public MyExecTask(String taskName, Project project, Commandline cmdLine, String input, int outputPriority) {
 		this(taskName, project, null, cmdLine, null, input, outputPriority);
 	}
 
+	/**
+	 * Creates a new execution task.
+	 * 
+	 * @param cmdLine        the commandline object for this task
+	 * @param outputPriority the log level for the task output. The log
+	 *                       priority constants are defined in {@link Project}.
+	 *                       If this value is set to <code>-1</code>, then output will never be logged.
+     * @see Project#MSG_ERR
+     * @see Project#MSG_WARN
+     * @see Project#MSG_INFO
+     * @see Project#MSG_VERBOSE
+     * @see Project#MSG_DEBUG
+	 */
 	public MyExecTask(Commandline cmdLine, int outputPriority) {
 		this(null, null, null, cmdLine, null, null, outputPriority);
 	}
 
+	/**
+	 * Creates a new execution task.
+	 * 
+	 * @param workingDir     the working directory to execute this task in, may be <code>null</code>
+	 * @param cmdLine        the commandline object for this task
+	 * @param outputPriority the log level for the task output. The log
+	 *                       priority constants are defined in {@link Project}.
+	 *                       If this value is set to <code>-1</code>, then output will never be logged.
+     * @see Project#MSG_ERR
+     * @see Project#MSG_WARN
+     * @see Project#MSG_INFO
+     * @see Project#MSG_VERBOSE
+     * @see Project#MSG_DEBUG
+	 */
 	public MyExecTask(String workingDir, Commandline cmdLine, int outputPriority) {
 		this(null, null, workingDir, cmdLine, null, null, outputPriority);
 	}
 
 	/**
-	 * Execute the task
-	 *
-	 * @throws BuildException
+	 * Executes this task.
+	 * 
+	 * @throws BuildException if the task failed
 	 */
 	public final void execute() throws BuildException {
 		int result = executeAndGetResult();
@@ -113,10 +185,23 @@ public class MyExecTask extends Task {
 					cmdLine.describeCommand() + ", returned code: " + result);
 	}
 
+	/**
+	 * Executes this task and returns the result.
+	 * 
+	 * @return the task result
+	 * @throws BuildException if the task failed
+	 */
 	public int executeAndGetResult() throws BuildException {
 		return executeAndGetResult(true);
 	}
 
+	/**
+	 * Executes this task and returns the result, with or without waiting for the task to complete.
+	 * 
+	 * @param wait set <code>true</code> to wait for the task to finish, or <code>false</code> to not wait
+	 * @return the task result
+	 * @throws BuildException if the task failed
+	 */
 	public int executeAndGetResult(boolean wait) throws BuildException {
 		P4Handler handler = new P4HandlerAdapter() {
 			public void processStdout(String line) {
@@ -156,18 +241,22 @@ public class MyExecTask extends Task {
 	}
 
 	/**
-	 * Sub class may override this method to process one line of output
+	 * Processes one line of output.
+	 * 
+	 * <p>Sub-classes may override this method to process one line of output.</p>
 	 *
-	 * @param line
+	 * @param line the line of output
 	 */
 	public void handleStdout(String line) {
 		// does nothing
 	}
 
 	/**
-	 * Sub class may override this method to process one line of error
+	 * Processes one line of error.
+	 * 
+	 * <p>Sub-classes may override this method to process one line of error.</p>
 	 *
-	 * @param line
+	 * @param line the line of error
 	 */
 	public void handleStderr(String line) {
 		// does nothing

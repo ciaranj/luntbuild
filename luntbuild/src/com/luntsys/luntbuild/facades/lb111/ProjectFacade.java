@@ -25,13 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of a luntbuild project, this is mainly used by web service client to operate
- * project specific properties
+ * Project facade.
  *
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.Project
  */
 public class ProjectFacade {
 	private long id;
@@ -40,64 +41,72 @@ public class ProjectFacade {
 	private VcsFacade vcs;
 
 	/**
-	 * Get name of this project
-	 * @return name of this project
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Get id of this project
-	 * @return id of this project
+	 * Gets the identifer of this project.
+	 * 
+	 * @return the identifer of this project
 	 */
 	public long getId() {
-		return id;
+		return this.id;
 	}
 
 	/**
-	 * Set id of this project
-	 * @param id
+	 * Sets the identifier of this project.
+	 *
+	 * @param id the identifier of this project
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * Set name of this project
-	 * @param name
+	 * Gets the name of this project.
+	 * 
+	 * @return the name of this project
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * Sets the name of this project.
+	 * 
+	 * @param name the name of this project
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * Get description of this project
-	 * @return description of this project
+	 * Gets the description of this project.
+	 * 
+	 * @return the description of this project
 	 */
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	/**
-	 * Set description of this project
-	 * @param description
+	 * Sets the description of this project.
+	 * 
+	 * @param description the description of this project
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * Get project level vcs object of this project
-	 * @return project level vcs object
+	 * Gets the project level VCS facade of this project.
+	 * 
+	 * @return the VCS facade
 	 */
 	public VcsFacade getVcs() {
 		return vcs;
 	}
 
 	/**
-	 * Set project level vcs object of this project
-	 * @param vcs
+	 * Sets the project level VCS facade of this project.
+	 * 
+	 * @param vcs the VCS facade
 	 */
 	public void setVcs(VcsFacade vcs) {
 		this.vcs = vcs;

@@ -25,77 +25,88 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of a starteam module
+ * StarTeam VCS module facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.StarteamAdaptor.StarteamModule
  */
-public class StarteamModuleFacade extends com.luntsys.luntbuild.facades.lb111.ModuleFacade {
+public class StarteamModuleFacade extends ModuleFacade {
 	private String starteamView;
 	private String srcPath;
 	private String label;
 	private String destPath;
 
 	/**
-	 * Get starteam view
-	 * @return starteam view
+	 * Gets the StarTeam view.
+	 * 
+	 * @return the StarTeam view
 	 */
 	public String getStarteamView() {
 		return starteamView;
 	}
 
 	/**
-	 * Set starteam view of this module
-	 * @param starteamView
+	 * Sets the StarTeam view.
+	 * 
+	 * @param starteamView the StarTeam view
 	 */
 	public void setStarteamView(String starteamView) {
 		this.starteamView = starteamView;
 	}
 
 	/**
-	 * Get source path of this module
-	 * @return source path of this module
+	 * Gets the source path. This path is relative to the StarTeam view.
+	 * 
+	 * @return the source path
 	 */
 	public String getSrcPath() {
 		return srcPath;
 	}
 
 	/**
-	 * Set source path of this module
-	 * @param srcPath
+	 * Sets the source path.
+	 * 
+	 * @param srcPath the source path
 	 */
 	public void setSrcPath(String srcPath) {
 		this.srcPath = srcPath;
 	}
 
 	/**
-	 * Get label of this module
-	 * @return label of this module
+	 * Gets the label to use.
+	 * 
+	 * @return the label
 	 */
 	public String getLabel() {
 		return label;
 	}
 
 	/**
-	 * Set label of this module
-	 * @param label
+	 * Sets the label to use.
+	 * 
+	 * @param label the label
 	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
 	/**
-	 * Get destination path of this module
-	 * @return destination path of this module
+	 * Gets the destination path to check out to.
+	 * 
+	 * @return the destination path
 	 */
 	public String getDestPath() {
 		return destPath;
 	}
 
 	/**
-	 * Set destination path of this module
-	 * @param destPath
+	 * Sets the destination path to check out to.
+	 * 
+	 * @param destPath the destination path
 	 */
 	public void setDestPath(String destPath) {
 		this.destPath = destPath;

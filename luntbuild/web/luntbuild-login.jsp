@@ -83,26 +83,26 @@
                 </tr>
 
                 <tr>
-                  <td width="145" align="left" valign="top" class="propertyEditorName2">
+                  <td width="145" align="left" valign="top" class="propertyEditorName propertyEditorName2">
                   <img border="0" src="images/name.gif" width="18" height="14">
                   Name</td>
-                  <td width="624" align="left" valign="top" class="propertyEditorValue2" >
+                  <td width="624" align="left" valign="top" class="propertyEditorValue propertyEditorValue2" >
                   <input type="text" name="j_username" size="30" tabindex="2"><br>
                   Specify your username.</td>
                 </tr>
 
                 <tr>
-                  <td align="left" valign="top" class="propertyEditorName1">
+                  <td align="left" valign="top" class="propertyEditorName propertyEditorName1">
                   <img border="0" src="images/password.gif" width="18" height="14">
                   Password</td>
-                  <td align="left" valign="top" class="propertyEditorValue1" >
+                  <td align="left" valign="top" class="propertyEditorValue propertyEditorValue1" >
                   <input type="password" name="j_password" size="30" tabindex="2"><br>
                   Specify your password.</td>
                 </tr>
 
                 <tr class="propertyEditorTail2">
                   <td align="left" valign="top" class="propertyEditorTail2">&nbsp;</td>
-                  <td align="left" valign="top" class="propertyListName2">
+                  <td align="left" valign="top" class="propertyListName propertyListName2">
                   <input type="submit" value="Login" name="submit" tabindex="3">
                   &nbsp;&nbsp;
                   <a href="app.do?service=reset/Home&relogin=no">Anonymous</a>

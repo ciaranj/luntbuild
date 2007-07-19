@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright luntsys (c) 2004-2005,
  * Date: 2004-10-21
  * Time: 16:03:58
@@ -43,13 +43,11 @@ import org.springframework.dao.DataAccessException;
 
 import java.util.Iterator;
 
-
 /**
- * This class integrates into the acegi security framework
- *
- * It is used to retrieve application internal user credentials
- * in our case from hsql db
- *  *
+ * Used to retrieve application internal user credentials, in our case from HSQL DB.
+ * 
+ * <p>This class integrates into the acegi security framework.</p>
+ * 
  * @author johannes plachy
  */
 public class ApplicationInternalDAO implements UserDetailsService {
@@ -71,7 +69,7 @@ public class ApplicationInternalDAO implements UserDetailsService {
     private static transient final Log logger = LogFactory.getLog(ApplicationInternalDAO.class);
 
     /**
-     * @see org.acegisecurity.providers.dao.AuthenticationDao#loadUserByUsername(java.lang.String)
+     * @inheritDoc
      */
     public UserDetails loadUserByUsername(String username)
     throws UsernameNotFoundException, DataAccessException {
@@ -140,199 +138,254 @@ public class ApplicationInternalDAO implements UserDetailsService {
     }
 
     /**
-     * @return Returns the ldapHost.
+     * Gets the LDAP host.
+     * 
+     * @return the LDAP host
      */
     public final String getLdapHost() {
         return this.ldapHost;
     }
 
     /**
-     * @param ldapHost The ldapHost to set.
+     * Sets the LDAP host.
+     * 
+     * @param ldapHost the LDAP host
      */
     public final void setLdapHost(String ldapHost) {
         this.ldapHost = ldapHost;
     }
 
     /**
-     * @return Returns the ldapPort.
+     * Gets the LDAP port.
+     * 
+     * @return the LDAP port
      */
     public final String getLdapPort() {
         return this.ldapPort;
     }
 
     /**
-     * @param ldapPort The ldapPort to set.
+     * Sets the LDAP port.
+     * 
+     * @param ldapPort the LDAP port
      */
     public final void setLdapPort(String ldapPort) {
         this.ldapPort = ldapPort;
     }
 
     /**
-     * @return Returns the ldapUseLuntbuildOnFail.
+     * Gets the use Luntbuild user on fail setting.
+     * 
+     * @return the setting
      */
     public final String getLdapUseLuntbuildOnFail() {
         return this.ldapUseLuntbuildOnFail;
     }
 
     /**
-     * @param ldapUseLuntbuildOnFail The ldapUseLuntbuildOnFail to set.
+     * Sets the use Luntbuild user on fail setting.
+     * 
+     * @param ldapUseLuntbuildOnFail the setting
      */
     public final void setLdapUseLuntbuildOnFail(String ldapUseLuntbuildOnFail) {
         this.ldapUseLuntbuildOnFail = ldapUseLuntbuildOnFail;
     }
 
     /**
-     * @return Returns the ldapUserDn.
+     * Gets the LDAP user domain name.
+     * 
+     * @return the LDAP user domain name
      */
     public final String getLdapUserDn() {
         return this.ldapUserDn;
     }
 
     /**
-     * @param ldapUserDn The ldapUserDn to set.
+     * Sets the LDAP user domain name.
+     * 
+     * @param ldapUserDn the LDAP user domain name
      */
     public final void setLdapUserDn(String ldapUserDn) {
         this.ldapUserDn = ldapUserDn;
     }
 
     /**
-     * @return Returns the ldapCanCreateProject.
+     * Gets the can create project setting.
+     * 
+     * @return the can create project setting
      */
     public final String getLdapCanCreateProject() {
         return this.ldapCanCreateProject;
     }
 
     /**
-     * @param ldapCanCreateProject The ldapCanCreateProject to set.
+     * Sets the can create project setting.
+     * 
+     * @param ldapCanCreateProject the can create project setting
      */
     public final void setLdapCanCreateProject(String ldapCanCreateProject) {
         this.ldapCanCreateProject = ldapCanCreateProject;
     }
 
     /**
-     * @return Returns the ldapCreateLuntbuildUser.
+     * Gets the create Luntbuild user setting.
+     * 
+     * @return the create Luntbuild user setting
      */
     public final String getLdapCreateLuntbuildUser() {
         return this.ldapCreateLuntbuildUser;
     }
 
     /**
-     * @param ldapCreateLuntbuildUser The ldapCreateLuntbuildUser to set.
+     * Sets the create Luntbuild user setting.
+     * 
+     * @param ldapCreateLuntbuildUser the create Luntbuild user setting
      */
     public final void setLdapCreateLuntbuildUser(String ldapCreateLuntbuildUser) {
         this.ldapCreateLuntbuildUser = ldapCreateLuntbuildUser;
     }
 
     /**
-     * @return Returns the ldapAuthentication.
+     * Gets the LDAP authentication type.
+     * 
+     * @return the LDAP authentication type
      */
     public final String getLdapAuthentication() {
         return this.ldapAuthentication;
     }
 
     /**
-     * @param ldapAuthentication The ldapAuthentication to set.
+     * Sets the LDAP authentication type.
+     * 
+     * @param ldapAuthentication the LDAP authentication type
      */
     public final void setLdapAuthentication(String ldapAuthentication) {
         this.ldapAuthentication = ldapAuthentication;
     }
 
     /**
-     * @return Returns the ldapUserId.
+     * Gets the LDAP user id.
+     * 
+     * @return the LDAP user id
      */
     public final String getLdapUserId() {
         return this.ldapUserId;
     }
 
     /**
-     * @param ldapUserId The ldapUserId to set.
+     * Sets the LDAP user id.
+     * 
+     * @param ldapUserId the LDAP user id
      */
     public final void setLdapUserId(String ldapUserId) {
         this.ldapUserId = ldapUserId;
     }
 
     /**
-     * @return Returns the ldapEmailAttrName.
+     * Gets the LDAP E-mail attribute name.
+     * 
+     * @return the LDAP E-mail attribute name
      */
     public final String getLdapEmailAttrName() {
         return this.ldapEmailAttrName;
     }
 
     /**
-     * @param ldapEmailAttrName The ldapEmailAttrName to set.
+     * Sets the LDAP E-mail attribute name.
+     * 
+     * @param ldapEmailAttrName the LDAP E-mail attribute name
      */
     public final void setLdapEmailAttrName(String ldapEmailAttrName) {
         this.ldapEmailAttrName = ldapEmailAttrName;
     }
 
     /**
-     * @return Returns the ldapUrl.
+     * Gets the LDAP URL.
+     * 
+     * @return the LDAP URL
      */
     public final String getLdapUrl() {
         return this.ldapUrl;
     }
 
     /**
-     * @param ldapUrl The ldapUrl to set.
+     * Sets the LDAP URL.
+     * 
+     * @param ldapUrl the LDAP URL
      */
     public final void setLdapUrl(String ldapUrl) {
         this.ldapUrl = ldapUrl;
     }
 
     /**
-     * @return Returns the ldapPrefix.
+     * Gets the LDAP prefix.
+     * 
+     * @return the LDAP URL
      */
     public final String getLdapPrefix() {
         return this.ldapPrefix;
     }
 
     /**
-     * @param ldapPrefix The ldapPrefix to set.
+     * Sets the LDAP prefix.
+     * 
+     * @param ldapPrefix the LDAP URL
      */
     public final void setLdapPrefix(String ldapPrefix) {
         this.ldapPrefix = ldapPrefix;
     }
 
     /**
-     * @return Returns the ldapSuffix.
+     * Gets the LDAP suffix.
+     * 
+     * @return the LDAP URL
      */
     public final String getLdapSuffix() {
         return this.ldapSuffix;
     }
 
     /**
-     * @param ldapSuffix The ldapSuffix to set.
+     * Sets the LDAP suffix.
+     * 
+     * @param ldapSuffix the LDAP URL
      */
     public final void setLdapSuffix(String ldapSuffix) {
         this.ldapSuffix = ldapSuffix;
     }
 
     /**
-     * @return Returns the ldapCanBuildProject.
+     * Gets the can build project setting.
+     * 
+     * @return the can build project setting
      */
     public final String getLdapCanBuildProject() {
         return this.ldapCanBuildProject;
     }
 
     /**
-     * @param ldapCanBuildProject The ldapCanBuildProject to set.
+     * Sets the can build project setting.
+     * 
+     * @param ldapCanBuildProject the can build project setting
      */
     public final void setLdapCanBuildProject(String ldapCanBuildProject) {
         this.ldapCanBuildProject = ldapCanBuildProject;
     }
 
     /**
-     * @return Returns the ldapCanViewProject.
+     * Gets the can view project setting.
+     * 
+     * @return the can view project setting
      */
     public final String getLdapCanViewProject() {
         return this.ldapCanViewProject;
     }
 
     /**
-     * @param ldapCanViewProject The ldapCanViewProject to set.
+     * Sets the can view project setting.
+     * 
+     * @param ldapCanViewProject the can view project setting
      */
     public final void setLdapCanViewProject(String ldapCanViewProject) {
         this.ldapCanViewProject = ldapCanViewProject;
     }
-
 }

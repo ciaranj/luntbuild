@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright luntsys (c) 2004-2005,
  * Date: 2004-10-21
  * Time: 16:03:58
@@ -42,26 +42,24 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
-import java.io.IOException;
 
 /**
- * The SecurityHelper is used to validate autheticated pricipals
+ * The <code>SecurityHelper</code> is used to validate autheticated pricipals
  * at runtime against a given set of required roles.
- *
- *
+ * 
  * @author johannes plachy
  */
 public class SecurityHelper
 {
-
     final transient private static Log logger = LogFactory.getLog(SecurityHelper.class);
 
     final private static int NON_PRJ_ID = -1;
 
     /**
-     * check current logged-in principal for assigned roles
-     * @param rolesToBeChecked
-     * @return true if needed roles are assigned
+     * Checks currently logged-in principal for assigned roles.
+     * 
+     * @param rolesToBeChecked the needed roles
+     * @return <code>true</code> if needed roles are assigned
      */
     public static boolean isUserInRole(String rolesToBeChecked)
     {
@@ -69,11 +67,11 @@ public class SecurityHelper
     }
 
     /**
-     * check current logged-in principal for assigned roles
+     * Checks currently logged-in principal for assigned roles or matching username.
      *
      * @param username to be checked against principal
-     * @param rolesToBeChecked
-     * @return true if needed roles are assigned
+     * @param rolesToBeChecked the needed roles
+     * @return <code>true</code> if needed roles are assigned or username matches principal
      */
     public static boolean isUserInRoleOrPrincipal(String username, String rolesToBeChecked)
     {
@@ -81,11 +79,11 @@ public class SecurityHelper
     }
 
     /**
-     * check curent logged-in principal for assigned roles
-     * which have to be project specific
-     *
-     * @param rolesToBeChecked
-     * @return true if needed roles are assigned
+     * Checks curently logged-in principal for assigned roles which have to be project specific.
+     * 
+     * @param prjId the project identifier
+     * @param rolesToBeChecked the needed roles
+     * @return <code>true</code> if needed roles are assigned
      */
     public static boolean isUserInRole(long prjId, String rolesToBeChecked)
     {
@@ -100,6 +98,11 @@ public class SecurityHelper
         return accessGraned;
     }
 
+    /**
+     * Gets the principal of the currently logged-in user.
+     * 
+     * @return the principal, or <code>null</code> if no current user
+     */
     public static Object getPrincipal()
     {
         Object principal = null;
@@ -114,20 +117,29 @@ public class SecurityHelper
         return principal;
     }
 
+    /**
+     * Gets the principal of the currently logged-in user.
+     * 
+     * @return the principal, or <code>null</code> if no current user
+     */
     public static String getPrincipalAsString() {
-       final Authentication authentication = getCurrentUser();
-       if (authentication != null) {
-              if (authentication.getPrincipal() instanceof UserDetails) {
+        final Authentication authentication = getCurrentUser();
+        if (authentication != null) {
+            if (authentication.getPrincipal() instanceof UserDetails) {
                 return ((UserDetails) authentication.getPrincipal()).getUsername();
             }
 
             return authentication.getPrincipal().toString();
+        }
 
-       }
-
-       return null;
+        return null;
     }
 
+    /**
+     * Gets the currently logged-in user.
+     * 
+     * @return the currently logged-in user, or <code>null</code> if no current user
+     */
     private static Authentication getCurrentUser()
     {
         Authentication currentUser = null;
@@ -144,7 +156,6 @@ public class SecurityHelper
 
     private static Collection getPrincipalAuthorities()
     {
-
         Authentication currentUser = getCurrentUser();
 
         if (null == currentUser) { return Collections.EMPTY_LIST; }
@@ -155,11 +166,12 @@ public class SecurityHelper
     }
 
     /**
-     * parse general roles string which is abstract so far
+     * Gets the required authorities for the curently logged-in principal.
      *
-     * @param prjid > 0 ( use it to construct prj specific roles)
-     * @param rolesToBeChecked
-     * @return
+     * @param prjid the project identifier (use it to construct project specific roles)
+     * @param rolesToBeChecked the needed roles
+     * @return the set of authorities for the needed roles
+     * @see GrantedAuthorityImpl
      */
     private static Set parseAuthoritiesString(long prjid, String rolesToBeChecked)
     {
@@ -196,23 +208,52 @@ public class SecurityHelper
         return grantedCopy;
     }
 
+	/**
+	 * Checks if the currently logged-in principal can view the specified project.
+	 * 
+	 * @param prjId the project identifier
+	 * @return <code>true</code> if the user has read access
+	 */
 	public static boolean isPrjReadable(long prjId) {
 		return isUserInRole(prjId, "ROLE_SITE_ADMIN, ROLE_AUTHENTICATED, ROLE_ANONYMOUS, " +
                 "LUNTBUILD_PRJ_ADMIN, LUNTBUILD_PRJ_BUILDER, LUNTBUILD_PRJ_VIEWER");
 	}
 
+	/**
+	 * Checks if the currently logged-in principal can build the specified project.
+	 * 
+	 * @param prjId the project identifier
+	 * @return <code>true</code> if the user has execute access
+	 */
 	public static boolean isPrjBuildable(long prjId) {
 		return isUserInRole(prjId, "ROLE_SITE_ADMIN, LUNTBUILD_PRJ_ADMIN, LUNTBUILD_PRJ_BUILDER");
 	}
 
+	/**
+	 * Checks if the currently logged-in principal can change the specified project.
+	 * 
+	 * @param prjId the project identifier
+	 * @return <code>true</code> if the user has write access
+	 */
 	public static boolean isPrjAdministrable(long prjId) {
 		return isUserInRole(prjId, "ROLE_SITE_ADMIN, LUNTBUILD_PRJ_ADMIN");
 	}
 
+	/**
+	 * Checks if the currently logged-in principal is a site administrator.
+	 * 
+	 * @return <code>true</code> if the user has site administration access
+	 */
 	public static boolean isSiteAdmin() {
 		return isUserInRole("ROLE_SITE_ADMIN");
 	}
 
+	/**
+	 * Allows the currently logged-in principal temporarily run as the site administrator.
+	 * 
+	 * @throws RuntimeException if the <code>AuthenticationDao</code> could not be found in the application context
+	 * @throws RuntimeException if the built in user does not have site administrator status or failed to authenticate
+	 */
 	public static void runAsSiteAdmin() {
         UserDetailsService authDao = (UserDetailsService) Luntbuild.appContext.getBean("inMemoryAuthenticationDAO");
 		if (authDao == null) {
@@ -254,6 +295,11 @@ public class SecurityHelper
 		context.setAuthentication(authResult);
 	}
 
+	/**
+	 * Refreshes the user cache.
+	 * 
+	 * @throws RuntimeException if refresh fails
+	 */
 	public static void refreshUserCache() {
 		EhCacheBasedUserCache userCache = (EhCacheBasedUserCache) Luntbuild.appContext.getBean("userCache");
 		Cache cache = userCache.getCache();

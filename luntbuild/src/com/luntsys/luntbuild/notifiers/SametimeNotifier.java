@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.notifiers;
 
 import com.luntsys.luntbuild.db.Build;
@@ -40,30 +41,42 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Notifier class which uses the Sametime protocol.
+ * Sametime protocol notifier implementation.
  *
- * @author		inger
+ * @author inger
  */
-
 public class SametimeNotifier extends TemplatedNotifier {
 
     private static final int USER_SAMETIME_NAME = 0;
 
     /**
-     * Constructor
+     * Creates a Sametime notifier.
      */
     public SametimeNotifier() {
         super(SametimeNotifier.class, "sametime");
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getDisplayName() {
         return "Sametime";
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getComment() {
         return super.getComment();
     }
 
+    /**
+     * Sends a list of Sametime messages.
+     * 
+     * @param antProjectthe ant project used for logging purposes
+     * @param messages the list of messages to send
+     * @see SametimeMessageSender.Message
+     */
     private void sendMessages(Project antProject, List messages) {
         NotifierProperty property = (NotifierProperty) getSystemLevelProperties().get(0);
         String host = property.getValue(Luntbuild.getProperties());
@@ -85,16 +98,22 @@ public class SametimeNotifier extends TemplatedNotifier {
         sender.send();
     }
 
+    /**
+     * Gets the Sametime user name/id used by the specfied user.
+     * 
+     * @param user the user with the Sametime account
+     * @return the user name/id
+     */
     private String getSametimeName(User user) {
         String partner =
             ((NotifierProperty)getUserLevelProperties().get(USER_SAMETIME_NAME)).getValue(user.getContacts());
         return partner;
     }
 
-    public void sendBuildNotification(Set checkinUsers,
-                                      Set subscribeUsers,
-                                      Build build,
-                                      Project project) {
+    /**
+     * @inheritDoc
+     */
+    public void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject) {
         List messages = new ArrayList();
 
         Iterator it = checkinUsers.iterator();
@@ -103,10 +122,10 @@ public class SametimeNotifier extends TemplatedNotifier {
             User user = (User) it.next();
             String sametimeName = getSametimeName(user);
             if (Luntbuild.isEmpty(sametimeName))
-                project.log("Can not send Sametime messages to user " + "\"" + user.getName()
+            	antProject.log("Can not send Sametime messages to user " + "\"" + user.getName()
                             + "\": Sametime account is empty!", Project.MSG_WARN);
             else {
-                project.log("Call Samtime account \"" + sametimeName + "\"...", Project.MSG_INFO);
+            	antProject.log("Call Samtime account \"" + sametimeName + "\"...", Project.MSG_INFO);
                 messages.add(new SametimeMessageSender.Message(sametimeName,
                                                                msg));
             }
@@ -118,21 +137,22 @@ public class SametimeNotifier extends TemplatedNotifier {
             User user = (User) it.next();
             String sametimeName = getSametimeName(user);
             if (Luntbuild.isEmpty(sametimeName))
-                project.log("Can not send Sametime messages to user " + "\"" + user.getName()
+            	antProject.log("Can not send Sametime messages to user " + "\"" + user.getName()
                             + "\": Sametime account is empty!", Project.MSG_WARN);
             else {
-                project.log("Call Samtime account \"" + sametimeName + "\"...", Project.MSG_INFO);
+            	antProject.log("Call Samtime account \"" + sametimeName + "\"...", Project.MSG_INFO);
                 messages.add(new SametimeMessageSender.Message(sametimeName,
                                                                msg));
             }
         }
 
-        sendMessages(project, messages);
+        sendMessages(antProject, messages);
     }
 
-    public void sendScheduleNotification(Set subscribeUsers,
-                                         Schedule schedule,
-                                         Project project) {
+    /**
+     * @inheritDoc
+     */
+    public void sendScheduleNotification(Set subscribeUsers, Schedule schedule, Project antProject) {
 
         List messages = new ArrayList();
 
@@ -142,18 +162,21 @@ public class SametimeNotifier extends TemplatedNotifier {
             User user = (User) it.next();
             String sametimeName = getSametimeName(user);
             if (Luntbuild.isEmpty(sametimeName))
-                project.log("Can not send Sametime messages to user " + "\"" + user.getName()
+            	antProject.log("Can not send Sametime messages to user " + "\"" + user.getName()
                             + "\": Sametime account is empty!", Project.MSG_WARN);
             else {
-                project.log("Call Samtime account \"" + sametimeName + "\"...", Project.MSG_INFO);
+            	antProject.log("Call Samtime account \"" + sametimeName + "\"...", Project.MSG_INFO);
                 messages.add(new SametimeMessageSender.Message(sametimeName,
                                                                msg));
             }
         }
 
-        sendMessages(project, messages);
+        sendMessages(antProject, messages);
     }
 
+    /**
+     * @inheritDoc
+     */
     public List getSystemLevelProperties() {
         List properties = new ArrayList();
 
@@ -209,6 +232,9 @@ public class SametimeNotifier extends TemplatedNotifier {
         return properties;
     }
 
+    /**
+     * @inheritDoc
+     */
     public List getUserLevelProperties() {
         List properties = new ArrayList();
         properties.add(new NotifierProperty() {

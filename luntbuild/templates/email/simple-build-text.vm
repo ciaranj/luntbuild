@@ -13,5 +13,6 @@ Build Artifacts:
 
 	  	Build Log:     ${build_buildlog_url}
 	  	Revision Log:  ${build_revisionlog_url}
+	  	Login Page: ${luntbuild_servlet_url}
 
 -- luntbuild

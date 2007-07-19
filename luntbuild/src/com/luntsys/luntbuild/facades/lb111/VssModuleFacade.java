@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of a vss module
+ * Microsoft Visual Source Safe VCS module facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.VssAdaptor.VssModule
  */
-public class VssModuleFacade extends com.luntsys.luntbuild.facades.lb111.CommonModuleFacade {
+public class VssModuleFacade extends CommonModuleFacade {
 }

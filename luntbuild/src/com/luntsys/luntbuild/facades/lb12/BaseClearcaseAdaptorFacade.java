@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade of base clearcase adaptor. This adaptor does not support modules definition
+ * Base Clearcase VCS adaptor facade.  This adaptor does not support modules.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.BaseClearcaseAdaptor
  */
 public class BaseClearcaseAdaptorFacade extends VcsFacade {
 	private String viewStgLoc;
@@ -47,116 +50,156 @@ public class BaseClearcaseAdaptorFacade extends VcsFacade {
     private String formatParams;
 
     private String viewTag;
-    
+
+    /**
+     * @inheritDoc
+	 */
+	public String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.BaseClearcaseAdaptor";
+	}
+
+    /**
+     * Gets the format params for the cleartool lshistory command.
+     * Please see the clearcase man pages on fmt_ccase for more information.
+     * 
+     * @return the format params
+     */
 	public String getFormatParams() {
         return formatParams;
     }
 
+    /**
+     * Sets the format params for the cleartool lshistory command.
+     * Please see the clearcase man pages on fmt_ccase for more information.
+     * 
+     * @param formatParams the format params
+     */
     public void setFormatParams(String formatParams) {
         this.formatParams = formatParams;
     }
 
     /**
-	 * Get view storage location.This is a project level vcs property. It will be used as -stgloc option
-	 * when creating clearcase views.
-	 * @return view storage location
+	 * Gets the Clearcase server-side view storage location.
+	 * 
+	 * @return the Clearcase server-side view storage location
 	 */
 	public String getViewStgLoc() {
 		return viewStgLoc;
 	}
 
 	/**
-	 * Set the view storage location. This is a project level vcs property.
-	 * @param viewStgLoc
+	 * Sets the Clearcase server-side view storage location.
+	 * 
+	 * @param viewStgLoc the Clearcase server-side view storage location
 	 */
 	public void setViewStgLoc(String viewStgLoc) {
 		this.viewStgLoc = viewStgLoc;
 	}
 
 	/**
-	 * Get explicit path for view storage. This is a view level vcs property. It will be used as
-	 * -vws option when creating clearcase views. It can override the -stgloc option
-	 * @see BaseClearcaseAdaptorFacade#getViewStgLoc()
-	 * @return explicit path for view storage
+	 * Gets the path for view storage.
+	 * 
+	 * @return the path for view storage
 	 */
 	public String getVws() {
 		return vws;
 	}
 
 	/**
-	 * Set the explicit path for view storage.
-	 * @param vws
+	 * Sets the path for view storage.
+	 * 
+	 * @param vws the path for view storage
 	 */
 	public void setVws(String vws) {
 		this.vws = vws;
 	}
 
 	/**
-	 * Get the config spec.
-	 * @return view config spec
+	 * Gets the snapshot view config spec.
+	 * 
+	 * @return the snapshot view config spec
 	 */
 	public String getViewCfgSpec() {
 		return viewCfgSpec;
 	}
 
 	/**
-	 * Set the config spec.
-	 * @param viewCfgSpec
+	 * Sets the snapshot view config spec.
+	 * 
+	 * @param viewCfgSpec the snapshot view config spec
 	 */
 	public void setViewCfgSpec(String viewCfgSpec) {
 		this.viewCfgSpec = viewCfgSpec;
 	}
 
 	/**
-	 * Get modification detection config..
-	 * Refer to luntbuild user manual for detailed explanation of this property
-	 * @return modification detection config
+	 * Gets the modification detection config.
+	 * 
+	 * @return the modification detection config
 	 */
 	public String getModificationDetectionConfig() {
 		return modificationDetectionConfig;
 	}
 
 	/**
-	 * Set the modification detection config.
-	 * @param modificationDetectionConfig
+	 * Sets the modification detection config.
+	 * 
+	 * @param modificationDetectionConfig the modification detection config
 	 */
 	public void setModificationDetectionConfig(String modificationDetectionConfig) {
 		this.modificationDetectionConfig = modificationDetectionConfig;
 	}
 
 	/**
-	 * Get extra options when call clearcase mkview sub-command.
-	 * Refer to luntbuild user manual for detailed explanation of this property
-	 * @return mkview extra options
+	 * Gets the extra options when creating snapshot view.
+	 * 
+	 * @return the extra options
 	 */
 	public String getMkviewExtraOpts() {
 		return mkviewExtraOpts;
 	}
 
 	/**
-	 * Set extra options when call clearcase mkview sub-command.
-	 * @param mkviewExtraOpts
+	 * Sets the extra options when creating snapshot view.
+	 * 
+	 * @param mkviewExtraOpts the extra options
 	 */
 	public void setMkviewExtraOpts(String mkviewExtraOpts) {
 		this.mkviewExtraOpts = mkviewExtraOpts;
 	}
 
-	public String getVcsClassName() {
-		return "com.luntsys.luntbuild.vcs.BaseClearcaseAdaptor";
-	}
-
+	/**
+	 * Gets the path to the cleartool executable.
+	 * 
+	 * @return the path to the cleartool executable
+	 */
 	public String getCleartoolDir() {
 		return cleartoolDir;
 	}
 
+	/**
+	 * Sets the path to the cleartool executable.
+	 * 
+	 * @param cleartoolDir the path to the cleartool executable
+	 */
 	public void setCleartoolDir(String cleartoolDir) {
 		this.cleartoolDir = cleartoolDir;
 	}
 
+    /**
+     * Gets the view tag.
+     * 
+     * @return the view tag
+     */
     public String getViewTag() {
         return viewTag;
     }
 
+    /**
+     * Sets the view tag.
+     * 
+     * @param viewTag the view tag
+     */
     public void setViewTag(String viewTag) {
         this.viewTag = viewTag;
     }

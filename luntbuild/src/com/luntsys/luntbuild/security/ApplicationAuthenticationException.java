@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright luntsys (c) 2004-2005,
  * Date: 2004-10-21
  * Time: 16:03:58
@@ -31,15 +31,13 @@ package com.luntsys.luntbuild.security;
 import org.acegisecurity.AuthenticationException;
 
 /**
- * This class integrates into the acegi framework provided
+ * Authentication specific exception, integrates into the acegi framework provided
  * Exception sheme.
  * 
- * An instance of this exception is thrown in case authorization
- * fails
- *
+ * <p>An instance of this exception is thrown in case authorization fails.</p>
+ * 
  * @author johannes plachy
  */
-
 public class ApplicationAuthenticationException extends AuthenticationException
 {
     /**
@@ -47,14 +45,28 @@ public class ApplicationAuthenticationException extends AuthenticationException
      */
     private static final long serialVersionUID = 3546357336206947890L;
 
+    /**
+     * Constructs a new authentication exception with the specified detail message.
+     * 
+     * @param text the detail message. The detail message is saved for later retrieval by the
+	 * {@link java.lang.Throwable#getMessage()} method.
+     */
     public ApplicationAuthenticationException(String text)
     {
         super(text);
     }
 
+    /**
+     * Constructs a new authentication exception with the specified detail message and cause. 
+     * 
+     * @param text the detail message. The detail message is saved for later retrieval by the
+	 * {@link java.lang.Throwable#getMessage()} method.
+     * @param throwable the cause. The cause is saved for later retrieval by the 
+     * {@link java.lang.Throwable#getCause()} method.
+     * (A <code>null</code> value is permitted, and indicates that the cause is nonexistent or unknown.)
+     */
     public ApplicationAuthenticationException(String text,Throwable throwable)
     {
         super(text, throwable);
     }
-
 }

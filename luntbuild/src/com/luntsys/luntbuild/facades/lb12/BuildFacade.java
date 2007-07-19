@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 import java.util.Date;
@@ -32,10 +33,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Facade of a build in luntbuild system. Mainly used by web service
- * client to operate on properties of a build object.
+ * Build facade.
  *
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.Build
  */
 public class BuildFacade {
 	private long id;
@@ -113,281 +114,357 @@ public class BuildFacade {
 	private long scheduleId;
 
 	/**
-	 * Get id of this build.
-	 * @return id of this build
+	 * Gets the identifer of this build.
+	 * 
+	 * @return the identifer of this build
 	 */
 	public long getId() {
 		return this.id;
 	}
 
 	/**
-	 * Set id of this build
-	 * @param id
+	 * Sets the identifier of this build.
+	 *
+	 * @param id the identifier of this build
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	/**
-	 * Get status of this build.
-	 * @return one value of {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_FAILED},
-	 * {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_SUCCESS},
-	 * {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_RUNNING}
-	 */
+    /**
+     * Gets the status of this build.
+     * 
+     * @return the status of this build
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_RUNNING
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_SUCCESS
+     */
 	public int getStatus() {
 		return this.status;
 	}
 
-	/**
-	 * Set status of this build
-	 * @param status refer to return value of {@link #getStatus()}
-	 */
+    /**
+     * Sets the status of this build.
+     * 
+     * @param status the status of this build
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_RUNNING
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_SUCCESS
+     */
 	public void setStatus(int status) {
 		this.status = status;
 	}
 
-	/**
-	 * Get start date of this build
-	 * @return start date of this build
-	 */
+    /**
+     * Gets the starting date of this build.
+     * 
+     * @return the starting date of this build
+     */
 	public Date getStartDate() {
 		return this.startDate;
 	}
 
-	/**
-	 * Set start date of this build
-	 * @param startDate
-	 */
+    /**
+     * Sets the start date of this build.
+     * 
+     * @param startDate the start date of this build
+     */
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	/**
-	 * Get end date of this build
-	 * @return end date of this build
-	 */
+    /**
+     * Gets the ending date of this build.
+     * 
+     * @return the ending date of this build
+     */
 	public Date getEndDate() {
 		return this.endDate;
 	}
 
-	/**
-	 * Set end date of this build
-	 * @param endDate
-	 */
+    /**
+     * Sets the ending date of this build.
+     * 
+     * @param endDate the ending date of this build
+     */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
-	/**
-	 * Get version of this build
-	 * @return version of this build
-	 */
+    /**
+     * Gets the version of this build.
+     * 
+     * @return the version of this build
+     */
 	public String getVersion() {
 		return this.version;
 	}
 
-	/**
-	 * Set version of this build
-	 * @param version
-	 */
+    /**
+     * Sets the version of this build.
+     * 
+     * @param version the version of this build
+     */
 	public void setVersion(String version) {
 		this.version = version;
 	}
 
 	/**
-	 * Whether or not head revisions of this build has been labeled
-	 * in the vcs repository
-	 * @return boolean value
+	 * Checks if this build has a corresponding label in the VCS repository.
+	 * 
+	 * @return <code>true</code> if this build has a corresponding label in the VCS repository
 	 */
 	public boolean isHaveLabelOnHead() {
 		return this.haveLabelOnHead;
 	}
 
 	/**
-	 * Set the value indicates whether or not head revisions of this build has been labeled
-	 * in the vcs repository
-	 * @param haveLabelOnHead
+	 * Sets <code>true</code> or <code>false</code> if this build has a corresponding label in the VCS repository.
+	 * 
+	 * @param haveLabelOnHead set <code>true</code> if this build has a label in the VCS repository
 	 */
 	public void setHaveLabelOnHead(boolean haveLabelOnHead) {
 		this.haveLabelOnHead = haveLabelOnHead;
 	}
 
-	/**
-	 * @return build type
-	 */
+    /**
+     * Gets the build type of this build.
+     * 
+     * @return the build type of this build
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT
+     */
 	public int getBuildType() {
 		return this.buildType;
 	}
 
-	/**
-	 * @param buildType
-	 */
+    /**
+     * Sets the build type of this build.
+     * 
+     * @param buildType the build type the build type of this build
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT
+     */
 	public void setBuildType(int buildType) {
 		this.buildType = buildType;
 	}
 
-	/**
-	 * Whether or not this is a rebuild
-	 * @return boolean value
-	 */
+    /**
+     * Checks if this is a rebuilt build.
+     * 
+     * @return <code>true</code> if this is a rebuilt build
+     */
 	public boolean isRebuild() {
 		return this.rebuild;
 	}
 
-	/**
-	 * Set whether or not this is a rebuild
-	 * @param rebuild
-	 */
+    /**
+     * Sets whether this is a rebuilt build.
+     * 
+     * @param rebuild set <code>true</code> if this is a rebuilt build
+     */
 	public void setRebuild(boolean rebuild) {
 		this.rebuild = rebuild;
 	}
 
-	/**
-	 * Get url of this build
-	 * @return url of this build
-	 */
+    /**
+     * Gets the URL of this build.
+     * 
+     * @return the URL of this build
+     */
 	public String getUrl() {
 		return this.url;
 	}
 
-	/**
-	 * Set url of this build
-	 * @param url
-	 */
+    /**
+     * Sets the URL of this build.
+     * 
+     * @param url the URL of this build
+     */
 	public void setUrl(String url) {
 		this.url = url;
 	}
 
-	/**
-	 * Get url of this build's buid log
-	 * @return url of this build's build log
-	 */
+    /**
+     * Gets the build log URL of this build.
+     * 
+     * @return the build log URL of this build
+     */
 	public String getBuildLogUrl() {
 		return this.buildLogUrl;
 	}
 
-	/**
-	 * Set url of this build's build log
-	 * @param buildLogUrl
-	 */
+    /**
+     * Sets the build log URL of this build.
+     * 
+     * @param buildLogUrl the build log URL of this build
+     */
 	public void setBuildLogUrl(String buildLogUrl) {
 		this.buildLogUrl = buildLogUrl;
 	}
 
-	/**
-	 * Get url of system log
-	 * @return url of system log
+    /**
+     * Gets the system log URL.
+     * 
+     * @return the system log URL
      * @since 1.3
-	 */
+     */
 	public String getSystemLogUrl() {
 		return this.systemLogUrl;
 	}
 
-	/**
-	 * Set url of system log
-	 * @param systemLogUrl
+    /**
+     * Sets the system log URL.
+     * 
+     * @param systemLogUrl the system log URL
      * @since 1.3
-	 */
+     */
 	public void setSystemLogUrl(String systemLogUrl) {
 		this.systemLogUrl = systemLogUrl;
 	}
 
     /**
-     * Get url of this build's revision log
-     * @return url of this build's revision log
+     * Gets the revision log URL of this build.
+     *
+     * @return the revision log URL of this build
      */
     public String getRevisionLogUrl() {
         return this.revisionLogUrl;
     }
 
     /**
-     * Set url of this build's revision log
-     * @param revisionLogUrl
+     * Sets the revision log URL of this build.
+     *
+     * @param revisionLogUrl the revision log URL of this build
      */
     public void setRevisionLogUrl(String revisionLogUrl) {
         this.revisionLogUrl = revisionLogUrl;
     }
 
-	/**
-	 * @return schedule id
-	 */
+    /**
+     * Gets the identifier of this build's schedule.
+     * 
+     * @return the identifier of the schedule
+     */
 	public long getScheduleId() {
 		return this.scheduleId;
 	}
 
-	/**
-	 * @param scheduleId
-	 */
+    /**
+     * Sets the identifier of this build's schedule.
+     * 
+     * @param scheduleId the identifier of the schedule
+     */
 	public void setScheduleId(long scheduleId) {
 		this.scheduleId = scheduleId;
 	}
 
-	/**
-	 * @return label strategy
-	 */
+    /**
+     * Gets the label strategy for this build.
+     * 
+     * @return the label strategy for this build
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_NONE
+     */
 	public int getLabelStrategy() {
 		return this.labelStrategy;
 	}
 
-	/**
-	 * @param labelStrategy
-	 */
+    /**
+     * Sets the label strategy for this build.
+     * 
+     * @param labelStrategy the labelStrategy the label strategy for this build
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_NONE
+     */
 	public void setLabelStrategy(int labelStrategy) {
 		this.labelStrategy = labelStrategy;
 	}
 
-	/**
-	 * @return postbuild strategy
-	 */
+    /**
+     * Gets the post-build strategy for this build.
+     * 
+     * @return the post-build strategy for this build
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS
+     */
 	public int getPostbuildStrategy() {
 		return this.postbuildStrategy;
 	}
 
-	/**
-	 * @param postbuildStrategy
-	 */
+    /**
+     * Sets the post-build strategy for this build.
+     * 
+     * @param postbuildStrategy the postbuildStrategy the post-build strategy for this build
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS
+     */
 	public void setPostbuildStrategy(int postbuildStrategy) {
 		this.postbuildStrategy = postbuildStrategy;
 	}
 
-	/**
-	 * @return vcs list
-	 */
+    /**
+     * Gets the VCS list of this build.
+     * 
+     * @return the VCS list of this build
+	 * @see com.luntsys.luntbuild.vcs.Vcs
+     */
 	public List getVcsList() {
 		return this.vcsList;
 	}
 
-	/**
-	 * @param vcsList
-	 */
+    /**
+     * Sets the VCS list of this build.
+     * 
+     * @param vcsList the list of VCS adaptors
+	 * @see com.luntsys.luntbuild.vcs.Vcs
+     */
 	public void setVcsList(List vcsList) {
 		this.vcsList = vcsList;
 	}
 
-	/**
-	 * @return builder list
-	 */
+    /**
+     * Gets the builder list of this build.
+     * 
+     * @return the builder list of this build
+	 * @see com.luntsys.luntbuild.builders.Builder
+     */
 	public List getBuilderList() {
 		return this.builderList;
 	}
 
-	/**
-	 * @param builderList
-	 */
+    /**
+     * Sets the builder list of this build.
+     * 
+     * @param builderList the list of builders
+	 * @see com.luntsys.luntbuild.builders.Builder
+     */
 	public void setBuilderList(List builderList) {
 		this.builderList = builderList;
 	}
 
-	/**
-	 * @return postbuilder list
-	 */
+    /**
+     * Gets the post-builder list of this build.
+     * 
+     * @return the post-builder list of this build
+	 * @see com.luntsys.luntbuild.builders.Builder
+     */
 	public List getPostbuilderList() {
 		return this.postbuilderList;
 	}
 
-	/**
-	 * @param postbuilderList
-	 */
+    /**
+     * Sets the post-builder list of this build.
+     * 
+     * @param postbuilderList the list of post-builders
+	 * @see com.luntsys.luntbuild.builders.Builder
+     */
 	public void setPostbuilderList(List postbuilderList) {
 		this.postbuilderList = postbuilderList;
 	}

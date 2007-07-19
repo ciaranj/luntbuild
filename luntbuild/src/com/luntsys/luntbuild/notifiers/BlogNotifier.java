@@ -7,7 +7,6 @@ import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.NotifierProperty;
 
 import org.apache.tools.ant.Project;
-
 import org.apache.xmlrpc.XmlRpcClient;
 
 import java.text.SimpleDateFormat;
@@ -22,19 +21,18 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
- * Blog Notifier
+ * Blog notifier implementation.
  *
  * @author Lubos Pochman
- *
+ * @see BlogConnection
+ * @see BlogSender
  */
 public class BlogNotifier extends TemplatedNotifier {
     /**
      * Keep tracks of version of this class, used when do serialization-deserialization
      */
     static final long serialVersionUID = 1L;
-    /**
-     * Indices for notifier properties
-     */
+    // Indices for notifier properties
     private static final int BLOG_TYPE     = 0;
     private static final int BLOG_URL      = 1;
     private static final int BLOG_ID       = 2;
@@ -53,21 +51,26 @@ public class BlogNotifier extends TemplatedNotifier {
     }
 
     /**
-     * Constructor
+     * Creates a blog notifier.
      */
     public BlogNotifier() {
         super(BlogNotifier.class, "blog");
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getDisplayName() {
         return "Blog";
     }
 
-    /** Send blog
-     * @param blog blog
-     * @param antProject project
-     * @param subject subject
-     * @param body body
+    /**
+     * Sends the notification to a blog.
+     * 
+     * @param blog the blog connection
+     * @param antProject the ant project used for logging purpose
+     * @param subject the blog entry's subject
+     * @param body the blog entry's body
      */
     private void sendBlog(BlogConnection blog, Project antProject, String subject, String body) {
         /* Prepare blog message */
@@ -91,6 +94,9 @@ public class BlogNotifier extends TemplatedNotifier {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject) {
         Iterator it = checkinUsers.iterator();
         while (it.hasNext()) {
@@ -116,6 +122,9 @@ public class BlogNotifier extends TemplatedNotifier {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public void sendScheduleNotification(Set subscribeUsers, Schedule schedule, Project antProject) {
         Iterator it = subscribeUsers.iterator();
         while (it.hasNext()) {
@@ -130,6 +139,12 @@ public class BlogNotifier extends TemplatedNotifier {
         }
     }
 
+    /**
+     * Gets the blog connection needed to access the specified user's blog.
+     * 
+     * @param user the user
+     * @return the blog connection
+     */
     private BlogConnection getBlogConnection(User user) {
         BlogConnection blog = new BlogConnection(
                 ((NotifierProperty)getUserLevelProperties().get(BLOG_TYPE)).getValue(user.getContacts()),
@@ -142,6 +157,13 @@ public class BlogNotifier extends TemplatedNotifier {
         return blog;
     }
 
+    /**
+     * Gets the blog sender for the specified blog type.
+     * 
+     * @param apiName the name of the blog implementation to use
+     * @param antProject the ant project used for logging purposes
+     * @return the blog sender
+     */
     private BlogSender getSender(String apiName, Project antProject) {
         Class impl = (Class) blogTypes.get(apiName.toLowerCase());
         if (impl != null) {
@@ -157,7 +179,7 @@ public class BlogNotifier extends TemplatedNotifier {
     }
 
     /**
-     * @see com.luntsys.luntbuild.notifiers.Notifier#getSystemLevelProperties()
+     * @inheritDoc
      */
     public List getSystemLevelProperties() {
         List properties = new ArrayList();
@@ -165,8 +187,7 @@ public class BlogNotifier extends TemplatedNotifier {
     }
 
     /**
-     * @return List of NotifierProperty
-     * @see com.luntsys.luntbuild.notifiers.Notifier#getUserLevelProperties()
+     * @inheritDoc
      */
     public List getUserLevelProperties() {
         List properties = new ArrayList();
@@ -264,7 +285,16 @@ public class BlogNotifier extends TemplatedNotifier {
         return properties;
     }
 
-    class BlogConnection {
+    /**
+     * Represents blog connection information.
+     * <p>Currently supported blogs are:
+     * <ul>
+     * <li>blogger</li>
+     * <li>livejournal</li>
+     * <li>metaweblog</li>
+     * </ul></p>
+     */
+    public class BlogConnection {
         private String type;
         private String url;
         private String id;
@@ -272,7 +302,17 @@ public class BlogNotifier extends TemplatedNotifier {
         private String password;
         private String category;
 
-        BlogConnection(String type, String url, String id, String user, String password, String category) {
+        /**
+         * Creates a new blog connection.
+         * 
+         * @param type the blog type
+         * @param url the URL to post to
+         * @param id the id of the blog (only used with blog type "blogger")
+         * @param user the user name/id to post with
+         * @param password the password to post with
+         * @param category the category to post under
+         */
+        public BlogConnection(String type, String url, String id, String user, String password, String category) {
             this.type = type;
             this.url = url;
             this.id = id;
@@ -282,49 +322,62 @@ public class BlogNotifier extends TemplatedNotifier {
         }
 
         /**
-         * @return Returns the category.
+         * Gets the category to post under.
+         * 
+         * @return the category of the post
          */
         public String getCategory() {
             return this.category;
         }
 
         /**
-         * @return Returns the password.
+         * Gets the password to use.
+         * 
+         * @return the password
          */
         public String getPassword() {
             return this.password;
         }
 
         /**
-         * @return Returns the type.
+         * Gets the type of blog.
+         * 
+         * @return the blog type
          */
         public String getType() {
             return this.type;
         }
 
         /**
-         * @return Returns the url.
+         * Gets the URL to post to the blog with.
+         * 
+         * @return the url
          */
         public String getUrl() {
             return this.url;
         }
 
         /**
-         * @return Returns the user.
+         * Gets the user name/id to post with.
+         * 
+         * @return the user name/id
          */
         public String getUser() {
             return this.user;
         }
 
         /**
-         * @return Returns the id.
+         * Gets the unique identifier of the blog (only used with blog type "blogger").
+         * 
+         * @return the blog identifier
          */
         public String getId() {
             return (this.id != null && this.id.trim().length() > 0) ? this.id : "luntbuild";
         }
 
         /**
-         * @param id The id to set.
+         * Sets the unique identifier of the blog (only used with blog type "blogger").
+         * @param id the blog identifier
          */
         public void setId(String id) {
             this.id = id;
@@ -332,27 +385,37 @@ public class BlogNotifier extends TemplatedNotifier {
     }
 
     /**
-     * The blogging type sender interface.
-     *
+     * The blogging sender interface.
+     * 
      * @author lubosp
      */
-    interface BlogSender {
+    public interface BlogSender {
         /**
-         * Post a new blog entry.
-         * @param blog blog connection.
-         * @param subject blog entry's subject.
-         * @param content blog entry's content.
-         * @param antProject project.
-         * @return The posted blog id.
+         * Posts a new blog entry.
+         * 
+         * @param blog the blog connection
+         * @param subject the blog entry's subject
+         * @param content the blog entry's content
+         * @param antProject the ant project used for logging purposes
+         * @return the new entry's id
          */
         public Object post(BlogConnection blog, String subject, String content, Project antProject);
     }
 
     /**
-     * Implementation of the Blogger.
+     * Implementation of the Blogger sender.
      */
     public static class BloggerSender implements BlogSender {
 
+        /**
+         * Posts a new blog entry.
+         * 
+         * @param blog the blog connection
+         * @param subject the blog entry's subject
+         * @param content the blog entry's content
+         * @param antProject the ant project used for logging purposes
+         * @return the new entry's id
+         */
         public Object post(BlogConnection blog, String subject, String content, Project antProject) {
             content = "<title>" + subject + "</title>" + content;
             Object postId = null;
@@ -374,10 +437,19 @@ public class BlogNotifier extends TemplatedNotifier {
     }
 
     /**
-     * Implementation of the MetaWeblog.
+     * Implementation of the MetaWeblog sender.
      */
     public static class MetaWeblogSender implements BlogSender {
 
+        /**
+         * Posts a new blog entry.
+         * 
+         * @param blog the blog connection
+         * @param subject the blog entry's subject
+         * @param content the blog entry's content
+         * @param antProject the ant project used for logging purposes
+         * @return the new entry's id
+         */
         public Object post(BlogConnection blog, String subject, String content, Project antProject) {
             Object postId = null;
             try {
@@ -412,10 +484,16 @@ public class BlogNotifier extends TemplatedNotifier {
     }
 
     /**
-     * Implementation of the LiveJournal.
+     * Implementation of the LiveJournal sender.
      */
     public static class LiveJournalSender implements BlogSender {
 
+    	/**
+    	 * Strips line feeds ("\n" or "\r") from the input string.
+    	 * 
+    	 * @param input the string to strip from
+    	 * @return the input string without line feeds
+    	 */
         private String stripLineFeeds(String input) {
             StringBuffer s = new StringBuffer();
             char[] chars = input.toCharArray();
@@ -427,6 +505,15 @@ public class BlogNotifier extends TemplatedNotifier {
             return s.toString();
         }
 
+        /**
+         * Posts a new blog entry.
+         * 
+         * @param blog the blog connection
+         * @param subject the blog entry's subject
+         * @param content the blog entry's content
+         * @param antProject the ant project used for logging purposes
+         * @return the new entry's id
+         */
         public Object post(BlogConnection blog, String subject, String content, Project antProject) {
             Object postId = null;
             try {
@@ -456,6 +543,4 @@ public class BlogNotifier extends TemplatedNotifier {
             return postId;
         }
     }
-
-
 }

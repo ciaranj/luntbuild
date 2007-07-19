@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of cvs adaptor
+ * CVS VCS adaptor facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.CvsAdaptor
  */
 public class CvsAdaptorFacade extends VcsFacade {
 	private String cvsRoot;
@@ -38,71 +41,107 @@ public class CvsAdaptorFacade extends VcsFacade {
 	private String disableHistoryCmd;
 	private String disableSuppressOption;
 
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
+	public final String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.CvsAdaptor";
+	}
+
 	/**
-	 * Get cvs root. This is a project level property. Refer to user manual for detailed information
-	 * @return cvs root
+	 * Gets the CVS root of the repository. This is a project level property.
+	 * 
+	 * @return the CVS root
 	 */
 	public String getCvsRoot() {
 		return cvsRoot;
 	}
 
 	/**
-	 * Set cvs root
-	 * @param cvsRoot
+	 * Sets the CVS root of the repository. This is a project level property.
+	 *
+	 * @param cvsRoot the CVS root, an example can be ":pserver:anoncvs@cvs.pmease.com:/home/cvspublic"
 	 */
 	public void setCvsRoot(String cvsRoot) {
 		this.cvsRoot = cvsRoot;
 	}
 
-	public final String getVcsClassName() {
-		return "com.luntsys.luntbuild.vcs.CvsAdaptor";
-	}
-
 	/**
-	 * Get cvs password. This is a project level property.
-	 * @return the cvs password
+	 * Gets the CVS password for the repository. This is a project level property.
+	 *
+	 * @return the password
 	 */
 	public String getCvsPassword() {
 		return cvsPassword;
 	}
 
 	/**
-	 * Set cvs password
-	 * @param cvsPassword
+	 * Sets the CVS password for the repository. This is a project level property.
+	 *
+	 * @param cvsPassword the password
 	 */
 	public void setCvsPassword(String cvsPassword) {
 		this.cvsPassword = cvsPassword;
 	}
 
 	/**
-	 * Get cygwin cvs indication string. This is a project level property
-	 * @return "yes" if used cvs is a cygwin cvs, or "no" otherwise
+	 * Gets the is cygwin CVS property. This is a project level property.
+	 * This property indicates whether or not ("yes" or "no") the CVS executable to use is the cygwin one.
+	 * 
+	 * @return the is cygwin CVS property
 	 */
 	public String getCygwinCvs() {
 		return cygwinCvs;
 	}
 
 	/**
-	 * Set cygwin cvs indication string
-	 * @param cygwinCvs "yes", or "no" to indicate wheter or not used cvs is a cygwin
-	 * one
+	 * Sets the is cygwin CVS property. This is a project level property.
+	 * This property indicates whether or not ("yes" or "no") the CVS executable to use is the cygwin one.
+	 * 
+	 * @param cygwinCvs the is cygwin CVS property
 	 */
 	public void setCygwinCvs(String cygwinCvs) {
 		this.cygwinCvs = cygwinCvs;
 	}
 
+	/**
+	 * Gets the disable history command property.
+	 * This property indicates whether or not ("yes" or "no") to disable history command when checking revisions.
+	 *
+	 * @return the disable history command property
+	 */
 	public String getDisableHistoryCmd() {
 		return disableHistoryCmd;
 	}
 
+	/**
+	 * Sets the disable history command property.
+	 * This property indicates whether or not ("yes" or "no") to disable history command when checking revisions.
+	 *
+	 * @param disableHistoryCmd the disable history command property
+	 */
 	public void setDisableHistoryCmd(String disableHistoryCmd) {
 		this.disableHistoryCmd = disableHistoryCmd;
 	}
 
+	/**
+	 * Gets the disable suppress property.
+	 * This property indicates whether or not ("yes" or "no") to disable -S option for log command.
+	 *
+	 * @return the disable suppress property
+	 */
 	public String getDisableSuppressOption() {
 		return disableSuppressOption;
 	}
 
+	/**
+	 * Sets the disable suppress property.
+	 * This property indicates whether or not ("yes" or "no") to disable -S option for log command.
+	 *
+	 * @param disableSuppressOption the disable suppress property
+	 */
 	public void setDisableSuppressOption(String disableSuppressOption) {
 		this.disableSuppressOption = disableSuppressOption;
 	}

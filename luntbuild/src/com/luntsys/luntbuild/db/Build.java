@@ -31,6 +31,7 @@ import com.luntsys.luntbuild.BuildGenerator;
 import com.luntsys.luntbuild.builders.Builder;
 import com.luntsys.luntbuild.facades.lb12.BuildFacade;
 import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
+import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.LuntbuildLogger;
 import com.luntsys.luntbuild.utility.OgnlHelper;
@@ -42,16 +43,18 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * This class mapps to a hibernate entity. It represents a
- * execution result of a particular schedule
+ * A build from a <code>Schedule</code>. Represents an execution result of a particular schedule.
+ * 
+ * <p>This is a hibernate mapping class.</p>
  *
  * @author robin shine
+ * @see Schedule
  */
 public class Build {
     private long id;
 
     /**
-     * Status of current build,
+     * Status of current build
      */
     private int status;
 
@@ -115,57 +118,73 @@ public class Build {
 
     private static transient Map loggersById = new HashMap();
 
+	/**
+	 * Checks if this build has a corresponding label in the VCS repository.
+	 * 
+	 * @return <code>true</code> if this build has a corresponding label in the VCS repository
+	 */
     public boolean isHaveLabelOnHead() {
         return haveLabelOnHead;
     }
 
+	/**
+	 * Sets <code>true</code> or <code>false</code> if this build has a corresponding label in the VCS repository.
+	 * 
+	 * @param haveLabelOnHead set <code>true</code> if this build has a label in the VCS repository
+	 */
     public void setHaveLabelOnHead(boolean haveLabelOnHead) {
         this.haveLabelOnHead = haveLabelOnHead;
     }
 
-    /**
-     * Get identifier for this build
-     * @return identifier for this build
-     */
+	/**
+	 * Gets the identifer of this build.
+	 * 
+	 * @return the identifer of this build
+	 */
     public long getId() {
         return id;
     }
 
     /**
-     * Is this a rebuilt build
-     * @return Is this a rebuilt build
+     * Checks if this is a rebuilt build.
+     * 
+     * @return <code>true</code> if this is a rebuilt build
      */
     public boolean isRebuild() {
         return rebuild;
     }
 
     /**
-     * Set whether this is a rebuilt build
-     * @param rebuild
+     * Sets whether this is a rebuilt build.
+     * 
+     * @param rebuild set <code>true</code> if this is a rebuilt build
      */
     public void setRebuild(boolean rebuild) {
         this.rebuild = rebuild;
     }
 
-    /**
-     * Set identifier of this build
-     * @param id
-     */
+	/**
+	 * Sets the identifier of this build, will be called by hibernate.
+	 *
+	 * @param id the identifier of this build
+	 */
     public void setId(long id) {
         this.id = id;
     }
 
     /**
-     * Get version of this build
-     * @return version of this build
+     * Gets the version of this build.
+     * 
+     * @return the version of this build
      */
     public String getVersion() {
         return version;
     }
 
     /**
-     * Get version of this build
-     * @return version of this build
+     * Gets the version of this build with all spaces escaped.
+     * 
+     * @return the version of this build
      */
     public String getVersionNoSpace() {
         return version.replaceAll("\\s", "%20");
@@ -180,56 +199,71 @@ public class Build {
     }
 
     /**
-     * Get status of this build.
-     * @return one value of status of this build
-     * {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_FAILED},
-     * {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_RUNNING},
-     * {@link com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_SUCCESS}
+     * Gets the status of this build.
+     * 
+     * @return the status of this build
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_RUNNING
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_SUCCESS
      */
     public int getStatus() {
         return status;
     }
 
     /**
-     * Set status of this build
-     * @param status
+     * Sets the status of this build.
+     * 
+     * @param status the status of this build
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_RUNNING
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_STATUS_SUCCESS
      */
     public void setStatus(int status) {
         this.status = status;
     }
 
     /**
-     * Get starting date of this build
-     * @return starting date of this build
+     * Gets the starting date of this build.
+     * 
+     * @return the starting date of this build
      */
     public Date getStartDate() {
         return startDate;
     }
 
     /**
-     * Set start date of this build
-     * @param startDate
+     * Sets the start date of this build.
+     * 
+     * @param startDate the start date of this build
      */
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
     /**
-     * Get ending date of this build
-     * @return ending date of this build
+     * Gets the ending date of this build.
+     * 
+     * @return the ending date of this build
      */
     public Date getEndDate() {
         return endDate;
     }
 
     /**
-     * Set ending date of this build
-     * @param endDate
+     * Sets the ending date of this build.
+     * 
+     * @param endDate the ending date of this build
      */
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj the reference object with which to compare
+	 * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
+	 */
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof Build) {
             if (getId() == ((Build) obj).getId())
@@ -238,24 +272,38 @@ public class Build {
         return false;
     }
 
+	/**
+	 * Returns a hash code value for the object.
+	 * 
+	 * @return a hash code value for this object
+	 * @see #equals(Object)
+	 */
     public int hashCode() {
         return (int) getId();
     }
 
+    /**
+     * Validates the properties of this build.
+     */
     public void validate() {
         // current does nothing
     }
 
     /**
-     * Return url of this build
-     *
-     * @return url of this build
+     * Gets the URL of this build.
+     * 
+     * @return the URL of this build
      */
     public String getUrl() {
         return Luntbuild.getServletUrl() + "?service=external/Home&sp=l" +
                 Home.SERVICE_PARAMETER_BUILD + "&sp=l" + getId();
     }
 
+	/**
+	 * Ensures that the HTML and plain text versions of the build log are up to date, exist, and can be read.
+	 * 
+	 * @return <code>true</code> if the HTML build log exists and can be read
+	 */
     private boolean ensureBuildLog() {
         String publishDir = getPublishDir();
         String buildXmlPath = publishDir + File.separator + BuildGenerator.BUILD_XML_LOG;
@@ -271,9 +319,9 @@ public class Build {
     }
 
     /**
-     * Return the build log url of this build
-     *
-     * @return the build log url of this build
+     * Gets the build log URL of this build.
+     * 
+     * @return the build log URL of this build
      */
     public String getBuildLogUrl() {
         String servletUrl = Luntbuild.getServletUrl();
@@ -288,7 +336,9 @@ public class Build {
     }
 
     /**
-     * @return system log url
+     * Gets the system log URL.
+     * 
+     * @return the system log URL
      */
     public String getSystemLogUrl() {
         String servletUrl = Luntbuild.getServletUrl();
@@ -298,16 +348,22 @@ public class Build {
             Luntbuild.log4jFileName;
     }
 
+	/**
+	 * Ensures that the revision log is up to date, exist, and can be read.
+	 * 
+	 * @return <code>true</code> if the revision log exists and can be read
+	 */
     private boolean ensureRevisionLog() {
         String publishDir = getPublishDir();
         String revisionLogFile = publishDir + "/" + BuildGenerator.REVISION_HTML_LOG;
         File f = new File(revisionLogFile);
         return f.exists() && f.canRead();
     }
-     /**
-     * Return revision log url of this build
+
+    /**
+     * Gets the revision log URL of this build.
      *
-     * @return revision log url of this build
+     * @return the revision log URL of this build
      */
     public String getRevisionLogUrl() {
         String servletUrl = Luntbuild.getServletUrl();
@@ -322,11 +378,12 @@ public class Build {
     }
 
     /**
-     * Get facade of this build
-     * @return facade of this build
+     * Gets the facade of this build.
+     * 
+     * @return the facade of this build
      */
     public BuildFacade getFacade() {
-        com.luntsys.luntbuild.facades.lb12.BuildFacade facade = new BuildFacade();
+        BuildFacade facade = new BuildFacade();
         facade.setBuildType(getBuildType());
         facade.setEndDate(getEndDate());
         facade.setHaveLabelOnHead(isHaveLabelOnHead());
@@ -361,8 +418,10 @@ public class Build {
     }
 
     /**
-     * Set facade of this build
-     * @param facade
+     * Sets the facade of this build.
+     * 
+     * @param facade the facade the build facade
+     * @throws RuntimeException if unable to instantiate a builder or VCS adaptor
      */
     public void setFacade(BuildFacade facade) {
         setBuilderList(facade.getBuilderList());
@@ -380,7 +439,7 @@ public class Build {
             getVcsList().clear();
             Iterator it = facade.getVcsList().iterator();
             while (it.hasNext()) {
-                com.luntsys.luntbuild.facades.lb12.VcsFacade vcsFacade = (com.luntsys.luntbuild.facades.lb12.VcsFacade) it.next();
+                VcsFacade vcsFacade = (VcsFacade) it.next();
                 Vcs vcs = (Vcs) Class.forName(vcsFacade.getVcsClassName()).newInstance();
                 vcs.setFacade(vcsFacade);
                 getVcsList().add(vcs);
@@ -388,7 +447,7 @@ public class Build {
             getBuilderList().clear();
             it = facade.getBuilderList().iterator();
             while (it.hasNext()) {
-                BuilderFacade builderFacade = (com.luntsys.luntbuild.facades.lb12.BuilderFacade) it.next();
+                BuilderFacade builderFacade = (BuilderFacade) it.next();
                 Builder builder = (Builder) Class.forName(builderFacade.getBuilderClassName()).newInstance();
                 builder.setFacade(builderFacade);
                 getBuilderList().add(builder);
@@ -396,7 +455,7 @@ public class Build {
             getPostbuilderList().clear();
             it = facade.getPostbuilderList().iterator();
             while (it.hasNext()) {
-                BuilderFacade builderFacade = (com.luntsys.luntbuild.facades.lb12.BuilderFacade) it.next();
+                BuilderFacade builderFacade = (BuilderFacade) it.next();
                 Builder builder = (Builder) Class.forName(builderFacade.getBuilderClassName()).newInstance();
                 builder.setFacade(builderFacade);
                 getPostbuilderList().add(builder);
@@ -411,9 +470,9 @@ public class Build {
     }
 
     /**
-     * Get the publish directory for current build. Publish directory is used to hold
+     * Gets the publish directory for current build. Publish directory is used to hold
      * output of this build, including build log and build artifacts, etc.
-     *
+     * 
      * @return the publish directory for current build
      */
     public String getPublishDir() {
@@ -427,8 +486,9 @@ public class Build {
     }
 
     /**
-     * Get artifacts directory where hold artifacts for this build
-     * @return artifacts directory where hold artifacts for this build
+     * Gets the artifacts directory where hold artifacts for this build.
+     * 
+     * @return the artifacts directory where hold artifacts for this build
      */
     public String getArtifactsDir() {
         try {
@@ -441,7 +501,8 @@ public class Build {
     }
 
     /**
-     * Get the directory where to hold Junit html report stuff
+     * Gets the directory where to hold Junit html report stuff.
+     * 
      * @return the directory where to hold Junit html report stuff
      */
     public String getJunitHtmlReportDir() {
@@ -455,72 +516,100 @@ public class Build {
     }
 
     /**
-     * Get label strategy for this build
-     * @return label strategy for this build
+     * Gets the label strategy for this build.
+     * 
+     * @return the label strategy for this build
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_NONE
      */
     public int getLabelStrategy() {
         return labelStrategy;
     }
 
     /**
-     * Set label strategy for this build
-     * @param labelStrategy
+     * Sets the label strategy for this build.
+     * 
+     * @param labelStrategy the labelStrategy the label strategy for this build
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_NONE
      */
     public void setLabelStrategy(int labelStrategy) {
         this.labelStrategy = labelStrategy;
     }
 
     /**
-     * Get post-build strategy for this build
-     * @return post-build strategy for this build
+     * Gets the post-build strategy for this build.
+     * 
+     * @return the post-build strategy for this build
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS
      */
     public int getPostbuildStrategy() {
         return postbuildStrategy;
     }
 
     /**
-     * Set post-build strategy for this build
-     * @param postbuildStrategy
+     * Sets the post-build strategy for this build.
+     * 
+     * @param postbuildStrategy the postbuildStrategy the post-build strategy for this build
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS
      */
     public void setPostbuildStrategy(int postbuildStrategy) {
         this.postbuildStrategy = postbuildStrategy;
     }
 
     /**
-     * Get build type of this build
-     * @return build type of this build
+     * Gets the build type of this build.
+     * 
+     * @return the build type of this build
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT
      */
     public int getBuildType() {
         return buildType;
     }
 
     /**
-     * Set build type of this build
-     * @param buildType
+     * Sets the build type of this build.
+     * 
+     * @param buildType the build type the build type of this build
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT
      */
     public void setBuildType(int buildType) {
         this.buildType = buildType;
     }
 
     /**
-     * Get {@link Schedule} of this build
-     * @return schedule of this build
+     * Gets the schedule of this build.
+     * 
+     * @return the schedule of this build
      */
     public Schedule getSchedule() {
         return schedule;
     }
 
     /**
-     * Set {@link Schedule} of this build
-     * @param schedule
+     * Sets the schedule of this build.
+     * 
+     * @param schedule the schedule of this build
      */
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
     }
 
     /**
-     * Get VCS list of this build
-     * @return VCS list of this build
+     * Gets the VCS list of this build.
+     * 
+     * @return the VCS list of this build
+	 * @see com.luntsys.luntbuild.vcs.Vcs
      */
     public List getVcsList() {
         if (vcsList == null)
@@ -529,16 +618,40 @@ public class Build {
     }
 
     /**
-     * Set VCS list of this build
-     * @param vcsList
+     * Sets the VCS list of this build.
+     * 
+     * @param vcsList the list of VCS adaptors
+	 * @see com.luntsys.luntbuild.vcs.Vcs
      */
     public void setVcsList(List vcsList) {
         this.vcsList = vcsList;
     }
 
     /**
-     * Is this build a clean build?
-     * @return Is this build a clean build?
+     * Gets the change list for this build from the first Perforce adaptor.
+     * 
+     * @return the changelist for this build
+     * @see com.luntsys.luntbuild.vcs.PerforceAdaptor#getChangelist()
+     */
+    public String getChangelist() {
+    	String changelist = "0";
+    	Iterator vcss = getVcsList().iterator();
+    	while (vcss.hasNext()) {
+    		Vcs vcs = (Vcs) vcss.next();
+    		if (vcs.getClass().getName().equals("com.luntsys.luntbuild.vcs.PerforceAdaptor")) {
+    			com.luntsys.luntbuild.vcs.PerforceAdaptor p4 = (com.luntsys.luntbuild.vcs.PerforceAdaptor) vcs;
+    			changelist = p4.getChangelist();
+    			break;
+    		}
+    	}
+
+    	return changelist;
+    }
+
+    /**
+     * Checks if this build is a clean build.
+     * 
+     * @return <code>true</code> if this is a clean build
      */
     public boolean isCleanBuild() {
         if (buildType == com.luntsys.luntbuild.facades.Constants.BUILD_TYPE_CLEAN)
@@ -547,13 +660,20 @@ public class Build {
             return false;
     }
 
+	/**
+	 * Gets a string representation of this object.
+	 * 
+	 * @return a string representation of this object
+	 */
     public String toString() {
         return getSchedule().getProject().getName() + "/" + getSchedule().getName() + "/" + getVersion();
     }
 
     /**
-     * Get builder list of this build
-     * @return builder list of this build
+     * Gets the builder list of this build.
+     * 
+     * @return the builder list of this build
+	 * @see com.luntsys.luntbuild.builders.Builder
      */
     public List getBuilderList() {
         if (builderList == null)
@@ -562,16 +682,20 @@ public class Build {
     }
 
     /**
-     * Set builder list of this build
-     * @param builderList
+     * Sets the builder list of this build.
+     * 
+     * @param builderList the list of builders
+	 * @see com.luntsys.luntbuild.builders.Builder
      */
     public void setBuilderList(List builderList) {
         this.builderList = builderList;
     }
 
     /**
-     * Get post-builder list of this build
-     * @return post-builder list of this build
+     * Gets the post-builder list of this build.
+     * 
+     * @return the post-builder list of this build
+	 * @see com.luntsys.luntbuild.builders.Builder
      */
     public List getPostbuilderList() {
         if (postbuilderList == null)
@@ -580,23 +704,28 @@ public class Build {
     }
 
     /**
-     * Set post-builder list of this build
-     * @param postbuilderList
+     * Sets the post-builder list of this build.
+     * 
+     * @param postbuilderList the list of post-builders
+	 * @see com.luntsys.luntbuild.builders.Builder
      */
     public void setPostbuilderList(List postbuilderList) {
         this.postbuilderList = postbuilderList;
     }
 
     /**
-     * Get system object. Mainly used for ognl evaluation
-     * @return system object
+     * Gets the system object. Mainly used for ognl evaluation.
+     * 
+     * @return the system object
      */
     public OgnlHelper getSystem() {
         return new OgnlHelper();
     }
 
     /**
-     * @return Returns the logger.
+     * Gets the logger for this build.
+     * 
+     * @return the logger for this build
      */
     public LuntbuildLogger getLogger() {
         LuntbuildLogger logger = (LuntbuildLogger)loggersById.get(new Long(this.id));
@@ -604,14 +733,18 @@ public class Build {
     }
 
     /**
-     * @param logger The logger to set.
+     * Sets the logger for this build.
+     * 
+     * @param logger the logger to set
      */
     public void setLogger(LuntbuildLogger logger) {
         loggersById.put(new Long(this.id), logger);
     }
 
     /**
-     * Remove logger
+     * Removes the logger for this build.
+     * 
+     * @see LuntbuildLogger
      */
     public void removeLogger() {
         loggersById.remove(new Long(this.id));

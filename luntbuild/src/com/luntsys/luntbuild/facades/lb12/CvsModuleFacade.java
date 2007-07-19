@@ -25,71 +25,71 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade of a cvs module
+ * CVS VCS module facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.CvsAdaptor.CvsModule
  */
 public class CvsModuleFacade extends ModuleFacade {
 	private String srcPath;
 	private String branch;
 	private String label;
-	private String destPath;
 
 	/**
-	 * Get source path in repository of this module
-	 * @return source path in repository
+	 * Gets the source path of this module for the repository.
+	 * 
+	 * @return the source path of this module
 	 */
 	public String getSrcPath() {
 		return srcPath;
 	}
 
 	/**
-	 * Set source path in repository of this module
-	 * @param srcPath
+	 * Sets the source path of this module for the repository.
+	 * 
+	 * @param srcPath the source path of this module
 	 */
 	public void setSrcPath(String srcPath) {
 		this.srcPath = srcPath;
 	}
 
 	/**
-	 * Get branch of the source path
-	 * @return branch of the source path
+	 * Gets the branch to retrieve this module from.
+	 * 
+	 * @return the branch
 	 */
 	public String getBranch() {
 		return branch;
 	}
 
 	/**
-	 * Set branch of the source path
-	 * @param branch
+	 * Sets the branch to retrieve this module from.
+	 * 
+	 * @param branch the branch
 	 */
 	public void setBranch(String branch) {
 		this.branch = branch;
 	}
 
 	/**
-	 * Get label of the source path.
-	 * @return label of the source path
+	 * Gets the label to use for this module.
+	 * 
+	 * @return the label
 	 */
 	public String getLabel() {
 		return label;
 	}
 
 	/**
-	 * Set label of the source path
-	 * @param label
+	 * Sets the label to use for this module.
+	 * 
+	 * @param label the label
 	 */
 	public void setLabel(String label) {
 		this.label = label;
-	}
-
-	public String getDestPath() {
-		return destPath;
-	}
-
-	public void setDestPath(String destPath) {
-		this.destPath = destPath;
 	}
 }

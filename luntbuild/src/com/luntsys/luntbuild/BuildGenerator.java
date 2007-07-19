@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild;
 
 import com.luntsys.luntbuild.builders.Builder;
@@ -53,23 +54,17 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
 import org.quartz.StatefulJob;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.StringReader;
 import java.io.Writer;
 import java.util.*;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -78,36 +73,43 @@ import javax.xml.transform.stream.StreamSource;
 
 /**
  * This class performs the actual build process and will generate
- * new build or rebuild existing builds upon the trigger of a schedule
+ * new build or rebuild existing builds upon the trigger of a <code>Schedule</code>.
  *
  * @author robin shine
+ * @see Schedule
  */
 public class BuildGenerator implements StatefulJob {
     /**
      * Keep tracks of version of this class, used when do serialization-deserialization
      */
     static final long serialVersionUID = 1;
+    /** File name of the plain text revision log. */
     public static final String REVISION_LOG = "revision_log.txt";
+    /** File name of the XML revision log. */
     public static final String REVISION_XML_LOG = "revision_log.xml";
+    /** File name of the HTML revision log. */
     public static final String REVISION_HTML_LOG = "revision_log.html";
+    /** File name of the plain text build log. */
     public static final String BUILD_LOG = "build_log.txt";
+    /** File name of the HTML build log. */
     public static final String BUILD_XML_LOG = "build_log.xml";
+    /** File name of the HTML build log. */
     public static final String BUILD_HTML_LOG = "build_log.html";
-
-    private static final String REVISIONS_TAG = "revisions";
-    private static final String CHANGELOG_TAG = "changelog";
-    private static final String TIME_ATTR = "time";
 
     private static Log logger = LogFactory.getLog(BuildGenerator.class);
 
+    // Trigger group for different purposes
     /**
-     * Trigger group for different purposes
+     * Triggered manually
      */
-    // triggered manually
     public static final String MANUALBUILD_GROUP = "manual build group";
-    // triggered through rebuild command
+    /**
+     * Triggered through rebuild command
+     */
     public static final String REBUILD_GROUP = "rebuild group";
-    // triggered through dependency check
+    /**
+     * Triggered through dependency check
+     */
     public static final String DEPENDENT_GROUP = "dependent group";
 
     /**
@@ -116,7 +118,7 @@ public class BuildGenerator implements StatefulJob {
     public static Object versionLock = new Object();
 
     /**
-     * Triggered by Quartz to execute actual building process
+     * Triggered by Quartz to execute actual building process.
      *
      * @param context job context
      * @throws JobExecutionException if execution fails
@@ -155,7 +157,7 @@ public class BuildGenerator implements StatefulJob {
         // re-direct ant logs to log4j logger
         antProject.addBuildListener(log4jBuildListener);
         Schedule schedule = null;
-        int notifyStrategy = com.luntsys.luntbuild.facades.Constants.NOTIFY_IF_FAILED;
+        int notifyStrategy = Constants.NOTIFY_IF_FAILED;
         Revisions revisions = new Revisions();
         try {
             Build currentBuild = null;
@@ -290,11 +292,11 @@ public class BuildGenerator implements StatefulJob {
                     sendBuildNotification(currentBuild, revisions.getChangeLogins(), antProject);
                 } else if (notifyStrategy == Constants.NOTIFY_IF_SUCCESS) {
                     if (currentBuild.getStatus() ==
-                        com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_SUCCESS)
+                        Constants.BUILD_STATUS_SUCCESS)
                         sendBuildNotification(currentBuild, revisions.getChangeLogins(), antProject);
                 } else if (notifyStrategy == Constants.NOTIFY_IF_FAILED) {
                     if (currentBuild.getStatus() ==
-                        com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_FAILED)
+                        Constants.BUILD_STATUS_FAILED)
                         sendBuildNotification(currentBuild, revisions.getChangeLogins(), antProject);
                 } else if (notifyStrategy == Constants.NOTIFY_WHEN_STATUS_CHANGED) {
                     // notify when build status changes
@@ -302,7 +304,7 @@ public class BuildGenerator implements StatefulJob {
                         sendBuildNotification(currentBuild, revisions.getChangeLogins(), antProject);
                 } else if (notifyStrategy == Constants.NOTIFY_IF_FAILED_OR_CHANGED) {
                     // notify when build fails or status changes
-                    if (lastBuild == null || currentBuild.getStatus() == com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_FAILED
+                    if (lastBuild == null || currentBuild.getStatus() == Constants.BUILD_STATUS_FAILED
                     	|| currentBuild.getStatus() != lastBuild.getStatus())
                         sendBuildNotification(currentBuild, revisions.getChangeLogins(), antProject);
                 }
@@ -315,7 +317,7 @@ public class BuildGenerator implements StatefulJob {
             schedule.setCurrentThread(null);
             Luntbuild.getDao().saveSchedule(schedule);
             if (schedule.getBuildCleanupStrategy() ==
-                com.luntsys.luntbuild.facades.Constants.BUILD_KEEP_BY_COUNT) {
+                Constants.BUILD_KEEP_BY_COUNT) {
                 int reserveCount = new Integer(schedule.getBuildCleanupStrategyData()).intValue();
                 Luntbuild.getDao().reserveBuildsByCount(schedule, reserveCount);
             }
@@ -329,17 +331,17 @@ public class BuildGenerator implements StatefulJob {
                 schedule.setStatusDate(new Date());
                 schedule.setCurrentThread(null);
                 Luntbuild.getDao().saveSchedule(schedule);
-                if (notifyStrategy != com.luntsys.luntbuild.facades.Constants.NOTIFY_NONE)
+                if (notifyStrategy != Constants.NOTIFY_NONE)
                     sendScheduleNotification(schedule, antProject);
             }
         }
     }
 
     /**
-     * Write revision log for specified build
-     *
-     * @param build
-     * @param revisions
+     * Write the revision log for specified build.
+     * 
+     * @param build the build
+     * @param revisions the revisions object
      */
     private void writeRevisionLog(Build build, Revisions revisions) {
         String publishDir = build.getPublishDir();
@@ -350,6 +352,13 @@ public class BuildGenerator implements StatefulJob {
         writeHTMLRevisionLog(publishDir, build, revisions);
     }
 
+    /**
+     * Write the revision log for specified build in plain text.
+     * 
+     * @param publishDir the location to put the log
+     * @param build the build
+     * @param revisions the revisions object
+     */
     private void writeTXTRevisionLog(String publishDir, Build build, Revisions revisions) {
         String revisionLogPath = publishDir + File.separator + BuildGenerator.REVISION_LOG;
         PrintStream revisionLogStream = null;
@@ -370,49 +379,17 @@ public class BuildGenerator implements StatefulJob {
         }
     }
 
+    /**
+     * Write the revision log for specified build in XML format.
+     * 
+     * @param publishDir the location to put the log
+     * @param build the build
+     * @param revisions the revisions object
+     */
     private void writeXMLRevisionLog(String publishDir, Build build, Revisions revisions) {
-        /** DocumentBuilder to use when creating the document to start with. */
-        DocumentBuilder builder = null;
-        try {
-            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        } catch (Exception exc) {
-            throw new ExceptionInInitializerError(exc);
-        }
-        /** The complete log document for this build. */
-        Document doc = builder.newDocument();
-        Element top = doc.createElement(REVISIONS_TAG);
-
-        Iterator it = revisions.getChangeLogs().iterator();
-        while (it.hasNext()) {
-            String msg = (String) it.next();
-
-            Element messageElement = doc.createElement(CHANGELOG_TAG);
-
-            msg = Luntbuild.xmlEncodeEntities(msg);
-            StringBuffer message = new StringBuffer();
-            try {
-                BufferedReader r = new BufferedReader(new StringReader(msg));
-                String line = r.readLine();
-                boolean first = true;
-                while (line != null) {
-                    if (!first) message.append("</br>");
-                    first = false;
-                    message.append(line);
-                    line = r.readLine();
-                }
-            } catch (IOException e) {
-                // shouldn't be possible
-                message.append(msg);
-            }
-
-            Text messageText = doc.createCDATASection(message.toString());
-            messageElement.appendChild(messageText);
-
-            top.appendChild(messageElement);
-        }
-
         String revisionXmlLogPath = publishDir + File.separator + BuildGenerator.REVISION_XML_LOG;
-        top.setAttribute(TIME_ATTR, DateUtils.getDateForHeader());
+        revisions.setTimeAttribute(DateUtils.getDateForHeader());
+        Element top = (Element) revisions.getLog();
 
         Writer output = null;
         try {
@@ -438,6 +415,13 @@ public class BuildGenerator implements StatefulJob {
         }
     }
 
+    /**
+     * Write the revision log for specified build in HTML format.
+     * 
+     * @param publishDir the location to put the log
+     * @param build the build
+     * @param revisions the revisions object
+     */
     private void writeHTMLRevisionLog(String publishDir, Build build, Revisions revisions) {
         String revisionXmlLogPath = publishDir + File.separator + BuildGenerator.REVISION_XML_LOG;
         String revisionHtmlLogPath = publishDir + File.separator + BuildGenerator.REVISION_HTML_LOG;
@@ -471,11 +455,11 @@ public class BuildGenerator implements StatefulJob {
     }
 
     /**
-     * Derive the build time vcs list from specified vcs list
-     *
-     * @param vcsList
-     * @param antProject
-     * @return build time vcs list
+     * Derive the build time VCS list from specified VCS list.
+     * 
+     * @param vcsList the VCS list
+     * @param antProject the ant project used for logging purpose
+     * @return the build time VCS list
      */
     private List deriveBuildTimeVcsList(List vcsList, Project antProject) {
         List buildVcsList = new ArrayList();
@@ -488,12 +472,12 @@ public class BuildGenerator implements StatefulJob {
     }
 
     /**
-     * Derive build time builder list from specified builder list
+     * Derive build time builder list from specified builder list.
      *
-     * @param builderList
-     * @param build
-     * @param antProject
-     * @return build time builder list
+     * @param builderList the builder list
+     * @param build the build
+     * @param antProject the ant project used for logging purpose
+     * @return the build time builder list
      */
     private List deriveBuildTimeBuilderList(List builderList, Build build, Project antProject)
     throws Throwable {
@@ -508,6 +492,13 @@ public class BuildGenerator implements StatefulJob {
         return buildTimeBuilderList;
     }
 
+	/**
+	 * Gets the revisions for the working schedule.
+	 * 
+	 * @return the revisions object
+	 * @throws IllegalStateException if unable to get revisions
+	 * @see OgnlHelper#getRevisions()
+	 */
     private Revisions getRevisions() {
         Revisions revisions = OgnlHelper.getRevisions();
         if (revisions != null)
@@ -519,6 +510,13 @@ public class BuildGenerator implements StatefulJob {
         return revisions;
     }
 
+	/**
+	 * Initializes the <code>OgnlHelper</code>.
+	 * 
+	 * @param schedule the working schedule
+	 * @param antProject the ant project used for logging purpose
+	 * @see OgnlHelper
+	 */
     private void setupOgnlHelper(Schedule schedule, Project antProject) {
         OgnlHelper.setAntProject(antProject);
         OgnlHelper.setWorkingSchedule(schedule);
@@ -526,6 +524,13 @@ public class BuildGenerator implements StatefulJob {
         OgnlHelper.setTestMode(false);
     }
 
+	/**
+	 * Determines if a build is necessary for the working schedule based on an OGNL expression.
+	 * 
+	 * @param buildNecessaryCondition the OGNL expression
+	 * @return <code>true</code> if a build is necessary
+	 * @throws RuntimeException if unable to evaluate the build necessary condition
+	 */
     private boolean isBuildNecessary(String buildNecessaryCondition) {
         String workDir = OgnlHelper.getWorkingSchedule().getWorkDirRaw();
         File work = new File(workDir);
@@ -549,10 +554,10 @@ public class BuildGenerator implements StatefulJob {
     }
 
     /**
-     * Send notification about specified schedule
+     * Sends a notification about specified schedule.
      *
-     * @param schedule   schedule to notify about
-     * @param antProject ant project used for logging purpose
+     * @param schedule theschedule to notify about
+     * @param antProject the ant project used for logging purpose
      */
     private void sendScheduleNotification(Schedule schedule, Project antProject) {
         Set subscribeUsers = new HashSet(schedule.getProject().getUsersToNotify());
@@ -569,11 +574,11 @@ public class BuildGenerator implements StatefulJob {
     }
 
     /**
-     * Send notification about specified build
+     * Sends a notification about specified build.
      *
-     * @param build         build to notify about
-     * @param checkinLogins logins checkin recently
-     * @param antProject    ant project used for logging purpose
+     * @param build the build to notify about
+     * @param checkinLogins the VCS logins that have checked-in recently
+     * @param antProject the ant project used for logging purpose
      */
     private void sendBuildNotification(Build build, Set checkinLogins,
                                        Project antProject) {
@@ -612,9 +617,9 @@ public class BuildGenerator implements StatefulJob {
     }
 
     /**
-     * checkout and build based on specified build object
+     * Checkout and build based on specified build object.
      *
-     * @param build
+     * @param build the build object
      */
     private void checkoutAndBuild(Build build) {
         String publishDirPath = build.getPublishDir();
@@ -701,7 +706,7 @@ public class BuildGenerator implements StatefulJob {
                     org.apache.tools.ant.Project.MSG_INFO);
             build.setStatus(Constants.BUILD_STATUS_SUCCESS);
         } catch (Throwable e) {
-            build.setStatus(com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_FAILED);
+            build.setStatus(Constants.BUILD_STATUS_FAILED);
             if (e instanceof BuildException) {
                 antProject.log(e.getMessage(), Project.MSG_ERR);
                 logger.error("Build failed: " + e.getMessage());
@@ -714,8 +719,8 @@ public class BuildGenerator implements StatefulJob {
 
         if (build.getPostbuildStrategy() == Constants.POSTBUILD_ALWAYS ||
                 build.getPostbuildStrategy() ==
-                com.luntsys.luntbuild.facades.Constants.POSTBUILD_IF_SUCCESS &&
-                build.getStatus() == com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_SUCCESS ||
+                Constants.POSTBUILD_IF_SUCCESS &&
+                build.getStatus() == Constants.BUILD_STATUS_SUCCESS ||
                 build.getPostbuildStrategy() == Constants.POSTBUILD_IF_FAILED &&
                 build.getStatus() == Constants.BUILD_STATUS_FAILED) {
             try {
@@ -738,7 +743,7 @@ public class BuildGenerator implements StatefulJob {
                         Project.MSG_INFO);
                 logger.info("Run of ant post-build script succeed!");
             } catch (Throwable throwable) {
-                build.setStatus(com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_FAILED);
+                build.setStatus(Constants.BUILD_STATUS_FAILED);
                 if (throwable instanceof BuildException) {
                     antProject.log(throwable.getMessage(), org.apache.tools.ant.Project.MSG_ERR);
                     logger.error("Post-build failed: " + throwable.getMessage());
@@ -755,7 +760,7 @@ public class BuildGenerator implements StatefulJob {
                 // insert a blank line into the  log
                 antProject.log("\n", org.apache.tools.ant.Project.MSG_INFO);
                 if (!build.isRebuild()) {
-                    if (build.getLabelStrategy() == com.luntsys.luntbuild.facades.Constants.LABEL_ALWAYS ||
+                    if (build.getLabelStrategy() == Constants.LABEL_ALWAYS ||
                             build.getLabelStrategy() == Constants.LABEL_IF_SUCCESS &&
                             build.getStatus() == Constants.BUILD_STATUS_SUCCESS) {
                         build.setHaveLabelOnHead(true);
@@ -786,7 +791,7 @@ public class BuildGenerator implements StatefulJob {
                 }
             }
         } catch (Throwable e) {
-            build.setStatus(com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_FAILED);
+            build.setStatus(Constants.BUILD_STATUS_FAILED);
             if (e instanceof BuildException) {
                 antProject.log(e.getMessage(), org.apache.tools.ant.Project.MSG_ERR);
                 logger.error("Build failed: " + e.getMessage());
@@ -810,9 +815,14 @@ public class BuildGenerator implements StatefulJob {
     }
 
     /**
-     * This class receives ant logs and re-directs to log4j loggers
+     * This class receives ant logs and re-directs to log4j loggers.
      */
     private class Log4jBuildListener extends EmptyBuildListenerImpl {
+        /**
+         * Logs a message for an event.
+         * 
+         * @param event the event
+         */
         public void messageLogged(BuildEvent event) {
             String prefix = "";
             if (event.getTask() != null)
@@ -828,13 +838,24 @@ public class BuildGenerator implements StatefulJob {
         }
     }
 
+    /**
+     * 
+     */
     private class BuildDependencyWalker implements Runnable {
-        private com.luntsys.luntbuild.facades.BuildParams buildParams;
+        private BuildParams buildParams;
 
-        public BuildDependencyWalker(com.luntsys.luntbuild.facades.BuildParams buildParams) {
+        /**
+         * Creates a new build dependency walker.
+         * 
+         * @param buildParams the build parameters
+         */
+        public BuildDependencyWalker(BuildParams buildParams) {
             this.buildParams = buildParams;
         }
 
+        /**
+         * Executes the build dependency walking.
+         */
         public void run() {
             try {
                 SecurityHelper.runAsSiteAdmin();
@@ -858,7 +879,7 @@ public class BuildGenerator implements StatefulJob {
                 schedule.visit(buildParams);
 
                 if (buildParams.getTriggerDependencyStrategy() == Constants.TRIGGER_ALL_DEPENDENT_SCHEDULES ||
-                        buildParams.getTriggerDependencyStrategy() == com.luntsys.luntbuild.facades.Constants.TRIGGER_SCHEDULES_DEPENDS_ON_THIS)
+                        buildParams.getTriggerDependencyStrategy() == Constants.TRIGGER_SCHEDULES_DEPENDS_ON_THIS)
                     resolver.visitNodesDependsOnThisNodeRecursively(scheduleSet, schedule);
             } catch (Throwable throwable) {
                 logger.error("Failed while walking through build dependency: " + throwable.getMessage());

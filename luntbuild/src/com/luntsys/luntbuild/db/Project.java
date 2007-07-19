@@ -32,6 +32,7 @@ import com.luntsys.luntbuild.builders.Builder;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
 import com.luntsys.luntbuild.facades.lb12.ProjectFacade;
+import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.*;
 import com.luntsys.luntbuild.vcs.Vcs;
@@ -50,7 +51,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * The class represents a luntbuild project.
+ * A Luntbuild project.
+ * 
+ * <p>This is a hibernate mapping class.</p>
  *
  * @author robin shine
  */
@@ -115,59 +118,64 @@ public class Project implements AclObjectIdentity, VariableHolder {
 
 
 	/**
-	 * set the unique identity of this project, will be called by hibernate
+	 * Sets the identifier of this project, will be called by hibernate.
 	 *
-	 * @param id
+	 * @param id the identifier of this project
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * Get identifer of this build
-	 * @return identifer of this build
+	 * Gets the identifer of this project.
+	 * 
+	 * @return the identifer of this project
 	 */
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * set the name of this project
-	 *
-	 * @param name
+	 * Sets the name of this project.
+	 * 
+	 * @param name the name of this project
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * Get name of this project
-	 * @return name of this project
+	 * Gets the name of this project.
+	 * 
+	 * @return the name of this project
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * set the description of this project
-	 *
-	 * @param description
+	 * Sets the description of this project.
+	 * 
+	 * @param description the description of this project
 	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * Get description of this project
-	 * @return description of this project
+	 * Gets the description of this project.
+	 * 
+	 * @return the description of this project
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * Get vcs list of this project
-	 * @return vcs list of this project
+	 * Gets the VCS list of this project.
+	 * 
+	 * @return the VCS list of this project
+	 * @see com.luntsys.luntbuild.vcs.Vcs
 	 */
 	public List getVcsList() {
 		if (vcsList == null)
@@ -176,16 +184,20 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Set vcs list of this project
-	 * @param vcsList
+	 * Sets the VCS list of this project.
+	 * 
+	 * @param vcsList the list of VCS adaptors
+	 * @see com.luntsys.luntbuild.vcs.Vcs
 	 */
 	public void setVcsList(List vcsList) {
 		this.vcsList = vcsList;
 	}
 
 	/**
-	 * Get builder list of this project
-	 * @return builder list of this project
+	 * Gets the builder list of this project.
+	 *
+	 * @return the builder list of this project
+	 * @see com.luntsys.luntbuild.builders.Builder
 	 */
 	public List getBuilderList() {
 		if (builderList == null)
@@ -194,16 +206,21 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Set builder list of this project
-	 * @param builderList
+	 * Sets the builder list of this project.
+	 * 
+	 * @param builderList the list of builders
+	 * @see com.luntsys.luntbuild.builders.Builder
 	 */
 	public void setBuilderList(List builderList) {
 		this.builderList = builderList;
 	}
 
 	/**
-	 * Get schedules list of this project
-	 * @return schedules list of this project
+	 * Gets the list of schedules of this project.
+	 * 
+	 * @return the schedules list of this project
+	 * @see Schedule
+     * @since 1.3
 	 */
 	public Set getSchedules() {
 		if (schedules == null)
@@ -212,24 +229,30 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Set schedules of this project
-	 * @param schedules
+	 * Sets the list of schedules of this project.
+	 * 
+	 * @param schedules the list of schedules
+	 * @see Schedule
+     * @since 1.3
 	 */
 	public void setSchedules(Set schedules) {
 		this.schedules = schedules;
 	}
 
 	/**
-	 * Get schedule with the specified name
-	 * @param scheduleName
-	 * @return schedule with the specified name
+	 * Gets the schedule with the specified name. The schedule does not have to be for
+	 * this project.
+	 * 
+	 * @param scheduleName the name of the schedule
+	 * @return the schedule with the specified name or <code>null</code>
 	 */
 	public Schedule getSchedule(String scheduleName) {
 		return Luntbuild.getDao().loadSchedule(getName(), scheduleName);
 	}
 
 	/**
-	 * Empty method, only want to be conform with ognl indexed property
+	 * Empty method, only want to be conform with ognl indexed property.
+	 * 
 	 * @param scheduleName
 	 * @param schedule
 	 */
@@ -238,13 +261,20 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Get system object. Mainly used for ognl evaluation
-	 * @return system object
+	 * Get system object. Mainly used for ognl evaluation.
+	 * 
+	 * @return the system object
 	 */
 	public OgnlHelper getSystem() {
 		return new OgnlHelper();
 	}
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj the reference object with which to compare
+	 * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
+	 */
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof Project) {
 			if (getId() == ((Project) obj).getId())
@@ -253,13 +283,21 @@ public class Project implements AclObjectIdentity, VariableHolder {
 		return false;
 	}
 
+	/**
+	 * Returns a hash code value for the object.
+	 * 
+	 * @return a hash code value for this object
+	 * @see #equals(Object)
+	 */
 	public int hashCode() {
 		return (int) getId();
 	}
 
 	/**
-	 * Get Vcs login mappings
-	 * @return Vcs login mappings
+	 * Gets the VCS login mappings.
+	 * 
+	 * @return the VCS login mappings
+	 * @see VcsLogin
 	 */
 	public Set getVcsLogins() {
 		if (vcsLogins == null)
@@ -268,19 +306,21 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Set vcs login mappings
-	 * @param vcsLogins
+	 * Sets the VCS login mappings.
+	 * 
+	 * @param vcsLogins the VCS login mappings
+	 * @see VcsLogin
 	 */
 	public void setVcsLogins(Set vcsLogins) {
 		this.vcsLogins = vcsLogins;
 	}
 
 	/**
-	 * This function determines the luntbuild user by the vcs login string
-	 *
+	 * Determines the luntbuild user by the VCS login string.
+	 * 
 	 * @param login version control system login name
 	 * @param users luntbuild users list
-	 * @return maybe null if no user found to match this vcs login
+	 * @return maybe <code>null</code> if no user found to match this VCS login
 	 */
 	public User getUserByVcsLogin(String login, List users) {
 		VcsLogin vcsLogin = VcsLogin.findVcsLogin(getVcsLogins(), login);
@@ -300,9 +340,11 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Validate all properties of this project
+	 * Validates all properties of this project.
+	 * 
+	 * @throws ValidationException if a property has an invalid value
 	 */
-	public void validate() {
+	public void validate() throws ValidationException {
 		validateBasic();
 		Iterator it = getVcsList().iterator();
 		while (it.hasNext()) {
@@ -317,20 +359,24 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Validate all properties of this project at build time. It is different from validate()
-	 * method in the way that it enforces vcsList and builderList not empty
+	 * Validates all properties of this project at build time. It is different from validate()
+	 * method in the way that it enforces {@link #getVcsList()} and {@link #getBuilderList()} not empty.
+	 * 
+	 * @throws ValidationException if a property has an invalid value
 	 */
-	public void validateAtBuildTime() {
+	public void validateAtBuildTime() throws ValidationException {
 		validate();
 		if (getVcsList().size() == 0)
 			throw new ValidationException("No Version Control System defined for project: " + getName());
 	}
 
 	/**
-	 * Validate project basic properties. Complicate properties such as {@link Project#getVcsList()}, {@link Project#getBuilderList()},
-	 *  will not get validated
+	 * Validates the basic properties. Complicated properties such as {@link #getVcsList()}, {@link #getBuilderList()},
+	 * will not get validated.
+	 * 
+	 * @throws ValidationException if a property has an invalid value
 	 */
-	public void validateBasic() {
+	public void validateBasic() throws ValidationException {
 		try {
 			Luntbuild.validatePathElement(getName());
 		} catch (ValidationException e) {
@@ -344,11 +390,12 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Get facade of this project
-	 * @return facade of this project
+	 * Gets the facade of this project.
+	 * 
+	 * @return the facade of this project
 	 */
-	public com.luntsys.luntbuild.facades.lb12.ProjectFacade getFacade() {
-		ProjectFacade facade = new com.luntsys.luntbuild.facades.lb12.ProjectFacade();
+	public ProjectFacade getFacade() {
+		ProjectFacade facade = new ProjectFacade();
 		facade.setId(getId());
 		facade.setName(getName());
 		facade.setDescription(getDescription());
@@ -369,10 +416,12 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Set facade of this project
-	 * @param facade
+	 * Sets the facade of this project.
+	 * 
+	 * @param facade the project facade
+	 * @throws RuntimeException if an exception happens while setting the facade
 	 */
-	public void setFacade(ProjectFacade facade) {
+	public void setFacade(ProjectFacade facade) throws RuntimeException {
 		setDescription(facade.getDescription());
 		setVariables(facade.getVariables());
 		setLogLevel(facade.getLogLevel());
@@ -381,7 +430,7 @@ public class Project implements AclObjectIdentity, VariableHolder {
 			getVcsList().clear();
 			Iterator it = facade.getVcsList().iterator();
 			while (it.hasNext()) {
-				com.luntsys.luntbuild.facades.lb12.VcsFacade vcsFacade = (com.luntsys.luntbuild.facades.lb12.VcsFacade) it.next();
+				VcsFacade vcsFacade = (VcsFacade) it.next();
 				Vcs vcs = (Vcs) Class.forName(vcsFacade.getVcsClassName()).newInstance();
 				vcs.setFacade(vcsFacade);
 				getVcsList().add(vcs);
@@ -389,7 +438,7 @@ public class Project implements AclObjectIdentity, VariableHolder {
 			getBuilderList().clear();
 			it = facade.getBuilderList().iterator();
 			while (it.hasNext()) {
-				BuilderFacade builderFacade = (com.luntsys.luntbuild.facades.lb12.BuilderFacade) it.next();
+				BuilderFacade builderFacade = (BuilderFacade) it.next();
 				Builder builder = (Builder) Class.forName(builderFacade.getBuilderClassName()).newInstance();
 				builder.setFacade(builderFacade);
 				getBuilderList().add(builder);
@@ -404,8 +453,10 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Get notifiers configured for this project
-	 * @return notifiers configured for this project
+	 * Gets the notifiers configured for this project.
+	 * 
+	 * @return the notifiers configured for this project
+	 * @see com.luntsys.luntbuild.notifiers.Notifier
 	 */
 	public List getNotifiers() {
 		if (notifiers == null)
@@ -414,22 +465,24 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Set list of configured notifiers
-	 * @param notifiers
+	 * Sets list of configured notifiers.
+	 * 
+	 * @param notifiers the list of notifiers
+	 * @see com.luntsys.luntbuild.notifiers.Notifier
 	 */
 	public void setNotifiers(List notifiers) {
 		this.notifiers = notifiers;
 	}
 
 	/**
-	 * Determines if vcs contents of this project has changed. This function will use value
-	 * of the following thread local variables in  {@link com.luntsys.luntbuild.utility.OgnlHelper}
-	 * <i> workingSchedule, this variable denotes the project which this method is initiated by
-	 * <i> antProject, this variable denotes the logging ant project this method should use
-	 * <i> revisions, this variable denotes the revisions for working schedule
-	 *
-     * @param sinceDate date
-	 * @return if vcs contents of this project has changed
+	 * Determines if the VCS contents of this project has changed. This function will use
+	 * the following thread local variables in {@link OgnlHelper}:
+	 * <p><code>workingSchedule</code>, this variable denotes the project which this method is initiated by</p>
+	 * <p><code>antProject</code>, this variable denotes the logging ant project this method should use</p>
+	 * <p><code>revisions</code>, this variable denotes the revisions for the working schedule</p>
+	 * 
+     * @param sinceDate the date to check for changes since
+	 * @return <code>true</code> if the VCS contents of this project has changed
 	 */
 	public boolean isVcsModifiedSince(Date sinceDate) {
 		org.apache.tools.ant.Project antProject = OgnlHelper.getAntProject();
@@ -442,21 +495,22 @@ public class Project implements AclObjectIdentity, VariableHolder {
 		while (it.hasNext()) {
 			Vcs vcs = (Vcs) it.next();
 			revisions = vcs.deriveBuildTimeVcs(antProject).getRevisionsSince(sinceDate, workingSchedule, antProject);
-			allRevisions.setFileModified(allRevisions.isFileModified() || revisions.isFileModified());
-			allRevisions.getChangeLogs().add("*************************************************************");
-			allRevisions.getChangeLogs().add(vcs.toString());
-			allRevisions.getChangeLogs().add("");
-			allRevisions.getChangeLogs().addAll(revisions.getChangeLogs());
-			allRevisions.getChangeLogins().addAll(revisions.getChangeLogins());
+			allRevisions.merge(revisions);
 		}
 		if (OgnlHelper.getRevisions() == null && workingSchedule.getProject() == this)
 			OgnlHelper.setRevisions(allRevisions);
 		return allRevisions.isFileModified();
 	}
 
-    /** Returns true if VCS for this project has been modified since given date.
-     * @param sinceDate
-     * @return true if vcs modified
+    /**
+	 * Determines if the VCS contents of this project has changed. This function will use
+	 * the following thread local variables in {@link OgnlHelper}:
+	 * <p><code>workingSchedule</code>, this variable denotes the project which this method is initiated by</p>
+	 * <p><code>antProject</code>, this variable denotes the logging ant project this method should use</p>
+	 * <p><code>revisions</code>, this variable denotes the revisions for the working schedule</p>
+	 * 
+     * @param sinceDate the date to check for changes since
+	 * @return <code>true</code> if the VCS contents of this project has changed
      */
     public boolean isVcsModifiedSince(String sinceDate) {
         Date date = new Date();
@@ -477,9 +531,13 @@ public class Project implements AclObjectIdentity, VariableHolder {
         return false;
     }
 
-    /** Returns true if VCS for given schedule last build has been modified.
-     * @param scheduleName
-     * @return true if vcs modified
+    /**
+     * Determines if the VCS contents of this project has changed since the last build of a schedule.
+     * The schedule does not have to be for this project.
+     * 
+     * @param scheduleName the name of the schedule to check
+	 * @return <code>true</code> if the VCS contents of this project has changed
+	 * @see #isVcsModifiedSince(Date)
      */
     public boolean isVcsModified(String scheduleName) {
         Schedule s = getSchedule(scheduleName);
@@ -489,8 +547,10 @@ public class Project implements AclObjectIdentity, VariableHolder {
     }
 
 	/**
-	 * Get configured notification mappings
-	 * @return configured notification mappings
+	 * Gets the configured notification mappings.
+	 * 
+	 * @return the configured notification mappings
+	 * @see NotifyMapping
 	 */
 	public Set getNotifyMappings() {
 		if (notifyMappings == null)
@@ -499,36 +559,44 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Set notification mappings
-	 * @param notifyMappings
+	 * Sets the configured notification mappings.
+	 * 
+	 * @param notifyMappings the notification mappings
+	 * @see NotifyMapping
 	 */
 	public void setNotifyMappings(Set notifyMappings) {
 		this.notifyMappings = notifyMappings;
 	}
 
 	/**
-	 * Get log level of this project
-	 * @return one value of
-	 * {@link com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_BRIEF},
-	 * {@link com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_NORMAL},
-	 * {@link com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_VERBOSE}
+	 * Gets the log level of this project.
+	 * 
+	 * @return the log level
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_BRIEF
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_NORMAL
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_VERBOSE
 	 */
 	public int getLogLevel() {
 		return logLevel;
 	}
 
 	/**
-	 * Set log level of this project
-	 *
-	 * @param logLevel refer to {@link Project#getLogLevel()}
+	 * Sets the log level of this project.
+	 * 
+	 * @param logLevel the log level
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_BRIEF
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_NORMAL
+	 * @see com.luntsys.luntbuild.facades.Constants#LOG_LEVEL_VERBOSE
 	 */
 	public void setLogLevel(int logLevel) {
 		this.logLevel = logLevel;
 	}
 
 	/**
-	 * Get roles mappings
-	 * @return roles mappings
+	 * Gets the roles mappings of this project.
+	 * 
+	 * @return the roles mappings of this project
+	 * @see RolesMapping
 	 */
 	public Set getRolesMappings() {
 		if (rolesMappings == null)
@@ -537,16 +605,21 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Set roles mappings
-	 * @param rolesMappings
+	 * Sets the roles mappings of this project.
+	 * 
+	 * @param rolesMappings the roles mappings
+	 * @see RolesMapping
 	 */
 	public void setRolesMappings(Set rolesMappings) {
 		this.rolesMappings = rolesMappings;
 	}
 
 	/**
-	 * split project related rolemapping to
-	 * separate list for handling by model
+	 * Gets the list of users with the specified role.
+	 * 
+	 * @param roleName the name of the role
+	 * @return the list of users with the role
+	 * @see RolesMapping
 	 */
 	public List getMappedRolesUserList(String roleName) {
 		List usersWithAssignedRoles = new ArrayList();
@@ -572,13 +645,15 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * save all new mapped roles to project
-	 *
-	 * @param userlist
-	 * @param roleName
+	 * Maps a list of users to a role. This method will remove existing mappings for
+	 * the role.
+	 * 
+	 * @param userlist list of users to map to the role
+	 * @param roleName name of the role to map to
+	 * @see User
 	 */
 	public void putMappedRolesUserList(List userlist, String roleName) {
-		// remove all existing roles
+		// remove all existing users from role
 		Set rolemappings = getRolesMappings();
 
 		if (rolemappings != null) {
@@ -617,9 +692,10 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Get Role object matching specified role name
-	 * @param roleName
-	 * @return Role object matching specified role name
+	 * Gets the role object matching specified role name.
+	 * 
+	 * @param roleName the name of the role
+	 * @return the object matching specified role name
 	 */
 	private Role getMatchingRole(String roleName) {
 		List internalRoles = Role.getRoles();
@@ -637,13 +713,19 @@ public class Project implements AclObjectIdentity, VariableHolder {
 		return role;
 	}
 
+	/**
+	 * Returns a string representation of this object.
+	 * 
+	 * @return a string representation of this object
+	 */
 	public String toString() {
 		return getName();
 	}
 
 	/**
-	 * Create new project by copy current project
-	 * @return new project by copy current project
+	 * Creates a new project by coping this project.
+	 * 
+	 * @return the new project
 	 */
 	public Project createNewByCopy() {
 		Project newProject = new Project();
@@ -687,6 +769,13 @@ public class Project implements AclObjectIdentity, VariableHolder {
 		return newProject;
 	}
 
+	/**
+	 * Gets the list of users to nofify based on the notification mappings of this project.
+	 * 
+	 * @return the list of users to notify
+	 * @see User
+	 * @see #getNotifyMappings()
+	 */
 	public List getUsersToNotify() {
 		List usersToNotify = new ArrayList();
 		Iterator it = getNotifyMappings().iterator();
@@ -697,6 +786,12 @@ public class Project implements AclObjectIdentity, VariableHolder {
 		return usersToNotify;
 	}
 
+	/**
+	 * Maps the list of users to nofify. This method will remove existing notification mappings.
+	 * 
+	 * @param usersToNotify list of users to notify
+	 * @see User
+	 */
 	public void putUsersToNotify(List usersToNotify) {
 		getNotifyMappings().clear();
 		Iterator it = usersToNotify.iterator();
@@ -710,25 +805,28 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Get all variables encoded in a string
-	 * @return all variables encoded in a string
+	 * Gets all variables, encoded as a string.
+	 * 
+	 * @return all variables encoded as a string
 	 */
 	public String getVariables() {
 		return variables;
 	}
 
 	/**
-	 * Set all variables encoded in a string
-	 * @param variables
+	 * Sets all variables, encoded as a string.
+	 * 
+	 * @param variables all variables encoded as a string
 	 */
 	public void setVariables(String variables) {
 		this.variables = variables;
 	}
 
 	/**
-	 * Get Variable with specified variable name
-	 * @param name
-	 * @return Variable with specified variable name
+	 * Gets a variable with specified variable name.
+	 * 
+	 * @param name the name of the variable
+     * @return the variable, will not be <code>null</code>
 	 */
 	public Variable getVar(String name) {
 		if (!Luntbuild.isEmpty(getVariables())) {
@@ -752,9 +850,11 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Set value of specified variable
-	 * @param name name of the variable to set
-	 * @param var value of variable is stored in this parameter
+	 * Sets the value of specified variable.
+	 * 
+	 * @param name the name of the variable
+	 * @param var the value to set
+	 * @throws AccessDeniedException if the currently logged in user is not a project admin for this project
 	 */
 	public void setVar(String name, Variable var) {
 		if (!SecurityHelper.isPrjAdministrable(getId()))
@@ -787,6 +887,12 @@ public class Project implements AclObjectIdentity, VariableHolder {
 		Luntbuild.getDao().saveProject(this);
 	}
 
+	/**
+	 * Gets the builder with the specified name.
+	 * 
+	 * @param name the name of the builder
+	 * @return the builder with the specified name
+	 */
 	public Builder getBuilderByName(String name) {
 		Iterator it = getBuilderList().iterator();
 		while (it.hasNext()) {
@@ -798,9 +904,11 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	}
 
 	/**
-	 * Get publishing directory of this project, builds generated in this project will be put under this
-	 * directory
-	 * @return publishing directory of this project
+	 * Gets the publishing directory of this project, builds generated in this project will be put under this
+	 * directory.
+	 * 
+	 * @return the publishing directory of this project
+	 * @throws RuntimeException if an {@link IOException} happens while finding the publishing directory
 	 */
 	public String getPublishDir() {
 		String publishDir = (String) Luntbuild.getProperties().get("publishDir");

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright luntsys (c) 2004-2005,
  * Date: 2004-10-21
  * Time: 16:03:58
@@ -40,31 +40,26 @@ import org.springframework.beans.factory.InitializingBean;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
- * This class integrates into the acegi security framework 
- * 
- * A AuthenticationProviderManager which has to be defined through the springframework
+ * An <code>AuthenticationProviderManager</code> which has to be defined through the springframework
  * configiguration handles incoming authentication requests and
  * tries to find a matching AuthenticationProvider.
  * 
- * A 'matching' Provider is one that accepts the specific Athentication objects
- * and is able to authenticate.
+ * <p>A 'matching' Provider is one that accepts the specific Athentication objects
+ * and is able to authenticate.</p>
  * 
- * This implementation tries ALL available Providers in case one cannot authenticate 
- * although registered as capable.
+ * <p>This implementation tries ALL available Providers in case one cannot authenticate 
+ * although registered as capable.</p>
  * 
- * This gives us the oportunity to either define users & and their roles declarative
- * through springframework configiguration
- * and
- * at runtime through or db backed application
- *  
+ * <p>This gives us the oportunity to either define users and their roles declaratively
+ * through springframework configiguration or at runtime through a database backed application.</p>
+ * 
+ * <p>This class integrates into the acegi security framework.</p>
+ * 
  * @author johannes plachy
  */
-
 public class AuthenticationProviderManager extends AbstractAuthenticationManager implements InitializingBean
 {
-
     private static transient final Log logger = LogFactory.getLog(AuthenticationProviderManager.class);
 
     // ~ Instance fields
@@ -73,10 +68,10 @@ public class AuthenticationProviderManager extends AbstractAuthenticationManager
     private List providers;
 
     /**
-     * Attempts to authenticate the passed {@link Authentication}object.
+     * Attempts to authenticate the passed <code>Authentication</code> object.
      * 
      * <p>
-     * The list of {@link AuthenticationProvider}s will be successively tried
+     * The list of <code>AuthenticationProvider</code>s will be successively tried
      * if an <code>AuthenticationProvider</code> indicates it is capable of
      * authenticating the type of <code>Authentication</code> object passed.
      * Authentication will then be attempted with that
@@ -90,15 +85,12 @@ public class AuthenticationProviderManager extends AbstractAuthenticationManager
      * <code>Authentication</code> object is returned
      * </p>
      * 
-     * @param authentication the authentication request object.
-     * 
-     * @return a fully authenticated object including credentials.
-     * 
-     * @throws AuthenticationException if authentication fails.
-     * @throws ProviderNotFoundException is thrown if no
-     *             <code>AuthenticationProvider</code> is found that supoprts
-     *             the given <code>Authentication</code> object
-     * 
+     * @param authentication the authentication request object
+     * @return a fully authenticated object including credentials
+     * @throws AuthenticationException if authentication fails
+     * @throws ProviderNotFoundException if no <code>AuthenticationProvider</code> is found
+     *         that supports the given <code>Authentication</code> object
+     * @see AuthenticationProvider
      */
     protected Authentication doAuthentication(Authentication authentication) throws AuthenticationException
     {
@@ -147,12 +139,11 @@ public class AuthenticationProviderManager extends AbstractAuthenticationManager
     }
 
     /**
-     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     * @inheritDoc
      */
     public void afterPropertiesSet() throws Exception
     {
         checkIfValidList(this.providers);
-
     }
 
     private void checkIfValidList(List listToCheck)
@@ -161,19 +152,23 @@ public class AuthenticationProviderManager extends AbstractAuthenticationManager
                 "A list of AuthenticationManagers is required"); }
     }
 
+    /**
+     * Gets the <code>AuthenticationProvider</code> objects to be used for authentication.
+     * 
+     * @return the list of <code>AuthenticationProvider</code> objects
+     * @see AuthenticationProvider
+     */
     public List getProviders()
     {
         return this.providers;
     }
 
     /**
-     * Sets the {@link AuthenticationProvider}objects to be used for
-     * authentication.
+     * Sets the <code>AuthenticationProvider</code> objects to be used for authentication.
      * 
-     * @param newList
-     * 
-     * @throws IllegalArgumentException if Provider doesnt implement
-     *             <code>AuthenticationProvider</code>
+     * @param newList the list of <code>AuthenticationProvider</code> objects
+     * @throws IllegalArgumentException if Provider doesnt implement <code>AuthenticationProvider</code>
+     * @see AuthenticationProvider
      */
     public void setProviders(List newList)
     {

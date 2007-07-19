@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of base clearcase adaptor. This adaptor does not support modules definition
+ * Base Clearcase VCS adaptor facade.  This adaptor does not support modules.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.BaseClearcaseAdaptor
  */
 public class BaseClearcaseAdaptorFacade extends VcsFacade {
 	private String viewStgLoc;
@@ -42,92 +45,102 @@ public class BaseClearcaseAdaptorFacade extends VcsFacade {
 
 	private String mkviewExtraOpts;
 
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
+	public String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.BaseClearcaseAdaptor";
+	}
+
 	/**
-	 * Get view storage location.This is a project level vcs property. It will be used as -stgloc option
-	 * when creating clearcase views.
-	 * @return view storage location
+	 * Gets the Clearcase server-side view storage location. This is a project level VCS property.
+	 * 
+	 * @return the Clearcase server-side view storage location
 	 */
 	public String getViewStgLoc() {
 		return viewStgLoc;
 	}
 
 	/**
-	 * Set the view storage location. This is a project level vcs property.
-	 * @param viewStgLoc
+	 * Sets the Clearcase server-side view storage location. This is a project level VCS property.
+	 * 
+	 * @param viewStgLoc the Clearcase server-side view storage location
 	 */
 	public void setViewStgLoc(String viewStgLoc) {
 		this.viewStgLoc = viewStgLoc;
 	}
 
 	/**
-	 * Get explicit path for view storage. This is a view level vcs property. It will be used as
-	 * -vws option when creating clearcase views. It can override the -stgloc option
-	 * @see BaseClearcaseAdaptorFacade#getViewStgLoc()
-	 * @return explicit path for view storage
+	 * Gets the path for view storage. This is a view level VCS property.
+	 * 
+	 * @return the path for view storage
 	 */
 	public String getVws() {
 		return vws;
 	}
 
 	/**
-	 * Set the explicit path for view storage.
-	 * @param vws
+	 * Sets the path for view storage. This is a view level VCS property.
+	 * 
+	 * @param vws the path for view storage
 	 */
 	public void setVws(String vws) {
 		this.vws = vws;
 	}
 
 	/**
-	 * Get the config spec for current view. This is a view level vcs property.
-	 * @return view config spec
+	 * Gets the snapshot view config spec. This is a view level VCS property.
+	 * 
+	 * @return the snapshot view config spec
 	 */
 	public String getViewCfgSpec() {
 		return viewCfgSpec;
 	}
 
 	/**
-	 * Set the config spec for current view.
-	 * @param viewCfgSpec
+	 * Sets the snapshot view config spec. This is a view level VCS property.
+	 * 
+	 * @param viewCfgSpec the snapshot view config spec
 	 */
 	public void setViewCfgSpec(String viewCfgSpec) {
 		this.viewCfgSpec = viewCfgSpec;
 	}
 
 	/**
-	 * Get modification detection config for current view. This is a view level vcs property.
-	 * Refer to luntbuild user manual for detailed explanation of this property
-	 * @return modification detection config
+	 * Gets the modification detection config. This is a view level VCS property.
+	 * 
+	 * @return the modification detection config
 	 */
 	public String getModificationDetectionConfig() {
 		return modificationDetectionConfig;
 	}
 
 	/**
-	 * Set the modification detection config for current view.
-	 * @param modificationDetectionConfig
+	 * Sets the modification detection config. This is a view level VCS property.
+	 * 
+	 * @param modificationDetectionConfig the modification detection config
 	 */
 	public void setModificationDetectionConfig(String modificationDetectionConfig) {
 		this.modificationDetectionConfig = modificationDetectionConfig;
 	}
 
 	/**
-	 * Get extra options when call clearcase mkview sub-command. This is a view level
-	 * vcs property. Refer to luntbuild user manual for detailed explanation of this property
-	 * @return mkview extra options
+	 * Gets the extra options when creating snapshot view. This is a view level VCS property.
+	 * 
+	 * @return the extra options
 	 */
 	public String getMkviewExtraOpts() {
 		return mkviewExtraOpts;
 	}
 
 	/**
-	 * Set extra options when call clearcase mkview sub-command.
-	 * @param mkviewExtraOpts
+	 * Sets the extra options when creating snapshot view. This is a view level VCS property.
+	 * 
+	 * @param mkviewExtraOpts the extra options
 	 */
 	public void setMkviewExtraOpts(String mkviewExtraOpts) {
 		this.mkviewExtraOpts = mkviewExtraOpts;
-	}
-
-	public String getVcsClassName() {
-		return "com.luntsys.luntbuild.vcs.BaseClearcaseAdaptor";
 	}
 }

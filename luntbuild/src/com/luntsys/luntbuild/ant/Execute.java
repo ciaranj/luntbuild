@@ -143,10 +143,9 @@ public class Execute {
 	}
 
 	/**
-	 * set whether or not you want the process to be spawned
-	 * default is not spawned
+	 * Set whether or not you want the process to be spawned, default is not spawned.
 	 *
-	 * @param spawn if true you do not want ant to wait for the end of the process
+	 * @param spawn if <code>true</code> you do not want ant to wait for the end of the process
 	 * @since ant 1.6
 	 */
 	public void setSpawn(boolean spawn) {
@@ -155,9 +154,9 @@ public class Execute {
 
 	/**
 	 * Find the list of environment variables for this process.
-	 *
+	 * 
 	 * @return a vector containing the environment variables
-	 *         the vector elements are strings formatted like variable = value
+	 *         the vector elements are strings formatted like <em>key=value</em>
 	 */
 	public static synchronized Vector getProcEnvironment() {
 		if (procEnvironment != null) {
@@ -214,6 +213,11 @@ public class Execute {
 		return procEnvironment;
 	}
 
+	/**
+	 * Get the operating system specific command for finding the list of environment variables.
+	 * 
+	 * @return the environment command
+	 */
 	private static String[] getProcEnvCommand() {
 		if (Os.isFamily("os/2")) {
 			// OS/2 - use same mechanism as Windows 2000
@@ -299,7 +303,7 @@ public class Execute {
 	 * Creates a new execute object.
 	 *
 	 * @param streamHandler the stream handler used to handle the input and
-	 *                      output streams of the subprocess.
+	 *                      output streams of the subprocess
 	 */
 	public Execute(ExecuteStreamHandler streamHandler) {
 		this(streamHandler, null);
@@ -309,9 +313,9 @@ public class Execute {
 	 * Creates a new execute object.
 	 *
 	 * @param streamHandler the stream handler used to handle the input and
-	 *                      output streams of the subprocess.
+	 *                      output streams of the subprocess
 	 * @param watchdog      a watchdog for the subprocess or <code>null</code> to
-	 *                      to disable a timeout for the subprocess.
+	 *                      to disable a timeout for the subprocess
 	 */
 	public Execute(ExecuteStreamHandler streamHandler,
 				   ExecuteWatchdog watchdog) {
@@ -320,6 +324,9 @@ public class Execute {
 	}
 
 	/**
+	 * Sets the stream handler used to handle the input and output streams of the subprocess.
+	 * 
+	 * @param streamHandler the stream handler
 	 * @since Ant 1.6
 	 */
 	public void setStreamHandler(ExecuteStreamHandler streamHandler) {
@@ -328,7 +335,7 @@ public class Execute {
 
 	/**
 	 * Returns the commandline used to create a subprocess.
-	 *
+	 * 
 	 * @return the commandline used to create a subprocess
 	 */
 	public String[] getCommandline() {
@@ -338,7 +345,7 @@ public class Execute {
 
 	/**
 	 * Sets the commandline of the subprocess to launch.
-	 *
+	 * 
 	 * @param commandline the commandline of the subprocess to launch
 	 */
 	public void setCommandline(String[] commandline) {
@@ -347,8 +354,8 @@ public class Execute {
 
 	/**
 	 * Set whether to propagate the default environment or not.
-	 *
-	 * @param newenv whether to propagate the process environment.
+	 * 
+	 * @param newenv whether to propagate the process environment
 	 */
 	public void setNewenvironment(boolean newenv) {
 		newEnvironment = newenv;
@@ -379,11 +386,11 @@ public class Execute {
 
 	/**
 	 * Sets the working directory of the process to execute.
-	 * <p/>
+	 * 
 	 * <p>This is emulated using the antRun scripts unless the OS is
 	 * Windows NT in which case a cmd.exe is spawned,
 	 * or MRJ and setting user.dir works, or JDK 1.3 and there is
-	 * official support in java.lang.Runtime.
+	 * official support in {@link Runtime}.</p>
 	 *
 	 * @param wd the working directory of the process.
 	 */
@@ -398,8 +405,8 @@ public class Execute {
 	/**
 	 * Set the name of the antRun script using the project's value.
 	 *
-	 * @param project the current project.
-	 * @throws org.apache.tools.ant.BuildException not clear when it is going to throw an exception, but
+	 * @param project the current project
+	 * @throws BuildException not clear when it is going to throw an exception, but
 	 *                        it is the method's signature
 	 */
 	public void setAntRun(Project project) throws BuildException {
@@ -410,10 +417,10 @@ public class Execute {
 	 * Launch this execution through the VM, where possible, rather than through
 	 * the OS's shell. In some cases and operating systems using the shell will
 	 * allow the shell to perform additional processing such as associating an
-	 * executable with a script, etc
+	 * executable with a script, etc.
 	 *
-	 * @param useVMLauncher true if exec should launch through the VM,
-	 *                      false if the shell should be used to launch the
+	 * @param useVMLauncher <code>true</code> if exec should launch through the VM,
+	 *                      <code>false</code> if the shell should be used to launch the
 	 *                      command.
 	 */
 	public void setVMLauncher(boolean useVMLauncher) {
@@ -421,18 +428,18 @@ public class Execute {
 	}
 
 	/**
-	 * Creates a process that runs a command.
+	 * Creates a <code>Process</code> that runs a command.
 	 *
-	 * @param project the Project, only used for logging purposes, may be null.
+	 * @param project the Project, only used for logging purposes, may be <code>null</code>
 	 * @param command the command to run
 	 * @param env     the environment for the command
 	 * @param dir     the working directory for the command
-	 * @param useVM   use the built-in exec command for JDK 1.3 if available.
+	 * @param useVM   use the built-in exec command for JDK 1.3 if available
 	 * @return the process started
-	 * @throws java.io.IOException forwarded from the particular launcher used
+	 * @throws IOException forwarded from the particular launcher used
 	 * @since Ant 1.5
 	 */
-	public static Process launch(Project project, String[] command,
+	public Process launch(Project project, String[] command,
 								 String[] env, File dir, boolean useVM)
 			throws IOException {
 		CommandLauncher launcher
@@ -450,9 +457,8 @@ public class Execute {
 	/**
 	 * Runs a process defined by the command line and returns its exit status.
 	 *
-	 * @return the exit status of the subprocess or <code>INVALID</code>
-	 * @throws java.io.IOException The exception is thrown, if launching
-	 *                             of the subprocess failed
+	 * @return the exit status of the subprocess or <code>Execute.INVALID</code>
+	 * @throws IOException if launching of the subprocess failed
 	 */
 	public int execute() throws IOException {
 		if (workingDirectory != null && !workingDirectory.exists()) {
@@ -502,8 +508,7 @@ public class Execute {
 	 * Starts a process defined by the command line.
 	 * Ant will not wait for this process, nor log its output
 	 *
-	 * @throws java.io.IOException The exception is thrown, if launching
-	 *                             of the subprocess failed
+	 * @throws IOException if launching of the subprocess failed
 	 * @since ant 1.6
 	 */
 	public void spawn() throws IOException {
@@ -525,7 +530,7 @@ public class Execute {
 	}
 
 	/**
-	 * wait for a given process
+	 * Waits for a given <code>Process</code>.
 	 *
 	 * @param process the process one wants to wait for
 	 */
@@ -540,7 +545,7 @@ public class Execute {
 	}
 
 	/**
-	 * set the exit value
+	 * Set the exit value.
 	 *
 	 * @param value exit value of the process
 	 */
@@ -551,7 +556,7 @@ public class Execute {
 	/**
 	 * Query the exit value of the process.
 	 *
-	 * @return the exit value or Execute.INVALID if no exit value has
+	 * @return the exit value or <code>Execute.INVALID</code> if no exit value has
 	 *         been received
 	 */
 	public int getExitValue() {
@@ -570,7 +575,7 @@ public class Execute {
 	 * signals a failure on OpenVMS.  So if you execute a new Java VM
 	 * on OpenVMS, you cannot trust this method.</p>
 	 *
-	 * f@param exitValue the exit value (return code) to be checked
+	 * @param exitValue the exit value (return code) to be checked
 	 * @return <code>true</code> if <code>exitValue</code> signals a failure
 	 */
 	public static boolean isFailure(int exitValue) {
@@ -584,9 +589,9 @@ public class Execute {
 	}
 
 	/**
-	 * test for an untimely death of the process
+	 * Test for an untimely death of the process.
 	 *
-	 * @return true if a watchdog had to kill the process
+	 * @return <code>true</code> if a watchdog had to kill the process
 	 * @since Ant 1.5
 	 */
 	public boolean killedProcess() {
@@ -629,9 +634,9 @@ public class Execute {
 	 * A utility method that runs an external command.  Writes the output and
 	 * error streams of the command to the project log.
 	 *
-	 * @param task    The task that the command is part of.  Used for logging
-	 * @param cmdline The command to execute.
-	 * @throws org.apache.tools.ant.BuildException if the command does not return 0.
+	 * @param task    The task that the command is part of, used for logging
+	 * @param cmdline The command to execute
+	 * @throws BuildException if the command does not return 0
 	 */
 	public static void runCommand(Task task, String[] cmdline)
 			throws BuildException {
@@ -655,7 +660,7 @@ public class Execute {
 	}
 
 	/**
-	 * This method is VMS specific and used by getProcEnvironment().
+	 * This method is VMS specific and used by <code>getProcEnvironment()</code>.
 	 * <p/>
 	 * Parses VMS logicals from <code>in</code> and adds them to
 	 * <code>environment</code>.  <code>in</code> is expected to be the
@@ -664,6 +669,12 @@ public class Execute {
 	 * tables only gets added from the highest order table.  Logicals with
 	 * multiple equivalence names are mapped to a variable with multiple
 	 * values separated by a comma (,).
+	 * 
+	 * @param environment the enviroment to add to
+	 * @param in the output of "SHOW LOGICAL"
+	 * @return the updated environment
+	 * @throws IOException from {@link BufferedReader#readLine()}
+	 * @see #getProcEnvironment()
 	 */
 	private static Vector addVMSLogicals(Vector environment, BufferedReader in)
 			throws IOException {
@@ -712,13 +723,14 @@ public class Execute {
 	 */
 	private static class CommandLauncher {
 		/**
-		 * Launches the given command in a new process.
+		 * Launches the given command in a new <code>Process</code>.
 		 *
-		 * @param project The project that the command is part of
-		 * @param cmd     The command to execute
-		 * @param env     The environment for the new process.  If null,
-		 *                the environment of the current process is used.
-		 * @throws java.io.IOException if attempting to run a command in a specific directory
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
+		 * @return the process started
+		 * @throws IOException if attempting to run a command in a specific directory
 		 */
 		public Process exec(Project project, String[] cmd, String[] env)
 				throws IOException {
@@ -730,16 +742,17 @@ public class Execute {
 		}
 
 		/**
-		 * Launches the given command in a new process, in the given working
+		 * Launches the given command in a new <code>Process</code>, in the given working
 		 * directory.
 		 *
-		 * @param project    The project that the command is part of
-		 * @param cmd        The command to execute
-		 * @param env        The environment for the new process.  If null,
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
 		 *                   the environment of the current process is used.
-		 * @param workingDir The directory to start the command in.  If null,
+		 * @param workingDir The directory to start the command in.  If <code>null</code>,
 		 *                   the current directory is used
-		 * @throws java.io.IOException if trying to change directory
+		 * @return the process started
+		 * @throws IOException if trying to change directory
 		 */
 		public Process exec(Project project, String[] cmd, String[] env,
 							File workingDir) throws IOException {
@@ -753,18 +766,20 @@ public class Execute {
 
 	/**
 	 * A command launcher for JDK/JRE 1.1 under Windows.  Fixes quoting problems
-	 * in Runtime.exec().  Can only launch commands in the current working
+	 * in {@link Runtime#exec()}.  Can only launch commands in the current working
 	 * directory
 	 */
 	private static class Java11CommandLauncher extends CommandLauncher {
 		/**
-		 * Launches the given command in a new process.  Needs to quote
-		 * arguments
+		 * Launches the given command in a new <code>Process</code>.  Needs to quote
+		 * arguments.
 		 *
-		 * @param project the ant project
-		 * @param cmd     the command line to execute as an array of strings
-		 * @param env     the environment to set as an array of strings
-		 * @throws java.io.IOException probably forwarded from Runtime#exec
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
+		 * @return the process started
+		 * @throws IOException probably from {@link Runtime#exec(String[], String[])}
 		 */
 		public Process exec(Project project, String[] cmd, String[] env)
 				throws IOException {
@@ -784,9 +799,14 @@ public class Execute {
 
 	/**
 	 * A command launcher for JDK/JRE 1.3 (and higher).  Uses the built-in
-	 * Runtime.exec() command
+	 * {@link Runtime#exec(String[], String[], File)} command
 	 */
 	private static class Java13CommandLauncher extends CommandLauncher {
+		/**
+		 * Creates a new <code>Java13CommandLauncher</code>.
+		 * 
+		 * @throws NoSuchMethodException if unable to find {@link Runtime#exec(String[], String[], File)}
+		 */
 		public Java13CommandLauncher() throws NoSuchMethodException {
 			// Locate method Runtime.exec(String[] cmdarray,
 			//                            String[] envp, File dir)
@@ -795,14 +815,17 @@ public class Execute {
 		}
 
 		/**
-		 * Launches the given command in a new process, in the given working
-		 * directory
+		 * Launches the given command in a new <code>Process</code>, in the given working
+		 * directory.
 		 *
-		 * @param project    the ant project
-		 * @param cmd        the command line to execute as an array of strings
-		 * @param env        the environment to set as an array of strings
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
 		 * @param workingDir the working directory where the command should run
-		 * @throws java.io.IOException probably forwarded from Runtime#exec
+		 * @return the process started
+		 * @throws IOException probably from {@link Runtime#exec(String[], String[], File)}
+		 * @throws BuildException if another exception occurs
 		 */
 		public Process exec(Project project, String[] cmd, String[] env,
 							File workingDir) throws IOException {
@@ -839,18 +862,25 @@ public class Execute {
 	 * Sub-classes override exec(args, env, workdir)
 	 */
 	private static class CommandLauncherProxy extends CommandLauncher {
+		/**
+		 * Creates a new <code>CommandLauncherProxy</code> for the specified <code>CommandLauncher</code>.
+		 * 
+		 * @param launcher the command launcher to proxy
+		 */
 		CommandLauncherProxy(CommandLauncher launcher) {
 			myLauncher = launcher;
 		}
 
 		/**
-		 * Launches the given command in a new process.  Delegates this
-		 * method to the proxied launcher
+		 * Launches the given command in a new <code>Process</code>.  Delegates this
+		 * method to the proxied launcher.
 		 *
-		 * @param project the ant project
-		 * @param cmd     the command line to execute as an array of strings
-		 * @param env     the environment to set as an array of strings
-		 * @throws java.io.IOException forwarded from the exec method of the command launcher
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
+		 * @return the process started
+		 * @throws IOException forwarded from the <code>exec</code> method of the command launcher
 		 */
 		public Process exec(Project project, String[] cmd, String[] env)
 				throws IOException {
@@ -861,27 +891,34 @@ public class Execute {
 	}
 
 	/**
-	 * A command launcher for OS/2 that uses 'cmd.exe' when launching
+	 * A command launcher for OS/2 that uses <code>cmd.exe</code> when launching
 	 * commands in directories other than the current working
 	 * directory.
-	 * <p/>
-	 * <p>Unlike Windows NT and friends, OS/2's cd doesn't support the
-	 * /d switch to change drives and directories in one go.</p>
+	 * 
+	 * <p>Unlike Windows NT and friends, OS/2's <code>cd</code> doesn't support the
+	 * <code>/d</code> switch to change drives and directories in one go.</p>
 	 */
 	private static class OS2CommandLauncher extends CommandLauncherProxy {
+		/**
+		 * Creates a new 
+		 * 
+		 * @param launcher the command launcher to proxy
+		 */
 		OS2CommandLauncher(CommandLauncher launcher) {
 			super(launcher);
 		}
 
 		/**
-		 * Launches the given command in a new process, in the given working
+		 * Launches the given command in a new <code>Process</code>, in the given working
 		 * directory.
 		 *
-		 * @param project    the ant project
-		 * @param cmd        the command line to execute as an array of strings
-		 * @param env        the environment to set as an array of strings
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
 		 * @param workingDir working directory where the command should run
-		 * @throws java.io.IOException forwarded from the exec method of the command launcher
+		 * @return the process started
+		 * @throws IOException forwarded from the exec method of the command launcher
 		 */
 		public Process exec(Project project, String[] cmd, String[] env,
 							File workingDir) throws IOException {
@@ -913,24 +950,31 @@ public class Execute {
 	}
 
 	/**
-	 * A command launcher for Windows XP/2000/NT that uses 'cmd.exe' when
+	 * A command launcher for Windows XP/2000/NT that uses <code>cmd.exe</code> when
 	 * launching commands in directories other than the current working
 	 * directory.
 	 */
 	private static class WinNTCommandLauncher extends CommandLauncherProxy {
+		/**
+		 * 
+		 * 
+		 * @param
+		 */
 		WinNTCommandLauncher(CommandLauncher launcher) {
 			super(launcher);
 		}
 
 		/**
-		 * Launches the given command in a new process, in the given working
+		 * Launches the given command in a new <code>Process</code>, in the given working
 		 * directory.
 		 *
-		 * @param project    the ant project
-		 * @param cmd        the command line to execute as an array of strings
-		 * @param env        the environment to set as an array of strings
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
 		 * @param workingDir working directory where the command should run
-		 * @throws java.io.IOException forwarded from the exec method of the command launcher
+		 * @return the process started
+		 * @throws IOException forwarded from the exec method of the command launcher
 		 */
 		public Process exec(Project project, String[] cmd, String[] env,
 							File workingDir) throws IOException {
@@ -964,19 +1008,26 @@ public class Execute {
 	 * working directory before launching commands.
 	 */
 	private static class MacCommandLauncher extends CommandLauncherProxy {
+		/**
+		 * 
+		 * 
+		 * @param
+		 */
 		MacCommandLauncher(CommandLauncher launcher) {
 			super(launcher);
 		}
 
 		/**
-		 * Launches the given command in a new process, in the given working
-		 * directory
+		 * Launches the given command in a new <code>Process</code>, in the given working
+		 * directory.
 		 *
-		 * @param project    the ant project
-		 * @param cmd        the command line to execute as an array of strings
-		 * @param env        the environment to set as an array of strings
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
 		 * @param workingDir working directory where the command should run
-		 * @throws java.io.IOException forwarded from the exec method of the command launcher
+		 * @return the process started
+		 * @throws IOException forwarded from the exec method of the command launcher
 		 */
 		public Process exec(Project project, String[] cmd, String[] env,
 							File workingDir) throws IOException {
@@ -998,14 +1049,28 @@ public class Execute {
 	 * in directories other than the current working directory.
 	 */
 	private static class ScriptCommandLauncher extends CommandLauncherProxy {
+		/**
+		 * 
+		 * 
+		 * @param
+		 * @param
+		 */
 		ScriptCommandLauncher(String script, CommandLauncher launcher) {
 			super(launcher);
 			myScript = script;
 		}
 
 		/**
-		 * Launches the given command in a new process, in the given working
-		 * directory
+		 * Launches the given command in a new <code>Process</code>, in the given working
+		 * directory.
+		 *
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
+		 * @param workingDir working directory where the command should run
+		 * @return the process started
+		 * @throws IOException forwarded from the exec method of the command launcher
 		 */
 		public Process exec(Project project, String[] cmd, String[] env,
 							File workingDir) throws IOException {
@@ -1048,14 +1113,28 @@ public class Execute {
 	 */
 	private static class PerlScriptCommandLauncher
 			extends CommandLauncherProxy {
+		/**
+		 * 
+		 * 
+		 * @param
+		 * @param
+		 */
 		PerlScriptCommandLauncher(String script, CommandLauncher launcher) {
 			super(launcher);
 			myScript = script;
 		}
 
 		/**
-		 * Launches the given command in a new process, in the given working
-		 * directory
+		 * Launches the given command in a new <code>Process</code>, in the given working
+		 * directory.
+		 *
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
+		 * @param workingDir working directory where the command should run
+		 * @return the process started
+		 * @throws IOException forwarded from the exec method of the command launcher
 		 */
 		public Process exec(Project project, String[] cmd, String[] env,
 							File workingDir) throws IOException {
@@ -1100,12 +1179,24 @@ public class Execute {
 	 */
 	private static class VmsCommandLauncher extends Java13CommandLauncher {
 
+		/**
+		 * Creates a new <code>VmsCommandLauncher</code>.
+		 * 
+		 * @throws NoSuchMethodException from {@link Java13CommandLauncher#Java13CommandLauncher()}
+		 */
 		public VmsCommandLauncher() throws NoSuchMethodException {
 			super();
 		}
 
 		/**
-		 * Launches the given command in a new process.
+		 * Launches the given command in a new <code>Process</code>.
+		 *
+		 * @param project the ant project used for logging
+		 * @param cmd     the command line to execute
+		 * @param env     the environment for the new process.  If <code>null</code>,
+		 *                the environment of the current process is used.
+		 * @return the process started
+		 * @throws IOException if attempting to run a command in a specific directory
 		 */
 		public Process exec(Project project, String[] cmd, String[] env)
 				throws IOException {
@@ -1114,10 +1205,18 @@ public class Execute {
 		}
 
 		/**
-		 * Launches the given command in a new process, in the given working
+		 * Launches the given command in a new <code>Process</code>, in the given working
 		 * directory.  Note that under Java 1.3.1, 1.4.0 and 1.4.1 on VMS this
-		 * method only works if <code>workingDir</code> is null or the logical
+		 * method only works if <code>workingDir</code> is <code>null</code> or the logical
 		 * JAVA$FORK_SUPPORT_CHDIR needs to be set to TRUE.
+		 *
+		 * @param project    the ant project used for logging
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
+		 * @param workingDir working directory where the command should run
+		 * @return the process started
+		 * @throws IOException forwarded from the exec method of the command launcher
 		 */
 		public Process exec(Project project, String[] cmd, String[] env,
 							File workingDir) throws IOException {
@@ -1128,6 +1227,12 @@ public class Execute {
 		/*
 		 * Writes the command into a temporary DCL script and returns the
 		 * corresponding File object.  The script will be deleted on exit.
+		 * 
+		 * @param cmd        the command line to execute
+		 * @param env        the environment for the new process.  If <code>null</code>,
+		 *                   the environment of the current process is used.
+		 * @return the new command file
+		 * @throws IOException if an error occurs while creating the command file
 		 */
 		private File createCommandFile(String[] cmd, String[] env)
 				throws IOException {
@@ -1164,6 +1269,5 @@ public class Execute {
 			}
 			return script;
 		}
-
 	}
 }

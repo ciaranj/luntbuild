@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.utility;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -32,11 +33,21 @@ import org.apache.commons.beanutils.BeanUtils;
 import java.util.Comparator;
 
 /**
- * This comparator compares objects by its name property
+ * This comparator compares objects by their name property.
  *
  * @author robin shine
  */
 public class NameComparator implements Comparator{
+
+	/**
+	 * Compares two objects by their name property.
+	 * 
+	 * @param o1 the first object
+	 * @param o2 the second object
+	 * @return <code>0</code> if both objects have the same name property,
+	 *         <code>1</code> if the first object's name property is larger, or
+	 *         <code>-1</code> if the second object's name property is larger
+	 */
 	public int compare(Object o1, Object o2) {
 		if (o1 == null && o2 == null)
 			return 0;
@@ -45,8 +56,8 @@ public class NameComparator implements Comparator{
 		if (o1 == null && o2 != null)
 			return -1;
 		try{
-			String name1 = (String)(BeanUtils.getProperty(o1, "name"));
-			String name2 = (String)(BeanUtils.getProperty(o2, "name"));
+			String name1 = BeanUtils.getProperty(o1, "name");
+			String name2 = BeanUtils.getProperty(o2, "name");
 			if (name1 == null && name2 == null)
 				return 0;
 			if (name1 != null && name2 == null)

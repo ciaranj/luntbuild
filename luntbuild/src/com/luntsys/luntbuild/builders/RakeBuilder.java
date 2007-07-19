@@ -29,6 +29,7 @@ package com.luntsys.luntbuild.builders;
 
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
 import com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
@@ -43,6 +44,7 @@ import java.util.List;
 
 /**
  * Rake builder implementation.
+ * 
  * @author lubosp
  */
 public class RakeBuilder extends Builder {
@@ -75,55 +77,107 @@ public class RakeBuilder extends Builder {
             "buildDate=\"${build.startDate}\"\n" +
             "junitHtmlReportDir=\"${build.junitHtmlReportDir}\"";
 
+	/**
+	 * Constructor, creates a new rake builder with default settings.
+	 */
     public RakeBuilder() {
         if (System.getProperty("os.name").startsWith("Windows")) {
             this.command = "C:\\rake\\bin\\rake.bat ";
         } else {
             this.command = "/usr/local/bin/rake ";
         }
-        setBuildSuccessCondition("result==0 and !logContainsLine(\"Command failed with status\")");
+        setBuildSuccessCondition("result==0 and !builderLogContainsLine(\"Command failed with status\")");
     }
 
+	/**
+	 * Gets the command to run rake.
+	 * 
+	 * @return the command to run rake
+	 */
     public String getCommand() {
         return command;
     }
 
+	/**
+	 * Sets the command to run rake.
+	 * 
+	 * @param command the command to run rake
+	 */
     public void setCommand(String command) {
         this.command = command;
     }
 
+	/**
+	 * Gets the path to the build script.
+	 * 
+	 * @return the path to the build script
+	 */
     public String getBuildScriptPath() {
         return buildScriptPath;
     }
 
+	/**
+	 * Sets the path to the build script.
+	 * 
+	 * @param buildScriptPath the path to the build script
+	 */
     public void setBuildScriptPath(String buildScriptPath) {
         this.buildScriptPath = buildScriptPath;
     }
 
+	/**
+	 * Gets the targets to run.
+	 * 
+	 * @return the targets to run
+	 */
     public String getTargets() {
         return targets;
     }
 
+	/**
+	 * Sets the targets to run.
+	 * 
+	 * @param targets the targets to run
+	 */
     public void setTargets(String targets) {
         this.targets = targets;
     }
 
+	/**
+	 * Gets the build properties.
+	 * 
+	 * @return the build properties
+	 */
     public String getBuildProperties() {
         return buildProperties;
     }
 
+	/**
+	 * Sets the build properties.
+	 * 
+	 * @param buildProperties the build properties
+	 */
     public void setBuildProperties(String buildProperties) {
         this.buildProperties = buildProperties;
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getDisplayName() {
         return "Rake builder";
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getIconName() {
         return "rake.gif";
     }
 
+    /**
+     * @inheritDoc
+     */
     public List getBuilderSpecificProperties() {
         List properties = new ArrayList();
         properties.add(new DisplayProperty() {
@@ -228,6 +282,9 @@ public class RakeBuilder extends Builder {
         return properties;
     }
 
+    /**
+     * @inheritDoc
+     */
     public void validate() {
         super.validate();
         try {
@@ -261,11 +318,9 @@ public class RakeBuilder extends Builder {
     }
 
     /**
-     * Construct command to run Rake
-     *
-     * @return command to run Rake
+     * @inheritDoc
      */
-    public String constructBuildCmd(Build build) throws IOException {
+    public String constructBuildCmd(Build build) {
         String rakeCmd = getCommand();
         rakeCmd = rakeCmd.replace('\n', ' ');
         rakeCmd = rakeCmd.replace('\r', ' ');
@@ -308,29 +363,46 @@ public class RakeBuilder extends Builder {
         return rakeCmd;
     }
 
+	/**
+     * @inheritDoc
+	 */
     public String constructBuildCmdDir(Build build) {
         String buildScriptAbsolutePath = build.getSchedule().resolveAbsolutePath(getBuildScriptPath());
         return new File(buildScriptAbsolutePath).getParent();
     }
 
-    public com.luntsys.luntbuild.facades.lb12.BuilderFacade constructFacade() {
+    /**
+     * @inheritDoc
+     * @see RakeBuilderFacade
+     */
+    public BuilderFacade constructFacade() {
         return new RakeBuilderFacade();
     }
 
-    public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade))
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>RakeBuilderFacade</code>
+     * @see RakeBuilderFacade
+     */
+    public void loadFromFacade(BuilderFacade facade) {
+        if (!(facade instanceof RakeBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade rakeBuilderFacade = (com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade) facade;
+        RakeBuilderFacade rakeBuilderFacade = (RakeBuilderFacade) facade;
         setCommand(rakeBuilderFacade.getCommand());
         setBuildScriptPath(rakeBuilderFacade.getBuildScriptPath());
         setTargets(rakeBuilderFacade.getBuildTargets());
         setBuildProperties(rakeBuilderFacade.getBuildProperties());
     }
 
-    public void saveToFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>RakeBuilderFacade</code>
+     * @see RakeBuilderFacade
+     */
+    public void saveToFacade(BuilderFacade facade) {
         if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.RakeBuilderFacade rakeBuilderFacade = (RakeBuilderFacade) facade;
+        RakeBuilderFacade rakeBuilderFacade = (RakeBuilderFacade) facade;
         rakeBuilderFacade.setCommand(getCommand());
         rakeBuilderFacade.setBuildScriptPath(getBuildScriptPath());
         rakeBuilderFacade.setBuildTargets(getTargets());

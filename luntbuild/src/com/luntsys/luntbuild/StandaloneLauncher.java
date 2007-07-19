@@ -1,3 +1,7 @@
+/*
+ *
+ */
+
 package com.luntsys.luntbuild;
 
 import java.io.File;
@@ -17,16 +21,17 @@ import org.mortbay.util.InetAddrPort;
 import com.luntsys.luntbuild.utility.Luntbuild;
 
 /**
- * Starts standalone Luntbuild with embedded Jetty servlet container
+ * Starts the standalone Luntbuild with embedded Jetty servlet container.
  *
  * @author lubosp
- *
  */
 public class StandaloneLauncher {
 
     private static Log logger = LogFactory.getLog(StandaloneStopper.class);
 
     /**
+     * Starts the standalone version of Luntbuild.
+     * 
      * @param args 0 - host, 1 - port, [2 - stop port]
      */
     public static void main(String[] args) {
@@ -112,11 +117,9 @@ public class StandaloneLauncher {
 }
 
 /**
- *
- * Server stopper thread
+ * Server stopper thread.
  *
  * @author lubosp
- *
  */
 class ServerStopper extends Thread {
 
@@ -125,12 +128,23 @@ class ServerStopper extends Thread {
     private final Server mServer;
     private final Log logger;
 
+	/**
+	 * Creates a server stopper thread.
+	 * 
+	 * @param server the server running Luntbuild
+	 * @param aPort the port to access Luntbuild
+	 * @param logger the logger to use
+	 * @throws IOException from {@link ServerSocket}
+	 */
     ServerStopper(Server server, int aPort, Log logger) throws IOException {
         this.mSvrSock = new ServerSocket(aPort);
         this.mServer = server;
         this.logger = logger;
     }
-    /** Listens for client connections **/
+
+    /**
+     * Listens for client connections.
+     */
     public void run() {
         try {
             while (true) {

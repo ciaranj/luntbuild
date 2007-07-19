@@ -25,32 +25,25 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 import java.util.Date;
 
 /**
- * Facade of a build in luntbuild system. Mainly used by web service
- * client to operate on properties of a build object.
+ * Build facade.
  *
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.Build
  */
 public class BuildFacade {
-	/**
-	 * The build status is unknown
-	 */
+	/** Build status, unknown */
 	public static final int UNKNOWN = 0;
-	/**
-	 * The build status is successful
-	 */
+	/** Build status, success */
 	public static final int SUCCESS = 1;
-	/**
-	 * The build status is failed
-	 */
+	/** Build status, failed */
 	public static final int FAILED = 2;
-	/**
-	 * The build status is running
-	 */
+	/** Build status, running */
 	public static final int RUNNING  = 3;
 
 	private long id;
@@ -93,207 +86,276 @@ public class BuildFacade {
 	 */
 	private String postbuildStrategy;
 
-
 	/**
-	 * Get id of this build.
-	 * @return id of this build
+	 * Gets the identifer of this build.
+	 * 
+	 * @return the identifer of this build
 	 */
 	public long getId() {
-		return id;
+		return this.id;
 	}
 
 	/**
-	 * Set id of this build
-	 * @param id
+	 * Sets the identifier of this build.
+	 *
+	 * @param id the identifier of this build
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	/**
-	 * Get status of this build.
-	 * @return one value of {@link BuildFacade#UNKNOWN}, {@link BuildFacade#SUCCESS},
-	 * {@link BuildFacade#FAILED}, or {@link BuildFacade#RUNNING}
-	 */
+    /**
+     * Gets the status of this build.
+     * 
+     * @return the status of this build
+     * @see BuildFacade#UNKNOWN
+     * @see BuildFacade#SUCCESS
+     * @see BuildFacade#FAILED
+     * @see BuildFacade#RUNNING
+     */
 	public int getStatus() {
-		return status;
+		return this.status;
 	}
 
-	/**
-	 * Set status of this build
-	 * @param status one value of {@link BuildFacade#UNKNOWN}, {@link BuildFacade#SUCCESS},
-	 * {@link BuildFacade#FAILED}, or {@link BuildFacade#RUNNING}
-	 */
+    /**
+     * Sets the status of this build.
+     * 
+     * @param status the status of this build
+     * @see BuildFacade#UNKNOWN
+     * @see BuildFacade#SUCCESS
+     * @see BuildFacade#FAILED
+     * @see BuildFacade#RUNNING
+     */
 	public void setStatus(int status) {
 		this.status = status;
 	}
 
-	/**
-	 * Get start date of this build
-	 * @return start date of this build
-	 */
+    /**
+     * Gets the starting date of this build.
+     * 
+     * @return the starting date of this build
+     */
 	public Date getStartDate() {
-		return startDate;
+		return this.startDate;
 	}
 
-	/**
-	 * Set start date of this build
-	 * @param startDate
-	 */
+    /**
+     * Sets the start date of this build.
+     * 
+     * @param startDate the start date of this build
+     */
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	/**
-	 * Get end date of this build
-	 * @return end date of this build
-	 */
+    /**
+     * Gets the ending date of this build.
+     * 
+     * @return the ending date of this build
+     */
 	public Date getEndDate() {
-		return endDate;
+		return this.endDate;
 	}
 
-	/**
-	 * Set end date of this build
-	 * @param endDate
-	 */
+    /**
+     * Sets the ending date of this build.
+     * 
+     * @param endDate the ending date of this build
+     */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
-	/**
-	 * Get version of this build
-	 * @return version of this build
-	 */
+    /**
+     * Gets the version of this build.
+     * 
+     * @return the version of this build
+     */
 	public String getVersion() {
-		return version;
+		return this.version;
 	}
 
-	/**
-	 * Set version of this build
-	 * @param version
-	 */
+    /**
+     * Sets the version of this build.
+     * 
+     * @param version the version of this build
+     */
 	public void setVersion(String version) {
 		this.version = version;
 	}
 
 	/**
-	 * Whether or not head revisions of this build has been labeled
-	 * in the vcs repository
-	 * @return boolean value
+	 * Checks if this build has a corresponding label in the VCS repository.
+	 * 
+	 * @return <code>true</code> if this build has a corresponding label in the VCS repository
 	 */
 	public boolean isHaveLabelOnHead() {
-		return haveLabelOnHead;
+		return this.haveLabelOnHead;
 	}
 
 	/**
-	 * Set the value indicates whether or not head revisions of this build has been labeled
-	 * in the vcs repository
-	 * @param haveLabelOnHead
+	 * Sets <code>true</code> or <code>false</code> if this build has a corresponding label in the VCS repository.
+	 * 
+	 * @param haveLabelOnHead set <code>true</code> if this build has a label in the VCS repository
 	 */
 	public void setHaveLabelOnHead(boolean haveLabelOnHead) {
 		this.haveLabelOnHead = haveLabelOnHead;
 	}
 
-	/**
-	 * Wheter or not this is a clean build
-	 * @return boolean value
-	 */
+    /**
+     * Checks if this is a clean build.
+     * 
+     * @return <code>true</code> if this is a clean build
+     */
 	public boolean isCleanBuild() {
 		return cleanBuild;
 	}
 
-	/**
-	 * Set whether or not this is a clean build
-	 * @param cleanBuild
-	 */
+    /**
+     * Sets whether this is a clean build.
+     * 
+     * @param cleanBuild set <code>true</code> if this is a clean build
+     */
 	public void setCleanBuild(boolean cleanBuild) {
 		this.cleanBuild = cleanBuild;
 	}
 
-	/**
-	 * Whether or not this is a rebuild
-	 * @return boolean value
-	 */
+    /**
+     * Checks if this is a rebuilt build.
+     * 
+     * @return <code>true</code> if this is a rebuilt build
+     */
 	public boolean isRebuild() {
-		return rebuild;
+		return this.rebuild;
 	}
 
-	/**
-	 * Set whether or not this is a rebuild
-	 * @param rebuild
-	 */
+    /**
+     * Sets whether this is a rebuilt build.
+     * 
+     * @param rebuild set <code>true</code> if this is a rebuilt build
+     */
 	public void setRebuild(boolean rebuild) {
 		this.rebuild = rebuild;
 	}
 
-	/**
-	 * Get url of this build
-	 * @return url of this build
-	 */
+    /**
+     * Gets the URL of this build.
+     * 
+     * @return the URL of this build
+     */
 	public String getUrl() {
-		return url;
+		return this.url;
 	}
 
-	/**
-	 * Set url of this build
-	 * @param url
-	 */
+    /**
+     * Sets the URL of this build.
+     * 
+     * @param url the URL of this build
+     */
 	public void setUrl(String url) {
 		this.url = url;
 	}
 
-	/**
-	 * Get url of this build's buid log
-	 * @return url of this build's build log
-	 */
+    /**
+     * Gets the build log URL of this build.
+     * 
+     * @return the build log URL of this build
+     */
 	public String getBuildLogUrl() {
-		return buildLogUrl;
+		return this.buildLogUrl;
 	}
 
-	/**
-	 * Set url of this build's build log
-	 * @param buildLogUrl
-	 */
+    /**
+     * Sets the build log URL of this build.
+     * 
+     * @param buildLogUrl the build log URL of this build
+     */
 	public void setBuildLogUrl(String buildLogUrl) {
 		this.buildLogUrl = buildLogUrl;
 	}
 
-	/**
-	 * Get url of this build's revision log
-	 * @return url of this build's revision log
-	 */
-	public String getRevisionLogUrl() {
-		return revisionLogUrl;
-	}
+    /**
+     * Gets the revision log URL of this build.
+     *
+     * @return the revision log URL of this build
+     */
+    public String getRevisionLogUrl() {
+        return this.revisionLogUrl;
+    }
 
-	/**
-	 * Set url of this build's revision log
-	 * @param revisionLogUrl
-	 */
-	public void setRevisionLogUrl(String revisionLogUrl) {
-		this.revisionLogUrl = revisionLogUrl;
-	}
+    /**
+     * Sets the revision log URL of this build.
+     *
+     * @param revisionLogUrl the revision log URL of this build
+     */
+    public void setRevisionLogUrl(String revisionLogUrl) {
+        this.revisionLogUrl = revisionLogUrl;
+    }
 
+    /**
+     * Gets the identifier of this build's build schedule.
+     * 
+     * @return the identifier of the build schedule
+     */
 	public long getBuildScheduleId() {
 		return buildScheduleId;
 	}
 
+    /**
+     * Sets the identifier of this build's build schedule.
+     * 
+     * @param buildScheduleId the identifier of the build schedule
+     */
 	public void setBuildScheduleId(long buildScheduleId) {
 		this.buildScheduleId = buildScheduleId;
 	}
 
+    /**
+     * Gets the label strategy for this build.
+     * 
+     * @return the label strategy for this build
+     * @see BuildScheduleFacade#LABEL_WHEN_SUCCESS
+     * @see BuildScheduleFacade#LABEL_NONE
+     * @see BuildScheduleFacade#LABEL_ALWAYS
+     */
 	public String getLabelStrategy() {
 		return labelStrategy;
 	}
 
+    /**
+     * Sets the label strategy for this build.
+     * 
+     * @param labelStrategy the labelStrategy the label strategy for this build
+     * @see BuildScheduleFacade#LABEL_WHEN_SUCCESS
+     * @see BuildScheduleFacade#LABEL_NONE
+     * @see BuildScheduleFacade#LABEL_ALWAYS
+     */
 	public void setLabelStrategy(String labelStrategy) {
 		this.labelStrategy = labelStrategy;
 	}
 
+    /**
+     * Gets the post-build strategy for this build.
+     * 
+     * @return the post-build strategy for this build
+     * @see BuildScheduleFacade#POSTBUILD_NONE
+     * @see BuildScheduleFacade#POSTBUILD_WHEN_SUCCESS
+     * @see BuildScheduleFacade#POSTBUILD_WHEN_FAILED
+     * @see BuildScheduleFacade#POSTBUILD_ALWAYS
+     */
 	public String getPostbuildStrategy() {
 		return postbuildStrategy;
 	}
 
+    /**
+     * Sets the post-build strategy for this build.
+     * 
+     * @param postbuildStrategy the postbuildStrategy the post-build strategy for this build
+     * @see BuildScheduleFacade#POSTBUILD_NONE
+     * @see BuildScheduleFacade#POSTBUILD_WHEN_SUCCESS
+     * @see BuildScheduleFacade#POSTBUILD_WHEN_FAILED
+     * @see BuildScheduleFacade#POSTBUILD_ALWAYS
+     */
 	public void setPostbuildStrategy(String postbuildStrategy) {
 		this.postbuildStrategy = postbuildStrategy;
 	}

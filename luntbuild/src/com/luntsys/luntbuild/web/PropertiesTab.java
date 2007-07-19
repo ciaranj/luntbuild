@@ -27,10 +27,10 @@
  */
 package com.luntsys.luntbuild.web;
 
+import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.notifiers.Notifier;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.facades.Constants;
 import org.apache.tapestry.IRequestCycle;
 import org.quartz.CronTrigger;
 
@@ -99,7 +99,6 @@ public abstract class PropertiesTab extends TabPageComponent {
 		}
 		Luntbuild.getDao().saveProperties(getProperties());
 		Luntbuild.setProperties(getProperties());
-		Luntbuild.getSchedService().rescheduleBuilds();
 		Luntbuild.getSchedService().scheduleSystemBackup();
 		setSuccessMsg("Properties updated successfully!");
 	}

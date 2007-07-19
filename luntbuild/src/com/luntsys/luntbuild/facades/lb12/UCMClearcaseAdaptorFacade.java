@@ -25,20 +25,30 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade of ucm clearcase adaptor. This adaptor does not support modules definition
+ * UCM Clearcase VCS adaptor. This adaptor does not support modules.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.UCMClearcaseAdaptor
  */
 public class UCMClearcaseAdaptorFacade extends VcsFacade {
+	/** Baseline to build, latest */
 	public static final String BUILD_LATEST = "latest";
+	/** Baseline to build, latest baselines */
 	public static final String BUILD_LATEST_BASELINES = "latest baselines";
+	/** Baseline to build, recommended baselines */
 	public static final String BUILD_RECOMMENDED_BASELINES = "recommended baselines";
+	/** Baseline to build, foundation baselines */
 	public static final String BUILD_FOUNDATION_BASELINES = "foundation baselines";
 
+	/** Baseline, fondation */
 	public static final String BASELINE_FOUNDATION = "found_bls";
+	/** Baseline, latest */
 	public static final String BASELINE_LATEST = "latest_bls";
+	/** Baseline, recommended */
 	public static final String BASELINE_RECOMMENDED = "rec_bls";
 
 	private String viewStgLoc;
@@ -62,127 +72,155 @@ public class UCMClearcaseAdaptorFacade extends VcsFacade {
 
 	private String cleartoolDir;
 
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
+	public String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.UCMClearcaseAdaptor";
+	}
+
 	/**
-	 * Get view storage location. It will be used as -stgloc option when creates clearcase views
-	 * @return view storage location
+	 * Gets the Clearcase server-side view storage location.
+	 * 
+	 * @return the Clearcase server-side view storage location
 	 */
 	public String getViewStgLoc() {
 		return viewStgLoc;
 	}
 
 	/**
-	 * Set view storage location.
-	 * @param viewStgLoc
+	 * Sets the Clearcase server-side view storage location.
+	 * 
+	 * @param viewStgLoc the Clearcase server-side view storage location
 	 */
 	public void setViewStgLoc(String viewStgLoc) {
 		this.viewStgLoc = viewStgLoc;
 	}
 
 	/**
-	 * Get the UCM project vob. This is a project level property.
-	 * @return UCM project vob
+	 * Gets the project vob tag.
+	 * 
+	 * @return the project vob tag
 	 */
 	public String getProjectVob() {
 		return projectVob;
 	}
 
 	/**
-	 * Set UCM project vob
-	 * @param projectVob
+	 * Sets the project vob tag.
+	 * 
+	 * @param projectVob the project vob tag
 	 */
 	public void setProjectVob(String projectVob) {
 		this.projectVob = projectVob;
 	}
 
 	/**
-	 * Get explicit path for view storage which will be used as the "-vws" option.
-	 * This option can override the "-stgloc" option.
-	 * @return explicit path for view storage
+	 * Gets the path for view storage.
+	 * 
+	 * @return the path for view storage
 	 */
 	public String getVws() {
 		return vws;
 	}
 
 	/**
-	 * Set explicit path for view storage.
-	 * @param vws
+	 * Sets the path for view storage.
+	 * 
+	 * @param vws the path for view storage
 	 */
 	public void setVws(String vws) {
 		this.vws = vws;
 	}
 
 	/**
-	 * Get UCM stream.
-	 * @return UCM stream
+	 * Gets the UCM stream.
+	 * 
+	 * @return the UCM stream
 	 */
 	public String getStream() {
 		return stream;
 	}
 
 	/**
-	 * Set UCM stream.
-	 * @param stream
+	 * Sets the UCM stream.
+	 * 
+	 * @param stream the UCM stream
 	 */
 	public void setStream(String stream) {
 		this.stream = stream;
 	}
 
 	/**
-	 * Get what to build string. Refer to user manual for detailed information about this property.
-	 * @return what to build property
+	 * Gets the baselines to build in the stream.
+	 * 
+	 * @return the baselines to build
 	 */
 	public String getWhatToBuild() {
 		return whatToBuild;
 	}
 
 	/**
-	 * Set what to build string.
-	 * @param whatToBuild
+	 * Sets the baselines to build in the stream.
+	 * 
+	 * @param whatToBuild the baselines to build
 	 */
 	public void setWhatToBuild(String whatToBuild) {
 		this.whatToBuild = whatToBuild;
 	}
 
 	/**
-	 * Get modification detection config string. Refer to user manual for detailed information
-	 * @return modification detection config string
+	 * Gets the modification detection config.
+	 * 
+	 * @return the modification detection config
 	 */
 	public String getModificationDetectionConfig() {
 		return modificationDetectionConfig;
 	}
 
 	/**
-	 * Set modification detection config string
-	 * @param modificationDetectionConfig
+	 * Sets the modification detection config.
+	 * 
+	 * @param modificationDetectionConfig the modification detection config
 	 */
 	public void setModificationDetectionConfig(String modificationDetectionConfig) {
 		this.modificationDetectionConfig = modificationDetectionConfig;
 	}
 
 	/**
-	 * Get extra options for creating clearcase views.
-	 * @return extra options for creating clearcase views
+	 * Gets the extra options when creating snapshot view.
+	 * 
+	 * @return the extra options
 	 */
 	public String getMkviewExtraOpts() {
 		return mkviewExtraOpts;
 	}
 
 	/**
-	 * Set extra options for creating clearcase views
-	 * @param mkviewExtraOpts
+	 * Sets the extra options when creating snapshot view.
+	 * 
+	 * @param mkviewExtraOpts the extra options
 	 */
 	public void setMkviewExtraOpts(String mkviewExtraOpts) {
 		this.mkviewExtraOpts = mkviewExtraOpts;
 	}
 
-	public String getVcsClassName() {
-		return "com.luntsys.luntbuild.vcs.UCMClearcaseAdaptor";
-	}
-
+	/**
+	 * Gets the path to the cleartool executable.
+	 * 
+	 * @return the path to the cleartool executable
+	 */
 	public String getCleartoolDir() {
 		return cleartoolDir;
 	}
 
+	/**
+	 * Sets the path to the cleartool executable.
+	 * 
+	 * @param cleartoolDir the path to the cleartool executable
+	 */
 	public void setCleartoolDir(String cleartoolDir) {
 		this.cleartoolDir = cleartoolDir;
 	}

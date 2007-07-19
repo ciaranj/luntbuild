@@ -25,102 +25,118 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * VssAdaptorFacade
- *
+ * Microsoft Visual Source Safe VCS adaptor facade.
+ * 
  * @author robin
- *
+ * @see com.luntsys.luntbuild.vcs.VssAdaptor
  */
-public class VssAdaptorFacade extends com.luntsys.luntbuild.facades.lb111.VcsFacade {
+public class VssAdaptorFacade extends VcsFacade {
 	private String vssPath; // path to srcsafe.ini file
 	private String vssUser; // user name
 	private String vssPassword; // password
 	private String dateTimeFormat; // datetime format for ss HISTORY command
 	private String ssDir; // path to ss.exe file, if blank, ss.exe is expected to be in the PATH environment variable
 
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
+	public String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.VssAdaptor";
+	}
+
 	/**
-	 * Get vss database path. This is a project level property.
-	 * @return vss database path
+	 * Gets the SourceSafe path (SSDIR), location should contain srcsafe.ini. This is a project level property.
+	 * 
+	 * @return the SourceSafe path
 	 */
 	public String getVssPath() {
 		return vssPath;
 	}
 
 	/**
-	 * Set vss database path.
-	 * @param vssPath
+	 * Sets the SourceSafe path (SSDIR), location should contain srcsafe.ini. This is a project level property.
+	 * 
+	 * @param vssPath the SourceSafe path
 	 */
 	public void setVssPath(String vssPath) {
 		this.vssPath = vssPath;
 	}
 
 	/**
-	 * Get user name to access vss database
-	 * @return user name to access vss database
+	 * Gets the login user.
+	 * 
+	 * @return the login user
 	 */
 	public String getVssUser() {
 		return vssUser;
 	}
 
 	/**
-	 * Set user name to access vss database
-	 * @param vssUser
+	 * Sets the login user.
+	 * 
+	 * @param vssUser the login user
 	 */
 	public void setVssUser(String vssUser) {
 		this.vssUser = vssUser;
 	}
 
 	/**
-	 * Get password to access vss database
-	 * @return password to access vss database
+	 * Gets the login password.
+	 * 
+	 * @return the login password
 	 */
 	public String getVssPassword() {
 		return vssPassword;
 	}
 
 	/**
-	 * Set password to access vss database
-	 * @param vssPassword
+	 * Sets the login password.
+	 * 
+	 * @param vssPassword the login password
 	 */
 	public void setVssPassword(String vssPassword) {
 		this.vssPassword = vssPassword;
 	}
 
 	/**
-	 * Get date time format for vss client in build machine. This is a project level property
-	 * @return data time format for vss client in build machine
+	 * Gets the datetime format for the VSS client. This is a project level property.
+	 * 
+	 * @return the datetime format
 	 */
 	public String getDateTimeFormat() {
 		return dateTimeFormat;
 	}
 
 	/**
-	 * Set date time format for vss client in build machine
-	 * @param dateTimeFormat
+	 * Sets the datetime format for the VSS client. This is a project level property.
+	 * 
+	 * @param dateTimeFormat the datetime format
 	 */
 	public void setDateTimeFormat(String dateTimeFormat) {
 		this.dateTimeFormat = dateTimeFormat;
 	}
 
 	/**
-	 * Get ss.exe path. This is a project level property.
-	 * @return ss.exe path
+	 * Gets the path to the SourceSafe executable. This is a project level property.
+	 * 
+	 * @return the path to the SourceSafe executable
 	 */
 	public String getSsDir() {
 		return ssDir;
 	}
 
 	/**
-	 * Set ss.exe path
-	 * @param ssDir
+	 * Sets the path to the SourceSafe executable. This is a project level property.
+	 * 
+	 * @param ssDir the path to the SourceSafe executable
 	 */
 	public void setSsDir(String ssDir) {
 		this.ssDir = ssDir;
-	}
-
-	public String getVcsClassName() {
-		return "com.luntsys.luntbuild.vcs.VssAdaptor";
 	}
 }

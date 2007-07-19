@@ -1,0 +1,456 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+  "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY remote-chapter SYSTEM "remote-chapter.docbook">
+]>
+
+<book>
+<bookinfo>
+   <title>Luntbuild - API User's Guide</title>
+   <copyright><year>2005-2006</year><holder>Luntbuild</holder></copyright>
+</bookinfo>
+
+<chapter id="introduction">
+   <title>Introduction</title>
+   <para>
+      
+   </para>
+</chapter>
+
+<chapter id="atom">
+   <title>Atom Feed</title>
+   <para>
+      <ulink url="http://atomenabled.org/developers/syndication/">
+         Atom 1.0
+      </ulink>
+      is a type of <ulink url="http://en.wikipedia.org/wiki/Web_feed">web feed</ulink> format used to syndicate lists or
+      collections of information. In Luntbuild, you can obtain notification messages for schedules and builds in Atom 1.0
+      format.
+   </para>
+   <para>
+      To use the feed, point a feed reader (almost all modern browsers include a reader) to the following URL or one of the
+      other URLs described in this chapter.
+   </para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/atom
+   </programlisting>
+
+   <para><anchor id="atomnotify"/><emphasis role="bold">Notify Strategy</emphasis></para>
+   <para>
+      By default, the web feeds for build notifications will follow the notify strategy set for each schedule.
+      Only builds matching the notify strategy will be included in the feed.
+      This behavior can be overridden by setting a notify strategy for the feed using the <emphasis>notify</emphasis>
+      parameter (aliases can be used instead of the full text):
+   </para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/builds?notify=&lt;strategy&gt;
+   </programlisting>
+   <para>Notify Strategies:</para>
+   <informaltable>
+      <tgroup cols="3">
+         <thead>
+            <row>
+               <entry>Strategy</entry>
+               <entry>Alias</entry>
+               <entry>Description</entry>
+            </row>
+         </thead>
+         <tbody>
+            <row><entry>notify always</entry><entry>always</entry><entry>Includes all builds.</entry></row>
+            <row><entry>notify when success</entry><entry>success</entry><entry>Includes all builds that succeeded.</entry></row>
+            <row><entry>notify when failed</entry><entry>failed</entry><entry>Includes all builds that failed.</entry></row>
+            <row><entry>notify when status changed</entry><entry>changed</entry><entry>Includes all builds that changed status from the last build.</entry></row>
+            <row><entry>notify when failed or status changed</entry><entry>failedorchanged</entry><entry>Includes all builds that failed or changed status from the last build.</entry></row>
+         </tbody>
+      </tgroup>
+   </informaltable>
+
+   <para><anchor id="atomschedules"/><emphasis role="bold">Schedules</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/schedules/&lt;source&gt;
+   </programlisting>
+   <para>
+      This feed will include notifications for the specified schedules.
+      Possible values for <emphasis>&lt;source&gt;</emphasis> are:
+   </para>
+   <itemizedlist>
+      <listitem><para>blank - show all builds on this server</para></listitem>
+      <listitem><para><emphasis>project</emphasis> - show only schedules from this project</para></listitem>
+   </itemizedlist>
+   <para>
+      No other options will work.
+   </para>
+
+   <para><anchor id="atombuilds"/><emphasis role="bold">Builds</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/builds/&lt;source&gt;
+   </programlisting>
+   <para>
+      This feed will include notifications for the specified schedules.
+      Possible values for <emphasis>&lt;source&gt;</emphasis> are:
+   </para>
+   <itemizedlist>
+      <listitem><para>blank - show all builds on this server</para></listitem>
+      <listitem><para><emphasis>project</emphasis> - show only schedules from this project</para></listitem>
+      <listitem><para><emphasis>project</emphasis>/<emphasis>schedule</emphasis> - show only builds from this schedule</para></listitem>
+   </itemizedlist>
+   <para>
+      No other options will work.
+   </para>
+
+   <para><anchor id="atombuild"/><emphasis role="bold">Build</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/build/&lt;project&gt;/&lt;schedule&gt;/&lt;version&gt;
+   </programlisting>
+   <para>
+      This feed will only include the notification for the specified build.
+      The project name, schedule name, and build version are all required.
+   </para>
+
+   <para><anchor id="atomusers"/><emphasis role="bold">Users</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/users
+   </programlisting>
+   <para>
+      This feed will include all users on the server.
+   </para>
+
+   <para><anchor id="atomuser"/><emphasis role="bold">User</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/user/&lt;user&gt;
+   </programlisting>
+   <para>
+      This feed will only include the user specified.  No other options will work.
+   </para>
+</chapter>
+
+<chapter id="json">
+   <title>JSON Object</title>
+   <para>
+      <ulink url="http://www.json.org/">
+         JavaScript Object Notation
+      </ulink> (JSON)
+      is a type of data-interchange language:
+   </para>
+   <blockquote>
+      <para>
+         JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write.
+         It is easy for machines to parse and generate. It is based on a subset of the JavaScript Programming Language, Standard ECMA-262 3rd Edition - December 1999.
+         JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages,
+         including C, C++, C#, Java, JavaScript, Perl, Python, and many others. These properties make JSON an ideal data-interchange language.
+      </para>
+      <para>--<ulink url="http://www.json.org/"><emphasis>http://www.json.org/</emphasis></ulink></para>
+   </blockquote>
+   <para>
+      You can obtain almost all information stored in Luntbuild in JSON format.
+      JSON format is particularly useful in JavaScript because it is automatically recognized and parsed.
+      Once parsed, the information will be available as any normal object structure with basic data types.
+   </para>
+   <para>
+      To see the object structure generated by Luntbuild, see the <ulink url="json.html"><emphasis>JSON object page</emphasis></ulink>.
+      This structure is almost exactly the same as the <ulink url="#xml">XML</ulink> output.
+   </para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/json
+   </programlisting>
+   <para>
+      The default request includes all information available (system information, all projects, schedules and builds).
+      The results in the root object can be limited by using certain functions described below.  
+      Any errors that are encountered will be included in the <emphasis>error</emphasis> member of the root object.
+   </para>
+
+   <para><anchor id="jsoncallbacks"/><emphasis role="bold">Callbacks</emphasis></para>
+   <para>
+      To ease use with JavaScript, any JSON response can be wraped in a call back function by providing a value for the
+      <emphasis>callback</emphasis> paremeter in the request.
+   </para>
+   <para>
+      Here some JavaScript that shows the basics of using JSON:
+   </para>
+   <programlisting>
+&lt;script type="text/javascript"&gt;
+function test(luntbuild)
+{
+   alert(luntbuild.system.servletUrl);
+}
+&lt;/script&gt;
+&lt;script type="text/javascript" src="http://&lt;hostname&gt;:8080/luntbuild/api/json?callback=test"&gt;&lt;/script&gt;
+   </programlisting>
+   <para>
+      The JSON response is included as an external script.
+      Luntbuild will return the responce wraped in a call to the function <emphasis>test</emphasis>.
+      The JavaScript parser will automatically parse the JSON text and provide the root object to the fuction.
+   </para>
+
+   <para><anchor id="jsonprojects"/><emphasis role="bold">Projects</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/json/projects
+   </programlisting>
+   <para>
+      This request will include a list of <ulink url="json.html#project"><emphasis>project</emphasis></ulink>s on the server,
+      but not their <ulink url="json.html#schedule"><emphasis>schedule</emphasis></ulink>s or
+      <ulink href="json.html#build"><emphasis>build</emphasis></ulink>s.
+   </para>
+
+   <para><anchor id="jsonschedules"/><emphasis role="bold">Schedules</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/json/schedules/&lt;source&gt;
+   </programlisting>
+   <para>
+      This request will include a list of <ulink url="json.html#schedule"><emphasis>schedule</emphasis></ulink>s according
+      to <emphasis>&lt;source&gt;</emphasis>, but not their <ulink href="json.html#build"><emphasis>build</emphasis></ulink>s.
+      Possible values for <emphasis>&lt;source&gt;</emphasis> are:
+   </para>
+   <itemizedlist>
+      <listitem><para>blank - show all schedules on this server</para></listitem>
+      <listitem><para><emphasis>project</emphasis> - show only schedules from this project</para></listitem>
+   </itemizedlist>
+   <para>
+      No other options will work.
+   </para>
+
+   <para><anchor id="jsonbuilds"/><emphasis role="bold">Builds</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/json/builds/&lt;source&gt;
+   </programlisting>
+   <para>
+      This request will include a list of <ulink href="json.html#build"><emphasis>build</emphasis></ulink>s according
+      to <emphasis>&lt;source&gt;</emphasis>.
+      Possible values for <emphasis>&lt;source&gt;</emphasis> are:
+   </para>
+   <itemizedlist>
+      <listitem><para>blank - show all builds on this server</para></listitem>
+      <listitem><para><emphasis>project</emphasis> - show only builds from this project</para></listitem>
+      <listitem><para><emphasis>project</emphasis>/<emphasis>schedule</emphasis> - show only builds from this schedule</para></listitem>
+   </itemizedlist>
+   <para>
+      No other options will work.
+   </para>
+
+   <para><anchor id="jsonbuild"/><emphasis role="bold">Build</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/json/build/&lt;project&gt;/&lt;schedule&gt;/&lt;version&gt;
+   </programlisting>
+   <para>
+      This request will only include the specified <ulink href="json.html#build"><emphasis>build</emphasis></ulink> as the result.
+      The project name, schedule name, and build version are all required.
+   </para>
+
+   <para><anchor id="jsonusers"/><emphasis role="bold">Users</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/json/users
+   </programlisting>
+   <para>
+      This request will include a list of all <ulink url="json.html#user"><emphasis>user</emphasis></ulink>s on the server in the results.
+   </para>
+
+   <para><anchor id="jsonuser"/><emphasis role="bold">User</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/json/user/&lt;user&gt;
+   </programlisting>
+   <para>
+      This request will only include the <ulink url="json.html#user"><emphasis>user</emphasis></ulink> specified in the results.
+      No other options will work.
+   </para>
+</chapter>
+
+<chapter id="rss">
+   <title>RSS Feed</title>
+   <para>
+      <ulink url="http://blogs.law.harvard.edu/tech/rss">
+         Really Simple Syndication
+      </ulink> (RSS 2.0)
+      is a type of <ulink url="http://en.wikipedia.org/wiki/Web_feed">web feed</ulink> format used to syndicate lists or
+      collections of information. In Luntbuild, you can obtain notification messages for schedules and builds in RSS 2.0
+      format.
+   </para>
+   <para>
+      To use the feed, point a feed reader (almost all modern browsers include a reader) to the following URL or one of the
+      other URLs described in this chapter.
+   </para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/rss
+   </programlisting>
+
+   <para><anchor id="rssnotify"/><emphasis role="bold">Notify Strategy</emphasis></para>
+   <para>
+      By default, the web feeds for build notifications will follow the notify strategy set for each schedule.
+      Only builds matching the notify strategy will be included in the feed.
+      This behavior can be overridden by setting a notify strategy for the feed using the <emphasis>notify</emphasis>
+      parameter (aliases can be used instead of the full text):
+   </para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/builds?notify=&lt;strategy&gt;
+   </programlisting>
+   <para>Notify Strategies:</para>
+   <informaltable>
+      <tgroup cols="3">
+         <thead>
+            <row>
+               <entry>Strategy</entry>
+               <entry>Alias</entry>
+               <entry>Description</entry>
+            </row>
+         </thead>
+         <tbody>
+            <row><entry>notify always</entry><entry>always</entry><entry>Includes all builds.</entry></row>
+            <row><entry>notify when success</entry><entry>success</entry><entry>Includes all builds that succeeded.</entry></row>
+            <row><entry>notify when failed</entry><entry>failed</entry><entry>Includes all builds that failed.</entry></row>
+            <row><entry>notify when status changed</entry><entry>changed</entry><entry>Includes all builds that changed status from the last build.</entry></row>
+            <row><entry>notify when failed or status changed</entry><entry>failedorchanged</entry><entry>Includes all builds that failed or changed status from the last build.</entry></row>
+         </tbody>
+      </tgroup>
+   </informaltable>
+
+   <para><anchor id="rssschedules"/><emphasis role="bold">Schedules</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/schedules/&lt;source&gt;
+   </programlisting>
+   <para>
+      This feed will include notifications for the specified schedules.
+      Possible values for <emphasis>&lt;source&gt;</emphasis> are:
+   </para>
+   <itemizedlist>
+      <listitem><para>blank - show all builds on this server</para></listitem>
+      <listitem><para><emphasis>project</emphasis> - show only schedules from this project</para></listitem>
+   </itemizedlist>
+   <para>
+      No other options will work.
+   </para>
+
+   <para><anchor id="rssbuilds"/><emphasis role="bold">Builds</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/builds/&lt;source&gt;
+   </programlisting>
+   <para>
+      This feed will include notifications for the specified schedules.
+      Possible values for <emphasis>&lt;source&gt;</emphasis> are:
+   </para>
+   <itemizedlist>
+      <listitem><para>blank - show all builds on this server</para></listitem>
+      <listitem><para><emphasis>project</emphasis> - show only schedules from this project</para></listitem>
+      <listitem><para><emphasis>project</emphasis>/<emphasis>schedule</emphasis> - show only builds from this schedule</para></listitem>
+   </itemizedlist>
+   <para>
+      No other options will work.
+   </para>
+
+   <para><anchor id="rssbuild"/><emphasis role="bold">Build</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/build/&lt;project&gt;/&lt;schedule&gt;/&lt;version&gt;
+   </programlisting>
+   <para>
+      This feed will only include the notification for the specified build.
+      The project name, schedule name, and build version are all required.
+   </para>
+
+   <para><anchor id="rssusers"/><emphasis role="bold">Users</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/users
+   </programlisting>
+   <para>
+      This feed will include all users on the server.
+   </para>
+
+   <para><anchor id="rssuser"/><emphasis role="bold">User</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/user/&lt;user&gt;
+   </programlisting>
+   <para>
+      This feed will only include the user specified.  No other options will work.
+   </para>
+</chapter>
+
+<chapter id="xml">
+   <title>XML</title>
+   <para>
+      You can obtain almost all information stored in Luntbuild in <ulink url="http://www.w3.org/XML/">XML</ulink> format.
+      To see the XML schema used by Luntbuild, see the <ulink url="xml.html"><emphasis>XML schema page</emphasis></ulink>.
+      This structure is almost exactly the same as the <ulink url="#json">JSON</ulink> output.
+   </para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/xml
+   </programlisting>
+   <para>
+      The default request includes all information available (system information, all projects, schedules and builds).
+      The results in the root object can be limited by using certain functions described below.
+      Any errors that are encountered will be included in the <emphasis>&lt;error&gt;</emphasis> child element of the
+      <emphasis>&lt;luntbuild&gt;</emphasis> (document) element.
+   </para>
+
+   <para><anchor id="xmlprojects"/><emphasis role="bold">Projects</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/projects
+   </programlisting>
+   <para>
+      This request will include a list of <ulink url="xml.html#project"><emphasis>project</emphasis></ulink>s on the server,
+      but not their <ulink url="xml.html#schedule"><emphasis>schedule</emphasis></ulink>s or
+      <ulink href="xml.html#build"><emphasis>build</emphasis></ulink>s.
+   </para>
+
+   <para><anchor id="xmlschedules"/><emphasis role="bold">Schedules</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/schedules/&lt;source&gt;
+   </programlisting>
+   <para>
+      This request will include a list of <ulink url="xml.html#schedule"><emphasis>schedule</emphasis></ulink>s according
+      to <emphasis>&lt;source&gt;</emphasis>, but not their <ulink href="xml.html#build"><emphasis>build</emphasis></ulink>s.
+      Possible values for <emphasis>&lt;source&gt;</emphasis> are:
+   </para>
+   <itemizedlist>
+      <listitem><para>blank - show all schedules on this server</para></listitem>
+      <listitem><para><emphasis>project</emphasis> - show only schedules from this project</para></listitem>
+   </itemizedlist>
+   <para>
+      No other options will work.
+   </para>
+
+   <para><anchor id="xmlbuilds"/><emphasis role="bold">Builds</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/builds/&lt;source&gt;
+   </programlisting>
+   <para>
+      This request will include a list of <ulink href="xml.html#build"><emphasis>build</emphasis></ulink>s according
+      to <emphasis>&lt;source&gt;</emphasis>.
+      Possible values for <emphasis>&lt;source&gt;</emphasis> are:
+   </para>
+   <itemizedlist>
+      <listitem><para>blank - show all builds on this server</para></listitem>
+      <listitem><para><emphasis>project</emphasis> - show only builds from this project</para></listitem>
+      <listitem><para><emphasis>project</emphasis>/<emphasis>schedule</emphasis> - show only builds from this schedule</para></listitem>
+   </itemizedlist>
+   <para>
+      No other options will work.
+   </para>
+
+   <para><anchor id="xmlbuild"/><emphasis role="bold">Build</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/build/&lt;project&gt;/&lt;schedule&gt;/&lt;version&gt;
+   </programlisting>
+   <para>
+      This request will only include the specified <ulink href="xml.html#build"><emphasis>build</emphasis></ulink> as the result.
+      The project name, schedule name, and build version are all required.
+   </para>
+
+   <para><anchor id="xmlusers"/><emphasis role="bold">Users</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/users
+   </programlisting>
+   <para>
+      This request will include a list of all <ulink url="xml.html#user"><emphasis>user</emphasis></ulink>s on the server in the results.
+   </para>
+
+   <para><anchor id="xmluser"/><emphasis role="bold">User</emphasis></para>
+   <programlisting>
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/user/&lt;user&gt;
+   </programlisting>
+   <para>
+      This request will only include the <ulink url="xml.html#user"><emphasis>user</emphasis></ulink> specified in the results.
+      No other options will work.
+   </para>
+</chapter>
+
+&remote-chapter;
+
+</book>

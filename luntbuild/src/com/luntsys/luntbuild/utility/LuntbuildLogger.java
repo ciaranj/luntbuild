@@ -51,10 +51,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-
 /**
- * This piece of code is mainly stripped from {@link org.apache.tools.ant.DefaultLogger}
- * It acts as a ant logger to record all luntbuild build logs
+ * Luntbuild logger.
+ * 
+ * <p>This piece of code is mainly stripped from {@link org.apache.tools.ant.DefaultLogger}.
+ * It acts as a Ant logger to record all Luntbuild build logs.</p>
  *
  * @author robin shine
  */
@@ -69,7 +70,7 @@ public class LuntbuildLogger implements BuildLogger {
     /**
      * Size of left-hand column for right-justified task name.
      *
-     * @see #messageLogged(org.apache.tools.ant.BuildEvent)
+     * @see #messageLogged(BuildEvent)
      */
     public static final int LEFT_COLUMN_SIZE = 12;
 
@@ -131,6 +132,10 @@ public class LuntbuildLogger implements BuildLogger {
         /** Element created at the start time. */
         public Element element;
 
+        /**
+         * Gets the string representation of this element.
+         * @return the string representation
+         */
         public String toString() {
             return this.element.getTagName() + ":" + this.element.getAttribute("name");
         }
@@ -141,13 +146,13 @@ public class LuntbuildLogger implements BuildLogger {
     private static final String MESSAGE_TAG = "message";
     /** XML attribute name for a message priority. */
     private static final String PRIORITY_ATTR = "priority";
-    /** XML element name for a target. */
+    /** XML attribute name for a target. */
     private static final String TARGET_ATTR = "target";
-    /** XML element name for a target. */
+    /** XML attribute name for a task. */
     private static final String TASK_ATTR = "task";
     /** XML attribute name for a time. */
     private static final String TIME_ATTR = "time";
-    /** XML element name for a builder. */
+    /** XML attribute name for a builder. */
     private static final String BUILDER_ATTR = "builder";
 
     private String builderName = null;
@@ -157,7 +162,7 @@ public class LuntbuildLogger implements BuildLogger {
     private String curTarget = null;
 
     /**
-     * Constructor
+     * Creates a new Luntbuild logger.
      */
     public LuntbuildLogger() {
         this.buildElement = new TimedElement();
@@ -167,26 +172,33 @@ public class LuntbuildLogger implements BuildLogger {
 
     /**
      * Sets the highest level of message this logger should respond to.
-     * <p/>
-     * Only messages with a message level lower than or equal to the
-     * given level should be written to the log.
-     * <P>
-     * Constants for the message levels are in the
-     * {@link Project Project} class. The order of the levels, from least
+     * 
+     * <p>Only messages with a message level lower than or equal to the
+     * given level should be written to the log.</p>
+     * 
+     * <p>Constants for the message levels are in the
+     * {@link Project} class. The order of the levels, from least
      * to most verbose, is <code>MSG_ERR</code>, <code>MSG_WARN</code>,
      * <code>MSG_INFO</code>, <code>MSG_VERBOSE</code>,
-     * <code>MSG_DEBUG</code>.
-     * <P>
-     * The default message level for DefaultLogger is Project.MSG_ERR.
+     * <code>MSG_DEBUG</code>.</p>
+     * 
+     * <p>The default message level for <code>DefaultLogger</code> is <code>MSG_ERR<code>.<p>
      *
-     * @param level the logging level for the logger.
+     * @param level the logging level for the logger
+     * @see Project#MSG_ERR
+     * @see Project#MSG_WARN
+     * @see Project#MSG_INFO
+     * @see Project#MSG_VERBOSE
+     * @see Project#MSG_DEBUG
      */
     public void setMessageOutputLevel(int level) {
         this.msgOutputLevel = level;
     }
 
     /**
-     * @return message output level
+     * Gets the current message level.
+     * 
+     * @return the message level
      */
     public int getMessageOutputLevel(){
         return this.msgOutputLevel;
@@ -195,16 +207,17 @@ public class LuntbuildLogger implements BuildLogger {
     /**
      * Sets the output stream to which this logger is to send its output.
      *
-     * @param theOut The output for the logger.
-     *               Must not be <code>null</code>.
+     * @param theOut the output stream, must not be <code>null</code>
      */
     public void setOutputPrintStream(PrintStream theOut) {
         this.out = theOut;
     }
 
     /**
-     * @param path path
-     * @throws FileNotFoundException if log not found
+     * Sets the output file to which this logger is to send its output.
+     * 
+     * @param path the path to the output file
+     * @throws FileNotFoundException if log file not found
      */
     public void setOutputPath(String path) throws FileNotFoundException {
         this.outPath = path;
@@ -212,7 +225,9 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * @return output path
+     * Gets the output file to which this logger is to send its output.
+     * 
+     * @return the path to the output file
      */
     public String getOutputPath() {
         return this.outPath;
@@ -228,18 +243,19 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * Sets the output stream to which this logger is to send error messages.
+     * Sets the output stream to which this logger is to send its error messages.
      *
-     * @param theErr The error stream for the logger.
-     *            Must not be <code>null</code>.
+     * @param theErr the error stream, must not be <code>null</code>
      */
     public void setErrorPrintStream(PrintStream theErr) {
         this.err = theErr;
     }
 
     /**
-     * @param path path
-     * @throws FileNotFoundException if log not found
+     * Sets the output file to which this logger is to send its error messages.
+     * 
+     * @param path the path to the output file
+     * @throws FileNotFoundException if log file not found
      */
     public void setErrorPath(String path) throws FileNotFoundException {
         this.errPath = path;
@@ -247,7 +263,9 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * @return output path
+     * Gets the output file to which this logger is to send its error messages.
+     * 
+     * @return the path to the output file
      */
     public String getErrorPath() {
         return this.errPath;
@@ -255,8 +273,8 @@ public class LuntbuildLogger implements BuildLogger {
 
     /**
      * Sets this logger to produce emacs (and other editor) friendly output.
-     *
-     * @param emacsMode <code>true</code> if output is to be unadorned so that
+     * 
+     * @param emacsMode set <code>true</code> if output is to be unadorned so that
      *                  emacs and other editors can parse files names, etc.
      */
     public void setEmacsMode(boolean emacsMode) {
@@ -264,27 +282,28 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * @param name of builder
+     * Sets the name of the builder.
+     * 
+     * @param name the name
      */
     public void setBuilderName(String name) {
         this.builderName = name;
     }
+
     /**
      * Responds to a build being started by just remembering the current time.
-     *
-     * @param event Ignored.
+     * 
+     * @param event ignored
      */
     public void buildStarted(BuildEvent event) {
         this.startTime = System.currentTimeMillis();
     }
 
     /**
-     * Prints whether the build succeeded or failed,
-     * any errors the occurred during the build, and
-     * how long the build took.
-     *
-     * @param event An event with any relevant extra information.
-     *              Must not be <code>null</code>.
+     * Responds to a build being finished by printing a success condition,
+     * errors that occurred during the build, and the duration of the build.
+     * 
+     * @param event an event with any relevant extra information, must not be <code>null</code>
      */
     public void buildFinished(BuildEvent event) {
         Throwable error = event.getException();
@@ -322,11 +341,10 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * Logs a message to say that the target has started if this
+     * Responds to a target being started by logging a message if this
      * logger allows information-level messages.
-     *
-     * @param event An event with any relevant extra information.
-     *              Must not be <code>null</code>.
+     * 
+     * @param event an event with any relevant extra information, must not be <code>null</code>
      */
     public void targetStarted(BuildEvent event) {
         if (Project.MSG_INFO <= this.msgOutputLevel
@@ -338,36 +356,35 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * No-op implementation.
-     *
-     * @param event Ignored.
+     * Responds to a target being finished.
+     * 
+     * @param event ignored
      */
     public void targetFinished(BuildEvent event) {
     }
 
     /**
-     * No-op implementation.
-     *
-     * @param event Ignored.
+     * Responds to a task being started.
+     * 
+     * @param event ignored
      */
     public void taskStarted(BuildEvent event) {
     }
 
     /**
-     * No-op implementation.
-     *
-     * @param event Ignored.
+     * Responds to a task being finished.
+     * 
+     * @param event ignored
      */
     public void taskFinished(BuildEvent event) {
     }
 
     /**
-     * Logs a message, if the priority is suitable.
+     * Logs a message for the specified event, if the priority is suitable.
      * In non-emacs mode, task level messages are prefixed by the
      * task name which is right-justified.
      *
-     * @param event A BuildEvent containing message information.
-     *              Must not be <code>null</code>.
+     * @param event a <code>BuildEvent</code> containing message information, must not be <code>null</code>
      */
     public void messageLogged(BuildEvent event) {
         if (this.directMode) {
@@ -428,9 +445,8 @@ public class LuntbuildLogger implements BuildLogger {
      * most appropriate parent element (task, target or build) and records
      * the priority and text of the message.
      *
-     * @param event An event with any relevant extra information.
-     *              Will not be <code>null</code>.
-     * @param bname builder name
+     * @param event an event with any relevant extra information, must not be <code>null</code>
+     * @param bname the builder name
      */
     public void messageLoggedXml(BuildEvent event, String bname) {
         String msg = event.getMessage();
@@ -495,10 +511,10 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * Convenience method to format a specified length of time.
+     * Formats a duration in milliseconds into a string.
      *
-     * @param millis Length of time to format, in milliseconds.
-     * @return the time as a formatted string.
+     * @param millis the length of time to format, in milliseconds
+     * @return the time as a formatted string
      * @see DateUtils#formatElapsedTime(long)
      */
     protected static String formatTime(final long millis) {
@@ -508,12 +524,9 @@ public class LuntbuildLogger implements BuildLogger {
     /**
      * Prints a message to a PrintStream.
      *
-     * @param message  The message to print.
-     *                 Should not be <code>null</code>.
-     * @param stream   A PrintStream to print the message to.
-     *                 Must not be <code>null</code>.
-     * @param priority The priority of the message.
-     *                 (Ignored in this implementation.)
+     * @param message  the message to print, should not be <code>null</code>
+     * @param stream   a <code>PrintStream</code> to print the message to, must not be <code>null</code>
+     * @param priority the priority of the message (Ignored in this implementation)
      */
     protected void printMessage(final String message,
                                 final PrintStream stream,
@@ -523,14 +536,18 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * @return is direct mode
+     * Checks if this logger is in direct mode.
+     * 
+     * @return <code>true</code> if this logger is in direct mode
      */
     public boolean isDirectMode() {
         return this.directMode;
     }
 
     /**
-     * @param directMode state
+     * Sets this logger to direct mode.
+     * 
+     * @param directMode set <code>true</code> to turn on direct mode for this logger
      */
     public void setDirectMode(boolean directMode) {
         this.directMode = directMode;
@@ -538,8 +555,11 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * @param outFilename to generate XML into
-     * @param xslUri xsl
+     * Writes the current log of this logger to an XML log file.
+     * 
+     * @param outFilename the name of the output XML file
+     * @param xslUri the URI of the XSL stylesheet for XML to HTML conversion, can be <code>null</code>
+     * @throws BuildException if unable to write the log file
      */
     public void logXml(String outFilename, String xslUri) {
         long totalTime = System.currentTimeMillis() - this.buildElement.startTime;
@@ -547,7 +567,10 @@ public class LuntbuildLogger implements BuildLogger {
                 DateUtils.formatElapsedTime(totalTime));
 
         if (xslUri == null) {
-            xslUri = Luntbuild.installDir + "/log.xsl";
+            xslUri = Luntbuild.getServletRootUrl() + "/log.xsl";
+        } else {
+        	String installDir = Luntbuild.installDir.replaceAll("\\\\","\\\\\\\\");
+        	xslUri = xslUri.replaceAll(installDir, Luntbuild.getServletRootUrl());
         }
         Writer output = null;
         try {
@@ -576,10 +599,12 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * @param xmlFilename to generate
-     * @param xslUri xsl transform to html
-     * @param outFilename html file after transform
-     * @param textFilename
+     * Writes the current log of this logger to XML, text and HTML log files.
+     * 
+     * @param xmlFilename the name of the output XML file
+     * @param xslUri the URI of the XSL stylesheet for XML to HTML conversion, must not be <code>null</code>
+     * @param outFilename the name of the output HTML file
+     * @param textFilename the name of the output text file
      */
     public void logHtml(String xmlFilename, String xslUri, String outFilename, String textFilename) {
 
@@ -615,8 +640,10 @@ public class LuntbuildLogger implements BuildLogger {
     }
 
     /**
-     * @param textFilename
-     * @param outFilename
+     * Writes a log as HTML from a text log file.
+     * 
+     * @param textFilename the name of the input text file
+     * @param outFilename the name of the output HTML file
      */
     public static void logHtmlFromText(String textFilename, String outFilename) {
 

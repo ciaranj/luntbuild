@@ -25,18 +25,29 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades;
 
 /**
- * Luntbuild general exception
+ * Luntbuild general exception.
  * @author robin shine
  */
 public class LuntbuildException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Constructs a new Luntbuild exception with the specified detail message.
+	 * 
+	 * @param message the detail message. The detail message is saved for later retrieval by the
+	 * {@link java.lang.Throwable#getMessage()} method.
+	 */
 	public LuntbuildException(String message){
 		super(message);
 	}
+
+	/**
+	 * Constructs a new Luntbuild exception with <code>null</code> as its detail message.
+	 */
 	public LuntbuildException(){
 		super();
 	}

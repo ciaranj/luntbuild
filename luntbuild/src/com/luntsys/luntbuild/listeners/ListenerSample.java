@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.listeners;
 
 import com.luntsys.luntbuild.db.Build;
@@ -32,16 +33,27 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Sample build listener prints out the build event messages
+ * Sample build listener prints out the build event messages.
+ * 
  * @author robin shine
  */
 public class ListenerSample implements Listener {
 	private static Log logger = LogFactory.getLog(ListenerSample.class);
 
+	/**
+	 * Prints a message to the system log when a build is started.
+	 * 
+	 * @param build the source of the event
+	 */
 	public void buildStarted(Build build) {
     	logger.info("Build started event received for build \"" + build.getVersion() + "\"");
 	}
 
+	/**
+	 * Prints a message to the system log when a build is finished.
+	 * 
+	 * @param build the source of the event
+	 */
 	public void buildFinished(Build build) {
 		logger.info("Build finished event received for build \"" + build.getVersion() + "\"");
 	}

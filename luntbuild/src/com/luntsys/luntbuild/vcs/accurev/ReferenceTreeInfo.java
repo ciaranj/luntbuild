@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2005 Your Corporation. All Rights Reserved.
  */
+
 package com.luntsys.luntbuild.vcs.accurev;
 
 import com.luntsys.luntbuild.vcs.AccurevAdaptor;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Iterator;
 
 /**
- * ReferenceTreeInfo
+ * Reference Tree info object.
  *
  * @author Jason Carreira <jcarreira@eplus.com>
  */
@@ -24,6 +25,16 @@ public class ReferenceTreeInfo {
     private boolean hidden;
     private String storage;
 
+    /**
+     * Creates a new reference tree info object.
+     * 
+     * @param name the name of the reference tree
+     * @param basisStream the backing stream
+     * @param transaction the transaction number
+     * @param hidden set <code>true</code> if this reference tree should be hidden
+     * @param storage the storage directory
+     * @throws IllegalArgumentException if <code>basisStream</code> is <code>null</code>
+     */
     private ReferenceTreeInfo(String name, StreamInfo basisStream, long transaction, boolean hidden, String storage) {
         if (basisStream == null) {
             throw new IllegalArgumentException("Backing stream for reference tree cannot be null.");
@@ -36,10 +47,11 @@ public class ReferenceTreeInfo {
     }
 
     /**
-     * Create a new ReferenceTree in Accurev
-     * @param workingDir
-     * @param module
-     * @param antProject
+     * Creates a new reference tree in AccuRev for the specified module.
+     * 
+     * @param workingDir the working directory
+     * @param module the module
+     * @param antProject the ant project used for logging
      */
     public static void buildReferenceTree(String workingDir, AccurevAdaptor.AccurevModule module, Project antProject) {
         String referenceTreeName = module.getReferenceTree();
@@ -53,30 +65,66 @@ public class ReferenceTreeInfo {
         AccurevHelper.executeVoidCommand(cmdLine,antProject);
     }
 
+    /**
+     * Gets the name of this reference tree.
+     * 
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the backing stream for this reference tree.
+     * 
+     * @return the backing stream
+     */
     public StreamInfo getBasisStream() {
         return basisStream;
     }
 
+    /**
+     * Gets the AccuRev transaction number of this reference tree
+     * 
+     * @return the transaction number
+     */
     public long getTransaction() {
         return transaction;
     }
 
+    /**
+     * Checks if this reference tree is hidden.
+     * 
+     * @return <code>true</code> if this reference tree is hidden
+     */
     public boolean isHidden() {
         return hidden;
     }
 
+    /**
+     * Sets this reference tree's hidden status.
+     * 
+     * @param hidden set <code>true</code> if this reference tree should be hidden
+     */
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
     }
 
+    /**
+     * Gets the storage directory of this reference tree.
+     * 
+     * @return the storage directory
+     */
     public String getStorage() {
         return storage;
     }
 
+    /**
+     * Updates the reference tree of the specified module.
+     * 
+     * @param module the module
+     * @param antProject the ant project used for logging
+     */
     public static void updateReferenceTree(AccurevAdaptor.AccurevModule module, Project antProject) {
         Commandline cmdLine;
         cmdLine = new Commandline();
@@ -86,6 +134,15 @@ public class ReferenceTreeInfo {
         AccurevHelper.executeVoidCommand(cmdLine, antProject);
     }
 
+    /**
+     * Gets a reference tree info object for the specified reference tree.
+     * 
+     * @param depot the AccuRev depot
+     * @param referenceTreeName the name of the reference tree
+     * @param antProject the ant project used for logging
+     * @return the reference tree info object, or <code>null</code> if the tree could not be found
+     * @throws IllegalArgumentException if <code>referenceTreeName</code> is <code>null</code>
+     */
     public static ReferenceTreeInfo findReferenceTreeInfo(String depot, String referenceTreeName, Project antProject) {
         antProject.log("Getting existing reference tree info for reference tree = " + referenceTreeName);
         if (referenceTreeName == null) {
@@ -116,6 +173,11 @@ public class ReferenceTreeInfo {
         return null;
     }
 
+    /**
+     * Removes this reference tree.
+     * 
+     * @param antProject the ant project used for logging
+     */
     public void remove(Project antProject) {
         Commandline cmdLine = new Commandline();
         cmdLine.setExecutable("accurev");
@@ -124,6 +186,11 @@ public class ReferenceTreeInfo {
         hidden = true;
     }
 
+    /**
+     * Reactivates this reference tree.
+     * 
+     * @param antProject the ant project used for logging
+     */
     public void reactivate(Project antProject) {
         Commandline cmdLine = new Commandline();
         cmdLine.setExecutable("accurev");
@@ -132,6 +199,12 @@ public class ReferenceTreeInfo {
         hidden = false;
     }
 
+    /**
+     * Moves this reference tree to a new working directory.
+     * 
+     * @param workingDir the new working directory
+     * @param antProject the ant project used for logging
+     */
     public void move(String workingDir, Project antProject) {
         Commandline cmdLine = new Commandline();
         cmdLine.setExecutable("accurev");

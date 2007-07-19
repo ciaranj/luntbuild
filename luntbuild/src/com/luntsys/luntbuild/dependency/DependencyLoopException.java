@@ -25,13 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.dependency;
 
 import java.util.Set;
 import java.util.Iterator;
 
 /**
- * Dependency loop exception class
+ * Luntbuild dependency specific exception.
  * @author robin shine
  */
 public class DependencyLoopException extends Exception {
@@ -40,14 +41,30 @@ public class DependencyLoopException extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Constructs a new dependency loop exception with the specified detail message.
+	 * 
+	 * @param message the detail message. The detail message is saved for later retrieval by the
+	 * {@link #getMessage(Set)} method.
+	 */
 	public DependencyLoopException(String message){
 		super(message);
 	}
 
+	/**
+	 * Constructs a new dependency loop exception with <code>null</code> as its detail message.
+	 */
 	public DependencyLoopException(){
 		super();
 	}
 
+    /**
+     * Returns the detail message string of this dependency loop exception.  The set of nodes is required to
+     * list the nodes that have a dependency loop.
+     * 
+     * @param loopNodes the set of nodes to check
+     * @return  the detail message string of this dependency loop exception instance
+     */
 	public static String getMessage(Set loopNodes) {
 		Iterator it = loopNodes.iterator();
 		StringBuffer message = new StringBuffer();

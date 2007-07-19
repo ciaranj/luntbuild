@@ -25,40 +25,63 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.utility;
 
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.BuildEvent;
 
 /**
- * This class implements interface {@link org.apache.tools.ant.BuildListener}
- * with all empty methods
+ * Build listener implementation with all empty methods.
+ * @see BuildListener
  */
 public class EmptyBuildListenerImpl implements BuildListener {
+
+	/**
+	 * @inheritDoc
+	 */
 	public void buildStarted(BuildEvent event) {
 
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public void buildFinished(BuildEvent event) {
 
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public void targetStarted(BuildEvent event) {
 
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public void targetFinished(BuildEvent event) {
 
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public void taskStarted(BuildEvent event) {
 
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public void taskFinished(BuildEvent event) {
 
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public void messageLogged(BuildEvent event) {
 
 	}

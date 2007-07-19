@@ -25,10 +25,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.utility;
 
 /**
- * The variable class
+ * The variable class.
+ * 
  * @author robin shine
  */
 public class Variable {
@@ -36,6 +38,13 @@ public class Variable {
 	private String name;
 	private String value;
 
+	/**
+	 * Creates a new variable.
+	 * 
+	 * @param holder the variable counter holder
+	 * @param name the variable name
+	 * @param value the variable value
+	 */
 	public Variable(VariableHolder holder, String name, String value) {
 		this.holder = holder;
 		this.name = name;
@@ -43,8 +52,9 @@ public class Variable {
 	}
 
 	/**
-	 * Increase this variable as integer
-	 * @return integer value of this variable before increase
+	 * Increases this variable as an integer.
+	 * 
+	 * @return the integer value of this variable before the increase
 	 */
 	public int increaseAsInt() {
 		int intValue;
@@ -59,16 +69,17 @@ public class Variable {
 		return oldIntValue;
 	}
 
-    /**
-     * @return variable with increased value
-     */
+	/**
+	 * Increments this variable.
+	 * 
+	 * @return the variable
+	 */
     public Variable increment() {
         int intValue;
         if (Luntbuild.isEmpty(value))
             intValue = 0;
         else
             intValue = new Integer(value).intValue();
-        int oldIntValue = intValue;
         intValue ++;
         value = String.valueOf(intValue);
         holder.setVar(name, this);
@@ -76,8 +87,9 @@ public class Variable {
     }
 
 	/**
-	 * Decrease this variable as integer
-	 * @return integer value of this variable before decrease
+	 * Decreases this variable as an integer.
+	 * 
+	 * @return the integer value of this variable before the decrease
 	 */
 	public int decreaseAsInt() {
 		int intValue;
@@ -92,16 +104,17 @@ public class Variable {
 		return oldIntValue;
 	}
 
-    /**
-     * @return variable with decreased value
-     */
+	/**
+	 * Decrements this variable.
+	 * 
+	 * @return the variable
+	 */
     public Variable decrement() {
         int intValue;
         if (Luntbuild.isEmpty(value))
             intValue = 0;
         else
             intValue = new Integer(value).intValue();
-        int oldIntValue = intValue;
         intValue --;
         value = String.valueOf(intValue);
         holder.setVar(name, this);
@@ -109,17 +122,19 @@ public class Variable {
     }
 
 	/**
-	 * Get string value of this variable
-	 * @return string value of this variable
+	 * Gets the string value of this variable.
+	 * 
+	 * @return the string value of this variable
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * Set string value of this variable
-	 * @param value
-	 * @return string value of this variable
+	 * Sets the string value of this variable.
+	 * 
+	 * @param value the value
+	 * @return the string value of this variable
 	 */
 	public String setValue(String value) {
 		String oldValue = this.value;
@@ -129,9 +144,10 @@ public class Variable {
 	}
 
 	/**
-	 * Get integer value of this variable. If the value can not be converted to integer, 0
-	 * will be returned.
-	 * @return integer value of this variable
+	 * Gets the integer value of this variable.
+	 * If the value can not be converted to an integer, <code>0</code> will be returned.
+	 * 
+	 * @return the integer value of this variable
 	 */
 	public int getIntValue() {
 		int intValue;
@@ -143,9 +159,10 @@ public class Variable {
 	}
 
 	/**
-	 * Set value of this variable as string representation of specified integer
-	 * @param intValue
-	 * @return value of this variable as string
+	 * Sets the value of this variable as an integer.
+	 * 
+	 * @param intValue the integer value
+	 * @return the integer value of this variable
 	 */
 	public int setIntValue(int intValue) {
 		int oldIntValue;
@@ -159,8 +176,9 @@ public class Variable {
 	}
 
 	/**
-	 * Use value as this variable's string representation
-	 * @return value as this variable's string
+	 * Gets the string representation of this variable.
+	 * 
+	 * @return the string representation of this variable
 	 */
 	public String toString() {
 		return value;

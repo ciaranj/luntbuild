@@ -14,10 +14,9 @@ import org.apache.commons.logging.LogFactory;
 import java.util.Hashtable;
 
 /**
- * LDAP Authenticator
+ * LDAP authenticator.
  *
  * @author lubosp, based on Kira (kec161) contribution
- *
  */
 public class LDAPAuthenticator {
 
@@ -39,40 +38,46 @@ public class LDAPAuthenticator {
     private String referral = null;
 
     /**
-     *
+     * Creates a blank LDAP authenticator with default settings.
      */
     public LDAPAuthenticator () {
         this (DEFAULT_HOST, DEFAULT_PORT, "", DEFAULT_LDAP_AUTH, DEFAULT_LDAP_UID);
     }
 
     /**
-     * @param host
-     * @param userDN
+     * Creates a LDAP authenticator with default settings.
+     * 
+     * @param host the LDAP host
+     * @param userDN the LDAP user domain name
      */
     public LDAPAuthenticator (String host, String userDN){
         this(host, DEFAULT_PORT, userDN, DEFAULT_LDAP_AUTH, DEFAULT_LDAP_UID);
     }
 
     /**
-     * @param host
-     * @param port
-     * @param userDN
-     * @param ldapAuth
-     * @param ldapUid
+     * Creates a LDAP authenticator.
+     * 
+     * @param host the LDAP host
+     * @param port the LDAP port
+     * @param userDN the LDAP user domain name
+     * @param ldapAuth the LDAP authentication type
+     * @param ldapUid the LDAP user id
      */
     public LDAPAuthenticator (String host, int port, String userDN, String ldapAuth, String ldapUid){
         this(host, port, userDN, ldapAuth, ldapUid, null, ldapUid + '=', ',' + userDN);
     }
 
     /**
-     * @param host
-     * @param port
-     * @param userDN
-     * @param ldapAuth
-     * @param ldapUid
-     * @param ldapUrl
-     * @param ldapPrefix
-     * @param ldapSuffix
+     * Creates a LDAP authenticator.
+     * 
+     * @param host the LDAP host
+     * @param port the LDAP port
+     * @param userDN the LDAP user domain name
+     * @param ldapAuth the LDAP authentication type
+     * @param ldapUid the LDAP user id
+     * @param ldapUrl the LDAP URL
+     * @param ldapPrefix the LDAP prefix
+     * @param ldapSuffix the LDAP suffix
      */
     public LDAPAuthenticator (String host, int port, String userDN, String ldapAuth, String ldapUid, String ldapUrl, String ldapPrefix, String ldapSuffix){
         setHost(host);
@@ -102,9 +107,11 @@ public class LDAPAuthenticator {
     }
 
     /**
-     * @param user
-     * @param password
-     * @return true if authenticated
+     * Authenticates a user.
+     * 
+     * @param user the user
+     * @param password the user's password
+     * @return <code>true<code> if authenticated
      */
     public boolean authenticate (String user, String password) {
         Hashtable env = createContextEnv(user, password);
@@ -139,10 +146,12 @@ public class LDAPAuthenticator {
     }
 
     /**
-     * @param user
-     * @param password
-     * @param emailAttrName
-     * @return email or null
+     * Gets the E-mail address of a user.
+     * 
+     * @param user the user
+     * @param password the user's password
+     * @param emailAttrName the E-mail attribute name
+     * @return the user's E-mail address, or <code>null</code> if the address could not be retrieved
      */
     public String lookupEmail(String user, String password, String emailAttrName) {
         Hashtable env = createContextEnv(user, password);
@@ -203,56 +212,72 @@ public class LDAPAuthenticator {
 
 
     /**
-     * @param host
+     * Sets the LDAP host.
+     * 
+     * @param host the LDAP host
      */
-    public void setHost (String host){
+    public void setHost(String host){
         this.host = host;
     }
 
     /**
-     * @param port
+     * Sets the LDAP port.
+     * 
+     * @param port the LDAP port
      */
-    public void setPort (int port){
+    public void setPort(int port){
         this.port = port;
     }
 
     /**
-     * @param userDN
+     * Sets the LDAP user domain name.
+     * 
+     * @param userDN the LDAP user domain name
      */
-    public void setUserDN (String userDN){
+    public void setUserDN(String userDN){
         this.userDN = userDN;
     }
 
     /**
-     * @return Returns the ldapAuth.
+     * Gets the LDAP authentication type.
+     * 
+     * @return the LDAP authentication type
      */
     public final String getLdapAuth() {
         return this.ldapAuth;
     }
 
     /**
-     * @param ldapAuth The ldapAuth to set.
+     * Sets the LDAP authentication type.
+     * 
+     * @param ldapAuth the LDAP authentication type
      */
     public final void setLdapAuth(String ldapAuth) {
         this.ldapAuth = ldapAuth;
     }
 
     /**
-     * @return Returns the ldapUid.
+     * Gets the LDAP user id.
+     * 
+     * @return the LDAP user id
      */
     public final String getLdapUid() {
         return this.ldapUid;
     }
 
     /**
-     * @param ldapUid The ldapUid to set.
+     * Sets the LDAP user id.
+     * 
+     * @param ldapUid the LDAP user id
      */
     public final void setLdapUid(String ldapUid) {
         this.ldapUid = ldapUid;
     }
 
-        /**
-     * @return Returns the ldapUrl.
+    /**
+     * Gets the LDAP URL.
+     * 
+     * @return the LDAP URL
      */
     public final String getLdapUrl() {
         if (this.ldapUrl != null) {
@@ -263,49 +288,63 @@ public class LDAPAuthenticator {
     }
 
     /**
-     * @param ldapUrl The ldapUrl to set.
+     * Sets the LDAP URL.
+     * 
+     * @param ldapUrl the LDAP URL
      */
     public final void setLdapUrl(String ldapUrl) {
         this.ldapUrl = ldapUrl;
     }
 
     /**
-     * @return Returns the ldapPrefix.
+     * Gets the LDAP prefix.
+     * 
+     * @return the LDAP prefix
      */
     public final String getLdapPrefix() {
         return this.ldapPrefix;
     }
 
     /**
-     * @param ldapPrefix The ldapPrefix to set.
+     * Sets the LDAP prefix.
+     * 
+     * @param ldapPrefix the LDAP prefix
      */
     public final void setLdapPrefix(String ldapPrefix) {
         this.ldapPrefix = ldapPrefix;
     }
 
     /**
-     * @return Returns the ldapSuffix.
+     * Gets the LDAP suffix.
+     * 
+     * @return the LDAP suffix
      */
     public final String getLdapSuffix() {
         return this.ldapSuffix;
     }
 
     /**
-     * @param ldapSuffix The ldapSuffix to set.
+     * Sets the LDAP suffix.
+     * 
+     * @param ldapSuffix the LDAP suffix
      */
     public final void setLdapSuffix(String ldapSuffix) {
         this.ldapSuffix = ldapSuffix;
     }
 
     /**
-     * @return Returns the referral.
+     * Gets the referral.
+     * 
+     * @return the referral
      */
     public final String getReferral() {
         return this.referral;
     }
 
     /**
-     * @param referral The referral to set.
+     * Sets the referral.
+     * 
+     * @param referral the referral
      */
     public final void setReferral(String referral) {
         this.referral = referral;

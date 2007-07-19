@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 import java.util.Date;
@@ -32,10 +33,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Facade of a luntbuild schedule.. Mainly used by web service client to operate on
- * properties of a schedule
+ * Schedule facade.
  *
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.Schedule
  */
 public class ScheduleFacade {
 	private long id;
@@ -70,399 +71,517 @@ public class ScheduleFacade {
 	private String workingPath;
 	private long projectId;
 
-	/**
-	 * Get id of this schedule
-	 * @return id of this schedule
-	 */
+    /**
+     * Gets the indentifier of this schedule.
+     * 
+     * @return the indentifier of this schedule
+     */
 	public long getId() {
 		return id;
 	}
 
-	/**
-	 * Set id of this schedule
-	 * @param id
-	 */
+    /**
+     * Sets the indentifier of this schedule.
+     * 
+     * @param id the indentifier of this schedule
+     */
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	/**
-	 * Get disabled state of this schedule
-	 * @return disabled state
-	 */
+    /**
+     * Checks if this schedule is disabled.
+     * 
+     * @return <code>true</code> if disabled
+     */
 	public boolean isScheduleDisabled() {
 		return scheduleDisabled;
 	}
 
-	/**
-	 * Set disabled state of this schedule
-	 * @param scheduleDisabled state
-	 */
+    /**
+     * Sets the disabled state of this schedule.
+     * 
+     * @param scheduleDisabled set <code>true</code> if schedule is disabled
+     */
 	public void setScheduleDisabled(boolean scheduleDisabled) {
 		this.scheduleDisabled = scheduleDisabled;
 	}
 
-	/**
-	 * Get name of this schedule
-	 * @return name of this schedule
-	 */
+    /**
+     * Gets the name of this schedule.
+     * 
+     * @return the name
+     */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * Set name of this schedule
-	 * @param name
-	 */
+    /**
+     * Sets the name of this schedule.
+     *
+     * @param name the name
+     */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	/**
-	 * Get description of this schedule
-	 * @return description of this schedule
-	 */
+    /**
+     * Gets the description of this schedule.
+     * 
+     * @return the description
+     */
 	public String getDescription() {
 		return description;
 	}
 
-	/**
-	 * Set description of this schedule
-	 * @param description
-	 */
+    /**
+     * Sets the description of this schedule.
+     * 
+     * @param description the description
+     */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * Get trigger type of this schedule
-	 * @return one value of {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_CRON},
-	 * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_MANUAL},
-	 * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_SIMPLE}
+	 * Gets the trigger type of this schedule.
+	 * 
+	 * @return the trigger type
+	 * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_CRON
+	 * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_MANUAL
+	 * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_SIMPLE
 	 */
 	public int getTriggerType() {
 		return triggerType;
 	}
 
 	/**
-	 * Set trigger type of this schedule
-	 * @param triggerType refer to {@link #getTriggerType()}
+	 * Sets the trigger type of this schedule.
+	 * 
+	 * @param triggerType the trigger type
+	 * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_CRON
+	 * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_MANUAL
+	 * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_SIMPLE
 	 */
 	public void setTriggerType(int triggerType) {
 		this.triggerType = triggerType;
 	}
 
 	/**
-	 * Get repeat interval of this schedule, only meaningful when result of {@link ScheduleFacade#getTriggerType()}
-	 * is {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_SIMPLE}
-	 * @return repeat interval of this schedule
+	 * Gets the repeat interval of this schedule.
+	 * Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
+	 * is {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_SIMPLE}.
+	 * 
+	 * @return the repeat interval of this schedule
 	 */
 	public long getRepeatInterval() {
 		return repeatInterval;
 	}
 
 	/**
-	 * Set repeat interval of this schedule. Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
-	 * is {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_SIMPLE}
-	 * @param repeatInterval
+	 * Sets the repeat interval of this schedule.
+	 * Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
+	 * is {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_SIMPLE}.
+	 * 
+	 * @param repeatInterval the repeat interval of this schedule
 	 */
 	public void setRepeatInterval(long repeatInterval) {
 		this.repeatInterval = repeatInterval;
 	}
 
 	/**
-	 * Get cron expression of this schedule. Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
-	 * is {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_CRON}
-	 * @return cron expression of this schedule
+	 * Gets the cron expression of this schedule.
+	 * Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
+	 * is {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_CRON}.
+	 * 
+	 * @return the cron expression of this schedule
 	 */
 	public String getCronExpression() {
 		return cronExpression;
 	}
 
 	/**
-	 * Set cron expression of this schedule. Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
-	 * is {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_CRON}
-	 * @param cronExpression
+	 * Sets the cron expression of this schedule.
+	 * Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
+	 * is {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_TYPE_CRON}.
+	 * 
+	 * @param cronExpression the cron expression of this schedule
 	 */
 	public void setCronExpression(String cronExpression) {
 		this.cronExpression = cronExpression;
 	}
 
-	/**
-	 * Get build type of this schedule.
-	 * @return one value of {@link com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN},
-	 * and {@link com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT}
-	 */
+    /**
+     * Gets the build type of this schedule.
+     * 
+     * @return the build type
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT
+     */
 	public int getBuildType() {
 		return buildType;
 	}
 
-	/**
-	 * Set build type of this schedule
-	 * @param buildType refer to return value of {@link #getBuildType()}
-	 */
+    /**
+     * Sets the build type of this schedule.
+     * 
+     * @param buildType the build type
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT
+     */
 	public void setBuildType(int buildType) {
 		this.buildType = buildType;
 	}
 
-	/**
-	 * Get label strategy of this schedule
-	 * @return one value of {@link com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS},
-	 * {@link com.luntsys.luntbuild.facades.Constants#LABEL_NONE}, and
-	 * {@link com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS}
-	 */
+    /**
+     * Gets the label strategy of this schedule.
+     * 
+     * @return the label strategy
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS
+     */
 	public int getLabelStrategy() {
 		return labelStrategy;
 	}
 
-	/**
-	 * Set label strategy of this schedule
-	 * @param labelStrategy refer to return value of {@link #getLabelStrategy()}
-	 */
+    /**
+     * Sets the label strategy of this schedule.
+     * 
+     * @param labelStrategy the label strategy
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS
+     */
 	public void setLabelStrategy(int labelStrategy) {
 		this.labelStrategy = labelStrategy;
 	}
 
-	/**
-	 * Get notify strategy of this schedule
-	 * @return one value of {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_ALWAYS},
-	 * {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_NONE},
-	 * {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED},
-	 * {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_SUCCESS}, and
-	 * {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_WHEN_STATUS_CHANGED}
-	 */
+    /**
+     * Gets the notify strategy of this schedule.
+     * 
+     * @return the notify strategy
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_WHEN_STATUS_CHANGED
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED_OR_CHANGED
+     */
 	public int getNotifyStrategy() {
 		return notifyStrategy;
 	}
 
-	/**
-	 * Set notify strategy of this schedule
-	 * @param notifyStrategy refer to return value of {@link #getNotifyStrategy()}
-	 */
+    /**
+     * Sets the notify strategy of this schedule.
+     * 
+     * @param notifyStrategy the notify strategy
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_WHEN_STATUS_CHANGED
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED_OR_CHANGED
+     */
 	public void setNotifyStrategy(int notifyStrategy) {
 		this.notifyStrategy = notifyStrategy;
 	}
 
-	/**
-	 * Get status of this schedule
-	 * @return one value of {@link com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_FAILED},
-	 * {@link com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_RUNNING}, and
-	 * {@link com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_SUCCESS}
-	 */
+    /**
+     * Gets the status of this schedule.
+     * 
+     * @return the status
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_RUNNING
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_SUCCESS
+     */
 	public int getStatus() {
 		return status;
 	}
 
-	/**
-	 * Set status of this schedule
-	 * @param status refer to return value of {@link #getStatus()}
-	 */
+    /**
+     * Sets the status of this schedule.
+     * 
+     * @param status the status
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_RUNNING
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_SUCCESS
+     */
 	public void setStatus(int status) {
 		this.status = status;
 	}
 
-	/**
-	 * Get the date when this schedule get its current status
-	 * @return date when current status occurs
-	 */
+    /**
+     * Gets the date when the status of this schedule was last updated.
+     * 
+     * @return the date
+     */
 	public Date getStatusDate() {
 		return statusDate;
 	}
 
-	/**
-	 * Set date when this schedule get its current status
-	 * @param statusDate
-	 */
+    /**
+     * Sets the date when the status of this schedule was last updated.
+     * 
+     * @param statusDate the date
+     */
 	public void setStatusDate(Date statusDate) {
 		this.statusDate = statusDate;
 	}
 
-	/**
-	 * Get url of this schedule
-	 * @return url of this schedule
-	 */
+    /**
+     * Gets the URL to this schedule.
+     * 
+     * @return the URL
+     */
 	public String getUrl() {
 		return url;
 	}
 
-	/**
-	 * Set url of this schedule
-	 * @param url
-	 */
+    /**
+     * Sets the URL to this schedule.
+     * 
+     * @param url the URL
+     */
 	public void setUrl(String url) {
 		this.url = url;
 	}
 
-	/**
-	 * Get post-build strategy of this schedule
-	 * @return one of the value of {@link com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS},
-	 * {@link com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE},
-	 * {@link com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED},
-	 * {@link com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS}
-	 */
+    /**
+     * Gets the post-build strategy of this schedule.
+     * 
+     * @return the post-build strategy
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS
+     */
 	public int getPostbuildStrategy() {
 		return postbuildStrategy;
 	}
 
-	/**
-	 * Set post-build strategy of this schedule
-	 * @param postbuildStrategy refer to return value of {@link #getPostbuildStrategy()}
-	 */
+    /**
+     * Sets the post-build strategy of this schedule.
+     * 
+     * @param postbuildStrategy the post-build strategy
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS
+     */
 	public void setPostbuildStrategy(int postbuildStrategy) {
 		this.postbuildStrategy = postbuildStrategy;
 	}
 
-	/**
-	 * Get build necessary condition for this schedule
-	 * @return build necessary condition
-	 */
+    /**
+     * Gets the build necessary condition for this schedule.
+     * 
+     * @return the build necessary condition
+     */
 	public String getBuildNecessaryCondition() {
 		return buildNecessaryCondition;
 	}
 
-	/**
-	 * Set build necessary condition for this schedule
-	 * @param buildNecessaryCondition
-	 */
+    /**
+     * Sets the build necessary condition of this schedule.
+     * 
+     * @param buildNecessaryCondition the build necessary condition
+     */
 	public void setBuildNecessaryCondition(String buildNecessaryCondition) {
 		this.buildNecessaryCondition = buildNecessaryCondition;
 	}
 
-	/**
-	 * Get dependent triggering strategy, should be one value of
-	 * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_ALL_DEPENDENT_SCHEDULES},
-	 * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_NONE_DEPENDENT_SCHEDULES},
-	 * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_DEPENDS_ON_THIS},
-	 * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_THIS_DEPENDS_ON}
-	 */
+    /**
+     * Gets the dependent triggering strategy.
+     * 
+     * @return the dependent triggering strategy
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_ALL_DEPENDENT_SCHEDULES
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_NONE_DEPENDENT_SCHEDULES
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_DEPENDS_ON_THIS
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_THIS_DEPENDS_ON
+     */
 	public int getTriggerDependencyStrategy() {
 		return triggerDependencyStrategy;
 	}
 
-	/**
-	 * Set dependent triggering strategy
-	 * @param triggerDependencyStrategy see reteurn value of dependent triggering strategy
-	 */
+    /**
+     * Sets the dependent triggering strategy.
+     * 
+     * @param triggerDependencyStrategy the dependent triggering strategy
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_ALL_DEPENDENT_SCHEDULES
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_NONE_DEPENDENT_SCHEDULES
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_DEPENDS_ON_THIS
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_THIS_DEPENDS_ON
+     */
 	public void setTriggerDependencyStrategy(int triggerDependencyStrategy) {
 		this.triggerDependencyStrategy = triggerDependencyStrategy;
 	}
 
-	/**
-	 * Get build cleanup strategy
-	 * @return one value of {@link com.luntsys.luntbuild.facades.Constants#BUILD_CLEANUP_NONE},
-	 * {@link com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_COUNT},
-	 * {@link com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_DAYS}
-	 */
+    /**
+     * Gets the build cleanup strategy.
+     * 
+     * @return the build cleanup strategy.
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_CLEANUP_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_COUNT
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_DAYS
+     */
 	public int getBuildCleanupStrategy() {
 		return buildCleanupStrategy;
 	}
 
-	/**
-	 * Set build cleanup strategy
-	 * @param buildCleanupStrategy see return value of build cleanup strategy
-	 */
+    /**
+     * Sets the build cleanup strategy.
+     * 
+     * @param buildCleanupStrategy the build cleanup strategy.
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_CLEANUP_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_COUNT
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_DAYS
+     */
 	public void setBuildCleanupStrategy(int buildCleanupStrategy) {
 		this.buildCleanupStrategy = buildCleanupStrategy;
 	}
 
-	/**
-	 * Get build cleanup data
-	 * @return build cleanup data
-	 */
+    /**
+     * Gets the build cleanup data.
+     * 
+     * @return the build cleanup data
+     */
 	public String getBuildCleanupStrategyData() {
 		return buildCleanupStrategyData;
 	}
 
-	/**
-	 * Set build cleanup data
-	 * @param buildCleanupStrategyData
-	 */
+    /**
+     * Sets the build cleanup data.
+     * 
+     * @param buildCleanupStrategyData the build cleanup data
+     */
 	public void setBuildCleanupStrategyData(String buildCleanupStrategyData) {
 		this.buildCleanupStrategyData = buildCleanupStrategyData;
 	}
 
-	/**
-	 * Get next version for this schedule
-	 * @return next version for this schedule
-	 */
+    /**
+     * Gets the next build version of this schedule.
+     * 
+     * @return the next build version
+     */
 	public String getNextVersion() {
 		return nextVersion;
 	}
 
-	/**
-	 * Set next version for this schedule
-	 * @param nextVersion
-	 */
+    /**
+     * Sets the build version number for the next build. This property is updated automatically
+     * by the building process and can also be adjusted manually from user interface.
+     * 
+     * @param nextVersion the next build version
+     */
 	public void setNextVersion(String nextVersion) {
 		this.nextVersion = nextVersion;
 	}
 
-	/**
-	 * @return variables
-	 */
-	public String getVariables() {
-		return this.variables;
-	}
+    /**
+     * Gets all variables, encoded as a string.
+     * 
+     * @return all variables encoded as a string
+     */
+    public String getVariables() {
+        return this.variables;
+    }
 
-	/** Set variables
-	 * @param variables
-	 */
-	public void setVariables(String variables) {
-		this.variables = variables;
-	}
+    /**
+     * Sets all variables, encoded as a string.
+     * 
+     * @param variables all variables encoded as a string
+     */
+    public void setVariables(String variables) {
+        this.variables = variables;
+    }
 
-	/**
-	 * Get names of associated builders for current schedule
-	 * @return names of associated builders for current schedule
-	 */
+    /**
+     * Gets the list of associated builder names.
+     * 
+     * @return the list of associated builder names
+     */
 	public List getAssociatedBuilderNames() {
 		return associatedBuilderNames;
 	}
 
-	/**
-	 * Set names of associated builders for current schedule
-	 * @param associatedBuilderNames
-	 */
+    /**
+     * Sets the list of associated builder names for this schedule.
+     * 
+     * @param associatedBuilderNames the list of associated builder names
+     */
 	public void setAssociatedBuilderNames(List associatedBuilderNames) {
 		this.associatedBuilderNames = associatedBuilderNames;
 	}
 
-	/**
-	 * Get names of associated post-builders for current schedule
-	 * @return names of associated post-builders for current schedule
-	 */
+    /**
+     * Gets the list of associated post-builder names.
+     * 
+     * @return the list of associated post-builder names
+     */
 	public List getAssociatedPostbuilderNames() {
 		return associatedPostbuilderNames;
 	}
 
-	/**
-	 * Set names of associated post-builders for current schedule
-	 * @param associatedPostbuilderNames
-	 */
+    /**
+     * Sets the list of associated post-builder names for this schedule.
+     * 
+     * @param associatedPostbuilderNames the list of associated post-builder names
+     */
 	public void setAssociatedPostbuilderNames(List associatedPostbuilderNames) {
 		this.associatedPostbuilderNames = associatedPostbuilderNames;
 	}
 
+    /**
+     * Gets the identifier of the project of this schedule.
+     * 
+     * @return the identifier of the project
+     */
 	public long getProjectId() {
 		return projectId;
 	}
 
+    /**
+     * Sets the identifier of the project of this schedule.
+     * 
+     * @param projectId the identifier of the project
+     */
 	public void setProjectId(long projectId) {
 		this.projectId = projectId;
 	}
 
+    /**
+     * Gets the list of schedule ids this schedule depends on.
+     * 
+     * @return the list of schedule ids
+     */
 	public List getDependentScheduleIds() {
 		return dependentScheduleIds;
 	}
 
+    /**
+     * Sets the list of schedule ids this schedule depends on.
+     * 
+     * @param dependentScheduleIds the list of schedule ids
+     */
 	public void setDependentScheduleIds(List dependentScheduleIds) {
 		this.dependentScheduleIds = dependentScheduleIds;
 	}
 
+    /**
+     * Gets the working path setting of this schedule.
+     * 
+     * @return the working path
+     */
 	public String getWorkingPath() {
 		return workingPath;
 	}
 
+    /**
+     * Sets the working path of this schedule.
+     * 
+     * @param workingPath the working path
+     */
 	public void setWorkingPath(String workingPath) {
 		this.workingPath = workingPath;
 	}

@@ -25,9 +25,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.utility;
 
 import com.luntsys.luntbuild.ant.Commandline;
+import com.luntsys.luntbuild.ant.Execute;
 import com.luntsys.luntbuild.builders.AntBuilder;
 import com.luntsys.luntbuild.builders.MavenBuilder;
 import com.luntsys.luntbuild.builders.Maven2Builder;
@@ -65,6 +67,8 @@ import org.apache.tools.ant.types.FileSet;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -85,8 +89,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 
 /**
- * This is a utility class to provides easy access for some commonly used
- * objects and functions
+ * Luntbuild utility class to provide easy access for some commonly used objects and functions.
  *
  * @author robin shine
  */
@@ -99,75 +102,64 @@ public class Luntbuild {
     private static final String LISTENER_PACKAGE_NAME = "com.luntsys.luntbuild.listeners";
     private static final String BUILDER_PACKAGE_NAME = "com.luntsys.luntbuild.builders";
 
+    /** Location of Spring config file */
     public static final String SPRING_CONFIG_LOCATION = "/WEB-INF/applicationContext.xml";
 
+    /** Trigger name separator */
     public static final String TRIGGER_NAME_SEPERATOR = "$";
     private static Log logger = LogFactory.getLog(Luntbuild.class);
 
     // Luntbuild system level properties
     private static Map properties;
 
+    /** Default page referesh interval, in seconds */
     public static final int DEFAULT_PAGE_REFRESH_INTERVAL = 15;
+    /** Default mail port */
     public static final int DEFAULT_MAIL_PORT = 25;
-    /**
-     * The block size when operating files
-     */
+    /** Block size when operating files */
     public static final int FILE_BLOCK_SIZE = 25000;
 
-    /**
-     * The date display format at luntbuild web interface
-     */
+    /** Date format for web interface */
     public static final SimpleDateFormat DATE_DISPLAY_FORMAT =
             new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    /** ISO date format, used by web feeds */
+    public static final SimpleDateFormat DATE_DISPLAY_FORMAT_ISO =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
-    /**
-     * Log4j system log - HTML
-     */
+    /** Log4j system log - HTML */
     public static final String log4jFileName = "luntbuild_log.html";
 
-    /**
-     * Log4j system log - Text
-     */
+    /** Log4j system log - Text */
     public static final String log4jFileNameTxt = "luntbuild_log.txt";
 
-    /**
-     * The application wide context for use in spring framework
-     */
+    /** Application wide context for use in Spring framework */
     public static XmlWebApplicationContext appContext;
 
-    /**
-     * The installation directory for luntbuild
-     */
+    /** Installation directory of Luntbuild */
     public static String installDir;
 
+    /** Build information for this Luntbuild distribution */
     public static Properties buildInfos;
 
-    /**
-     * List of vcs adaptor classes found in the system
-     */
+    /** List of VCS adaptor classes found in the system */
     public static List vcsAdaptors;
 
-    /**
-     * List of notifier classes found in the system
-     */
+    /** List of notifier classes found in the system */
     public static List notifiers;
 
-    /**
-     * List of listener classes found in the system
-     */
+    /** List of listener classes found in the system */
     public static List listeners;
 
-    /**
-     * List of builders classes found in the system
-     */
+    /** List of builder classes found in the system */
     public static List builders;
 
+    /** Page referesh interval, in seconds */
     public static int pageRefreshInterval;
 
     /**
-     * Provides easy access to data access object
+     * Gets the data access object.
      *
-     * @return
+     * @return the data access object
      */
     public static Dao getDao() {
         String message;
@@ -186,10 +178,10 @@ public class Luntbuild {
     }
 
     /**
-     * Provides easy access to sched service object
+     * Gets the scheduling service.
      *
-     * @return
-     * @throws RuntimeException
+     * @return the scheduling service
+     * @throws RuntimeException if the scheduler could not be found
      */
     public static IScheduler getSchedService() {
         String message;
@@ -207,6 +199,12 @@ public class Luntbuild {
         return scheduler;
     }
 
+    /**
+     * Gets the authentication manager.
+     * 
+     * @return the authentication manager
+     * @throws RuntimeException if the authentication manager could not be found
+     */
     public static AuthenticationManager getAuthenticationManager() {
         String message;
         if (appContext == null) {
@@ -224,19 +222,19 @@ public class Luntbuild {
     }
 
     /**
-     * Provides easy access to luntbuild service object
+     * Gets the Luntbuild service.
      *
-     * @return
-     * @throws RuntimeException
+     * @return the Luntbuild service
+     * @throws RuntimeException if the Luntbuild service could not be found
      */
-    public static com.luntsys.luntbuild.facades.ILuntbuild getLuntbuildService() {
+    public static ILuntbuild getLuntbuildService() {
         String message;
         if (appContext == null) {
             message = "Application context not initialized!";
             logger.error(message);
             throw new RuntimeException(message);
         }
-        ILuntbuild luntbuildService = (com.luntsys.luntbuild.facades.ILuntbuild) appContext.getBean("luntbuildService");
+        ILuntbuild luntbuildService = (ILuntbuild) appContext.getBean("luntbuildService");
         if (luntbuildService == null) {
             message = "Failed to find bean \"luntbuildService\" in application context!";
             logger.error(message);
@@ -246,10 +244,10 @@ public class Luntbuild {
     }
 
     /**
-     * This class will dig all messages for a throwable object
-     *
-     * @param throwable
-     * @return
+     * Gets all messages from any throwable object.
+     * 
+     * @param throwable the throwable object
+     * @return the messages
      */
     public static String getExceptionMessage(Throwable throwable) {
         String message;
@@ -280,11 +278,24 @@ public class Luntbuild {
     }
 
     /**
-     * This method use an ant task to delete a directory and all the contents inside of it
+     * Checks if the specified local directory exists.
      *
-     * @param directory
-     * @throws org.apache.tools.ant.BuildException
-     *          when delete fails
+     * @param directory the directory to check
+     * @return <code>true</code> if the directory exists
+     */
+    public static boolean existsDir(String directory) {
+    	try {
+    		return new File(directory).exists();
+    	} catch (Exception e) {
+    		return false;
+    	}
+    }
+
+    /**
+     * Deletes a local directory and all the contents inside of it.
+     *
+     * @param directory the directory to delete
+     * @throws org.apache.tools.ant.BuildException when delete fails
      */
     public static void deleteDir(String directory) {
         try {
@@ -299,6 +310,13 @@ public class Luntbuild {
         }
     }
 
+    /**
+     * Renames a local directory.
+     * 
+     * @param from the current directory name
+     * @param to the new directory name
+     * @throws RuntimeException from {@link File#getCanonicalFile()}
+     */
     public static void renameDir(String from, String to) {
         try {
             File normalizedFromFile = new File(from).getCanonicalFile();
@@ -322,11 +340,10 @@ public class Luntbuild {
     }
 
     /**
-     * Delete all contents inside a directory
+     * Deletes all contents inside a local directory.
      *
-     * @param directory
-     * @throws org.apache.tools.ant.BuildException
-     *          when cleanup fails
+     * @param directory the directory to clean
+     * @throws org.apache.tools.ant.BuildException when cleanup fails
      */
     public static void cleanupDir(String directory) {
         deleteDir(directory);
@@ -334,10 +351,9 @@ public class Luntbuild {
     }
 
     /**
-     * This method use ant task to delete a file
+     * Deletes a local file.
      *
-     * @param file
-     * @throws org.apache.tools.ant.BuildException
+     * @param file the file to delete
      *
      */
     public static void deleteFile(String file) {
@@ -354,11 +370,10 @@ public class Luntbuild {
     }
 
     /**
-     * This method use ant task to creates a new directory
+     * Creates a new local directory.
      *
-     * @param directory
+     * @param directory the directory to create
      * @throws org.apache.tools.ant.BuildException
-     *
      */
     public static void createDir(String directory) {
         Mkdir mkdirTask = new Mkdir();
@@ -369,10 +384,9 @@ public class Luntbuild {
     }
 
     /**
-     * Touch a file to update its modification time, if this file is not exist, it will be
-     * created
-     *
-     * @param file
+     * Touches a file to update its modification time, if the file does not exist it will be created.
+     * 
+     * @param file the file to touch
      * @throws org.apache.tools.ant.BuildException
      *
      */
@@ -384,15 +398,24 @@ public class Luntbuild {
         touchTask.execute();
     }
 
+    /**
+     * Sends the contents of the specified file to the specified request cycle.
+     * 
+     * @param cycle the request cycle
+     * @param filePath the file to send
+     */
     public static void sendFile(IRequestCycle cycle, String filePath) {
         sendFile(cycle.getRequestContext().getRequest(), cycle.getRequestContext().getResponse(),
                 filePath);
     }
 
     /**
-     * Sends the content of the specified file to the web browser
-     *
-     * @param filePath using the header user-agent
+     * Sends the contents of the specified file to the specified HTTP request.
+     * 
+     * @param request the HTTP request
+     * @param response the HTTP response
+     * @param filePath the file to send
+     * @throws ApplicationRuntimeException if the file could not be read
      */
     public static void sendFile(HttpServletRequest request, HttpServletResponse response, String filePath) {
         response.reset();
@@ -458,9 +481,12 @@ public class Luntbuild {
     }
 
     /**
-     * Sends the content of the specified URL to the web browser
-     *
-     * @param filePath using the header user-agent
+     * Sends the contents of the specified URL to the specified HTTP request.
+     * 
+     * @param request the HTTP request
+     * @param response the HTTP response 
+     * @param url the URL to send
+     * @throws ApplicationRuntimeException if the URL could not be read
      */
     public static void sendFile(HttpServletRequest request, HttpServletResponse response, URL url) {
         response.reset();
@@ -499,6 +525,12 @@ public class Luntbuild {
         }
     }
 
+    /**
+     * Gets the EOL setting to use for the specified HTTP request.
+     *  
+     * @param request the HTTP request
+     * @return the EOL to use
+     */
     public static String getEol(HttpServletRequest request) {
         String userAgent = request.getHeader("user-agent");
         if (userAgent == null)
@@ -509,10 +541,11 @@ public class Luntbuild {
     }
 
     /**
-     * Calculate the actual date time by specifying a time of the format hh:mm of today
+     * Calculates the actual date by specifying a time in the format "hh:mm" of today.
      *
-     * @param hhmm
-     * @return
+     * @param hhmm the hours and minutes in "hh:mm" format
+     * @return the actual date
+     * @throws RuntimeException if <code>hhmm</code> is formatted wrong
      */
     public static Date getDateByHHMM(String hhmm) {
         try {
@@ -533,10 +566,10 @@ public class Luntbuild {
     }
 
     /**
-     * Convert the version to a label that propers to applied to various version control system.
+     * Converts a build version to a label that is safe for various version control systems.
      *
-     * @param version
-     * @return
+     * @param version the build version
+     * @return the safe label
      */
     public static String getLabelByVersion(String version) {
         String label = version.trim().replace('.', '_').replaceAll("[\\s]", "-");
@@ -546,13 +579,13 @@ public class Luntbuild {
     }
 
     /**
-     * Concatenate two path into one path, the main functionality is to detect the
-     * trailing "/" of path1, and leading "/" of path2, and forms only one "/" in the joined
-     * path
+     * Concatenates two path into one path. The main functionality is to detect the
+     * trailing "/" of <code>path1</code>, and leading "/" of <code>path2</code>, and
+     * forms only one "/" in the joined path.
      *
-     * @param path1
-     * @param path2
-     * @return
+     * @param path1 the beginning path
+     * @param path2 the ending path
+     * @return the combined path
      */
     public static String concatPath(String path1, String path2) {
         if (isEmpty(path1)) {
@@ -582,16 +615,16 @@ public class Luntbuild {
             if (trimmedPath2.charAt(0) == '/' || trimmedPath2.charAt(0) == '\\')
                 path = trimmedPath1 + trimmedPath2;
             else
-                path = trimmedPath1 + '/' + trimmedPath2;
+                path = trimmedPath1 + "/" + trimmedPath2;
         }
         return path;
     }
 
     /**
-     * Removes the leading '/' or '\' character from the path
+     * Removes the leading '/' or '\' character from a path.
      *
-     * @param path
-     * @return
+     * @param path the path
+     * @return the trimmed path
      */
     public static String removeLeadingSlash(String path) {
         if (path == null || path.trim().equals(""))
@@ -607,10 +640,10 @@ public class Luntbuild {
     }
 
     /**
-     * Removes the trailing '/' or '\' character from the path
+     * Removes the trailing '/' or '\' character from a path.
      *
-     * @param path
-     * @return
+     * @param path the path
+     * @return the trimmed path
      */
     public static String removeTrailingSlash(String path) {
         if (isEmpty(path))
@@ -627,11 +660,11 @@ public class Luntbuild {
     }
 
     /**
-     * Return the lunt build logger for specified antProject, or return null if
-     * it does not contain a lunt build logger
+     * Gets the Luntbuild logger for specified ant project, or <code>null</code> if
+     * it does not contain a Luntbuild logger.
      *
-     * @param antProject
-     * @return
+     * @param antProject the ant project
+     * @return the Luntbuild logger, or <code>null</code> if no Luntbuild logger exists
      */
     public static LuntbuildLogger getLuntBuildLogger(Project antProject) {
         Iterator itListener = antProject.getBuildListeners().iterator();
@@ -644,10 +677,10 @@ public class Luntbuild {
     }
 
     /**
-     * Determines if the specified string is empty
+     * Determines if the specified string is empty (<code>null</code> or blank).
      *
-     * @param aString
-     * @return
+     * @param aString the string
+     * @return <code>true</code> if the string is empty
      */
     public static boolean isEmpty(String aString) {
         if (aString == null || aString.trim().equals(""))
@@ -657,10 +690,12 @@ public class Luntbuild {
     }
 
     /**
-     * Create a cloned copy of specified module
-     *
-     * @param module
-     * @return
+     * Creates a cloned copy of the specified module.
+     * 
+     * @param vcs the VCS the module is for
+     * @param module the module
+     * @return the clone of the module
+     * @throws RuntimeException if modules are not supported for this VCS
      */
     public static Vcs.Module cloneModule(Vcs vcs, Vcs.Module module) {
         Vcs.Module clone = vcs.createNewModule();
@@ -679,6 +714,11 @@ public class Luntbuild {
         return clone;
     }
 
+    /**
+     * Gets the URL to access the Luntbuild servlet.
+     * 
+     * @return the servlet URL
+     */
     public static String getServletUrl() {
         String servletUrl = (String) properties.get("servletUrl");
         if (isEmpty(servletUrl))
@@ -688,9 +728,22 @@ public class Luntbuild {
     }
 
     /**
-     * Get the host name of the build server
-     *
-     * @return
+     * Gets the root of the Luntbuild servlet URL.
+     * 
+     * @return the servlet root URL
+     */
+    public static String getServletRootUrl() {
+        String servletUrl = (String) properties.get("servletUrl");
+        if (isEmpty(servletUrl))
+            return "http://" + getIpAddress() + ":8080/luntbuild";
+        else
+            return servletUrl.replaceAll("/app\\.do","");
+    }
+
+    /**
+     * Gets the host name of this build server.
+     * 
+     * @return the host name
      */
     public static String getHostName() {
         try {
@@ -702,9 +755,9 @@ public class Luntbuild {
     }
 
     /**
-     * Get the ip address of the build server
-     *
-     * @return
+     * Gets the IP address of this build server.
+     * 
+     * @return the IP address
      */
     public static String getIpAddress() {
         try {
@@ -716,16 +769,20 @@ public class Luntbuild {
     }
 
     /**
-     * Determines if specified shorter file recursively contains specified longer file.
-     * Dir will recursively contains longer file when the following conditions meet at same time:
-     * <i> specified shorter is a directory
-     * <i> specified longer is a sub-directory or longer recursively under shorter
-     *
-     * @param shorter
-     * @param longer
-     * @return path of longer relative to shorter, null if longer is not relative to shorter, or "" if
-     *         shorter is a directory and is the same as longer
-     * @throws RuntimeException
+     * Determines if the specified shorter file recursively contains the specified longer file.
+     * <code>shorter</code> will recursively contain <code>longer</code> when the any of the
+     * following conditions are true:
+     * <ul>
+     * <li><code>shorter</code> is a directory and <code>longer</code> is a sub-directory</li>
+     * <li><code>shorter</code> is a directory and <code>longer</code> is recursively under <code>shorter</code></li>
+     * </ul>
+     * 
+     * @param shorter the shorter file
+     * @param longer the longer file
+     * @return the path of <code>longer</code> relative to <code>shorter</code>, or <code>null</code> if
+     *         <code>longer</code> is not relative to <code>shorter</code>, or "" if
+     *         <code>shorter</code> is a directory and is the same as <code>longer</code>
+     * @throws RuntimeException from {@link File#getCanonicalFile()}
      */
     public static String parseRelativePath(File shorter, File longer) {
         try {
@@ -745,10 +802,10 @@ public class Luntbuild {
     }
 
     /**
-     * Filter given list of notifier class names to get a list of existing notifier classes
-     *
-     * @param notifierClassNames list of notifier class names, should not be null
-     * @return list of existing notifier classes
+     * Filters the given list of notifier class names to get a list of existing notifier classes.
+     * 
+     * @param notifierClassNames the list of notifier class names, should not be <code>null</code>
+     * @return the list of existing notifier classes
      */
     public static List getNotifierClasses(List notifierClassNames) {
         List notifierClasses = new ArrayList();
@@ -768,10 +825,11 @@ public class Luntbuild {
     }
 
     /**
-     * Convert list of notifier classes to list of notifier instances
-     *
-     * @param notifierClasses should not be null
-     * @return
+     * Converts a list of notifier classes to a list of notifier instances.
+     * 
+     * @param notifierClasses the list of notifier classes, should not be <code>null</code>
+     * @return the list of notifier instances
+     * @throws RuntimeException if unable to create an instance of a notifier
      */
     public static List getNotifierInstances(List notifierClasses) {
         List notifierInstances = new ArrayList();
@@ -788,10 +846,11 @@ public class Luntbuild {
     }
 
     /**
-     * Convert list of listener classes to list of listener instances
+     * Converts a list of listener classes to a list of listener instances.
      *
-     * @param listenerClasses should not be null
-     * @return
+     * @param listenerClasses the list of listener classes, should not be <code>null</code>
+     * @return the list of listener instances
+     * @throws RuntimeException if unable to create an instance of a listener
      */
     public static List getListenerInstances(List listenerClasses) {
         List listenerInstances = new ArrayList();
@@ -807,6 +866,12 @@ public class Luntbuild {
         return listenerInstances;
     }
 
+    /**
+     * Gets the URL to access the Luntbuild system log.
+     * 
+     * @return the Luntbuild system log URL
+     * @throws RuntimeException if the servlet URL is invalid
+     */
     public static String getSystemLogUrl() {
         String servletUrl = getServletUrl();
         if (!servletUrl.endsWith("app.do"))
@@ -815,12 +880,14 @@ public class Luntbuild {
     }
 
     /**
-     * This function parses the input command line string to get rid of special characters such as
-     * quotation, end of line, tab, etc. It also extracts characters inside a pair of quotation to form
-     * a single argument
+     * Creates a commandline object from a command line string.
+     * 
+     * <p>This function parses the input command line string to get rid of special characters such as
+     * quotation, end of line, tab, etc. It also extracts characters inside a pair of quotation marks to form
+     * a single argument.</p>
      *
-     * @param input
-     * @return
+     * @param input the input command line string
+     * @return the commandline object
      */
     public static Commandline parseCmdLine(String input) {
         Commandline cmdLine = new Commandline();
@@ -870,10 +937,10 @@ public class Luntbuild {
     }
 
     /**
-     * Convert specified logLevel defined in {@link com.luntsys.luntbuild.facades.Constants} to proper ant log level
+     * Converts the specified log level defined in {@link Constants} to the equivalent ant log level.
      *
-     * @param logLevel
-     * @return
+     * @param logLevel the log level
+     * @return the ant log level
      */
     public static int convertToAntLogLevel(int logLevel) {
         if (logLevel == com.luntsys.luntbuild.facades.Constants.LOG_LEVEL_BRIEF)
@@ -885,10 +952,10 @@ public class Luntbuild {
     }
 
     /**
-     * Validates if the parameter can be a valid path element
+     * Validates that the specified parameter can be a valid path element.
      *
-     * @param pathElement
-     * @throws ValidationException
+     * @param pathElement the potential path element
+     * @throws ValidationException if the parameter can not be a path element
      */
     public static void validatePathElement(String pathElement) {
         if (isEmpty(pathElement))
@@ -898,14 +965,16 @@ public class Luntbuild {
     }
 
     /**
-     * This method increases a version string. The version string increase strategy is simple:
-     * increase last found digits in the supplied version string, for eg:
-     * <i> "v1.0" will be increased to "v1.1"
-     * <i> "v1.9" will be increased to "v1.10"
-     * <i> "v1.5(1000) will be increased to "v1.5(1001)"
+     * Increases a build version as a string. The version string increase strategy is simple:
+     * increase last found digits in the supplied version string, examples:
+     * <ul>
+     * <li>"v1.0" will be increased to "v1.1"</li>
+     * <li>"v1.9" will be increased to "v1.10"</li>
+     * <li>"v1.5(1000) will be increased to "v1.5(1001)"</li>
+     * </ul>
      *
-     * @param currentVersion
-     * @return
+     * @param currentVersion the version to increase
+     * @return the new increased version
      */
     public static String increaseBuildVersion(String currentVersion) {
         currentVersion = StringUtils.reverse(currentVersion);
@@ -926,6 +995,12 @@ public class Luntbuild {
         }
     }
 
+    /**
+     * Determines if an OGNL variable reference is contained in the specified OGNL expresion.
+     * 
+     * @param expression the OGNL expression
+     * @return <code>true</code> if a variable reference is contained
+     */
     public static boolean isVariablesContained(String expression) {
         Pattern pattern = Pattern.compile("\\$\\{[^$]*\\}");
 
@@ -937,14 +1012,15 @@ public class Luntbuild {
     }
 
     /**
-     * Evaluate value of a expression. During the evaluation, substring contained in ${...} will be treated
-     * as an ognl expression and will be evaluated against the passed ognlRoot parameter. For example,
-     * string "testcvs-${year}" can evaluate to be "testcvs-2004".
-     *
-     * @param ognlRoot
-     * @param expression
-     * @return
-     * @throws OgnlException
+     * Evaluates the value of an OGNL expression. During the evaluation, substring contained in ${...} will be treated
+     * as an OGNL expression and will be evaluated against the specified <code>ognlRoot</code> object. For example,
+     * the string "testcvs-${year}" can evaluate to be "testcvs-2004".
+     * 
+     * @param ognlRoot the root object
+     * @param expression the OGNL expression
+     * @return the evaluated string
+     * @throws OgnlException from {@link Ognl#parseExpression(java.lang.String)}
+     *    or {@link Ognl#getValue(java.lang.Object, java.util.Map, java.lang.Object, java.lang.Class)}
      */
     public static String evaluateExpression(Object ognlRoot, String expression) throws OgnlException {
         Pattern pattern = Pattern.compile("\\$\\{([^$]*)\\}");
@@ -964,10 +1040,10 @@ public class Luntbuild {
     }
 
     /**
-     * Validates supplied expression
-     *
-     * @param expression
-     * @return
+     * Validates the specified OGNL expression.
+     * 
+     * @param expression the OGNL expression
+     * @return the OGNL expression with variable references removed
      * @throws ValidationException
      */
     public static String validateExpression(String expression) {
@@ -986,17 +1062,22 @@ public class Luntbuild {
         return value;
     }
 
-    /** Load and configure log4j properties to specify the HTML, TEXT log file
-     * @throws IOException
+    /**
+     * Loads and configures log4j properties to specify the HTML and TEXT log files.
+     * 
+     * @throws IOException from {@link #setLuntbuildHtmlLog(String)} or {@link #setLuntbuildTextLog(String)}
      */
     private static final void setLuntbuildLogs() throws IOException {
         setLuntbuildHtmlLog(Luntbuild.installDir);
         setLuntbuildTextLog(Luntbuild.installDir);
     }
 
-    /** Load and configure log4j properties to specify the HTML, TEXT log file
-     * @param installDir
-     * @throws IOException
+    /**
+     * Loads and configures log4j properties to specify the HTML and TEXT log files, with an additional config.
+     * 
+     * @param installDir the Luntbuild installation directory
+     * @param config the log4j config
+     * @throws IOException from {@link #setLuntbuildHtmlLog(String)} or {@link #setLuntbuildTextLog(String)}
      */
     public static final void setLuntbuildLogs(String installDir, String config) throws IOException {
         PropertyConfigurator.configure(config);
@@ -1004,8 +1085,11 @@ public class Luntbuild {
         setLuntbuildTextLog(installDir);
     }
 
-    /** Set Luntbuild html log
-     * @throws IOException
+    /**
+     * Sets the Luntbuild HTML log.
+     * 
+     * @param installDir the luntbuild installation directory
+     * @throws IOException from {@link FileAppender#FileAppender(org.apache.log4j.Layout, java.lang.String, boolean)}
      */
     private static final void setLuntbuildHtmlLog(String installDir) throws IOException {
         Appender app = LogManager.getRootLogger().getAppender("luntbuild_logfile");
@@ -1028,8 +1112,11 @@ public class Luntbuild {
         }
     }
 
-    /** Set Luntbuild text log
-     * @throws IOException
+    /**
+     * Sets the Luntbuild text log.
+     * 
+     * @param installDir the luntbuild installation directory
+     * @throws IOException from {@link FileAppender#FileAppender(org.apache.log4j.Layout, java.lang.String, boolean)}
      */
     private static final void setLuntbuildTextLog(String installDir) throws IOException {
         Appender app = LogManager.getRootLogger().getAppender("luntbuild_txt_logfile");
@@ -1049,8 +1136,12 @@ public class Luntbuild {
         }
     }
 
-    /*
-     * luntbuild lifecycle management moved here from servlet
+    /**
+     * Initializes the Luntbuild system.
+     * 
+     * <p>Luntbuild lifecycle management moved here from servlet.</p>
+     * 
+     * @param context the servlet context
      */
     public static void initApplication(ServletContext context) {
         try {
@@ -1148,8 +1239,15 @@ public class Luntbuild {
         }
     }
 
-    /* Need to build path and make sure path separator is at the end of the real context
-     * path before appending WEB-INF/classes (Jetty does not).
+    /**
+     * Gets the path to the servlet classes.
+     * 
+     * <p>Need to build path and make sure path separator is at the end of the real context
+     * path before appending WEB-INF/classes (Jetty does not).<p>
+     * 
+     * @param context the servlet context
+     * @return the path to the servlet classes
+     * @throws RuntimeException if {@link ServletContext#getRealPath(java.lang.String)} fails
      */
     private static String getPath(ServletContext context) {
         String path = context.getRealPath("/");
@@ -1290,7 +1388,11 @@ public class Luntbuild {
     }
 
     /**
-     * Do some cleanup works, such as cleanup the schedule thread, etc.
+     * Shuts down the Luntbuild system.
+     * 
+     * <p>Does some cleanup works, such as cleanup the schedule thread, etc.</p>
+     * 
+     * @param context the servlet context
      */
     public static void destroyApplication(ServletContext context) {
         logger.info("Enter application shutdown");
@@ -1334,6 +1436,12 @@ public class Luntbuild {
         logger.info("application shutdown complete");
     }
 
+    /**
+     * Removes the special "checkin user" from a list of users if it exists.
+     * 
+     * @param users the list of users
+     * @return the list of users without the special "checkin user"
+     */
     public static List removeCheckinUser(List users) {
         Iterator it = users.iterator();
         while (it.hasNext()) {
@@ -1346,12 +1454,23 @@ public class Luntbuild {
         return users;
     }
 
+    /**
+     * Creates and initializes a blank ant project.
+     * 
+     * @return the ant project
+     */
     public static Project createAntProject() {
         Project antProject = new Project();
         antProject.init();
         return antProject;
     }
 
+    /**
+     * Gets the name of a property or assignment from a string (example: "name=value").
+     * 
+     * @param assignment the assignment string
+     * @return the name of the property or assignment
+     */
     public static String getAssignmentName(String assignment) {
         int index = assignment.indexOf('=');
         if (index == -1) {
@@ -1361,6 +1480,12 @@ public class Luntbuild {
         }
     }
 
+    /**
+     * Gets the value of a property or assignment from a string (example: "name=value").
+     * 
+     * @param assignment the assignment string
+     * @return the value of the property or assignment
+     */
     public static String getAssignmentValue(String assignment) {
         int index = assignment.indexOf('=');
         if (index == -1) {
@@ -1370,6 +1495,14 @@ public class Luntbuild {
         }
     }
 
+    /**
+     * Encrypts a password.
+     * 
+     * @param passwd the unencrypted password
+     * @return the encrypted password
+     * @throws RuntimeException if an {@link StringEncrypter.EncryptionException} occurs
+     * @see StringEncrypter
+     */
     public static String encryptPassword(String passwd) {
         if (passwd == null || passwd.trim().length() == 0) return passwd;
 
@@ -1381,6 +1514,14 @@ public class Luntbuild {
         }
     }
 
+    /**
+     * Decrypts a password.
+     * 
+     * @param passwd the encrypted password
+     * @return the decrypted password
+     * @throws RuntimeException if an {@link StringEncrypter.EncryptionException} occurs
+     * @see StringEncrypter
+     */
     public static String decryptPassword(String passwd) {
         if (passwd == null || passwd.trim().length() == 0) return passwd;
 
@@ -1392,6 +1533,11 @@ public class Luntbuild {
         }
     }
 
+    /**
+     * Gets the page refresh interval.
+     * 
+     * @return the page refresh interval
+     */
     public static int getPageRefreshInterval() {
         String pageRefreshIntervalText = (String) properties.get(Constants.PAGE_REFRESH_INTERVAL);
         try {
@@ -1405,14 +1551,52 @@ public class Luntbuild {
         }
     }
 
+    /**
+     * Gets the system properties map.
+     * 
+     * @return the system properties
+     */
     public static Map getProperties() {
         return properties;
     }
 
+    /**
+     * Sets the system properties map.
+     * 
+     * @param properties the system properties
+     */
     public static void setProperties(Map properties) {
         Luntbuild.properties = Collections.synchronizedMap(properties);
     }
 
+    /**
+     * Used for Java 1.4 compatability.
+     * Replace with Node.getTextContent() for Java 1.5.
+     * 
+     * @param node the node
+     * @return the text content
+     */
+    public static String getTextContent(Node node) {
+       // TODO: Replace with Node.getTextContent() for Java 1.5
+       NodeList nodeList= node.getChildNodes();
+        String textContent= null;
+          for (int j = 0; j < nodeList.getLength(); j++) {
+              Node k = nodeList.item(j);
+              textContent = k.getNodeValue();
+              if (StringUtils.isNotEmpty(textContent))
+                  return textContent;
+          }
+          return "";
+    }
+
+    /**
+     * Sends the contents of the specified asset to the specified HTTP request.
+     * 
+     * @param request the HTTP request
+     * @param response the HTTP response 
+     * @param assetLocation the location of the asset
+     * @throws ApplicationRuntimeException if the asset could not be found or read
+     */
     public static void sendAsset(HttpServletRequest request, HttpServletResponse response,
                                  String assetLocation) {
         InputStream in = null;
@@ -1456,7 +1640,10 @@ public class Luntbuild {
     }
 
     /**
-     * Encodes a character for xml
+     * Encodes a character for XML.
+     * 
+     * @param ch the character
+     * @return the encoded character, or <code>null</code> if the character does not need to be encoded
      */
     private static String xmlEncode(char ch){
         switch (ch){
@@ -1469,6 +1656,12 @@ public class Luntbuild {
         }
     }
 
+    /**
+     * Checks if a character needs to be encoded for XML.
+     * 
+     * @param ch the character
+     * @return <code>true</code> if the character needs to be encoded
+     */
     private static boolean isXmlEncodeChar(char ch){
         switch (ch){
             case '\"': return true;
@@ -1481,10 +1674,10 @@ public class Luntbuild {
     }
 
     /**
-     * Substitutes all XML special characters to enable XML parsing
+     * Substitutes all XML special characters to enable XML parsing.
      *
-     * @param str String input text
-     * @return String with the substituted characters.
+     * @param str the input string
+     * @return the string with the substituted characters
      */
     public static String xmlEncodeEntities(String str) {
         StringBuffer buf = new StringBuffer();
@@ -1538,6 +1731,4 @@ public class Luntbuild {
 
         return buf.toString();
     }
-
-
 }

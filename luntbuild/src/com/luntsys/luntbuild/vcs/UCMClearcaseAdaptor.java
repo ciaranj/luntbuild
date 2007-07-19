@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.ant.Commandline;
@@ -45,8 +46,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The clearcase adaptor for UCM operations, this adaptor will utilize the base clearcase
- * adaptor to achieve UCM-oriented build
+ * UCM Clearcase VCS adaptor implementation. This adaptor will utilize the base Clearcase
+ * adaptor to achieve UCM-oriented build.
+ * 
+ * <p>This adaptor is NOT safe for remote hosts.</p>
  *
  * @author robin shine
  * @see BaseClearcaseAdaptor
@@ -72,21 +75,30 @@ public class UCMClearcaseAdaptor extends Vcs {
 	private String whatToBuild = "<" + UCMClearcaseAdaptorFacade.BUILD_LATEST + ">";
 	/**
 	 * Config to detect modifications. This is used to dertermine whether or not need to
-	 * perform next build. This property will not take effect when {@link whatToBuild}
-	 * is not of value {@link com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade#BUILD_LATEST}
+	 * perform next build. This property will not take effect when <code>whatToBuild</code>
+	 * is not of value {@link UCMClearcaseAdaptorFacade#BUILD_LATEST}
 	 */
 	private String modificationDetectionConfig;
 
 	private String mkviewExtraOpts;
 
+    /**
+     * @inheritDoc
+     */
 	public String getDisplayName() {
 		return "Clearcase UCM";
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public String getIconName() {
 		return "ucmclearcase.jpg";
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public List getVcsSpecificProperties() {
 		List properties = new ArrayList();
 		properties.add(new DisplayProperty() {
@@ -301,9 +313,9 @@ public class UCMClearcaseAdaptor extends Vcs {
 	}
 
 	/**
-	 * Build the executable part of a commandline object
+	 * Constructs the executable part of a commandline object.
 	 *
-	 * @return
+	 * @return the commandline object
 	 */
 	protected Commandline buildCleartoolExecutable() {
 		Commandline cmdLine = new Commandline();
@@ -314,26 +326,55 @@ public class UCMClearcaseAdaptor extends Vcs {
 		return cmdLine;
 	}
 
+	/**
+	 * Gets the path to the cleartool executable.
+	 * 
+	 * @return the path to the cleartool executable
+	 */
 	public String getCleartoolDir() {
 		return cleartoolDir;
 	}
 
+	/**
+	 * Sets the path to the cleartool executable.
+	 * 
+	 * @param cleartoolDir the path to the cleartool executable
+	 */
 	public void setCleartoolDir(String cleartoolDir) {
 		this.cleartoolDir = cleartoolDir;
 	}
 
+	/**
+	 * Gets the modification detection config.
+	 * 
+	 * @return the modification detection config
+	 */
 	public String getModificationDetectionConfig() {
 		return modificationDetectionConfig;
 	}
 
+	/**
+	 * Gets the modification detection config. This method will parse OGNL variables.
+	 * 
+	 * @return the modification detection config
+	 */
 	public String getActualModificationDetectionConfig() {
 		return OgnlHelper.evaluateScheduleValue(getModificationDetectionConfig());
 	}
 
+	/**
+	 * Sets the modification detection config.
+	 * 
+	 * @param modificationDetectionConfig the modification detection config
+	 */
 	public void setModificationDetectionConfig(String modificationDetectionConfig) {
 		this.modificationDetectionConfig = modificationDetectionConfig;
 	}
 
+	/**
+     * @inheritDoc
+	 * @see BaseClearcaseAdaptor
+	 */
 	public Vcs deriveBuildTimeVcs(Project antProject) {
 		BaseClearcaseAdaptor baseClearcaseAdaptor = new BaseClearcaseAdaptor();
 		baseClearcaseAdaptor.setViewStgLoc(getActualViewStgLoc());
@@ -346,76 +387,153 @@ public class UCMClearcaseAdaptor extends Vcs {
 		return baseClearcaseAdaptor;
 	}
 
+	/**
+     * @inheritDoc
+	 * @throws BuildException because this method does not apply
+	 */
 	public void checkoutActually(Build build, Project antProject) {
 		throw new BuildException("Checkout operation not applicable for UCM Clearcase adaptor!");
 	}
 
+	/**
+     * @inheritDoc
+	 * @throws BuildException because this method does not apply
+	 */
 	public void cleanupCheckout(Build build, Project antProject) {
 		throw new BuildException("Cleanup checkout operation not applicable for UCM Clearcase adaptor!");
 	}
 
+	/**
+     * @inheritDoc
+	 * @throws BuildException because this method does not apply
+	 */
 	public void label(Build build, Project antProject) {
 		throw new BuildException("Label operation not applicable for UCM Clearcase adaptor!");
 	}
 
+	/**
+	 * Gets the project vob tag.
+	 * 
+	 * @return the project vob tag
+	 */
 	public String getProjectVob() {
 		return projectVob;
 	}
 
+	/**
+	 * Gets the project vob tag. This method will parse OGNL variables.
+	 * 
+	 * @return the project vob tag
+	 */
 	public String getActualProjectVob() {
 		return OgnlHelper.evaluateScheduleValue(getProjectVob());
 	}
 
+	/**
+	 * Sets the project vob tag.
+	 * 
+	 * @param projectVob the project vob tag
+	 */
 	public void setProjectVob(String projectVob) {
 		this.projectVob = projectVob;
 	}
 
+	/**
+	 * Gets the UCM stream.
+	 * 
+	 * @return the UCM stream
+	 */
 	public String getStream() {
 		return stream;
 	}
 
+	/**
+	 * Gets the UCM stream. This method will parse OGNL variables.
+	 * 
+	 * @return the UCM stream
+	 */
 	public String getActualStream() {
 		return OgnlHelper.evaluateScheduleValue(getStream());
 	}
 
+	/**
+	 * Sets the UCM stream.
+	 * 
+	 * @param stream the UCM stream
+	 */
 	public void setStream(String stream) {
 		this.stream = stream;
 	}
 
+	/**
+	 * Gets the baselines to build in the stream.
+	 * 
+	 * @return the baselines to build
+	 */
 	public String getWhatToBuild() {
 		return whatToBuild;
 	}
 
+	/**
+	 * Gets the baselines to build in the stream. This method will parse OGNL variables.
+	 * 
+	 * @return the baselines to build
+	 */
 	public String getActualWhatToBuild() {
 		return OgnlHelper.evaluateScheduleValue(getWhatToBuild());
 	}
 
+	/**
+	 * Sets the baselines to build in the stream.
+	 * 
+	 * @param whatToBuild the baselines to build
+	 */
 	public void setWhatToBuild(String whatToBuild) {
 		this.whatToBuild = whatToBuild;
 	}
 
+	/**
+	 * Gets the extra options when creating snapshot view.
+	 * 
+	 * @return the extra options
+	 */
 	public String getMkviewExtraOpts() {
 		return mkviewExtraOpts;
 	}
 
+	/**
+	 * Gets the extra options when creating snapshot view. This method will parse OGNL variables.
+	 * 
+	 * @return the extra options
+	 */
 	public String getActualMkviewExtraOpts() {
 		return OgnlHelper.evaluateScheduleValue(getMkviewExtraOpts());
 	}
 
+	/**
+	 * Sets the extra options when creating snapshot view.
+	 * 
+	 * @param mkviewExtraOpts the extra options
+	 */
 	public void setMkviewExtraOpts(String mkviewExtraOpts) {
 		this.mkviewExtraOpts = mkviewExtraOpts;
 	}
 
+    /**
+     * Validates the properties of this VCS.
+     *
+     * @throws ValidationException if a property has an invalid value
+     */
 	public void validateProperties() {
 		super.validateProperties();
 		Pattern reservedPattern = Pattern.compile("^<(.*)>$");
 		Matcher matcher = reservedPattern.matcher(getActualWhatToBuild());
 		if (matcher.find()) {
 			String reserved = matcher.group(1).trim();
-			if (!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES) &&
-					!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST) &&
-					!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST_BASELINES) &&
-					!reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_RECOMMENDED_BASELINES))
+			if (!reserved.equalsIgnoreCase(UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES) &&
+					!reserved.equalsIgnoreCase(UCMClearcaseAdaptorFacade.BUILD_LATEST) &&
+					!reserved.equalsIgnoreCase(UCMClearcaseAdaptorFacade.BUILD_LATEST_BASELINES) &&
+					!reserved.equalsIgnoreCase(UCMClearcaseAdaptorFacade.BUILD_RECOMMENDED_BASELINES))
 				throw new ValidationException("Invalid reserved values for \"what to build\" property!");
 		}
 		if ((Luntbuild.isEmpty(viewStgLoc)) && Luntbuild.isEmpty(vws))
@@ -437,10 +555,10 @@ public class UCMClearcaseAdaptor extends Vcs {
 	}
 
 	/**
-	 * Construct the config spec for current stream based on whatToBuild property
+	 * Constructs the config spec for current stream based on the <code>whatToBuild</code> property.
 	 *
-	 * @param antProject
-	 * @return
+	 * @param antProject the ant project used for logging
+	 * @return the config spec
 	 */
 	private String constructCfgSpec(Project antProject) {
 		antProject.log("Construct config spec...", Project.MSG_INFO);
@@ -450,15 +568,15 @@ public class UCMClearcaseAdaptor extends Vcs {
 		Matcher matcher = reservedPattern.matcher(getActualWhatToBuild());
 		if (matcher.find()) {
 			String reserved = matcher.group(1).trim();
-			if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST)) {
-				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_LATEST, antProject);
+			if (reserved.equalsIgnoreCase(UCMClearcaseAdaptorFacade.BUILD_LATEST)) {
+				baselines = getStreamBaselines(UCMClearcaseAdaptorFacade.BASELINE_LATEST, antProject);
 				cfgSpec += "element * .../" + getActualStream() + "/LATEST\n";
-			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES)) {
-				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_FOUNDATION, antProject);
-			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_LATEST_BASELINES)) {
-				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_LATEST, antProject);
-			} else if (reserved.equalsIgnoreCase(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BUILD_RECOMMENDED_BASELINES)) {
-				baselines = getStreamBaselines(com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade.BASELINE_RECOMMENDED, antProject);
+			} else if (reserved.equalsIgnoreCase(UCMClearcaseAdaptorFacade.BUILD_FOUNDATION_BASELINES)) {
+				baselines = getStreamBaselines(UCMClearcaseAdaptorFacade.BASELINE_FOUNDATION, antProject);
+			} else if (reserved.equalsIgnoreCase(UCMClearcaseAdaptorFacade.BUILD_LATEST_BASELINES)) {
+				baselines = getStreamBaselines(UCMClearcaseAdaptorFacade.BASELINE_LATEST, antProject);
+			} else if (reserved.equalsIgnoreCase(UCMClearcaseAdaptorFacade.BUILD_RECOMMENDED_BASELINES)) {
+				baselines = getStreamBaselines(UCMClearcaseAdaptorFacade.BASELINE_RECOMMENDED, antProject);
 			} else
 				throw new BuildException("Invalid reserved value for what to build property: " +
 						getActualWhatToBuild());
@@ -489,41 +607,69 @@ public class UCMClearcaseAdaptor extends Vcs {
 		return cfgSpec;
 	}
 
+	/**
+	 * Gets the Clearcase server-side view storage location.
+	 * 
+	 * @return the Clearcase server-side view storage location
+	 */
 	public String getViewStgLoc() {
 		return viewStgLoc;
 	}
 
+	/**
+	 * Gets the Clearcase server-side view storage location. This method will parse OGNL variables.
+	 * 
+	 * @return the Clearcase server-side view storage location
+	 */
 	public String getActualViewStgLoc() {
 		return OgnlHelper.evaluateScheduleValue(getViewStgLoc());
 	}
 
+	/**
+	 * Sets the Clearcase server-side view storage location.
+	 * 
+	 * @param viewStgLoc the Clearcase server-side view storage location
+	 */
 	public void setViewStgLoc(String viewStgLoc) {
 		this.viewStgLoc = viewStgLoc;
 	}
 
+	/**
+	 * Gets the path for view storage.
+	 * 
+	 * @return the path for view storage
+	 */
 	public String getVws() {
 		return vws;
 	}
 
+	/**
+	 * Gets the path for view storage. This method will parse OGNL variables.
+	 * 
+	 * @return the path for view storage
+	 */
 	public String getActualVws() {
 		return OgnlHelper.evaluateScheduleValue(getVws());
 	}
 
+	/**
+	 * Sets the path for view storage.
+	 * 
+	 * @param vws the path for view storage
+	 */
 	public void setVws(String vws) {
 		this.vws = vws;
 	}
 
 	/**
-	 * Retrieve recommended  baselines, foundation baselines or
-	 * latest baselines of current stream
+	 * Retrieves the recommended baselines, foundation baselines or latest baselines of current stream.
 	 *
 	 * @param baselineType specifies what type of baselines you want to retrieve,
 	 *                     possible values are {@link UCMClearcaseAdaptorFacade#BASELINE_FOUNDATION},
-	 *                     {@link com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade#BASELINE_LATEST},
-	 *                     and {@link com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade#BASELINE_RECOMMENDED}
-	 * @param antProject   the ant antProject
-	 * @return
-	 * @throws BuildException
+	 *                     {@link UCMClearcaseAdaptorFacade#BASELINE_LATEST},
+	 *                     or {@link UCMClearcaseAdaptorFacade#BASELINE_RECOMMENDED}
+	 * @param antProject   the ant project used for logging
+	 * @return the baselines
 	 */
 	public List getStreamBaselines(String baselineType, Project antProject) {
 		final List baselines = new ArrayList();
@@ -547,12 +693,12 @@ public class UCMClearcaseAdaptor extends Vcs {
 	}
 
 	/**
-	 * Get component for specified baseline name
-	 *
-	 * @param baseline
-	 * @param antProject
-	 * @return component name of specified baseline, will never be null
-	 * @throws BuildException
+	 * Gets the component for the specified baseline name.
+	 * 
+	 * @param baseline the baseline name
+	 * @param antProject the ant project used for logging
+	 * @return the component name of specified baseline, will never be <code>null</code>
+	 * @throws BuildException if the component could not be found
 	 */
 	private String getBaselineComponent(String baseline, Project antProject) {
 		final String[] component = new String[]{null};
@@ -580,12 +726,11 @@ public class UCMClearcaseAdaptor extends Vcs {
 	}
 
 	/**
-	 * Get dependent baselines of specified baseline
+	 * Gets the dependent baselines of the specified baseline.
 	 *
-	 * @param baseline
-	 * @param antProject
-	 * @return
-	 * @throws BuildException
+	 * @param baseline the baseline name
+	 * @param antProject the ant project used for logging
+	 * @return the dependent baselines
 	 */
 	private List getBaselineDepends(String baseline, Project antProject) {
 		final List dependsOn = new ArrayList();
@@ -620,13 +765,12 @@ public class UCMClearcaseAdaptor extends Vcs {
 	}
 
 	/**
-	 * Get root directory of specified component
+	 * Gets the root directory of the specified component.
 	 *
-	 * @param component
-	 * @param antProject
-	 * @return root directory for specified component, a null value will be
-	 *         returned if there is no root directory associated
-	 * @throws BuildException
+	 * @param component the component
+	 * @param antProject the ant project used for logging
+	 * @return the root directory, or <code>null</code> if there is no root
+	 * directory associated with the component
 	 */
 	private String getComponentRootDir(String component, Project antProject) {
 		final String[] rootDir = new String[]{null};
@@ -661,12 +805,13 @@ public class UCMClearcaseAdaptor extends Vcs {
 	}
 
 	/**
-	 * Get the label type corresponding to this baseline name
+	 * Gets the label type corresponding to the specified baseline name.
 	 *
-	 * @param baseline
-	 * @param antProject
-	 * @return label type for specified baseline name, null value will be returned if
-	 *         there is no label type associated with this baseline
+	 * @param baseline the baseline name
+	 * @param antProject the ant project used for logging
+	 * @return the label type, or <code>null</code> if there is no label type
+	 * associated with the baseline
+	 * @throws BuildException if the baseline has no associated label
 	 */
 	private String getBaselineLabeltype(String baseline, Project antProject) {
 		final String[] labeltype = new String[]{null};
@@ -697,13 +842,15 @@ public class UCMClearcaseAdaptor extends Vcs {
 	}
 
 	/**
-	 * Given a set of foundation baselines, recommended baselines, or latest baselines,
+	 * Resolves dependencies among baselines.
+	 * 
+	 * <p>Given a set of foundation baselines, recommended baselines, or latest baselines,
 	 * this function will resolves dependency of each baseline, take overriden into account
-	 * and return a set of in-effect baselines indexed by component name
+	 * and return a set of in-effect baselines indexed by component name.</p>
 	 *
-	 * @param baselines
-	 * @param antProject
-	 * @return
+	 * @param baselines the set of all baselines
+	 * @param antProject the ant project used for logging
+	 * @return the map of in-effect baselines indexed by component name
 	 */
 	private Map getEffectBaselines(List baselines, Project antProject) {
 		String message = "Resolved baseline dependency and overriden...";
@@ -736,10 +883,16 @@ public class UCMClearcaseAdaptor extends Vcs {
 		return effectBaselines;
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public Module createNewModule() {
 		return null; // module definition not applicable for this vcs
 	}
 
+	/**
+     * @inheritDoc
+	 */
     public Module createNewModule(Module module) {
         return null; // module definition not applicable for this vcs
     }
@@ -750,12 +903,21 @@ public class UCMClearcaseAdaptor extends Vcs {
 	}
 */
 
+	/**
+     * @inheritDoc
+	 * @throws BuildException because this method does not apply
+	 */
 	public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		throw new BuildException("Get revisions operation not applicable for UCM Clearcase adaptor!");
 	}
 
+    /**
+     * @inheritDoc
+     * @see UCMClearcaseAdaptorFacade
+     */
 	public void saveToFacade(VcsFacade facade) {
-		UCMClearcaseAdaptorFacade ucmClearcaseFacade = (com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade) facade;
+    	// TODO throw RuntimeException if the facade is not the right class
+		UCMClearcaseAdaptorFacade ucmClearcaseFacade = (UCMClearcaseAdaptorFacade) facade;
 		ucmClearcaseFacade.setMkviewExtraOpts(getMkviewExtraOpts());
 		ucmClearcaseFacade.setModificationDetectionConfig(getModificationDetectionConfig());
 		ucmClearcaseFacade.setProjectVob(getProjectVob());
@@ -766,10 +928,15 @@ public class UCMClearcaseAdaptor extends Vcs {
 		ucmClearcaseFacade.setCleartoolDir(getCleartoolDir());
 	}
 
-	public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade))
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>UCMClearcaseAdaptorFacade</code>
+     * @see UCMClearcaseAdaptorFacade
+     */
+	public void loadFromFacade(VcsFacade facade) {
+		if (!(facade instanceof UCMClearcaseAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		UCMClearcaseAdaptorFacade ucmClearcaseFacade = (com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade) facade;
+		UCMClearcaseAdaptorFacade ucmClearcaseFacade = (UCMClearcaseAdaptorFacade) facade;
 		setMkviewExtraOpts(ucmClearcaseFacade.getMkviewExtraOpts());
 		setModificationDetectionConfig(ucmClearcaseFacade.getModificationDetectionConfig());
 		setProjectVob(ucmClearcaseFacade.getProjectVob());
@@ -780,7 +947,11 @@ public class UCMClearcaseAdaptor extends Vcs {
 		setCleartoolDir(ucmClearcaseFacade.getCleartoolDir());
 	}
 
-	public com.luntsys.luntbuild.facades.lb12.VcsFacade constructFacade() {
+    /**
+     * @inheritDoc
+     * @see UCMClearcaseAdaptorFacade
+     */
+	public VcsFacade constructFacade() {
 		return new UCMClearcaseAdaptorFacade();
 	}
 }

@@ -25,8 +25,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.interceptors;
 
+import com.luntsys.luntbuild.facades.LuntbuildException;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -34,20 +36,27 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * This class acts as a spring interceptor. It is used to intercept methods and convert
- * the various throwed exception in the method to {@link com.luntsys.luntbuild.facades.LuntbuildException}
+ * A spring exception interceptor. It is used to intercept exceptions and convert
+ * them into {@link LuntbuildException}.
  *
  * @author robin shine
  */
 public class ExceptionInterceptor implements MethodInterceptor {
 	private static Log logger = LogFactory.getLog(Luntbuild.class);
 
+	/**
+	 * Invokes this interceptor for a method invocation.
+	 * 
+	 * @param methodInvocation the method invocation
+	 * @return the result of the method being invoked
+	 * @throws Throwable from the method, wrapped in a {@link LuntbuildException}
+	 */
 	public Object invoke(MethodInvocation methodInvocation) throws Throwable {
 		try {
 			return methodInvocation.proceed();
 		} catch (Throwable throwable) {
 			logger.error("Exception catched in ExceptionInterceptor.invoke()", throwable);			
-			throw new com.luntsys.luntbuild.facades.LuntbuildException(Luntbuild.getExceptionMessage(throwable));
+			throw new LuntbuildException(Luntbuild.getExceptionMessage(throwable));
 		}
 	}
 }

@@ -25,33 +25,43 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * facade class for a version control system
+ * Base class for all VCS adaptor facades.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.Vcs
  */
 public abstract class VcsFacade {
 	private List modules = new ArrayList();
 
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
+	public abstract String getVcsClassName();
+
 	/**
-	 * Get modules of current vcs object.
-	 * @return modules of current vcs object
+	 * Gets the modules of this VCS.
+	 *
+	 * @return the modules of this VCS
 	 */
 	public List getModules() {
 		return modules;
 	}
 
+	/**
+	 * Sets the modules of this VCS.
+	 *
+	 * @param modules the modules of this VCS
+	 */
 	public void setModules(List modules) {
 		this.modules = modules;
 	}
-
-	/**
-	 * Get the corresponding vcs adaptor class name
-	 * @return  vcs adaptor class name
-	 */
-	public abstract String getVcsClassName();
 }

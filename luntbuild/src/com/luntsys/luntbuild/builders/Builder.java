@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.builders;
 
 import com.luntsys.luntbuild.ant.Commandline;
@@ -47,7 +48,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * The base class for all builders.
+ * Base class for all builders.
  *
  * @author robin shine
  */
@@ -57,8 +58,10 @@ public abstract class Builder implements Serializable {
      */
     static final long serialVersionUID = 1L;
 
+    /** Name of the directory to store build artifacts in. */
     public static final String ARTIFACTS_DIR = "artifacts";
 
+    /** Name of the directory to store HTML JUnit reports in. */
     public static final String JUNIT_HTML_REPORT_DIR = "junit_html_report";
 
     /**
@@ -85,20 +88,22 @@ public abstract class Builder implements Serializable {
     private String environments;
 
     /**
-     * Get display name for current builders
+     * Gets the display name for this builder.
      *
-     * @return display name for current builders
+     * @return the display name for this builder
      */
     public abstract String getDisplayName();
 
     /**
-     * @return name of the icon for this version control system. Icon should be put into
+     * Gets the the name of the icon for this builder.
+     * 
+     * @return the name of the icon for this builder. Icon should be put into
      *         the images directory of the web application.
      */
     public abstract String getIconName();
 
     /**
-     * Get properties of this builders. These properites will be shown to user and expect
+     * Gets the common builder properties. These properites will be shown to user and expect
      * input from user.
      *
      * @return list of properties can be configured by user
@@ -159,13 +164,18 @@ public abstract class Builder implements Serializable {
         return properties;
     }
 
+    /**
+     * Gets the properties of this implementation of <code>Builder</code>. These properites will be shown to user and expect
+     * input from user.
+     *
+     * @return list of properties can be configured by user
+     */
     public abstract List getBuilderSpecificProperties();
 
     /**
-     * Validates properties of this builders
+     * Validates properties of this builder.
      *
-     * @throws com.luntsys.luntbuild.utility.ValidationException
-     *
+     * @throws ValidationException if a property has an invalid value
      */
     public void validate() {
         Iterator it = getProperties().iterator();
@@ -207,12 +217,12 @@ public abstract class Builder implements Serializable {
     }
 
     /**
-     * Get facade object of this builders
+     * Gets the facade object of this builder.
      *
-     * @return facade object of this builders
+     * @return facade object of this builder
      */
-    public com.luntsys.luntbuild.facades.lb12.BuilderFacade getFacade() {
-        com.luntsys.luntbuild.facades.lb12.BuilderFacade facade = constructFacade();
+    public BuilderFacade getFacade() {
+        BuilderFacade facade = constructFacade();
         facade.setName(getName());
         facade.setEnvironments(getEnvironments());
         facade.setBuildSuccessCondition(getBuildSuccessCondition());
@@ -221,38 +231,45 @@ public abstract class Builder implements Serializable {
     }
 
     /**
-     * Construct builders facade object
+     * Constructs a blank builder facade object.
      *
-     * @return builders facade object
+     * @return the builder facade object
      */
-    public abstract com.luntsys.luntbuild.facades.lb12.BuilderFacade constructFacade();
+    public abstract BuilderFacade constructFacade();
 
     /**
-     * Load value from builders facade
+     * Loads this builder from a builder facade.
      *
-     * @param facade
+     * @param facade the builder facade
      */
     public abstract void loadFromFacade(BuilderFacade facade);
 
     /**
-     * Save value to builders facade
+     * Saves this builder to a builder facade.
      *
-     * @param facade
+     * @param facade the builder facade
      */
-    public abstract void saveToFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade);
+    public abstract void saveToFacade(BuilderFacade facade);
 
     /**
-     * Set facade object of this builders
+     * Sets the facade object of this builder.
      *
-     * @param facade
+     * @param facade the builder facade
      */
-    public void setFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
+    public void setFacade(BuilderFacade facade) {
         setName(facade.getName());
         setEnvironments(facade.getEnvironments());
         setBuildSuccessCondition(facade.getBuildSuccessCondition());
         loadFromFacade(facade);
     }
 
+	/**
+	 * Creates and returns a copy of this object.
+	 * 
+	 * @return a clone of this instance
+	 * @throws CloneNotSupportedException if cloning is not supported
+	 * @throws RuntimeException if a clone can not be done
+	 */
     public Object clone() throws CloneNotSupportedException {
         try {
             Builder copy = (Builder) getClass().newInstance();
@@ -270,6 +287,13 @@ public abstract class Builder implements Serializable {
         }
     }
 
+	/**
+	 * Resolves OGNL variables in builder properties.
+	 * 
+	 * @param build the build
+	 * @param antProject the ant project
+	 * @throws Throwable from {@link Luntbuild#evaluateExpression(Object, String)}
+	 */
     public void resolveEmbeddedOgnlVariables(Build build, Project antProject) throws Throwable {
         this.build = build;
         OgnlHelper.setAntProject(antProject);
@@ -284,9 +308,12 @@ public abstract class Builder implements Serializable {
     }
 
     /**
-     * Perform build for specified build object
-     *
-     * @throws Throwable
+     * Performs the build for specified build object.
+	 * 
+	 * @param build the build
+	 * @param buildLogger the logger that will capture log messages
+	 * @throws BuildException if this builder fails
+     * @throws Throwable if an exception occurs
      */
     public void build(Build build, LuntbuildLogger buildLogger) throws Throwable {
         this.build = build;
@@ -339,53 +366,62 @@ public abstract class Builder implements Serializable {
     }
 
     /**
-     * Constructs the command to run build
-     *
-     * @return the command to run build, should not be null
+     * Constructs the command to run this build.
+     * 
+     * @param build the build
+     * @return the command to run this build
      */
-    public abstract String constructBuildCmd(Build build) throws IOException;
+    public abstract String constructBuildCmd(Build build);
 
     /**
-     * Constructs the directory to run build command in
-     *
-     * @return the directory to run build command in. Null if do not care where to run build command
+     * Constructs the directory to run build command in.
+     * 
+     * @param build the build
+     * @return the directory to run build command in, or <code>null</code> for the default directory
      */
     public abstract String constructBuildCmdDir(Build build);
 
     /**
-     * Get build success condition for this builders
+     * Gets the build success condition for this builder.
      *
-     * @return build success condition for this builders, Null if not exist
+     * @return the build success condition for this builder
      */
     public String getBuildSuccessCondition() {
         return buildSuccessCondition;
     }
 
     /**
-     * Set build success condition for this builders
+     * Sets the build success condition for this builder.
      *
-     * @param buildSuccessCondition
+     * @param buildSuccessCondition the build success condition for this builder
      */
     public void setBuildSuccessCondition(String buildSuccessCondition) {
         this.buildSuccessCondition = buildSuccessCondition;
     }
 
     /**
-     * Get environment settings for this builder
-     * @return environment settings for this builder
+     * Gets the environment settings for this builder.
+     * 
+     * @return the environment settings for this builder
      */
     public String getEnvironments() {
         return environments;
     }
 
     /**
-     * Set environment settings for this builder
-     * @param environments
+     * Sets the environment settings for this builder.
+     * 
+     * @param environments the environment settings for this builder
      */
     public void setEnvironments(String environments) {
         this.environments = environments;
     }
 
+	/**
+	 * Checks if this builder was successful according to <code>buildSuccessCondition</code>.
+	 * 
+	 * @return <code>true</code> if this builder was successful
+	 */
     private boolean isBuildSuccess() {
         try {
             Boolean buildSuccessValue;
@@ -407,8 +443,9 @@ public abstract class Builder implements Serializable {
     }
 
     /**
-     * Get return code of execution of this builder
-     * @return return code of execution of this builder
+     * Gets the return code of execution of this builder.
+     * 
+     * @return the return code of execution of this builder
      */
     public int getResult() {
         return result;
@@ -426,7 +463,7 @@ public abstract class Builder implements Serializable {
         	NodeList messages = build_log.getChildNodes();
         	for (int i = 0; i < messages.getLength(); i++) {
         		Node message = messages.item(i);
-				if (getTextContent(message).matches(linePattern))
+                if (Luntbuild.getTextContent(message).matches(linePattern))
 					return true;
         	}
             return false;
@@ -449,8 +486,8 @@ public abstract class Builder implements Serializable {
         		Node message = messages.item(i);
         		Node builder = message.getAttributes().getNamedItem("builder");
         		if (builder != null) {
-        			if (getTextContent(builder).equals(getName())) {
-        				if (getTextContent(message).matches(linePattern))
+                    if (Luntbuild.getTextContent(builder).equals(getName())) {
+                        if (Luntbuild.getTextContent(message).matches(linePattern))
         					return true;
         			}
         		}
@@ -461,49 +498,47 @@ public abstract class Builder implements Serializable {
     	}
     }
 
-    private String getTextContent(Node node) {
-    	NodeList nodeList= node.getChildNodes();
-        String textContent= null;
-          for (int j=0; j < nodeList.getLength(); j++) {
-              Node k = nodeList.item(j);
-              textContent = k.getNodeValue();
-              if (StringUtils.isNotEmpty(textContent)) return textContent;
-          }
-          return "";
-    }
-    
     /**
-     * Get build object using this builder
-     * @return build object using this builder
+     * Gets the build object using this builder.
+     * 
+     * @return the build object using this builder
      */
     public Build getBuild() {
         return build;
     }
 
     /**
-     * Get system object, this is mainly used for Ognl expression evaluation
-     * @return system object
+     * Gets the system object, this is mainly used for OGNL expression evaluation.
+     * 
+     * @return the system object
      */
     public OgnlHelper getSystem() {
         return new OgnlHelper();
     }
 
     /**
-     * Get name of this builder
-     * @return name of this builder
+     * Gets the name of this builder.
+     * 
+     * @return the name of this builder
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Set name of this builder
-     * @param name
+     * Sets the name of this builder.
+     * 
+     * @param name the name of this builder
      */
     public void setName(String name) {
         this.name = name;
     }
 
+	/**
+	 * Converts this builder to a string.
+	 * 
+	 * @return the string representation of this builder
+	 */
     public String toString() {
         String summary = "Builder name: " + getName() + "\n";
         summary += "Builder type: " + getDisplayName() + "\n";

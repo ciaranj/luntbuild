@@ -25,13 +25,16 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade class for command builder
+ * Command builder facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.builders.CommandBuilder
  */
-public class CommandBuilderFacade extends com.luntsys.luntbuild.facades.lb12.BuilderFacade {
+public class CommandBuilderFacade extends BuilderFacade {
 	/**
 	 * The command to run build
 	 */
@@ -47,53 +50,66 @@ public class CommandBuilderFacade extends com.luntsys.luntbuild.facades.lb12.Bui
 	 */
 	private String waitForFinish;
 
+    /**
+     * Gets the corresponding builder class name.
+     *
+     * @return the builder class name
+     */
+	public String getBuilderClassName() {
+		return "com.luntsys.luntbuild.builders.CommandBuilder";
+	}
+
 	/**
-	 * Get command to run build
-	 * @return command to run build
+	 * Gets the command to run.
+	 * 
+	 * @return the command to run
 	 */
 	public String getCommand() {
 		return command;
 	}
 
 	/**
-	 * Set command to run build
-	 * @param command
+	 * Sets the command to run.
+	 * 
+	 * @param command the command to run
 	 */
 	public void setCommand(String command) {
 		this.command = command;
 	}
 
 	/**
-	 * Get directory to run build command in
-	 * @return directory to run build command in
+	 * Gets the directory to run command in.
+	 * 
+	 * @return the directory to run command in
 	 */
 	public String getDirToRunCmd() {
 		return dirToRunCmd;
 	}
 
 	/**
-	 * Set directory to run build command in
-	 * @param dirToRunCmd
+	 * Sets the directory to run command in.
+	 * 
+	 * @param dirToRunCmd the directory to run command in
 	 */
 	public void setDirToRunCmd(String dirToRunCmd) {
 		this.dirToRunCmd = dirToRunCmd;
 	}
 
-	/**
-	 * Get the wait for finish value
-	 */
+    /**
+     * Gets the wait for builder to finish setting (yes/no).
+     *
+     * @return the wait for builder setting
+     */
 	public String getWaitForFinish() {
 		return waitForFinish;
 	}
 
-	/**
-	 * Set the wait for finish value
-	 */
+    /**
+     * Sets the wait for builder to finish setting (yes/no).
+     *
+     * @param waitForFinish the wait for builder setting
+     */
 	public void setWaitForFinish(String waitForFinish) {
 		this.waitForFinish = waitForFinish;
-	}
-
-	public String getBuilderClassName() {
-		return "com.luntsys.luntbuild.builders.CommandBuilder";
 	}
 }

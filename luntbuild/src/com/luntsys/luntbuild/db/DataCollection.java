@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.db;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This class represents data collection with relationships been setup
+ * A collection of beans with relationships already setup.
  * @author robin shine
  */
 public class DataCollection {
@@ -71,62 +72,152 @@ public class DataCollection {
 	 */
 	private List roles = new ArrayList();
 
+	/**
+	 * Gets the list of all defined system level properties.
+	 * 
+	 * @return the list of properties
+	 * @see Property
+	 */
 	public List getProperties() {
 		return properties;
 	}
 
+	/**
+	 * Sets the list of system level properties.
+	 * 
+	 * @param properties the list of properties
+	 * @see Property
+	 */
 	public void setProperties(List properties) {
 		this.properties = properties;
 	}
 
+	/**
+	 * Gets the list of all defined projects.
+	 * 
+	 * @return the list of projects
+	 * @see Project
+	 */
 	public List getProjects() {
 		return projects;
 	}
 
+	/**
+	 * Sets the list of projects.
+	 * 
+	 * @param projects the list of projects
+	 * @see Project
+	 */
 	public void setProjects(List projects) {
 		this.projects = projects;
 	}
 
+	/**
+	 * Gets the list of all defined users.
+	 * 
+	 * @return the list of users
+	 * @see User
+	 */
 	public List getUsers() {
 		return users;
 	}
 
+	/**
+	 * Sets the list of users.
+	 * 
+	 * @param users the list of users
+	 * @see User
+	 */
 	public void setUsers(List users) {
 		this.users = users;
 	}
 
+	/**
+	 * Gets the list of all defined roles.
+	 * 
+	 * @return the list of roles
+	 * @see Role
+	 */
 	public List getRoles() {
 		return roles;
 	}
 
+	/**
+	 * Sets the list of roles.
+	 * 
+	 * @param roles the list of roles
+	 * @see Role
+	 */
 	public void setRoles(List roles) {
 		this.roles = roles;
 	}
 
+	/**
+	 * Gets the list of all defined VCS login mappings.
+	 * 
+	 * @return the list of VCS login mappings
+	 * @see VcsLogin
+	 */
 	public List getVcsLoginMapping() {
 		return vcsLoginMapping;
 	}
 
+	/**
+	 * Sets the list of VCS login mappings.
+	 * 
+	 * @param vcsLoginMapping the list of VCS login mappings
+	 * @see VcsLogin
+	 */
 	public void setVcsLoginMapping(List vcsLoginMapping) {
 		this.vcsLoginMapping = vcsLoginMapping;
 	}
 
+	/**
+	 * Gets the list of all defined schedules.
+	 * 
+	 * @return the list of schedules
+	 * @see Schedule
+	 */
 	public List getSchedules() {
 		return schedules;
 	}
 
+	/**
+	 * Sets the list of schedules.
+	 * 
+	 * @param schedules the list of schedules
+	 * @see Schedule
+	 */
 	public void setSchedules(List schedules) {
 		this.schedules = schedules;
 	}
 
+	/**
+	 * Gets the list of all stored builds.
+	 * 
+	 * @return the list of builds
+	 * @see Build
+	 */
 	public List getBuilds() {
 		return builds;
 	}
 
+	/**
+	 * Sets the list of builds.
+	 * 
+	 * @param builds the list of builds
+	 * @see Build
+	 */
 	public void setBuilds(List builds) {
 		this.builds = builds;
 	}
 
+	/**
+	 * Gets the project with the specified name.
+	 * 
+	 * @param projectName the project name
+	 * @return the project, or <code>null</code> if no project has that name
+	 */
 	public Project getProject(String projectName) {
 		Iterator it = getProjects().iterator();
 		while (it.hasNext()) {
@@ -137,6 +228,13 @@ public class DataCollection {
 		return null;
 	}
 
+	/**
+	 * Gets the schedule with the specified name from the specified project identifier.
+	 * 
+	 * @param projectId the project identifier
+	 * @param scheduleName the schedule name
+	 * @return the schedule, or <code>null</code> if no schedule has that name for that project identifier
+	 */
 	public Schedule getSchedule(long projectId, String scheduleName) {
 		Iterator it = getSchedules().iterator();
 		while (it.hasNext()) {
@@ -148,6 +246,12 @@ public class DataCollection {
 		return null;
 	}
 
+	/**
+	 * Gets the project with the specified identifier.
+	 * 
+	 * @param projectId the project identifier
+	 * @return the project, or <code>null</code> if no project has that identifier
+	 */
 	public Project getProject(long projectId) {
 		Iterator it = getProjects().iterator();
 		while (it.hasNext()) {
@@ -158,6 +262,12 @@ public class DataCollection {
 		return null;
 	}
 
+	/**
+	 * Gets the schedule with the specified identifier.
+	 * 
+	 * @param scheduleId the schedule identifier
+	 * @return the schedule, or <code>null</code> if no schedule has that identifier
+	 */
 	public Schedule getSchedule(long scheduleId) {
 		Iterator it = getSchedules().iterator();
 		while (it.hasNext()) {
@@ -168,6 +278,12 @@ public class DataCollection {
 		return null;
 	}
 
+	/**
+	 * Gets the user with the specified identifier.
+	 * 
+	 * @param userId the user identifier
+	 * @return the user, or <code>null</code> if no user has that identifier
+	 */
 	public User getUser(long userId) {
 		Iterator it = getUsers().iterator();
 		while (it.hasNext()) {
@@ -178,6 +294,12 @@ public class DataCollection {
 		return null;
 	}
 
+	/**
+	 * Gets the role with the specified identifier.
+	 * 
+	 * @param roleId the role identifier
+	 * @return the role, or <code>null</code> if no role has that identifier
+	 */
 	public Role getRole(long roleId) {
 		Iterator it = getRoles().iterator();
 		while (it.hasNext()) {
@@ -188,6 +310,12 @@ public class DataCollection {
 		return null;
 	}
 
+	/**
+	 * Gets the build with the specified identifier.
+	 * 
+	 * @param buildId the build identifier
+	 * @return the build, or <code>null</code> if no build has that identifier
+	 */
 	public Build getBuild(long buildId) {
 		Iterator it = getBuilds().iterator();
 		while (it.hasNext()) {
@@ -198,6 +326,12 @@ public class DataCollection {
 		return null;
 	}
 
+	/**
+	 * Gets the user with the specified name.
+	 * 
+	 * @param userName the user name
+	 * @return the user, or <code>null</code> if no user has that name
+	 */
 	public User getUser(String userName) {
 		Iterator it = getUsers().iterator();
 		while (it.hasNext()) {

@@ -1,10 +1,3 @@
-package com.luntsys.luntbuild.facades;
-
-import java.util.List;
-
-import com.luntsys.luntbuild.facades.lb12.BuildFacade;
-import com.luntsys.luntbuild.facades.lb12.UserFacade;
-
 /*
  * Copyright luntsys (c) 2004-2005,
  * Date: 2004-10-19
@@ -33,129 +26,152 @@ import com.luntsys.luntbuild.facades.lb12.UserFacade;
  *
  */
 
+package com.luntsys.luntbuild.facades;
+
+import java.util.List;
+
+import com.luntsys.luntbuild.facades.lb12.*;
+
 /**
- * This interface is to define general services provided by luntbuild system. Other system interact
- * with luntbuild through this interface
+ * Luntbuild service interface.
+ * 
+ * <p>This interface is to define general services provided by luntbuild system. Other system interact
+ * with luntbuild through this interface.</p>
  *
- * NOTE: Method with the same name(even parameters are not the same) should not exist in this interface.
- * Otherwise, hessian will complains about a class instantiation error.
+ * <p>NOTE: Methods with the same name (even parameters are not the same) should not exist in this interface.
+ * Otherwise, hessian will complains about a class instantiation error.</p>
  *
  * @author robin shine
  */
 public interface ILuntbuild {
-    /**
-     * Return all projects configured in the system
-     * @return list of {@link com.luntsys.luntbuild.facades.lb12.ProjectFacade}
-     */
-    List getAllProjects();
 
     /**
-     * Return all schedules configured for all projects in the system
-     * @return list of {@link com.luntsys.luntbuild.facades.lb12.ScheduleFacade}
+     * Returns all projects configured in the system.
+     * 
+     * @return a list of project facades
+     * @see ProjectFacade
      */
-    List getAllSchedules();
+    public List getAllProjects();
 
     /**
-     * Return all schedules configured for specified project
-     * @param projectName
-     * @return list of {@link com.luntsys.luntbuild.facades.lb12.ScheduleFacade}
+     * Returns all schedules configured for all projects in the system.
+     * 
+     * @return a list of schedule facades
+     * @see ScheduleFacade
      */
-    List getAllSchedulesOfProject(String projectName);
+    public List getAllSchedules();
 
     /**
-     * Get project by project name, if more than one project have the same name, a random project
-     * will be returned
-     * @param projectName name of the returned project
-     * @return one of the project with specified name, or null if no projects have this name
+     * Returns all schedules configured for specified project.
+     * 
+     * @param projectName the project name
+     * @return a list of schedule facades
+     * @see ScheduleFacade
      */
-    com.luntsys.luntbuild.facades.lb12.ProjectFacade getProjectByName(String projectName);
+    public List getAllSchedulesOfProject(String projectName);
 
     /**
-     * Get schedule by project and schedule name.
-     * @param projectName project name of the schedule
-     * @param scheduleName name of the schedule
-     * @return schedule with specified project and name, or null if no schedules within specified project
+     * Gets a project by name, if more than one project have the same name a random project
+     * will be returned.
+     * 
+     * @param projectName the name of the project
+     * @return the project with specified name, or <code>null</code> if no projects have this name
+     */
+    public ProjectFacade getProjectByName(String projectName);
+
+    /**
+     * Gets a schedule by project and schedule name.
+     * 
+     * @param projectName the name of the project
+     * @param scheduleName the name of the schedule
+     * @return the schedule, or <code>null</code> if no schedules within specified project
      * have this specified name
      */
-    com.luntsys.luntbuild.facades.lb12.ScheduleFacade getScheduleByName(String projectName, String scheduleName);
+    public ScheduleFacade getScheduleByName(String projectName, String scheduleName);
 
     /**
-     * Trigger a build within specified project name, schedule name, and with specified build params
-     * @param projectName project name to trigger build in
-     * @param scheduleName schedule name to trigger build in
-     * @param buildParams build parameters
+     * Triggers a build within the specified schedule name and with the specified build parameters.
+     * 
+     * @param projectName the name of the project name
+     * @param scheduleName the name of the schedule to trigger build in
+     * @param buildParams the build parameters
      */
-    void triggerBuild(String projectName, String scheduleName, com.luntsys.luntbuild.facades.BuildParams buildParams);
+    public void triggerBuild(String projectName, String scheduleName, BuildParams buildParams);
 
     /**
-     * Update properties of a project based on its facade object
-     * @param projectFacade
+     * Updates the properties of a project based on a facade object.
+     * 
+     * @param projectFacade the facade containing the updated properties
      */
-    void saveProject(com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade);
+    public void saveProject(ProjectFacade projectFacade);
 
     /**
-     * Update properties of a schedule based on its facade object
-     * @param scheduleFacade
+     * Updates the properties of a schedule based on a facade object.
+     * 
+     * @param scheduleFacade the facade containing the updated properties
      */
-    void saveSchedule(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    public void saveSchedule(ScheduleFacade scheduleFacade);
 
     /**
-     * Get luntbuild system property value by specifying property name.
-     * Refer to {@link com.luntsys.luntbuild.facades.Constants} for defined system property names
-     * @param propertyName
-     * @return luntbuild system property value
+     * Gets a Luntbuild system property value by specifying property name.
+     * <p>Refer to {@link Constants} for defined system property names.</p>
+     * 
+     * @param propertyName the name of the property
+     * @return the property value
      */
-    String getSystemProperty(String propertyName);
+    public String getSystemProperty(String propertyName);
 
     /**
-     * Set luntbuild system property value. Refer to {@link com.luntsys.luntbuild.facades.Constants} for
-     * defined system property names
-     * @param propertyName
-     * @param propertyValue
+     * Sets a Luntbuild system property value.
+     * <p>Refer to {@link Constants} for defined system property names.</p>
+     * 
+     * @param propertyName the name of the property
+     * @param propertyValue the new value for the property
      */
-    void setSystemProperty(String propertyName, String propertyValue);
+    public void setSystemProperty(String propertyName, String propertyValue);
 
     /**
-     * Search for builds in the system
-     * @param condition the condition matching builds should meet
-     * @param start start position of search operation
-     * @param count number of builds to retrieve. No limit will be set on number of
-     * returned builds if this value equals to 0
-     * @return found builds
+     * Searches for builds in the system.
+     * 
+     * @param condition the search criteria
+     * @param start the start position of search operation
+     * @param count the maximum number of builds to retrieve. Use <code>0</code> for no limit.
+     * @return the builds that were found
      */
-    List searchBuilds(SearchCriteria condition, int start, int count);
+    public List searchBuilds(SearchCriteria condition, int start, int count);
 
     /**
-     * Delete builds matching specified search criteria.
+     * Deletes builds matching a specified search criteria.
      *
-     * @param searchCriteria criteria
+     * @param searchCriteria the search criteria
      * @since 1.3
      */
-    public void deleteBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria);
+    public void deleteBuilds(SearchCriteria searchCriteria);
 
     /**
-     * Delete specified build.
+     * Deletes a specified build.
      *
-     * @param buildFacade build facade
+     * @param buildFacade the build facade
      * @since 1.3
      */
     public void deleteBuild(BuildFacade buildFacade);
 
     /**
-     * Move builds matching specified search criteria to specified schedule.
+     * Moves builds matching the specified search criteria to the specified schedule.
      *
-     * @param searchCriteria criteria
-     * @param projectName project name
-     * @param scheduleName schedule name
+     * @param searchCriteria the search criteria
+     * @param projectName the destination project name
+     * @param scheduleName the destination schedule name
      * @since 1.3
      */
-    public void moveBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria,
-            String projectName, String scheduleName);
+    public void moveBuilds(SearchCriteria searchCriteria, String projectName, String scheduleName);
 
-    /** Move build to specified project/schedule.
-     * @param buildFacade build
-     * @param projectName project name
-     * @param scheduleName schedule name
+    /**
+     * Moves a build to the specified schedule.
+     * 
+     * @param buildFacade the build facade
+     * @param projectName the destination project name
+     * @param scheduleName the destination schedule name
      * @since 1.3
      */
     public void moveBuild(BuildFacade buildFacade, String projectName, String scheduleName);
@@ -163,133 +179,151 @@ public interface ILuntbuild {
     /**
      * Get latest build for specified schedule
      * @param scheduleFacade
-     * @return maybe null if there are not any builds inside this schedule
+     * @return the last build, or <code>null</code> if there are no builds inside the schedule
      */
-    com.luntsys.luntbuild.facades.lb12.BuildFacade getLastBuild(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    public BuildFacade getLastBuild(ScheduleFacade scheduleFacade);
 
     /**
-     * Get latest build for specified schedule
-     * @param projectName
-     * @param scheduleName
-     * @return maybe null if there are not any builds inside this schedule
+     * Gets the latest build for the specified schedule.
+     * 
+     * @param projectName the project name
+     * @param scheduleName the schedule name
+     * @return the last build, or <code>null</code> if there are no builds inside the schedule
      */
-    com.luntsys.luntbuild.facades.lb12.BuildFacade getLastBuild(String projectName, String scheduleName);
+    public BuildFacade getLastBuild(String projectName, String scheduleName);
 
     /**
-     * Get last successful build for specified schedule
-     * @param scheduleFacade
-     * @return maybe null if there are not any successful builds inside this schedule
+     * Gets the last successful build for the specified schedule.
+     * 
+     * @param scheduleFacade the schedule facade
+     * @return the last successful build, or <code>null</code> if there are no successful builds inside the schedule
      */
-    com.luntsys.luntbuild.facades.lb12.BuildFacade getLastSuccessBuild(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    public BuildFacade getLastSuccessBuild(ScheduleFacade scheduleFacade);
 
     /**
-     * Get last successful build for specified schedule
-     * @param projectName
-     * @param scheduleName
-     * @return maybe null if there are not any successful builds inside this schedule
+     * Gets the last successful build for the specified schedule.
+     * 
+     * @param projectName the project name
+     * @param scheduleName the schedule name
+     * @return the last successful build, or <code>null</code> if there are no successful builds inside the schedule
      */
-    com.luntsys.luntbuild.facades.lb12.BuildFacade getLastSuccessBuild(String projectName, String scheduleName);
+    public BuildFacade getLastSuccessBuild(String projectName, String scheduleName);
 
     /**
-     * Create project based on its facade object
-     * @param projectFacade
+     * Creates a project based on a facade object.
+     * 
+     * @param projectFacade the project facade
      * @since 1.3
      */
-    void createProject(com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade);
+    public void createProject(ProjectFacade projectFacade);
 
     /**
-     *  Delete project by project name
-     * @param projectName
+     * Deletes the specified project by name.
+     * 
+     * @param projectName the project name
      * @since 1.3
      */
-    void deleteProject(String projectName);
+    public void deleteProject(String projectName);
 
     /**
-     * Create schedule based on its facade object
-     * @param scheduleFacade
+     * Creates a schedule based on a facade object.
+     * 
+     * @param scheduleFacade the schedule facade
      * @since 1.3
      */
-    void createSchedule(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    public void createSchedule(ScheduleFacade scheduleFacade);
 
     /**
-     *  Delete schedule by schedule object
-     * @param scheduleFacade
+     * Deletes the specified schedule.
+     * 
+     * @param scheduleFacade the schedule facade
      * @since 1.3
      */
-    void deleteSchedule(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade);
+    public void deleteSchedule(ScheduleFacade scheduleFacade);
 
     /**
-     * Delete all schedules configured for specified project
-     * @param projectName
+     * Deletes all schedules configured for the specified project.
+     * 
+     * @param projectName the project name
      * @since 1.3
      */
     public void deleteAllSchedulesOfProject(String projectName);
 
     /**
-     * Get build log of the specified build
-     * @param buildFacade
-     * @return build log as array of strings
+     * Gets the build log of the specified build.
+     * 
+     * @param buildFacade the build facade
+     * @return the build log
      * @since 1.3
      */
-    String[] getBuildLog(com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade);
+    public String[] getBuildLog(BuildFacade buildFacade);
 
     /**
-     * Get build log of the specified build in Html
-     * @param buildFacade
-     * @return build log as array of strings
+     * Gets the build log of the specified build in HTML.
+     * 
+     * @param buildFacade the build facade
+     * @return the build log
      * @since 1.3
      */
     public String[] getBuildLogHtml(BuildFacade buildFacade);
 
     /**
-     * Get revision log of the specified build
-     * @param buildFacade
-     * @return revision log as array of strings
+     * Gets the revision log of the specified build.
+     * 
+     * @param buildFacade the build facade
+     * @return the revision log
      * @since 1.3
      */
-    String[] getRevisionLog(com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade);
+    public String[] getRevisionLog(BuildFacade buildFacade);
 
     /**
-     * Get revision log of the specified build in Html
-     * @param buildFacade
-     * @return revision log as array of strings
+     * Gets the revision log of the specified build in HTML.
+     * 
+     * @param buildFacade the build facade
+     * @return the revision log
      * @since 1.3
      */
     public String[] getRevisionLogHtml(BuildFacade buildFacade);
 
     /**
-     * Get system log
-     * @return system log as array of strings
+     * Gets the system log.
+     * 
+     * @return the system log
      * @since 1.3
      */
-    String[] getSystemLog();
+    public String[] getSystemLog();
 
     /**
-     * Get system log
-     * @return system log as array of strings
+     * Gets the system log.
+     * 
+     * @return the system log
      * @since 1.3
      */
-    public String[] getSystemLogHtml();
+   public String[] getSystemLogHtml();
 
-    /** Return true if user exists and can create project.
-    *
-    * @param username of a user
-    * @return true if user exists and can create project
+   /**
+    * Checks if a user exists and can create project.
+    * 
+    * @param username the name of the user
+    * @return <code>true</code> if the user exists and can create project
     * @since 1.3
     */
    public boolean canCreateProject(String username);
 
-   /** Returns list of all users.
-    * @return list of all users
+   /**
+    * Gets a list of all users.
+    * 
+    * @return a list of all users
     * @since 1.3
     */
    public List getUsers();
 
-   /** Returns user facade if user exists.
-    * @param username of a user
-    * @return user facade if user exists.
+   /**
+    * Gets a user by name.
+    * 
+    * @param username the user name
+    * @return the user, or <code>null</code> if the user does not exist
     * @since 1.3
     */
    public UserFacade getUser(String username);
-
 }
