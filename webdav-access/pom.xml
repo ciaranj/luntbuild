@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.webdavaccess</groupId>
+	<artifactId>webdav-access</artifactId>
+	<packaging>war</packaging>
+	<version>1.0</version>
+	<name>WebDAV-Access</name>
+	<description>
+	Webdav access project used to create webdav servlet to serve webdav and webdav client to allow programatic access to webdav
+	</description>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>LICENSE.txt</url>
+		</license>
+	</licenses>
+	
+	<properties>
+    	<commonsLoggingVersion>1.0.4</commonsLoggingVersion>
+	    <junitVersion>3.8.1</junitVersion>
+	    <log4jVersion>1.2.14</log4jVersion>
+    	<commonsHttpclientVersion>3.0</commonsHttpclientVersion>
+	</properties>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>readme</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<echo>
+									copy the readme.txt to the webapp folder
+								</echo>
+								<copy file="readme.txt"
+									todir="target/${artifactId}-${version}"
+									preservelastmodified="true" />
+								<echo>
+									copy the LICENSE.txt to the webapp folder
+								</echo>
+								<copy file="LICENSE.txt"
+									todir="target/${artifactId}-${version}"
+									preservelastmodified="true" />
+								<echo>
+									copy the LICENSE.txt to target/classes/ , to include it in the .jar
+								</echo> 						
+								<copy file="LICENSE.txt"
+									 todir="target/classes" 
+									 preservelastmodified="true"/>							 
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>zipfiles</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<echo>
+									Creating client webdav jar
+								</echo>
+								<jar basedir="target/classes" destfile="target/${artifactId}-${version}-client.jar">
+								</jar>
+								<echo>
+									Creating archive of 2 jar files to be installed in WEB-INF/lib
+								</echo>
+								<copy todir="target" preservelastmodified="true">
+									    <fileset dir="target/${artifactId}-${version}/WEB-INF/lib">
+									      <include name="slide-webdavlib*.jar"/>
+									    </fileset>
+								</copy>
+								<zip destfile="target/${artifactId}-${version}-install.zip">
+									<zipfileset dir="target" prefix="" includes="${artifactId}-${version}-client.jar"/>
+									<zipfileset dir="target" prefix="" includes="slide-webdavlib*.jar"/>
+								</zip>
+								<delete>
+									<fileset dir="target" includes="slide-webdavlib*.jar"/>
+								</delete>
+								<echo>
+									Creating archive files with complete project
+								</echo>
+								<zip
+									destfile="target/${artifactId}-${version}-project.zip">
+									<zipfileset
+										prefix="${artifactId}-${version}/"
+										excludes="target/,bin/,trash/" dir="./" />
+								</zip>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>http://www.ibiblio.org/maven2</url>
+			<!--
+				<url>http://repo1.maven.org/maven2</url>
+			-->
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<dependencies>
+	    <dependency>
+	      <groupId>junit</groupId>
+	      <artifactId>junit</artifactId>
+	      <version>${junitVersion}</version>
+	      <scope>test</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>commons-logging</groupId>
+	      <artifactId>commons-logging</artifactId>
+	      <version>${commonsLoggingVersion}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>log4j</groupId>
+	      <artifactId>log4j</artifactId>
+	      <version>${log4jVersion}</version>
+	    </dependency>
+	  	<dependency>
+		    <groupId>commons-httpclient</groupId>
+		    <artifactId>commons-httpclient</artifactId>
+		    <version>3.0</version>
+	  	</dependency>
+		<dependency>
+			<groupId>tomcat</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>5.5.12</version>
+			<scope>provided</scope>
+		</dependency>
+	    <dependency>
+	      <groupId>slide</groupId>
+	      <artifactId>slide-webdavlib</artifactId>
+	      <version>2.2pre1</version>
+	    </dependency>
+	</dependencies>
+</project>
+

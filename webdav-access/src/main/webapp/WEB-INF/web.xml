@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+	<display-name>WebDAV-Servlet</display-name>
+	<description>
+		a servlet that brings easy WebDAV access to any store, only 1 interface needs to be implemented
+	</description>
+	<servlet>
+		<servlet-name>webdav-access</servlet-name>
+		<servlet-class>org.webdavaccess.servlet.WebdavServlet</servlet-class>
+		<init-param>
+			<param-name>webdavStore</param-name>
+			<param-value>org.webdavaccess.LocalFileSystemStorage</param-value>
+			<description>
+				name of the class that implements
+				org.webdavaccess.IWebdavStorage
+			</description>
+		</init-param>
+		<init-param>
+			<param-name>rootpath</param-name>
+			<param-value>d:/webdavdata/</param-value>
+			<description>
+				place where to store the webdavcontent on the filesystem
+			</description>
+		</init-param>
+		<init-param>
+			<param-name>storeDebug</param-name>
+			<param-value>1</param-value>
+			<description>
+				triggers debug output of the
+				ResourceHandlerImplementation
+			</description>
+		</init-param>
+	    <init-param>
+	      <param-name>debug</param-name>
+	      <param-value>1</param-value>
+	    </init-param>
+	    <init-param>
+	      <param-name>listings</param-name>
+	      <param-value>true</param-value>
+	    </init-param>
+		<!-- Comment this out to disable read/write access -->
+	    <init-param>
+	      <param-name>readonly</param-name>
+	      <param-value>false</param-value>
+	    </init-param>
+    	<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- The mapping for the webdav servlet
+	* Create webdav (servlet path) in the rootpath
+	* Be aware, that using /* pattern could interfere with other webapp servlets (Spring?)
+	 -->
+	<servlet-mapping>
+		<servlet-name>webdav-access</servlet-name>
+		<url-pattern>/webdav/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- ================ Security Constraints for Testing =============== -->
+
+	<!--
+		<security-constraint>
+		<web-resource-collection>
+		<web-resource-name>The Entire Web Application</web-resource-name>
+		<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+		<role-name>webdav</role-name>
+		</auth-constraint>
+		</security-constraint>
+		
+		<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>Tomcat Supported Realm</realm-name>
+		</login-config>
+		
+		<security-role>
+		<description>
+		An example role defined in "conf/tomcat-users.xml"
+		</description>
+		<role-name>webdav</role-name>
+		</security-role>
+	-->
+
+	<welcome-file-list>
+		<welcome-file />
+	</welcome-file-list>
+
+</web-app>
