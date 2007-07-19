@@ -25,13 +25,21 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of CompositeVcsAdaptor
+ * Composite VCS adaptor facade.
+ * 
  * @author robin shine
  */
 public class CompositeVcsAdaptorFacade extends VcsFacade {
+
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
 	public String getVcsClassName() {
 		return "com.luntsys.luntbuild.utility.CompositeVcsAdaptor";
 	}

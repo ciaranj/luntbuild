@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
@@ -41,9 +42,9 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Base class for all version control adaptors. Different type of version control system
- * such as cvs, vss should implement this abstract class
- *
+ * Base class for all version control adaptors. Different types of version control systems (VCS)
+ * such as cvs or vss should implement this abstract class.
+ * 
  * @author robin shine
  */
 public abstract class Vcs implements Serializable, Cloneable {
@@ -62,21 +63,28 @@ public abstract class Vcs implements Serializable, Cloneable {
 	 */
 	private String quietPeriod;
 
-	/**
-	 * @return a string value describes type of the version control system
-	 */
+    /**
+     * Gets the display name for this VCS.
+     *
+     * @return the display name for this VCS
+     */
 	public abstract String getDisplayName();
 
-	/**
-	 * @return name of the icon for this version control system. Icon should be put into
-	 * the images directory of the web application.
-	 */
+    /**
+     * Gets the the name of the icon for this VCS.
+     * 
+     * @return the name of the icon for this VCS. Icon should be put into
+     *         the images directory of the web application.
+     */
 	public abstract String getIconName();
 
-	/**
-	 * Get list of properties specific to this vcs. Item of this list is of type {@link DisplayProperty}
-	 * @return list of vcs property
-	 */
+    /**
+     * Gets the common VCS properties. These properites will be shown to user and expect
+     * input from user.
+     *
+     * @return the list of properties can be configured by user
+     * @see DisplayProperty
+     */
 	public List getProperties() {
 		List properties = getVcsSpecificProperties();
 		properties.add(new DisplayProperty(){
@@ -106,25 +114,30 @@ public abstract class Vcs implements Serializable, Cloneable {
 		return properties;
 	}
 
-	/**
-	 * Get list of properties specific to different vcs. Item of this list is of type {@link DisplayProperty}
-	 * @return list of vcs property
-	 */
+    /**
+     * Gets the properties of this implementation of <code>Vcs</code>. These properites will be shown to user and expect
+     * input from user.
+     *
+     * @return the list of properties can be configured by user
+     * @see DisplayProperty
+     */
 	public abstract List getVcsSpecificProperties();
 
 	/**
-	 * Cleanup this vcs object's checked out contents
-	 * @param workingSchedule
-	 * @param antProject
+	 * Cleans up this VCS object's checked out contents.
+	 * 
+	 * @param workingSchedule the currently running schedule
+	 * @param antProject the ant project used for logging
 	 */
 	public void cleanupCheckout(Schedule workingSchedule, Project antProject) {
 		Luntbuild.cleanupDir(workingSchedule.getWorkDirRaw());
 	}
 
 	/**
-	 * Checkout contents from version control system
-	 * @param build
-	 * @param antProject
+	 * Checks out the contents from the VCS after waiting for the designated quiet period.
+	 * 
+	 * @param build the build
+	 * @param antProject the ant project used for logging
 	 */
 	public void checkout(Build build, Project antProject) {
 		if (!Luntbuild.isEmpty(getQuietPeriod())) {
@@ -145,52 +158,74 @@ public abstract class Vcs implements Serializable, Cloneable {
 		checkoutActually(build, antProject);
 	}
 
+	/**
+	 * Checks out the contents from the VCS without waiting.
+	 * 
+	 * @param build the build
+	 * @param antProject the ant project used for logging
+	 */
 	public abstract void checkoutActually(Build build, Project antProject);
 
+	/**
+	 * Checks if the VCS has had any changes since the specified date.
+	 * 
+	 * @param sinceDate the date to check from
+	 * @param workingSchedule the currently running schedule
+	 * @param antProject the ant project used for logging
+	 * @return <code>true</code> if there have been changes since the specified date
+	 */
 	public boolean isVcsQuietSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		Revisions revisions = getRevisionsSince(sinceDate, workingSchedule, antProject);
 		return !revisions.isFileModified();
 	}
 
 	/**
-	 * Label contents in version control system
-	 * @param build
-	 * @param antProject
+	 * Labels the contents in the VCS.
+	 * 
+	 * @param build the build
+	 * @param antProject the ant project used for logging
 	 */
 	public abstract void label(Build build, Project antProject);
 
 	/**
-	 * Unlabel contents in version control system
-	 * @param build
-	 * @param antProject
+	 * Unlabels the contents in the VCS.
+	 * 
+	 * @param build the build
+	 * @param antProject the ant project used for logging
 	 */
 	public void unlabel(Build build, Project antProject){};
 
 	/**
-	 * Create a new module for current vcs
+	 * Creates a new module for this VCS.
 	 *
-	 * @return null if modules are not applicable for current vcs
+	 * @return the new module, or <code>null<code> if modules are not applicable for this VCS
 	 */
 	public abstract Module createNewModule();
 
-    /**
-     * Create a new module for current vcs
-     *
-     * @return null if modules are not applicable for current vcs
+	/**
+	 * Creates a new module for this VCS from the specified module.
+	 * 
+	 * @param module the module to create from
+	 * @return the new module, or <code>null<code> if modules are not applicable for this VCS
      */
     public abstract Module createNewModule(Module module);
 
 	/**
-	 * Get a list of change logs covered by current vcs config since
-	 * the specified date.
-	 * @param sinceDate since date
-	 * @param workingSchedule working schedule
-	 * @param antProject
+	 * Gets a list of change logs covered by this VCS config since the specified date.
+	 * 
+	 * @param sinceDate the date to check from
+	 * @param workingSchedule the currently running schedule
+	 * @param antProject the ant project used for logging
 	 * @return list of file modification descriptions
 	 */
 	public abstract Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject);
 
-	public com.luntsys.luntbuild.facades.lb12.VcsFacade getFacade() {
+    /**
+     * Gets the facade object of this VCS.
+     *
+     * @return facade object of this VCS
+     */
+	public VcsFacade getFacade() {
 		VcsFacade facade = constructFacade();
 		facade.setQuietPeriod(getQuietPeriod());
 		saveToFacade(facade);
@@ -202,29 +237,52 @@ public abstract class Vcs implements Serializable, Cloneable {
 		return facade;
 	}
 
+    /**
+     * Sets the facade object of this VCS.
+     *
+     * @param facade the VCS facade
+     */
 	public void setFacade(VcsFacade facade) {
 		setQuietPeriod(facade.getQuietPeriod());
 		loadFromFacade(facade);
 		getModules().clear();
 		Iterator it = facade.getModules().iterator();
 		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.ModuleFacade moduleFacade = (ModuleFacade) it.next();
+			ModuleFacade moduleFacade = (ModuleFacade) it.next();
 			Module module = createNewModule();
 			module.setFacade(moduleFacade);
 			getModules().add(module);
 		}
 	}
 
+    /**
+     * Saves this VCS to a VCS facade.
+     *
+     * @param facade the VCS facade
+     */
 	public abstract void saveToFacade(VcsFacade facade);
 
+    /**
+     * Loads this VCS from a VCS facade.
+     *
+     * @param facade the VCS facade
+     */
 	public abstract void loadFromFacade(VcsFacade facade);
 
+    /**
+     * Constructs a blank VCS facade object.
+     *
+     * @return the VCS facade object
+     */
 	public abstract VcsFacade constructFacade();
 
-	/**
-	 * Check vcs properties against {@link com.luntsys.luntbuild.utility.DisplayProperty#isRequired()}
-	 * sub-class who override this method should call this implementation first
-	 */
+    /**
+     * Validates the properties of this VCS.  Checks that property values are valid and required properties have a value.
+     * <p>Sub-classes who override this method should call this implementation first.</p>
+     *
+     * @throws ValidationException if a property has an invalid value
+     * @see DisplayProperty#isRequired()
+     */
 	public void validateProperties() {
 		Iterator it = getVcsSpecificProperties().iterator();
 		while (it.hasNext()) {
@@ -248,10 +306,12 @@ public abstract class Vcs implements Serializable, Cloneable {
 		}
 	}
 
-	/**
-	 * Check module properties against {@link DisplayProperty#isRequired()}
-	 * sub-class who override this method should call this implementation first
-	 */
+    /**
+     * Validates the modules of this VCS.
+     * <p>Sub-classes who override this method should call this implementation first.</p>
+     *
+     * @throws ValidationException if a module is not invalid
+     */
 	public void validateModules() {
 		if (createNewModule() == null) // modules are not applicable for current vcs
 			return;
@@ -269,14 +329,22 @@ public abstract class Vcs implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Sub class will override this method if wants to provide extra checking over overral
-	 * properties
+	 * Validates this VCS.
+	 * 
+	 * <p>Sub-classes can override this method to provide extra checking over overrall properties, but call this implementation as well.</p>
 	 */
 	public void validate() {
 		validateProperties();
 		validateModules();
 	}
 
+	/**
+	 * Creates and returns a copy of this object.
+	 * 
+	 * @return a clone of this instance
+	 * @throws CloneNotSupportedException if cloning is not supported
+	 * @throws RuntimeException if a clone can not be done
+	 */
 	public Object clone() throws CloneNotSupportedException {
 		try {
 			Vcs copy = (Vcs) getClass().newInstance();
@@ -298,14 +366,29 @@ public abstract class Vcs implements Serializable, Cloneable {
 		}
 	}
 
+    /**
+     * Gets the quiet period for this VCS.
+     * 
+     * @return the quiet period for this VCS
+     */
 	public String getQuietPeriod() {
 		return quietPeriod;
 	}
 
+    /**
+     * Sets the quiet period for this VCS.
+     * 
+     * @param quietPeriod the quiet period for this VCS
+     */
 	public void setQuietPeriod(String quietPeriod) {
 		this.quietPeriod = quietPeriod;
 	}
 
+	/**
+	 * Converts this VCS to a string.
+	 * 
+	 * @return the string representation of this VCS
+	 */
 	public String toString() {
 		String summary = "Vcs name: " + getDisplayName() + "\n";
 		Iterator it = getProperties().iterator();
@@ -339,10 +422,10 @@ public abstract class Vcs implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Make this method final to ensure the returned value will
-	 * never be null
+	 * Gets the modules of this VCS.
 	 *
-	 * @return
+	 * @return the modules of this VCS
+	 * @see Vcs.Module
 	 */
 	public final List getModules() {
 		if (modules == null)
@@ -351,37 +434,52 @@ public abstract class Vcs implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Derive vcs object at build time. This is meaningful for some vcs adaptors that
-	 * utilize other vcs object to perform build, such as {@link UCMClearcaseAdaptor}
-	 * @return
+	 * Derives VCS object at build time. This is meaningful for some VCS adaptors that
+	 * utilize other VCS objects to perform builds, such as {@link UCMClearcaseAdaptor}.
+	 * 
+	 * @param antProject the ant project used for logging
+	 * @return the build time VCS object
 	 */
 	public Vcs deriveBuildTimeVcs(Project antProject) {
 		return this;
 	}
 
 	/**
-	 * This interface represents a module definition
+	 * A VCS module definition.
 	 *
 	 * @author robin shine
-	 * @see com.luntsys.luntbuild.db.Project
 	 */
 	public abstract class Module implements Serializable, Cloneable {
         /**
          * Keep tracks of version of this class, used when do serialization-deserialization
          */
         static final long serialVersionUID = 1L;
+
 		/**
-		 * Get list of display properties for this module
-		 * @return
+		 * Gets the list of display properties for this module.
+		 * 
+		 * @return the list of display properties
+		 * @see DisplayProperty
 		 */
 		public abstract List getProperties();
 
-		public abstract com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade();
+	    /**
+	     * Gets the facade object of this module.
+	     *
+	     * @return facade object of this module
+	     */
+		public abstract ModuleFacade getFacade();
 
+	    /**
+	     * Sets the facade object of this module.
+	     *
+	     * @param facade the module facade
+	     */
 		public abstract void setFacade(ModuleFacade facade);
 
 		/**
-		 * Validates properties of this module
+		 * Validates the properties of this module.
+		 * 
 		 * @throws ValidationException
 		 */
 		public void validate() {
@@ -396,6 +494,12 @@ public abstract class Vcs implements Serializable, Cloneable {
 			}
 		}
 
+		/**
+		 * Indicates whether some other object is "equal to" this one.
+		 * 
+		 * @param obj the reference object with which to compare
+		 * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
+		 */
 		public boolean equals(Object obj) {
 			if (obj != null && obj instanceof Module){
 				Module module = (Module) obj;
@@ -405,6 +509,13 @@ public abstract class Vcs implements Serializable, Cloneable {
 			return false;
 		}
 
+		/**
+		 * Creates and returns a copy of this object.
+		 * 
+		 * @return a clone of this instance
+		 * @throws CloneNotSupportedException if cloning is not supported
+		 * @throws RuntimeException if a clone can not be done
+		 */
 		public Object clone() throws CloneNotSupportedException {
 			try {
 				Module copy = (Module) getClass().newInstance();

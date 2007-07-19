@@ -105,6 +105,41 @@ public class P4Label extends P4Base {
             name = "AntLabel-" + formatter.format(now);
             log("name not set, assuming '" + name + "'", Project.MSG_WARN);
         }
+        
+        if (P4View.equals("//...")) {  // Create view from existing workspace
+        	P4Handler viewhandler = new P4HandlerAdapter() {
+	            public String P4View = "";
+	            private boolean read = false;
+	            
+	            public void processStdout(String line) {
+	                if (line.startsWith("View:")) {
+	                	read = true;
+	                } else if (read && line.startsWith("\t")) {
+	                	line = line.replaceAll("\t"," ");
+	                	String[] lines = line.split(" ");
+	                	String[] depot_path = lines[1].split("/");
+	                	String depot = "//" + depot_path[2] + "/...";
+	                	if (!P4View.matches(depot)) {
+	                		if (P4View.equals(""))
+		                		P4View += depot;
+		                	else
+		                		P4View += "\n\t" + depot;
+		                }
+	                }
+	            }
+	
+				public void processStderr(String line) {
+					log(line, Project.MSG_ERR);
+				}
+				
+				public String toString() {
+					return P4View;
+				}
+	        };
+	        
+	        execP4Command("client -o", viewhandler);
+	        P4View = viewhandler.toString();
+        }
 
 
         //We have to create a unlocked label first

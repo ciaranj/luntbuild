@@ -156,6 +156,7 @@
 				com.luntsys.luntbuild.dao.Dao.deleteBuild=ACL_PROJECT_ADMIN
                 com.luntsys.luntbuild.dao.Dao.loadLastBuild=AFTER_ACL_READ
 				com.luntsys.luntbuild.dao.Dao.loadLastSuccessBuild=AFTER_ACL_READ
+                com.luntsys.luntbuild.dao.Dao.loadPreviousBuild=AFTER_ACL_READ
 				com.luntsys.luntbuild.dao.Dao.loadRunningBuild=AFTER_ACL_READ
 				com.luntsys.luntbuild.dao.Dao.reserveBuildsByCount=ACL_PROJECT_ADMIN
 				com.luntsys.luntbuild.dao.Dao.removeBuildsBefore=ACL_PROJECT_ADMIN
@@ -433,4 +434,3 @@
 	</bean>
 
 </beans>
-

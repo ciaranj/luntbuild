@@ -59,14 +59,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
- *  notifier for jabber messanger
- *  to be used by luntbuild for internal notifications
- *
+ * Jabber messenger implementation.
+ * 
  * @author johannes plachy
- *
  */
-
 public class JabberNotifier  extends TemplatedNotifier
 {
     /**
@@ -89,35 +85,36 @@ public class JabberNotifier  extends TemplatedNotifier
     private XMPPConnection connection = null;
 
     /**
-     * Constructor
+     * Creates a Jabber notifier.
      */
     public JabberNotifier() {
         super(JabberNotifier.class, "jabber");
     }
 
     /**
-     * @see com.luntsys.luntbuild.notifiers.Notifier#getDisplayName()
+     * @inheritDoc
      */
     public String getDisplayName()
     {
         return "Jabber";
     }
 
+	/**
+	 * @inheritDoc
+	 */
     public String getComment()
     {
         return "NOTE. Connecting using proxy is not yet supported.";
     }
 
-    /**
-     * @see com.luntsys.luntbuild.notifiers.Notifier#sendBuildNotification(java.util.Set,
-     *      java.util.Set, com.luntsys.luntbuild.db.Build, org.apache.tools.ant.Project)
-     */
+	/**
+	 * @inheritDoc
+	 */
     public void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject)
     {
         loginToJabberServer(antProject);
         if (this.connection != null)
         {
-
             Iterator it = checkinUsers.iterator();
             while (it.hasNext())
             {
@@ -135,10 +132,9 @@ public class JabberNotifier  extends TemplatedNotifier
         }
     }
 
-    /**
-     * @see com.luntsys.luntbuild.notifiers.Notifier#sendScheduleNotification(java.util.Set,
-     *      com.luntsys.luntbuild.db.Schedule, org.apache.tools.ant.Project)
-     */
+	/**
+	 * @inheritDoc
+	 */
     public void sendScheduleNotification(Set subscribeUsers, Schedule schedule, Project antProject)
     {
         loginToJabberServer(antProject);
@@ -155,6 +151,11 @@ public class JabberNotifier  extends TemplatedNotifier
         }
     }
 
+    /**
+     * Logs in to the Jabber server specified by the system level properties.
+     * 
+     * @param antProject the ant project used for logging purposes
+     */
     private void loginToJabberServer(Project antProject)
     {
         NotifierProperty property = (NotifierProperty) getSystemLevelProperties().get(JABBER_ACCOUNT);
@@ -212,21 +213,34 @@ public class JabberNotifier  extends TemplatedNotifier
             antProject.log("Login to jabberserver [" + jabberServer + "] using [" + luntJabberAccount + "] failed",
                     Project.MSG_WARN);
         }
-
     }
 
-    private void logoffFromJabberServer(XMPPConnection conn, Project antProject)
+    /**
+     * Logs out of a Jabber server connection.
+     * 
+     * @param connection the Jabber server connection
+     * @param antProject the ant project used for logging purposes
+     */
+    private void logoffFromJabberServer(XMPPConnection connection, Project antProject)
     {
-        if (conn != null)
+        if (connection != null)
         {
             try { Thread.sleep(250);} catch (InterruptedException ignored){}
             // wait 1/4 a second to make sure our message(s) are all sent
-            conn.close();
-            conn = null;
+            connection.close();
+            connection = null;
         }
     }
 
-    private void sendMessage(XMPPConnection conn, User user, String notificationMessage,
+    /**
+     * Sends a message with the specified Jabber server connection to the specified user's Jabber account.
+     * 
+     * @param connection the Jabber server connection
+     * @param user the user with a Jabber account to send to
+     * @param notificationMessage the message to send
+     * @param antProject the ant project used for logging purposes
+     */
+    private void sendMessage(XMPPConnection connection, User user, String notificationMessage,
             Project antProject)
     {
         String userJabberAccount =
@@ -236,19 +250,27 @@ public class JabberNotifier  extends TemplatedNotifier
             antProject.log("Can not send Jabber messages to user " + "\"" + user.getName()
                     + "\": Jabber account is empty!", Project.MSG_WARN);
         else
-         {
+        {
             antProject.log("Call Jabber account \"" + userJabberAccount + "\"...", Project.MSG_INFO);
 
-            sendNotification(conn, userJabberAccount, notificationMessage, antProject);
+            sendNotification(connection, userJabberAccount, notificationMessage, antProject);
         }
     }
 
-    private void sendNotification(XMPPConnection conn, String receiver, String message,
+    /**
+     * Sends a message with the specified Jabber server connection to the specified Jabber account.
+     * 
+     * @param connection the Jabber server connection
+     * @param receiver the Jabber account to send to
+     * @param message the message to send
+     * @param antProject the ant project used for logging purposes
+     */
+    private void sendNotification(XMPPConnection connection, String receiver, String message,
             Project antProject)
     {
         try
         {
-            conn.createChat(receiver).sendMessage(message);
+            connection.createChat(receiver).sendMessage(message);
         }
         catch (XMPPException e)
         {
@@ -257,9 +279,9 @@ public class JabberNotifier  extends TemplatedNotifier
         }
     }
 
-    /**
-     * @see com.luntsys.luntbuild.notifiers.Notifier#getSystemLevelProperties()
-     */
+	/**
+	 * @inheritDoc
+	 */
     public List getSystemLevelProperties()
     {
         List properties = new ArrayList();
@@ -385,6 +407,9 @@ public class JabberNotifier  extends TemplatedNotifier
         return properties;
     }
 
+	/**
+	 * @inheritDoc
+	 */
     public List getUserLevelProperties()
     {
         List properties = new ArrayList();
@@ -408,5 +433,4 @@ public class JabberNotifier  extends TemplatedNotifier
         });
         return properties;
     }
-
 }

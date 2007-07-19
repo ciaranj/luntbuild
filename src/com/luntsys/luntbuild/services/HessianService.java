@@ -30,6 +30,7 @@ package com.luntsys.luntbuild.services;
 import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
 import com.caucho.hessian.server.HessianSkeleton;
+import com.luntsys.luntbuild.facades.ILuntbuild;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,21 +47,46 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * This class provides web service for luntbuild system. It will internally calls luntbuild service
+ * A service for accessing the Luntbuild system directly. It will internally call the Luntbuild service.
+ * 
  * @author robin shine
+ * @see ILuntbuild
  */
 public class HessianService extends AbstractService {
 	private static Log logger = LogFactory.getLog(HessianService.class);
 
+	/** Name of this service, used to access this service. */
 	public static final String SERVICE_NAME = "hessian";
+
+	/**
+     * Builds a link.
+     * 
+     * <p>A single parameter is expected, the resource path of the asset
+     * (which is expected to start with a leading slash).</p>
+     * 
+	 * @param cycle the request cycle being processed
+	 * @param component the component requesting the URL
+	 * @param parameters additional parameters specific to the component
+	 * @return the URL
+	 */
 	public ILink getLink(IRequestCycle cycle, IComponent component, Object[] parameters) {
 		return constructLink(cycle, SERVICE_NAME, null, null, false);
 	}
 
+	/**
+	 * Connects the request output stream to the Luntbuild service.
+	 * 
+	 * @param engine a view of the {@link org.apache.tapestry.IEngine} with additional methods needed by services
+	 * @param cycle the incoming request
+	 * @param output stream to which output should ultimately be directed
+	 * @throws ServletException if an exception happens while servicing the request
+	 * @throws IOException not thrown
+	 * @see ILuntbuild
+	 */
 	public void service(IEngineServiceView engine, IRequestCycle cycle, ResponseOutputStream output) throws ServletException, IOException {
 		try {
-			com.luntsys.luntbuild.facades.ILuntbuild luntbuildService = Luntbuild.getLuntbuildService();
-			HessianSkeleton serviceInvoker = new HessianSkeleton(luntbuildService, com.luntsys.luntbuild.facades.ILuntbuild.class);
+			ILuntbuild luntbuildService = Luntbuild.getLuntbuildService();
+			HessianSkeleton serviceInvoker = new HessianSkeleton(luntbuildService, ILuntbuild.class);
 			InputStream in = cycle.getRequestContext().getRequest().getInputStream();
 			OutputStream out = cycle.getRequestContext().getResponse().getOutputStream();
 			serviceInvoker.invoke(new HessianInput(in), new HessianOutput(out));
@@ -70,6 +96,11 @@ public class HessianService extends AbstractService {
 		}
 	}
 
+	/**
+	 * Gets the name of this service.
+	 * 
+	 * @return the service name
+	 */
 	public String getName() {
 		return SERVICE_NAME;
 	}

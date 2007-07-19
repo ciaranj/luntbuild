@@ -68,7 +68,11 @@
 			</span>
 			<span jwcid="@Conditional" condition="ognl:!isSiteAdmin()">&nbsp;</span>
 		</td>
-		<td width="4%" scope="col">&nbsp;</td>
+		<td width="4%" scope="col">
+			<a jwcid="@GenericLink" href="ognl:'api/opml'">
+				<img src="images/feed.gif" width="16" height="16" border="0" align="absmiddle" title="browse available feeds">
+			</a>
+		</td>
 	  </tr>
 	  <span jwcid="@Foreach" source="ognl:schedules" value="ognl:schedule" index="ognl:scheduleIndex">
 	  <tr id="ognl:'buildElement-'+scheduleIndex" jwcid="@Any">
@@ -97,7 +101,7 @@
 		</span>
 		<span jwcid="@Conditional" condition="ognl:schedule.isDisabled()">
 		disabled
-		</span>	
+		</span>
 		</td>
 		<td align="left" valign="top" class="ognl:rowClass" jwcid="@Any">
 		<img jwcid="@Any" src="ognl:lastBuildStatusGif" width="20" height="20" align="absmiddle"/>

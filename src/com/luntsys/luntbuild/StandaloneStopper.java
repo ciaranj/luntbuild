@@ -1,3 +1,7 @@
+/*
+ *
+ */
+
 package com.luntsys.luntbuild;
 
 import java.io.IOException;
@@ -12,17 +16,17 @@ import org.apache.log4j.BasicConfigurator;
 import com.luntsys.luntbuild.utility.Luntbuild;
 
 /**
- *
- * Stops Luntbuild launched by standalone launcher
+ * Stops the standalone Luntbuild.
  *
  * @author lubosp
- *
  */
 public class StandaloneStopper {
 
     private static Log logger = LogFactory.getLog(StandaloneStopper.class);
 
     /**
+     * Stops the standalone version of Luntbuild.
+     * 
      * @param args 0 - host, 1 - port
      */
     public static void main(String[] args) {

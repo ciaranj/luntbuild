@@ -25,15 +25,18 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.migration;
 
 import com.luntsys.luntbuild.builders.AntBuilder;
+import com.luntsys.luntbuild.dao.Dao;
 import com.luntsys.luntbuild.db.*;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.xmlpull.mxp1.MXParser;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -42,16 +45,25 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * The class to control migration
+ * Manager for importing and migrating data into Luntbuild.
  *
  * @author robin shine
  */
 public class MigrationManager {
 	private static Log logger = LogFactory.getLog(MigrationManager.class);
 
+	/**
+	 * Imports Luntbuild data from the specified XML file into a version 1.2 compatable facade collection object.
+	 * 
+	 * @param xmlDataFile the XML file to import
+	 * @return the facade collection object
+	 * @throws RuntimeException if an error occurs while accessing the data file
+	 * @throws MigrationException if the data file is invalid or unsupported
+	 */
 	public static com.luntsys.luntbuild.facades.lb12.DataCollection importAsDataCollection12(File xmlDataFile) {
 		FileReader fileReader = null;
 		try {
@@ -99,7 +111,60 @@ public class MigrationManager {
 				}
 		}
 	}
+	/**
+	 * Imports Luntbuild project data from the specified XML file into a version 1.2 compatable project facade collection object.
+	 * 
+	 * @param xmlDataFile the XML file to import
+	 * @return the project facade collection object
+	 * @throws RuntimeException if an error occurs while accessing the data file
+	 * @throws MigrationException if the data file is invalid or unsupported
+	 */
+	public static com.luntsys.luntbuild.facades.lb12.ProjectCollection importAsProjectCollection12(File xmlDataFile) {
+		FileReader fileReader = null;
+		try {
+			logger.info("Detect data version...");
+			fileReader = new FileReader(xmlDataFile);
+			XmlPullParser xpp = new MXParser();
+			xpp.setInput(fileReader);
+			xpp.nextTag();
+			if (!xpp.getName().equals("ProjectCollection"))
+				throw new MigrationException("Invalid data file: Root element should be <ProjectCollection>");
+			xpp.nextTag();
+			if (!xpp.getName().equals("version"))
+				throw new MigrationException("Invalid data file: First element of <ProjectCollection> should be <version>");
+			String version = xpp.nextText().trim();
+			XStream xstream = new XStream();
+			fileReader.close();
+			fileReader = null;
+			fileReader = new FileReader(xmlDataFile);
+			logger.info("Data version of importing file is: " + version);
+			if (version.equals("1.2")) {
+				xstream.alias("ProjectCollection", com.luntsys.luntbuild.facades.lb12.ProjectCollection.class);
+				return (com.luntsys.luntbuild.facades.lb12.ProjectCollection) xstream.fromXML(fileReader);
+			}
+			throw new MigrationException("This version of data file is not supported!");
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (XmlPullParserException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (fileReader != null)
+				try {
+					fileReader.close();
+				} catch (IOException e) {
+					// ignore
+				}
+		}
+	}
 
+	/**
+	 * Migrates a version 1.1.1 compatable facade collection object to a version 1.2 compatable facade collection object.
+	 * 
+	 * @param data111 the version 1.1.1 facade collection object
+	 * @return the version 1.2 facade collection object
+	 */
 	private static com.luntsys.luntbuild.facades.lb12.DataCollection migrateFrom111To12(com.luntsys.luntbuild.facades.lb111.DataCollection data111) {
 		com.luntsys.luntbuild.facades.lb12.DataCollection data12 = new com.luntsys.luntbuild.facades.lb12.DataCollection();
 		// migrate properties
@@ -452,6 +517,15 @@ public class MigrationManager {
 		return data12;
 	}
 
+	/**
+	 * Migrates version 1.1.1 compatable VCS adaptors to version 1.2 compatable VCS adaptors.
+	 * <p>This process involves combining the VCS adaptor from the project and view level.</p>
+	 * 
+	 * @param vcs111AtProjectLevel the version 1.1.1 VCS adaptor from the project level
+	 * @param vcs111AtViewLevel the version 1.1.1 VCS adaptor from the view level
+	 * @return the version 1.2 VCS adaptor
+	 * @throws RuntimeException if the VCS adaptor is not supported
+	 */
 	private static com.luntsys.luntbuild.facades.lb12.VcsFacade migrateVcsFrom111To12(com.luntsys.luntbuild.facades.lb111.VcsFacade vcs111AtProjectLevel,
 																					  com.luntsys.luntbuild.facades.lb111.VcsFacade vcs111AtViewLevel) {
 		if (vcs111AtProjectLevel instanceof com.luntsys.luntbuild.facades.lb111.BaseClearcaseAdaptorFacade) {
@@ -495,7 +569,6 @@ public class MigrationManager {
 					(com.luntsys.luntbuild.facades.lb111.PerforceAdaptorFacade) vcs111AtViewLevel;
 			com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade vcs12 =
 					new com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade();
-			vcs12.setLineEnd(projectVcs.getLineEnd());
 			vcs12.setPassword(projectVcs.getPassword());
 			vcs12.setPort(projectVcs.getPort());
 			vcs12.setUser(projectVcs.getPort());
@@ -562,10 +635,26 @@ public class MigrationManager {
 		throw new RuntimeException("Un-expected VCS class: " + vcs111AtProjectLevel.getClass().getName());
 	}
 
+	/**
+	 * Removes illegal characters from build version for version 1.2 compatable Luntbuild.
+	 * 
+	 * @param buildVersion the build version string
+	 * @return the cleaned build version string
+	 */
 	private static String correctBuildVersionFor12(String buildVersion) {
 		return buildVersion.replaceAll("[/\\\\:*?\"<>|]", "-");
 	}
 
+	/**
+	 * Creates a version 1.2 compatable project name from a version 1.1.1 compatable project.
+	 * <p>This process involves combining the project and view name.  A version 1.2 compatable facade
+	 * collection object is needed to make sure duplicate project names are not generated.</p>
+	 * 
+	 * @param data12 a version 1.2 compatable facade collection object
+	 * @param projectNameOf111 the version 1.1.1 project name
+	 * @param viewNameOf111 the version 1.1.1 view name
+	 * @return the new project name
+	 */
 	private static String createProjectNameFor12(com.luntsys.luntbuild.facades.lb12.DataCollection data12,
 												 String projectNameOf111, String viewNameOf111) {
 		String temp = projectNameOf111 + "-" + viewNameOf111;
@@ -580,6 +669,15 @@ public class MigrationManager {
 		return projectName;
 	}
 
+	/**
+	 * Creates a version 1.2 compatable schedule name from a version 1.1.1 compatable schedule.
+	 * <p>A version 1.2 compatable facade collection object is needed to make sure duplicate schedule names are not generated.</p>
+	 * 
+	 * @param data12 a version 1.2 compatable facade collection object
+	 * @param projectIdOf12 the version 1.2 project name
+	 * @param scheduleNameOf111 the version 1.1.1 schedule name
+	 * @return the new schedule name
+	 */
 	private static String createScheduleNameFor12(com.luntsys.luntbuild.facades.lb12.DataCollection data12,
 												  long projectIdOf12, String scheduleNameOf111) {
 		String temp = scheduleNameOf111;
@@ -594,6 +692,11 @@ public class MigrationManager {
 		return scheduleName;
 	}
 
+	/**
+	 * Sets up mappings from XML elements to version 1.1.1 compatable facade classes.
+	 * 
+	 * @param xstream the XML parser
+	 */
 	private static void setupAliasesFor111(XStream xstream) {
 		xstream.alias("com.luntsys.luntbuild.remoting.BaseClearcaseAdaptorFacade", com.luntsys.luntbuild.facades.lb111.BaseClearcaseAdaptorFacade.class);
 		xstream.alias("com.luntsys.luntbuild.remoting.BuildFacade", com.luntsys.luntbuild.facades.lb111.BuildFacade.class);
@@ -625,6 +728,12 @@ public class MigrationManager {
 		xstream.alias("com.luntsys.luntbuild.remoting.FileSystemAdaptorFacade", com.luntsys.luntbuild.facades.lb111.FileSystemAdaptorFacade.class);
 	}
 
+	/**
+	 * Converts a version 1.2 compatable facade collection object into a version 1.2 compatable data collection object.
+	 * 
+	 * @param data12 the facade collection object
+	 * @return the data collection object
+	 */
 	public static com.luntsys.luntbuild.db.DataCollection deFacade(com.luntsys.luntbuild.facades.lb12.DataCollection data12) {
 		logger.info("Defacading 1.2 data collection...");
 		com.luntsys.luntbuild.db.DataCollection data = new com.luntsys.luntbuild.db.DataCollection();
@@ -797,6 +906,161 @@ public class MigrationManager {
 			Role role = (Role) it.next();
 			role.setId(0);
 		}
+		return data;
+	}
+
+	/**
+	 * Converts a version 1.2 compatable project facade collection object into a version 1.2 compatable project collection object.
+	 * 
+	 * @param project12 the project facade collection object
+	 * @return the project collection object
+	 */
+	public static com.luntsys.luntbuild.db.ProjectCollection deFacade(com.luntsys.luntbuild.facades.lb12.ProjectCollection project12) {
+		logger.info("Defacading 1.2 project collection...");
+		Dao dao = Luntbuild.getDao();
+		com.luntsys.luntbuild.db.ProjectCollection data = new com.luntsys.luntbuild.db.ProjectCollection();
+
+		// Defacade project
+		com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade = project12.getProject();
+		logger.info("Defacading project: " + projectFacade.getName());
+		Project project = new Project();
+		project.setId(0);
+		project.setName(projectFacade.getName());
+		project.setFacade(projectFacade);
+		// Check for existing project
+		while (dao.isProjectNameUsed(project)) {
+			logger.warn("Project name \"" + project.getName() + "\" already in use, changing name to \""
+					+ project.getName() + "_copy\".");
+			project.setName(project.getName() + "_copy");
+		}
+		data.setProject(project);
+
+		Iterator it = project12.getSchedules().iterator();
+		while (it.hasNext()) {
+			com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade =
+					(com.luntsys.luntbuild.facades.lb12.ScheduleFacade) it.next();
+			logger.info("Defacading schedule: " + projectFacade.getName() + "/" + scheduleFacade.getName());
+			scheduleFacade.setDependentScheduleIds(new ArrayList());
+			Schedule schedule = new Schedule();
+			schedule.setId(scheduleFacade.getId());
+			schedule.setName(scheduleFacade.getName());
+			schedule.setScheduleDisabled(scheduleFacade.isScheduleDisabled());
+			schedule.setProject(project);
+			schedule.setFacade(scheduleFacade);
+			data.getSchedules().add(schedule);
+
+			it = project12.getBuilds().iterator();
+			while (it.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade = (com.luntsys.luntbuild.facades.lb12.BuildFacade) it.next();
+				logger.info("Defacading build: " + data.getSchedule(buildFacade.getScheduleId()).getProject().getName() +
+						"/" + data.getSchedule(buildFacade.getScheduleId()) + "/" + buildFacade.getVersion());
+				Build build = new Build();
+				build.setId(buildFacade.getId());
+				build.setSchedule(schedule);
+				build.setFacade(buildFacade);
+				data.getBuilds().add(build);
+			}
+		}
+
+		logger.info("Defacading vcs logins...");
+		it = project12.getVcsLoginMapping().iterator();
+		while (it.hasNext()) {
+			com.luntsys.luntbuild.facades.lb12.VcsLoginFacade vcsLoginFacade =
+				(com.luntsys.luntbuild.facades.lb12.VcsLoginFacade) it.next();
+			com.luntsys.luntbuild.facades.lb12.UserFacade userFacade =
+				project12.getUser(vcsLoginFacade.getUserId());
+			User user = data.getUser(userFacade.getName());
+			if (user == null) {
+				if (dao.isUserExist(userFacade.getName())) {
+					user = dao.loadUser(userFacade.getName());
+				} else {
+					logger.info("Creating missing user \"" + userFacade.getName() + "\".");
+					user = new User();
+					user.setId(userFacade.getId());
+					user.setName(userFacade.getName());
+					user.setFacade(userFacade);
+					data.getUsers().add(user);
+				}
+			}
+			VcsLogin vcsLogin = new VcsLogin();
+			vcsLogin.setProject(project);
+			vcsLogin.setUser(user);
+			vcsLogin.setLogin(vcsLoginFacade.getLogin());
+			data.getVcsLoginMapping().add(vcsLogin);
+		}
+
+		logger.info("Defacading roles mappings...");
+		it = project12.getRolesMapping().iterator();
+		while (it.hasNext()) {
+			com.luntsys.luntbuild.facades.lb12.RolesMappingFacade rolesMappingFacade =
+				(com.luntsys.luntbuild.facades.lb12.RolesMappingFacade) it.next();
+			com.luntsys.luntbuild.facades.lb12.UserFacade userFacade =
+				project12.getUser(rolesMappingFacade.getUserId());
+			User user = data.getUser(userFacade.getName());
+			if (user == null) {
+				if (dao.isUserExist(userFacade.getName())) {
+					user = dao.loadUser(userFacade.getName());
+				} else {
+					logger.info("Creating missing user \"" + userFacade.getName() + "\".");
+					user = new User();
+					user.setId(userFacade.getId());
+					user.setName(userFacade.getName());
+					user.setFacade(userFacade);
+					data.getUsers().add(user);
+				}
+			}
+			Role role = dao.loadRole(project12.getRole(rolesMappingFacade.getRoleId()).getName());
+			RolesMapping rolesMapping = new RolesMapping();
+			rolesMapping.setProject(project);
+			rolesMapping.setUser(user);
+			rolesMapping.setRole(role);
+			project.getRolesMappings().add(rolesMapping);
+		}
+
+		logger.info("Defacading notify mappings...");
+		it = project12.getNotifyMapping().iterator();
+		while (it.hasNext()) {
+			com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade notifyMappingFacade =
+					(com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade) it.next();
+			com.luntsys.luntbuild.facades.lb12.UserFacade userFacade =
+				project12.getUser(notifyMappingFacade.getUserId());
+			User user = data.getUser(userFacade.getName());
+			if (user == null) {
+				if (dao.isUserExist(userFacade.getName())) {
+					user = dao.loadUser(userFacade.getName());
+				} else {
+					logger.info("Creating missing user \"" + userFacade.getName() + "\".");
+					user = new User();
+					user.setId(userFacade.getId());
+					user.setName(userFacade.getName());
+					user.setFacade(userFacade);
+					data.getUsers().add(user);
+				}
+			}
+			NotifyMapping notifyMapping = new NotifyMapping();
+			notifyMapping.setProject(project);
+			notifyMapping.setUser(user);
+			project.getNotifyMappings().add(notifyMapping);
+		}
+
+		project = data.getProject();
+		project.setId(0);
+		it = data.getSchedules().iterator();
+		while (it.hasNext()) {
+			Schedule schedule = (Schedule) it.next();
+			schedule.setId(0);
+		}
+		it = data.getBuilds().iterator();
+		while (it.hasNext()) {
+			Build build = (Build) it.next();
+			build.setId(0);
+		}
+		it = data.getUsers().iterator();
+		while (it.hasNext()) {
+			User user = (User) it.next();
+			user.setId(0);
+		}
+
 		return data;
 	}
 }

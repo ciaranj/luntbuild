@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild;
 
 import com.luntsys.luntbuild.utility.Luntbuild;
@@ -44,16 +45,24 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * This servlet provides access to public resource such as documents.
+ * Servlet to handle requests for public resources such as documents.
  *
  * @author robin shine
  */
 public class ResourceAccessServlet extends HttpServlet {
 	private static Log logger = LogFactory.getLog(ResourceAccessServlet.class);
 
+	/**
+	 * Handles a requests.
+	 * 
+	 * @param httpServletRequest the HTTP request object
+	 * @param httpServletResponse the HTTP response object
+	 * @throws ServletException if the request could not be handled
+	 * @throws IOException if detected when handling the request
+	 */
 	protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 		if (httpServletRequest.getServletPath().startsWith("/docs")) {
-			String pathToRequest = (String) httpServletRequest.getPathInfo();
+			String pathToRequest = httpServletRequest.getPathInfo();
 			String docsDir = Luntbuild.installDir + File.separator + "docs";
 			File fileToRequest = new File(docsDir + File.separator + pathToRequest);
 			String pathRelativeToPublishDir = Luntbuild.parseRelativePath(new File(docsDir), fileToRequest);
@@ -101,6 +110,13 @@ public class ResourceAccessServlet extends HttpServlet {
 				assetLocation = assetLocation.substring(1);
 			URL assetUrl = Thread.currentThread().getContextClassLoader().getResource(assetLocation);
 			Luntbuild.sendFile(httpServletRequest, httpServletResponse, assetUrl);
+		} else if (httpServletRequest.getServletPath().endsWith(".xsl")) {
+			String pathToRequest = httpServletRequest.getServletPath();
+			File fileToRequest = new File(Luntbuild.installDir + File.separator + pathToRequest);
+			if (fileToRequest.isFile())
+				Luntbuild.sendFile(httpServletRequest, httpServletResponse, fileToRequest.getAbsolutePath());
+			else
+				throw new ServletException("Invalid file requested: " + fileToRequest.getAbsolutePath());
 		} else {
 			throw new ServletException("ResourceAccessServlet rejects servlet path: " + httpServletRequest.getServletPath());
 		}

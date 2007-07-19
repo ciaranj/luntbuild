@@ -25,14 +25,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.utility;
 
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * This class represents a single revision that comprised of multiple lines. It is used
- * to help extract out information of a multi-line revision
+ * A single revision comprised of multiple lines. This is used
+ * to help extract information of a multi-line revision.
  *
  * @author robin shine
  */
@@ -41,22 +42,47 @@ public class RevisionBlock {
 	private boolean ready = false;
 	private boolean valid = true;
 
+	/**
+	 * Gets the lines of this revision.
+	 * 
+	 * @return the lines
+	 */
 	public List getLines() {
 		return lines;
 	}
 
+	/**
+	 * Checks if this revision is ready.
+	 * 
+	 * @return <code>true</code> if this revision is ready
+	 */
 	public boolean isReady() {
 		return ready;
 	}
 
+	/**
+	 * Sets the ready status of this revision.
+	 * 
+	 * @param ready set <code>true</code> if this revision is ready
+	 */
 	public void setReady(boolean ready) {
 		this.ready = ready;
 	}
 
+	/**
+	 * Checks if this revision is valid.
+	 * 
+	 * @return <code>true</code> if this revision is valid
+	 */
 	public boolean isValid() {
 		return valid;
 	}
 
+	/**
+	 * Sets the valid status of this revision.
+	 * 
+	 * @param valid set <code>true</code> if this revision is valid
+	 */
 	public void setValid(boolean valid) {
 		this.valid = valid;
 	}

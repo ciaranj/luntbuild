@@ -23,10 +23,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * MksAdaptor facade class.
+ * MKS VCS adaptor facade.
+ * 
+ * @author Stefan Baramov (TRX Inc.)
+ * @see com.luntsys.luntbuild.vcs.MksAdaptor
  */
 public class MksAdaptorFacade extends VcsFacade {
 
@@ -41,71 +45,107 @@ public class MksAdaptorFacade extends VcsFacade {
 	private String rootProject;
 
 	/**
-	 * Initialize a new object with its default settings.
+	 * Constructor, creates a new MKS VCS adaptor facade.
 	 */
 	public MksAdaptorFacade() {
-
 		super();
 	}
 
 	/**
 	 * @inheritDoc
-	 * 
-	 * @see com.luntsys.luntbuild.facades.lb12.VcsFacade#getVcsClassName()
 	 */
 	public String getVcsClassName() {
 
 		return "com.luntsys.luntbuild.vcs.MksAdaptor";
 	}
 
+	/**
+	 * Gets the default password.
+	 * 
+	 * @return the default password
+	 */
 	public String getDefaultPassword() {
-
 		return defaultPassword;
 	}
 
+	/**
+	 * Sets the default password.
+	 * 
+	 * @param defaultPassword the default password
+	 */
 	public void setDefaultPassword(String defaultPassword) {
-
 		this.defaultPassword = defaultPassword;
 	}
 
+	/**
+	 * Gets the default user name.
+	 * 
+	 * @return the default user name
+	 */
 	public String getDefaultUsername() {
-
 		return defaultUsername;
 	}
 
+	/**
+	 * Sets the default user name.
+	 * 
+	 * @param defaultUsername the default user name
+	 */
 	public void setDefaultUsername(String defaultUsername) {
-
 		this.defaultUsername = defaultUsername;
 	}
 
+	/**
+	 * Gets the root project.
+	 * 
+	 * @return the root project
+	 */
 	public String getRootProject() {
-
 		return rootProject;
 	}
 
+	/**
+	 * Sets the root project.
+	 * 
+	 * @param rootProject the root project
+	 */
 	public void setRootProject(String rootProject) {
-
 		this.rootProject = rootProject;
 	}
 
+	/**
+	 * Gets the default host name.
+	 * 
+	 * @return the default host name
+	 */
 	public String getDefaultHostname() {
-
 		return defaultHostname;
 	}
 
+	/**
+	 * Sets the default host name.
+	 * 
+	 * @param defaultHostname the default host name
+	 */
 	public void setDefaultHostname(String defaultHostname) {
-
 		this.defaultHostname = defaultHostname;
 	}
 
+	/**
+	 * Gets the default port.
+	 * 
+	 * @return the default port
+	 */
 	public int getDefaultPort() {
-
 		return defaultPort;
 	}
 
+	/**
+	 * Sets the default port.
+	 * 
+	 * @param defaultPort the default port
+	 */
 	public void setDefaultPort(int defaultPort) {
-
 		this.defaultPort = defaultPort;
 	}
-
 }

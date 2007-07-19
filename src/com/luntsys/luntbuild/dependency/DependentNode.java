@@ -1,7 +1,3 @@
-package com.luntsys.luntbuild.dependency;
-
-import java.util.Set;
-
 /*
  * Copyright luntsys (c) 2001-2004,
  * Date: 2005-3-3
@@ -30,19 +26,28 @@ import java.util.Set;
  *
  */
 
+package com.luntsys.luntbuild.dependency;
+
+import java.util.Set;
+
 /**
- * This interface represents a dependent object in the chain of dependency
+ * This interface represents a dependent object in the chain of dependency.
  * @author robin shine
  */
 public interface DependentNode {
+
 	/**
-	 * Get set of dependent nodes this node depends on.
-	 * @return set of dependent nodes
+	 * Gets the sub set of nodes that this node depends from a list of nodes.
+	 * 
+	 * @param userData the list of nodes
+	 * @return the sub set of nodes from <code>userData</code> that this node depends on
 	 */
 	Set getDependsOn(Object userData);
 
 	/**
-	 * Visit this dependant object.
+	 * Visits this dependent object.
+	 * 
+	 * @param userData data for this object to use
 	 */
 	void visit(Object userData);
 

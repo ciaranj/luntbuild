@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.db.Build;
@@ -46,7 +47,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * adaptor to build from file systems. It will be serialized by hibernate
+ * File system VCS adaptor implementation.
  *
  * @author robin shine
  */
@@ -58,32 +59,61 @@ public class FileSystemAdaptor extends Vcs {
 
 	private String sourceDir;
 
+    /**
+     * @inheritDoc
+     */
 	public String getDisplayName() {
 		return "File system";
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public String getIconName() {
 		return "filesystem.gif";
 	}
 
+	/**
+	 * Gets the source directory.
+	 * 
+	 * @return the source directory
+	 */
 	public String getSourceDir() {
 		return sourceDir;
 	}
 
+	/**
+	 * Gets the source directory. This method will parse OGNL variables.
+	 * 
+	 * @return the source directory
+	 */
 	public String getActualSourceDir() {
 		return OgnlHelper.evaluateScheduleValue(getSourceDir());
 	}
 
+	/**
+	 * Sets the source directory.
+	 * 
+	 * @param sourceDir the source directory
+	 */
 	public void setSourceDir(String sourceDir) {
 		this.sourceDir = sourceDir;
 	}
 
+    /**
+     * Validates the properties of this VCS.
+     *
+     * @throws ValidationException if a property has an invalid value
+     */
 	public void validateProperties() {
 		super.validateProperties();
 		if (!Luntbuild.isEmpty(getSourceDir()) && !new File(getSourceDir()).isAbsolute())
 			throw new ValidationException("\"source directory\" should be an absolute path!");
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public void checkoutActually(Build build, Project antProject) {
 		if (!Luntbuild.isEmpty(getSourceDir())) {
 			String workingDir = build.getSchedule().getWorkDirRaw();
@@ -104,39 +134,64 @@ public class FileSystemAdaptor extends Vcs {
 		}
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public void label(Build build, Project antProject) {
 		// not applicable for file system adaptor
 	}
 
-	public Vcs.Module createNewModule() {
+	/**
+     * @inheritDoc
+	 */
+	public Module createNewModule() {
 		return null;
 	}
 
-    public Vcs.Module createNewModule(Vcs.Module module) {
+	/**
+     * @inheritDoc
+	 */
+    public Module createNewModule(Module module) {
         return null;
     }
 
+	/**
+     * @inheritDoc
+	 */
 	public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		Revisions revisions = new Revisions();
+        revisions.addLog(this.getClass().getName(), toString());
+        revisions.getChangeLogs().add("*************************************************************");
+        revisions.getChangeLogs().add(toString());
+        revisions.getChangeLogs().add("");
 		if (!Luntbuild.isEmpty(getSourceDir()))
 			getRevisions(new File(getActualSourceDir()), sinceDate, revisions);
 		return revisions;
 	}
 
 	/**
-	 * Detect changes of specified file based on modified time
+	 * Detects changes of the specified file based on modified time.
+	 * 
 	 * @param file the file to detect changes
-	 * @param sinceDate the date since which to determine modifications
-	 * @param revisions add detected modifiecations as revisions
+	 * @param sinceDate the date to determine modifications from
+	 * @param revisions existing revisions to add detected modifications to
 	 */
 	private void getRevisions(File file, Date sinceDate, Revisions revisions) {
 		Date lastModified = new Date(file.lastModified());
 		if (lastModified.after(sinceDate)) {
 			revisions.setFileModified(true);
-			if (file.isDirectory())
-				revisions.getChangeLogs().add("Directory \"" + file.getAbsolutePath() + "\" modified at " + lastModified.toString());
-			else
-				revisions.getChangeLogs().add("File \"" + file.getAbsolutePath() + "\" modified at " + lastModified.toString());
+			String message = "";
+			String action = "";
+			if (file.isDirectory()) {
+				message = "Directory \"" + file.getAbsolutePath() + "\" modified at " + lastModified.toString();
+				action = "directory";
+			} else {
+				message = "File \"" + file.getAbsolutePath() + "\" modified at " + lastModified.toString();
+				action = "file";
+			}
+			revisions.addEntryToLastLog("", "", lastModified, message);
+			revisions.addPathToLastEntry(file.getAbsolutePath(), action, "");
+			revisions.getChangeLogs().add(message);
 		}
 		if (file.isDirectory()) {
 			File childs[] = file.listFiles();
@@ -147,6 +202,9 @@ public class FileSystemAdaptor extends Vcs {
 		}
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public List getVcsSpecificProperties() {
 		List properties = new ArrayList();
 		properties.add(new DisplayProperty(){
@@ -179,18 +237,49 @@ public class FileSystemAdaptor extends Vcs {
 		return properties;
 	}
 
+	/**
+     * Creates a link to the specified file.
+     * 
+	 * @param path the path to the file
+	 * @return the link
+	 */
+	public String createLinkForFile(String path) {
+    	if (Luntbuild.isEmpty(path))
+    		return "";
+    	if (path.startsWith("\\\\"))
+    		return "<a href=\"file:" + path + "\">" + path + "</a>";
+    	else if (path.startsWith("file:\\\\"))
+    		return "<a href=\"" + path + "\">" + path + "</a>";
+    	else
+    		return path;
+	}
+
+    /**
+     * @inheritDoc
+     * @see FileSystemAdaptorFacade
+     */
 	public void saveToFacade(VcsFacade facade) {
-		com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade fileSystemFacade = (com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade) facade;
+    	// TODO throw RuntimeException if the facade is not the right class
+		FileSystemAdaptorFacade fileSystemFacade = (FileSystemAdaptorFacade) facade;
 		fileSystemFacade.setSourceDir(getSourceDir());
 	}
 
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>FileSystemAdaptorFacade</code>
+     * @see FileSystemAdaptorFacade
+     */
 	public void loadFromFacade(VcsFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade))
+		if (!(facade instanceof FileSystemAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade fileSystemFacade = (FileSystemAdaptorFacade) facade;
+		FileSystemAdaptorFacade fileSystemFacade = (FileSystemAdaptorFacade) facade;
 		setSourceDir(fileSystemFacade.getSourceDir());
 	}
 
+    /**
+     * @inheritDoc
+     * @see FileSystemAdaptorFacade
+     */
 	public VcsFacade constructFacade() {
 		return new FileSystemAdaptorFacade();
 	}

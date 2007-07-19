@@ -185,16 +185,16 @@ public abstract class RebuildEditor extends BaseComponent implements PageDetachL
 
 	public String getPropertyNameCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyEditorName1";
+			return "propertyEditorName propertyEditorName1";
 		else
-			return "propertyEditorName2";
+			return "propertyEditorName propertyEditorName2";
 	}
 
 	public String getPropertyValueCssClass() {
 		if (getCssIndex() % 2 == 0)
-			return "propertyEditorValue1";
+			return "propertyEditorValue propertyEditorValue1";
 		else
-			return "propertyEditorValue2";
+			return "propertyEditorValue propertyEditorValue2";
 	}
 
 	public String getTailCssClass() {

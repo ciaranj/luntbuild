@@ -25,37 +25,70 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade class for NotifyMapping
+ * Notify mapping facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.NotifyMapping
  */
 public class NotifyMappingFacade {
 	private long id;
 	private long projectId;
 	private long userId;
 
+	/**
+	 * Gets the identifer of this notify mapping.
+	 * 
+	 * @return the identifer of this notify mapping
+	 */
 	public long getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the identifier of this notify mapping.
+	 *
+	 * @param id the identifier of this notify mapping
+	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the identifier of the project of this notify mapping.
+	 * 
+	 * @return the identifier of the project
+	 */
 	public long getProjectId() {
 		return projectId;
 	}
 
+	/**
+	 * Sets the identifier of the project of this notify mapping.
+	 * 
+	 * @param projectId the identifier of the project
+	 */
 	public void setProjectId(long projectId) {
 		this.projectId = projectId;
 	}
 
+	/**
+	 * Gets the identifier of the user of this notify mapping.
+	 * 
+	 * @return the identifier of the user
+	 */
 	public long getUserId() {
 		return userId;
 	}
 
+	/**
+	 * Sets the identifier of the user of this notify mapping.
+	 * 
+	 * @param userId the identifier of the user
+	 */
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}

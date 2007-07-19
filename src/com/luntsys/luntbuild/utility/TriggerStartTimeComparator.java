@@ -25,13 +25,27 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.utility;
 
 import org.quartz.Trigger;
 
 import java.util.Comparator;
 
+/**
+ * This comparator compares triggers by their start time.
+ */
 public class TriggerStartTimeComparator implements Comparator {
+
+	/**
+	 * Compares two trigger by their start time.
+	 * 
+	 * @param o1 the first trigger
+	 * @param o2 the second trigger
+	 * @return <code>0</code> if both triggers have the same start time,
+	 *         <code>1</code> if the first trigger's start time is later, or
+	 *         <code>-1</code> if the second trigger's start time is later
+	 */
 	public int compare(Object o1, Object o2) {
 		if (!(o1 instanceof Trigger) || !(o2 instanceof Trigger))
 			return 0;

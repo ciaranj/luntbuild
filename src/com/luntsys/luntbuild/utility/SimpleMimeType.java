@@ -25,14 +25,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.utility;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This is a simple mime type querying class. For a more complete
- * mime type lookup, call {@link javax.servlet.ServletContext#getMimeType(String)}
+ * A simple MIME type querying class. For a more complete
+ * MIME type lookup, call {@link javax.servlet.ServletContext#getMimeType(String)}.
  */
 public class SimpleMimeType {
 	private static final Map mimeTypes;
@@ -54,6 +55,12 @@ public class SimpleMimeType {
 		mimeTypes.put("tiff", "image/tiff");
 	}
 
+	/**
+	 * Gets the MIME type for the specified file extension.
+	 * 
+	 * @param extension the file extension
+	 * @return the MIME type, or <code>null</code> if the file extension is unknown
+	 */
 	public static String getMimeType(String extension) {
 		return (String) mimeTypes.get(extension);
 	}

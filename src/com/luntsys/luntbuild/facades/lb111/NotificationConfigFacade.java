@@ -25,37 +25,70 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * This class is notification config facade
+ * Notification config facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.NotifyMapping
  */
 public class NotificationConfigFacade {
 	private long id;
 	private long viewId;
 	private long userId;
 
+	/**
+	 * Gets the identifer of this notification config.
+	 * 
+	 * @return the identifer of this notification config
+	 */
 	public long getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the identifier of this notification config.
+	 *
+	 * @param id the identifier of this notification config
+	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the identifier of the view of this notification config.
+	 * 
+	 * @return the identifier of the view
+	 */
 	public long getViewId() {
 		return viewId;
 	}
 
+	/**
+	 * Sets the identifier of the view of this notification config.
+	 * 
+	 * @param viewId the identifier of the view
+	 */
 	public void setViewId(long viewId) {
 		this.viewId = viewId;
 	}
 
+	/**
+	 * Gets the identifier of the user of this notification config.
+	 * 
+	 * @return the identifier of the user
+	 */
 	public long getUserId() {
 		return userId;
 	}
 
+	/**
+	 * Sets the identifier of the user of this notification config.
+	 * 
+	 * @param userId the identifier of the user
+	 */
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}

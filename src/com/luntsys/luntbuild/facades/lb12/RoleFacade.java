@@ -25,45 +25,50 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade of a luntbuild role, this is mainly used by web service client to operate
- * role specific properties
+ * Role facade.
  *
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.Role
  */
 public class RoleFacade {
 	private long id;
 	private String name;
 
 	/**
-	 * Get name of this role
-	 * @return name of this role
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Get id of this role
-	 * @return id of this role
+	 * Gets the identifer of this role.
+	 * 
+	 * @return the identifer of this role
 	 */
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * Set id of this role
-	 * @param id
+	 * Sets the identifier of this role.
+	 *
+	 * @param id the identifier of this role
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * Set name of this role
-	 * @param name
+	 * Gets the name of this role.
+	 * 
+	 * @return the name of this role
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the name of this role.
+	 * 
+	 * @param name the name of this role
 	 */
 	public void setName(String name) {
 		this.name = name;

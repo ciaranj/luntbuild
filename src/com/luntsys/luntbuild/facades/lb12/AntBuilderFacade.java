@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade class for ant builder
+ * Ant builder facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.builders.AntBuilder
  */
 public class AntBuilderFacade extends BuilderFacade {
 	/**
@@ -52,39 +55,84 @@ public class AntBuilderFacade extends BuilderFacade {
 	 */
 	private String buildProperties;
 
+    /**
+     * Gets the corresponding builder class name.
+     *
+     * @return the builder class name
+     */
+	public String getBuilderClassName() {
+		return "com.luntsys.luntbuild.builders.AntBuilder";
+	}
+
+	/**
+	 * Gets the command to run ant.
+	 * 
+	 * @return the command to run ant
+	 */
 	public String getCommand() {
 		return command;
 	}
 
+	/**
+	 * Sets the command to run ant.
+	 * 
+	 * @param command the command to run ant
+	 */
 	public void setCommand(String command) {
 		this.command = command;
 	}
 
+	/**
+	 * Gets the path to the build script.
+	 * 
+	 * @return the path to the build script
+	 */
 	public String getBuildScriptPath() {
 		return buildScriptPath;
 	}
 
+	/**
+	 * Sets the path to the build script.
+	 * 
+	 * @param buildScriptPath the path to the build script
+	 */
 	public void setBuildScriptPath(String buildScriptPath) {
 		this.buildScriptPath = buildScriptPath;
 	}
 
+	/**
+	 * Gets the targets to run.
+	 * 
+	 * @return the targets to run.
+	 */
 	public String getBuildTargets() {
 		return buildTargets;
 	}
 
+	/**
+	 * Sets the targets to run.
+	 * 
+	 * @param buildTargets the targets to run.
+	 */
 	public void setBuildTargets(String buildTargets) {
 		this.buildTargets = buildTargets;
 	}
 
+	/**
+	 * Gets the build properties.
+	 * 
+	 * @return the build properties
+	 */
 	public String getBuildProperties() {
 		return buildProperties;
 	}
 
+	/**
+	 * Sets the build properties.
+	 * 
+	 * @param buildProperties the build properties
+	 */
 	public void setBuildProperties(String buildProperties) {
 		this.buildProperties = buildProperties;
-	}
-
-	public String getBuilderClassName() {
-		return "com.luntsys.luntbuild.builders.AntBuilder";
 	}
 }

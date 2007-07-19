@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild;
 
 import com.caucho.hessian.io.HessianOutput;
@@ -46,17 +47,33 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Servlet filter, handles restarts and sets encoding to UTF-8
+ * Servlet filter that handles restarts and sets encoding to UTF-8.
  *
  * @author lubosp
- *
  */
 public class RestartFilter implements Filter {
 	private static Log logger = LogFactory.getLog(RestartFilter.class);
 
+	/**
+	 * Initializes filter.
+	 * 
+	 * @param filterConfig the config information
+	 * @throws ServletException not thrown
+	 */
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}
 
+	/**
+	 * Filters requests by invalidating any requests that occur while the Luntbuild service
+	 * is restarting.
+	 * 
+	 * @param servletRequest the request object
+	 * @param servletResponse the response object
+	 * @param filterChain a chain of additional filters to apply
+	 * @throws ServletException if detected when handling the request
+	 * @throws IOException if detected when handling the request
+	 * @throws RuntimeException if detected when handling the request
+	 */
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
             FilterChain filterChain) throws IOException, ServletException {
 		try  {
@@ -124,6 +141,9 @@ public class RestartFilter implements Filter {
 		}
 	}
 
+	/**
+	 * Destroys this filter.
+	 */
 	public void destroy() {
 	}
 }

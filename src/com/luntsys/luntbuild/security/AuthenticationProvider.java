@@ -44,10 +44,9 @@ import org.acegisecurity.providers.dao.UserCache;
 import org.acegisecurity.providers.dao.cache.NullUserCache;
 
 /**
- * LDAP Authentication Provider
+ * LDAP authentication provider.
  *
  * @author Lubos Pochman based on contribution from Kira (kec161)
- *
  */
 public class AuthenticationProvider extends AbstractUserDetailsAuthenticationProvider  {
 
@@ -62,26 +61,33 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
     private UserDetails userAuth = null;
 
     /**
-     * @param authenticationDao
+     * Sets the authentication DAO.
+     * 
+     * @param authenticationDao the authentication DAO
      */
     public void setAuthenticationDao(UserDetailsService authenticationDao) {
         this.authenticationDao = authenticationDao;
     }
 
     /**
-     * @return authentication Dao
+     * Gets the authentication DAO.
+     * 
+     * @return the authentication DAO
      */
     public UserDetailsService getAuthenticationDao() {
         return this.authenticationDao;
     }
 
     /**
-     * By default the <code>DaoAuthenticationProvider</code> throws a
+     * Sets suppression of <code>BadCredentialsException</code> for unfound
+     * usernames or incorrect passwords.
+     * 
+     * <p>By default the <code>DaoAuthenticationProvider</code> throws a
      * <code>BadCredentialsException</code> if a username is not found or the
      * password is incorrect. Setting this property to <code>false</code> will
      * cause <code>UsernameNotFoundException</code>s to be thrown instead for
      * the former. Note this is considered less secure than throwing
-     * <code>BadCredentialsException</code> for both exceptions.
+     * <code>BadCredentialsException</code> for both exceptions.</p>
      *
      * @param hideUserNotFoundExceptions set to <code>false</code> if you wish
      *        <code>UsernameNotFoundException</code>s to be thrown instead of
@@ -94,37 +100,44 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
     }
 
     /**
-     * @return isHideUserNotFoundExceptions
+     * Checks if suppression of <code>BadCredentialsException</code> for unfound
+     * usernames or incorrect passwords is on.
+     * 
+     * @return <code>true</code> if <code>BadCredentialsException</code> should be thrown,
+     * <code>false</code> if <code>UsernameNotFoundException</code> should be thrown
      */
     public boolean isHideUserNotFoundExceptions() {
         return this.hideUserNotFoundExceptions;
     }
 
     /**
-     * Sets the PasswordEncoder instance to be used to encode and validate
+     * Sets the <code>PasswordEncoder</code> instance to be used to encode and validate
      * passwords. If not set, {@link PlaintextPasswordEncoder} will be used by
      * default.
      *
-     * @param passwordEncoder The passwordEncoder to use
+     * @param passwordEncoder the <code>PasswordEncoder</code> to use
      */
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
     /**
-     * @return PasswordEncoder
+     * Gets the <code>PasswordEncoder</code> instance to be used.
+     * 
+     * @return the <code>PasswordEncoder</code> to used,
+     * or <code>null</code> if {@link PlaintextPasswordEncoder} will be used
      */
     public PasswordEncoder getPasswordEncoder() {
         return this.passwordEncoder;
     }
 
     /**
-     * The source of salts to use when decoding passwords.  <code>null</code>
+     * Sets the source of salts to use when decoding passwords.  <code>null</code>
      * is a valid value, meaning the <code>DaoAuthenticationProvider</code>
      * will present <code>null</code> to the relevant
      * <code>PasswordEncoder</code>.
      *
-     * @param saltSource to use when attempting to decode passwords via  the
+     * @param saltSource the salt source to use when attempting to decode passwords via the
      *        <code>PasswordEncoder</code>
      */
     public void setSaltSource(SaltSource saltSource) {
@@ -132,16 +145,18 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
     }
 
     /**
-     * @return SaltSource
+     * Gets the source of salts to use when decoding passwords.
+     * 
+     * @return the salt source to use when attempting to decode passwords via the
+     *        <code>PasswordEncoder</code>, or <code>null</code> for no source
      */
     public SaltSource getSaltSource() {
         return this.saltSource;
     }
 
-
     protected void additionalAuthenticationChecks(UserDetails userDetails,
             UsernamePasswordAuthenticationToken authentication)
-    throws AuthenticationException {
+    		throws AuthenticationException {
         Object salt = null;
         this.userAuth = userDetails;
 
@@ -330,7 +345,7 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
 
     protected final UserDetails retrieveUser(String username,
             UsernamePasswordAuthenticationToken authentication)
-    throws AuthenticationException {
+    		throws AuthenticationException {
         UserDetails loadedUser;
 
         try {
@@ -350,8 +365,11 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
         return loadedUser;
     }
 
+    /**
+     * @inheritDoc
+     */
     public Authentication authenticate(Authentication authentication)
-    throws AuthenticationException {
+    		throws AuthenticationException {
         Assert.isInstanceOf(UsernamePasswordAuthenticationToken.class,
                 authentication,
         "Only UsernamePasswordAuthenticationToken is supported");
@@ -412,4 +430,3 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
         return createSuccessAuthentication(principalToReturn, authentication, user);
     }
 }
-

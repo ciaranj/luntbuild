@@ -36,8 +36,8 @@
     </tr>
         <form jwcid="@Form" listener="ognl:listeners.exportData" name="form" method="post">
           <tr> 
-            <td width="20%" align="left" valign="top" class="propertyEditorName1"><img src="images/file.gif" width="16" height="16" align="absmiddle"> File to export to</td> 
-            <td width="80%" align="left" valign="top" class="propertyEditorValue1"><input name="textfield" type="text" class="inputBox" value="ognl:filePathToExport" size="50" jwcid="@TextField"/>
+            <td width="20%" align="left" valign="top" class="propertyEditorName propertyEditorName1"><img src="images/file.gif" width="16" height="16" align="absmiddle"> File to export to</td> 
+            <td width="80%" align="left" valign="top" class="propertyEditorValue propertyEditorValue1"><input name="textfield" type="text" class="inputBox" value="ognl:filePathToExport" size="50" jwcid="@TextField"/>
               <input jwcid="@Submit" name="export" type="submit" id="export" value="Export"/>
               <br>
               This operation may take a long time if there are many builds in the system.
@@ -48,16 +48,46 @@
         </form> 
         <form jwcid="@Form" listener="ognl:listeners.importData" name="form" method="post">
           <tr> 
-            <td align="left" valign="top" class="propertyEditorName2"><img src="images/file.gif" width="16" height="16" align="absmiddle"> File to import from </td> 
-            <td align="left" valign="top" class="propertyEditorValue2"><input name="textfield2" type="text" class="inputBox" value="ognl:filePathToImport" size="50" jwcid="@TextField"/>
+            <td align="left" valign="top" class="propertyEditorName propertyEditorName2"><img src="images/file.gif" width="16" height="16" align="absmiddle"> File to import from </td> 
+            <td align="left" valign="top" class="propertyEditorValue propertyEditorValue2"><input name="textfield2" type="text" class="inputBox" value="ognl:filePathToImport" size="50" jwcid="@TextField"/>
               <input jwcid="@Submit" name="import" type="submit" id="import" value="Import"/>
               <br>
-              This operation will first erase all existing data(build artifacts under publish directory will not be deleted), and then import data from specified file.
+              This operation will first erase all existing data (build artifacts under publish directory will not be deleted), and then import data from the specified file.
               It may take a long time depending on the size of the file being imported.
               If relative path is specified, the file will be located relative to the Luntbuild installation directory.
             </td>
           </tr> 
         </form> 
+        <form jwcid="@Form" listener="ognl:listeners.exportProjectData" name="form" method="post">
+          <tr>
+            <td width="20%" align="left" valign="top" class="propertyEditorName propertyEditorName1"><img src="images/description.gif" width="18" height="14" align="absmiddle"> Project to export</td>
+            <td width="80%" align="left" valign="top" class="propertyEditorValue propertyEditorValue1">
+              <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:projectSelectionModel" value="ognl:projectToExport"></select> <br>
+              Select a project to export. The all project settings, mappings, schedules for the project, and builds for the project will be exported.</td>
+          </tr>
+          <tr>
+            <td width="20%" align="left" valign="top" class="propertyEditorName propertyEditorName1"><img src="images/file.gif" width="16" height="16" align="absmiddle"> File to export project to</td> 
+            <td width="80%" align="left" valign="top" class="propertyEditorValue propertyEditorValue1"><input name="textfield3" type="text" class="inputBox" value="ognl:projectPathToExport" size="50" jwcid="@TextField"/>
+              <input jwcid="@Submit" name="projectexport" type="submit" id="projectexport" value="Export Project"/>
+              <br>
+              This operation may take a long time if there are many builds in the project.
+              We strongly suggest to delete non-necessary builds in order to speed up the export and the import using this exported file.
+              If relative path is specified, the file will be located relative to the Luntbuild installation directory.
+           </td>
+          </tr>
+        </form>
+        <form jwcid="@Form" listener="ognl:listeners.importProjectData" name="form" method="post">
+          <tr>
+            <td align="left" valign="top" class="propertyEditorName propertyEditorName2"><img src="images/file.gif" width="16" height="16" align="absmiddle"> File to import project from </td> 
+            <td align="left" valign="top" class="propertyEditorValue propertyEditorValue2"><input name="textfield4" type="text" class="inputBox" value="ognl:projectPathToImport" size="50" jwcid="@TextField"/>
+              <input jwcid="@Submit" name="projectimport" type="submit" id="projectimport" value="Import Project"/>
+              <br>
+              This operation will import a project from the specified file.
+              It may take a long time depending on the size of the file being imported.
+              If relative path is specified, the file will be located relative to the Luntbuild installation directory.
+            </td>
+          </tr>
+        </form>
       </table>
       </span></span></span>
    	  <span jwcid="@Conditional" condition="ognl:!isSiteAdmin()">

@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.db;
 
 import com.luntsys.luntbuild.utility.Luntbuild;
@@ -35,8 +36,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * This class represents a version control system login of a particular user for
- * a particular project. This is a hibernate mapping class.
+ * Represents a version control system login of a particular <code>User</code> for a particular <code>Project</code>.
+ * 
+ * <p>This is a hibernate mapping class.</p>
  *
  * @author robin shine
  * @see User
@@ -48,49 +50,100 @@ public class VcsLogin {
 	private User user;
 	private String login;
 
+	/**
+	 * Creates a blank VCS login.
+	 */
 	public VcsLogin() {}
 
+	/**
+	 * Creates a VCS login.
+	 * 
+	 * @param project the project
+	 * @param user the user
+	 * @param login the VCS login name/id
+	 */
 	public VcsLogin(Project project, User user, String login) {
 		this.project = project;
 		this.user = user;
 		this.login = login;
 	}
 
+	/**
+	 * Gets the unique identifier of this VCS login.
+	 *
+	 * @return the identifier of this VCS login
+	 */
 	public long getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the unique identifier of this VCS login, will be called by hibernate.
+	 *
+	 * @param id the identifier of this VCS login
+	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the project of this VCS login.
+	 *
+	 * @return the project of this VCS login
+	 */
 	public Project getProject() {
 		return project;
 	}
 
+	/**
+	 * Sets the project of this VCS login.
+	 *
+	 * @param project the project of this VCS login
+	 */
 	public void setProject(Project project) {
 		this.project = project;
 	}
 
+	/**
+	 * Gets the user of this VCS login.
+	 *
+	 * @return the user of this VCS login
+	 */
 	public User getUser() {
 		return user;
 	}
 
+	/**
+	 * Sets the user of this VCS login.
+	 *
+	 * @param user the user of this VCS login
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}
 
+	/**
+	 * Gets the VCS login name/id of this VCS login.
+	 *
+	 * @return the VCS login name/id of this VCS login
+	 */
 	public String getLogin() {
 		return login;
 	}
 
+	/**
+	 * Sets the VCS login name/id of this VCS login.
+	 *
+	 * @param login the VCS login name/id of this VCS login
+	 */
 	public void setLogin(String login) {
 		this.login = login;
 	}
 
 	/**
-	 * Validates properties of this object
-	 * @throws ValidationException
+	 * Validates properties of this VCS login.
+	 * 
+	 * @throws ValidationException if a property has an invalid value
 	 */
 	public void validate() {
 		if (Luntbuild.isEmpty(getLogin()))
@@ -102,6 +155,12 @@ public class VcsLogin {
 			throw new ValidationException("No user selected!");
 	}
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj the reference object with which to compare
+	 * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
+	 */
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof VcsLogin){
 			if (getId() == ((VcsLogin)obj).getId())
@@ -110,10 +169,23 @@ public class VcsLogin {
 		return false;
 	}
 
+	/**
+	 * Returns a hash code value for the object.
+	 * 
+	 * @return a hash code value for this object
+	 * @see #equals(Object)
+	 */
 	public int hashCode() {
 		return (int) getId();
 	}
 
+	/**
+	 * Finds the VCS login from a list that has the specified VCS login name/id.
+	 * 
+	 * @param vcsLogins the list of <code>VcsLogin</code>s
+	 * @param login the VCS login name/id to check for
+	 * @return the VCS login or <code>null</code>
+	 */
 	public static VcsLogin findVcsLogin(Set vcsLogins, String login) {
 		Iterator it = vcsLogins.iterator();
 		while (it.hasNext()) {
@@ -124,8 +196,13 @@ public class VcsLogin {
 		return null;
 	}
 
+	/**
+	 * Gets the facade of this VCS login.
+	 * 
+	 * @return the facade of this VCS login
+	 */
 	public VcsLoginFacade getFacade() {
-		com.luntsys.luntbuild.facades.lb12.VcsLoginFacade facade = new com.luntsys.luntbuild.facades.lb12.VcsLoginFacade();
+		VcsLoginFacade facade = new VcsLoginFacade();
 		facade.setId(getId());
 		facade.setLogin(getLogin());
 		facade.setProjectId(getProject().getId());

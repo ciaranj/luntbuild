@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.utility;
 
 import java.util.Map;
@@ -32,7 +33,8 @@ import java.util.Map;
 import org.apache.tapestry.form.IPropertySelectionModel;
 
 /**
- * This class denotes a notifier property
+ * Notifier property is an user editable property displayed at the user interface.
+ *
  * @author robin shine
  */
 public abstract class NotifierProperty {
@@ -40,75 +42,104 @@ public abstract class NotifierProperty {
     IPropertySelectionModel model = null;
 
 	/**
-	 * @return the display name of this property
+	 * Gets the display name of this property.
+	 * 
+	 * @return the display name
 	 */
 	public abstract String getDisplayName();
 
 	/**
-	 * @return the description of this property
+	 * Gets the description of this property.
+	 * 
+	 * @return the description
 	 */
 	public abstract String getDescription();
-    /**
-     * @return is this property required? Required property will suffer to none-empty
-     * checking
-     */
+
+	/**
+	 * Checks if this property is required.  Required properties must not be empty.
+	 * 
+	 * @return <code>true</code> if this property is required
+	 */
     public boolean isRequired(){
         return false;
     }
-    /**
-     * @return is property needs multi-line input?
-     */
+
+	/**
+	 * Checks if this property needs multi-line input.
+	 * 
+	 * @return <code>true</code> if this property is multi-line
+	 */
     public boolean isMultiLine(){
         return false;
     }
+
 	/**
-	 * @return is this property secret? secret property will use ***** for values display
+	 * Checks if this property is secret.  Secret properties will show "*****" instead of their value.
+	 * 
+	 * @return <code>true</code> if this property is secret
 	 */
 	public boolean isSecret(){
 		return false;
 	}
 
-    /** Returns is this property select/droplist?
-     * @return is this property select/droplist?
+    /**
+     * Checks if this property is a selection or droplist.
+     * 
+     * @return <code>true</code> if this property is a selection or droplist
      */
     public boolean isSelect(){
         return false;
     }
 
-    /** Returns selection model.
-     * @return selection model
+    /**
+     * Gets the selection model for this property.
+     * 
+     * @return the selection model
      */
     public IPropertySelectionModel getSelectionModel() {
         return this.model;
     }
 
-    /** Sets selection model.
-     * @param model model
+    /**
+     * Sets the selection model for this property.
+     * 
+     * @param model the selection model
      */
     public void setSelectionModel(IPropertySelectionModel model) {
         this.model = model;
     }
 
+	/**
+	 * Gets the notifier class that this property is associated with.
+	 * 
+	 * @return the notifier class
+	 */
 	public abstract Class getNotifierClass();
 
 	/**
-	 * @return key value for property value
+	 * Gets the key value for this property.
+	 * 
+	 * @return the key value
 	 */
 	public String getKey() {
 		return getNotifierClass().getName() + "#" + getDisplayName();
 	}
 
 	/**
-	 * @param properties should not be null
-	 * @return
+	 * Gets the value of this property.
+	 * 
+	 * @param properties the map of all notifier properties
+	 * @return the value
 	 */
 	public String getValue(Map properties) {
 		return (String) properties.get(getKey());
 	}
 
 	/**
-	 * @param properties should not be null
-	 * @param value
+	 * Sets the value of this property.
+	 * 
+	 * @param properties the map of all notifier properties
+	 * @param value the value
 	 */
 	public void setValue(Map properties, String value) {
 		properties.put(getKey(), value);

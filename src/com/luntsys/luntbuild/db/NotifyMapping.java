@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.db;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -32,45 +33,95 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade;
 
 /**
- * This class is a hibernate entity represents the project-user notification mapping
+ * Represents the <code>Project</code> to <code>User</code> notification mapping.
+ * 
+ * <p>This is a hibernate mapping class.</p>
+ * 
  * @author robin shine
+ * @see Project
+ * @see User
  */
 public class NotifyMapping {
 	private long id;
 	private Project project;
 	private User user;
 
+	/**
+	 * Creates a blank notify mapping.
+	 */
 	public NotifyMapping(){};
 
+	/**
+	 * Creates a notify mapping.
+	 * 
+	 * @param project the project
+	 * @param user the user
+	 */
 	public NotifyMapping(Project project, User user) {
 		this.project = project;
 		this.user = user;
 	}
 
+	/**
+	 * Gets the identifer of this notify mapping.
+	 * 
+	 * @return the identifer of this notify mapping
+	 */
 	public long getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the identifier of this notify mapping, will be called by hibernate.
+	 *
+	 * @param id the identifier of this notify mapping
+	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the project of this notify mapping.
+	 * 
+	 * @return the project of this notify mapping
+	 */
 	public Project getProject() {
 		return project;
 	}
 
+	/**
+	 * Sets the project of this notify mapping.
+	 * 
+	 * @param project the project of this notify mapping
+	 */
 	public void setProject(Project project) {
 		this.project = project;
 	}
 
+	/**
+	 * Gets the user of this notify mapping.
+	 * 
+	 * @return the user of this notify mapping
+	 */
 	public User getUser() {
 		return user;
 	}
 
+	/**
+	 * Sets the user of this notify mapping.
+	 * 
+	 * @param user the user of this notify mapping
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}
 
+	/**
+	 * Returns a hash code value for the object.
+	 * 
+	 * @return a hash code value for this object
+	 * @see #equals(Object)
+	 */
 	public int hashCode() {
 		return new HashCodeBuilder()
 			.append(getProject().getId())
@@ -78,17 +129,28 @@ public class NotifyMapping {
 			.hashCode();
 	}
 
-	public boolean equals(Object other) {
-		if ( !(other instanceof NotifyMapping) ) return false;
-		NotifyMapping castOther = (NotifyMapping) other;
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj the reference object with which to compare
+	 * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
+	 */
+	public boolean equals(Object obj) {
+		if ( !(obj instanceof NotifyMapping) ) return false;
+		NotifyMapping castOther = (NotifyMapping) obj;
 		return new EqualsBuilder()
 			.append(getProject().getId(), castOther.getProject().getId())
 			.append(getUser().getId(), castOther.getUser().getId())
 			.isEquals();
 	}
 
-	public com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade getFacade() {
-		com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade facade = new com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade();
+	/**
+	 * Gets the facade of this notify mapping.
+	 * 
+	 * @return the facade of this notify mapping
+	 */
+	public NotifyMappingFacade getFacade() {
+		NotifyMappingFacade facade = new NotifyMappingFacade();
 		facade.setId(getId());
 		facade.setProjectId(getProject().getId());
 		facade.setUserId(getUser().getId());

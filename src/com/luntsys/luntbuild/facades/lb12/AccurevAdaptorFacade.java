@@ -1,52 +1,61 @@
 /*
  * Copyright (c) 2005 Your Corporation. All Rights Reserved.
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * AccurevAdaptorFacade
+ * AccuRev VCS adaptor facade.
  *
  * @author Jason Carreira <jcarreira@eplus.com>
+ * @see com.luntsys.luntbuild.vcs.AccurevAdaptor
  */
 public class AccurevAdaptorFacade extends VcsFacade {
     private String user;
 	private String password;
 
     /**
-     * Get the corresponding vcs adaptor class name
+     * Gets the corresponding VCS adaptor class name.
      *
-     * @return vcs adaptor class name
+     * @return the VCS adaptor class name
      */
     public String getVcsClassName() {
         return "com.luntsys.luntbuild.vcs.AccurevAdaptor";
     }
 
-    /**
-     * @return Returns the password.
-     */
+	/**
+	 * Gets the password to login to the AccuRev server.
+	 * 
+	 * @return the password
+	 */
     public final String getPassword() {
         return this.password;
     }
 
-    /**
-     * @param password The password to set.
-     */
+	/**
+	 * Sets the password to login to the AccuRev server.
+	 * 
+	 * @param password the password
+	 */
     public final void setPassword(String password) {
         this.password = password;
     }
 
-    /**
-     * @return Returns the user.
-     */
+	/**
+	 * Gets the user to login to the AccuRev server.
+	 * 
+	 * @return the user
+	 */
     public final String getUser() {
         return this.user;
     }
 
-    /**
-     * @param user The user to set.
-     */
+	/**
+	 * Sets the user to login to the AccuRev server.
+	 * 
+	 * @param user the user
+	 */
     public final void setUser(String user) {
         this.user = user;
     }
-
 }

@@ -249,6 +249,15 @@
 
 	<target name="stage_docs"
         description="Builds primary documentation">
+		<echo level="info">Staging documentation</echo>
+		<copy todir="stage/docs/api">
+			<fileset dir="docs/api">
+				<exclude name="*.xsl"/>
+				<exclude name="*.docbook"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
 		<copy todir="stage/docs/guide">
 			<fileset dir="docs/guide">
 				<exclude name="*.xsl"/>
@@ -301,7 +310,7 @@
 			<link href="http://www.dpml.net/api/ant/1.6.4/"/>
 			<link href="http://java.sun.com/products/servlet/2.3/javadoc/"/>
 			<link href="http://tapestry.apache.org/tapestry3/doc/api/"/>
-			<!--<link href="http://acegisecurity.org/multiproject/acegi-security/apidocs/"/>-->
+			<link href="http://acegisecurity.org/multiproject/acegi-security/apidocs/"/>
 			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
 			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
 		</javadoc>
@@ -397,6 +406,8 @@
 		</delete>
 		<delete dir="test/junitReports"/>
 		<delete dir="test/classes"/>
+		<delete failonerror="no" file="luntbuild_log.html"/>
+		<delete failonerror="no" file="luntbuild_log.txt"/>
 		<delete dir="${artifactsDir}"/>
 		<delete dir="${junitHtmlReportDir}"/>
         <delete file="db/luntbuild.script"/>
@@ -419,7 +430,7 @@
 			<formatter type="xml"/>
 			<batchtest todir="test/junitReports">
 				<fileset dir="test/src">
-					<include name="**/*.java"/>
+					<include name="**/*Test.java"/>
 				</fileset>
 			</batchtest>
 			<classpath refid="classpath.test"/>

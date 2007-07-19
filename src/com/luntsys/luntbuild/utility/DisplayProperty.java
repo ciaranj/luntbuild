@@ -25,13 +25,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.utility;
 
 import org.apache.tapestry.form.IPropertySelectionModel;
 
 /**
- * Display property is an user editable property displaying at
- * the user interface
+ * Display property is an user editable property displayed at the user interface.
  *
  * @author robin shine
  */
@@ -40,78 +40,101 @@ public abstract class DisplayProperty {
     IPropertySelectionModel model = null;
 
 	/**
-	 * @return the display name of this property
+	 * Gets the display name of this property.
+	 * 
+	 * @return the display name
 	 */
 	public abstract String getDisplayName();
+
 	/**
-	 * @return the description of this property
+	 * Gets the description of this property.
+	 * 
+	 * @return the description
 	 */
 	public abstract String getDescription();
+
 	/**
-	 * @return is this property required? Required property will suffer to none-empty
-	 * checking
+	 * Checks if this property is required.  Required properties must not be empty.
+	 * 
+	 * @return <code>true</code> if this property is required
 	 */
 	public boolean isRequired(){
 		return true;
 	}
+
 	/**
-	 * @return is property needs multi-line input?
+	 * Checks if this property needs multi-line input.
+	 * 
+	 * @return <code>true</code> if this property is multi-line
 	 */
 	public boolean isMultiLine(){
 		return false;
 	}
+
 	/**
-	 * @return is this property secret? secret property will use ***** for values display
+	 * Checks if this property is secret.  Secret properties will show "*****" instead of their value.
+	 * 
+	 * @return <code>true</code> if this property is secret
 	 */
 	public boolean isSecret(){
 		return false;
 	}
 
-    /** Returns is this property select/droplist?
-     * @return is this property select/droplist?
+    /**
+     * Checks if this property is a selection or droplist.
+     * 
+     * @return <code>true</code> if this property is a selection or droplist
      */
     public boolean isSelect(){
         return false;
     }
 
 	/**
-	 * @return current value for this property
+	 * Gets the value of this property.
+	 * 
+	 * @return the value
 	 */
 	public abstract String getValue();
 
-	/** Returns current evaluated value for this property if applicable. By default returns plain value.
-	 * @return current evaluated value for this property
+	/**
+	 * Gets the value of this property. This method will parse OGNL variables.
+	 * 
+	 * @return the value
 	 */
 	public String getActualValue() {
 		return getValue();
 	}
 
 	/**
-	 * Set the current value for this proprety
-	 * @param value
+	 * Sets the value for this proprety.
+	 * 
+	 * @param value the value
 	 */
 	public abstract void setValue(String value);
 
-    /** Returns selection model.
-     * @return selection model
+    /**
+     * Gets the selection model for this property.
+     * 
+     * @return the selection model
      */
     public IPropertySelectionModel getSelectionModel() {
         return this.model;
     }
 
-    /** Sets selection model.
-     * @param model model
+    /**
+     * Sets the selection model for this property.
+     * 
+     * @param model the selection model
      */
     public void setSelectionModel(IPropertySelectionModel model) {
         this.model = model;
     }
 
-	/** Checks if two objects equal.
-	 * @param obj object
-	 * @return true if equal
-	 *
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj the reference object with which to compare
+	 * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
 	 */
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof DisplayProperty){

@@ -25,17 +25,17 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 import java.util.Iterator;
 import java.util.Set;
 
 /**
- * This class represents facade of VcsLogin class
- *
+ * VCS login facade.
+ * 
  * @author robin shine
- * @see com.luntsys.luntbuild.db.User
- * @see com.luntsys.luntbuild.db.Project
+ * @see com.luntsys.luntbuild.db.VcsLogin
  */
 public class VcsLoginFacade {
 	private long id;
@@ -43,38 +43,84 @@ public class VcsLoginFacade {
 	private long userId;
 	private String login;
 
+	/**
+	 * Gets the identifier of this VCS login.
+	 *
+	 * @return the identifier of this VCS login
+	 */
 	public long getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the identifier of this VCS login.
+	 *
+	 * @param id the identifier of this VCS login
+	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the identifier of the project of this VCS login.
+	 *
+	 * @return the identifier of the project
+	 */
 	public long getProjectId() {
 		return projectId;
 	}
 
+	/**
+	 * Sets the identifier of the project of this VCS login.
+	 *
+	 * @param projectId the identifier of the project
+	 */
 	public void setProjectId(long projectId) {
 		this.projectId = projectId;
 	}
 
+	/**
+	 * Gets the identifier of the user of this VCS login.
+	 *
+	 * @return the identifier of the user
+	 */
 	public long getUserId() {
 		return userId;
 	}
 
+	/**
+	 * Sets the identifier of the user of this VCS login.
+	 *
+	 * @param userId the identifier of the user
+	 */
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
+	/**
+	 * Gets the VCS login name/id of this VCS login.
+	 *
+	 * @return the VCS login name/id of this VCS login
+	 */
 	public String getLogin() {
 		return login;
 	}
 
+	/**
+	 * Sets the VCS login name/id of this VCS login.
+	 *
+	 * @param login the VCS login name/id of this VCS login
+	 */
 	public void setLogin(String login) {
 		this.login = login;
 	}
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj the reference object with which to compare
+	 * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
+	 */
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof VcsLoginFacade){
 			if (getId() == ((VcsLoginFacade)obj).getId())
@@ -83,10 +129,23 @@ public class VcsLoginFacade {
 		return false;
 	}
 
+	/**
+	 * Returns a hash code value for the object.
+	 * 
+	 * @return a hash code value for this object
+	 * @see #equals(Object)
+	 */
 	public int hashCode() {
 		return (int) getId();
 	}
 
+	/**
+	 * Finds the VCS login with the specified login from the specified set of VCS logins.
+	 * 
+	 * @param vcsLogins the set of VCS logins
+	 * @param login the login
+	 * @return the VCS login, or <code>null</code> if no VCS login has the specified login
+	 */
 	public static VcsLoginFacade findVcsLogin(Set vcsLogins, String login) {
 		Iterator it = vcsLogins.iterator();
 		while (it.hasNext()) {

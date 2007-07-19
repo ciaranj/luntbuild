@@ -30,6 +30,7 @@ package com.luntsys.luntbuild.builders;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.lb12.AntBuilderFacade;
+import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
@@ -42,7 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Ant builder implementation
+ * Ant builder implementation.
+ * 
  * @author robin shine
  */
 public class AntBuilder extends Builder {
@@ -75,55 +77,107 @@ public class AntBuilder extends Builder {
             "buildDate=\"${build.startDate}\"\n" +
             "junitHtmlReportDir=\"${build.junitHtmlReportDir}\"";
 
+	/**
+	 * Constructor, creates a new ant builder with default settings.
+	 */
     public AntBuilder() {
         if (System.getProperty("os.name").startsWith("Windows")) {
             this.command = "C:\\apache-ant-1.6.2\\bin\\ant.bat";
         } else {
             this.command = "/usr/local/bin/ant";
         }
-        setBuildSuccessCondition("result==0 and logContainsLine(\"BUILD SUCCESSFUL\")");
+        setBuildSuccessCondition("result==0 and builderLogContainsLine(\"BUILD SUCCESSFUL\")");
     }
 
+	/**
+	 * Gets the command to run ant.
+	 * 
+	 * @return the command to run ant
+	 */
     public String getCommand() {
         return command;
     }
 
+	/**
+	 * Sets the command to run ant.
+	 * 
+	 * @param command the command to run ant
+	 */
     public void setCommand(String command) {
         this.command = command;
     }
 
+	/**
+	 * Gets the path to the build script.
+	 * 
+	 * @return the path to the build script
+	 */
     public String getBuildScriptPath() {
         return buildScriptPath;
     }
 
+	/**
+	 * Sets the path to the build script.
+	 * 
+	 * @param buildScriptPath the path to the build script
+	 */
     public void setBuildScriptPath(String buildScriptPath) {
         this.buildScriptPath = buildScriptPath;
     }
 
+	/**
+	 * Gets the targets to run.
+	 * 
+	 * @return the targets to run
+	 */
     public String getTargets() {
         return targets;
     }
 
+	/**
+	 * Sets the targets to run.
+	 * 
+	 * @param targets the targets to run
+	 */
     public void setTargets(String targets) {
         this.targets = targets;
     }
 
+	/**
+	 * Gets the build properties.
+	 * 
+	 * @return the build properties
+	 */
     public String getBuildProperties() {
         return buildProperties;
     }
 
+	/**
+	 * Sets the build properties.
+	 * 
+	 * @param buildProperties the build properties
+	 */
     public void setBuildProperties(String buildProperties) {
         this.buildProperties = buildProperties;
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getDisplayName() {
         return "Ant builder";
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getIconName() {
         return "ant.gif";
     }
 
+    /**
+     * @inheritDoc
+     */
     public List getBuilderSpecificProperties() {
         List properties = new ArrayList();
         properties.add(new DisplayProperty() {
@@ -228,6 +282,9 @@ public class AntBuilder extends Builder {
         return properties;
     }
 
+    /**
+     * @inheritDoc
+     */
     public void validate() {
         super.validate();
         try {
@@ -261,11 +318,9 @@ public class AntBuilder extends Builder {
     }
 
     /**
-     * Construct command to run ant
-     *
-     * @return command to run ant
+     * @inheritDoc
      */
-    public String constructBuildCmd(Build build) throws IOException {
+    public String constructBuildCmd(Build build) {
         String antCmd = getCommand();
         antCmd = antCmd.replace('\n', ' ');
         antCmd = antCmd.replace('\r', ' ');
@@ -306,29 +361,46 @@ public class AntBuilder extends Builder {
         return antCmd;
     }
 
+    /**
+     * @inheritDoc
+     */
     public String constructBuildCmdDir(Build build) {
         String buildScriptAbsolutePath = build.getSchedule().resolveAbsolutePath(getBuildScriptPath());
         return new File(buildScriptAbsolutePath).getParent();
     }
 
-    public com.luntsys.luntbuild.facades.lb12.BuilderFacade constructFacade() {
+    /**
+     * @inheritDoc
+     * @see AntBuilderFacade
+     */
+    public BuilderFacade constructFacade() {
         return new AntBuilderFacade();
     }
 
-    public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.AntBuilderFacade))
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>AntBuilderFacade</code>
+     * @see AntBuilderFacade
+     */
+    public void loadFromFacade(BuilderFacade facade) {
+        if (!(facade instanceof AntBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.AntBuilderFacade antBuilderFacade = (com.luntsys.luntbuild.facades.lb12.AntBuilderFacade) facade;
+        AntBuilderFacade antBuilderFacade = (AntBuilderFacade) facade;
         setCommand(antBuilderFacade.getCommand());
         setBuildScriptPath(antBuilderFacade.getBuildScriptPath());
         setTargets(antBuilderFacade.getBuildTargets());
         setBuildProperties(antBuilderFacade.getBuildProperties());
     }
 
-    public void saveToFacade(com.luntsys.luntbuild.facades.lb12.BuilderFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.AntBuilderFacade))
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>AntBuilderFacade</code>
+     * @see AntBuilderFacade
+     */
+    public void saveToFacade(BuilderFacade facade) {
+        if (!(facade instanceof AntBuilderFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.AntBuilderFacade antBuilderFacade = (AntBuilderFacade) facade;
+        AntBuilderFacade antBuilderFacade = (AntBuilderFacade) facade;
         antBuilderFacade.setCommand(getCommand());
         antBuilderFacade.setBuildScriptPath(getBuildScriptPath());
         antBuilderFacade.setBuildTargets(getTargets());

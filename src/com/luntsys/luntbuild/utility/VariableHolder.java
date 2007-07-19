@@ -25,14 +25,29 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.utility;
 
 /**
- * The counter holder interface
+ * Variable counter holder interface.
+ * 
  * @author robin shine
  */
 public interface VariableHolder {
+
+	/**
+	 * Gets the variable counter with the specified name.
+	 * 
+	 * @param name the variable counter name
+	 * @return the variable counter
+	 */
 	Variable getVar(String name);
 
+	/**
+	 * Sets the variable counter with the specified name.
+	 * 
+	 * @param name the variable counter name
+	 * @param counter the variable counter
+	 */
 	void setVar(String name, Variable counter);
 }

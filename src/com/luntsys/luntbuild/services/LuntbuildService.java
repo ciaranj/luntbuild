@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.services;
 
 import java.io.BufferedReader;
@@ -46,10 +47,12 @@ import com.luntsys.luntbuild.db.Role;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.db.VcsLogin;
+import com.luntsys.luntbuild.facades.BuildParams;
 import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.facades.ILuntbuild;
 import com.luntsys.luntbuild.facades.SearchCriteria;
-import com.luntsys.luntbuild.facades.lb12.ProjectFacade;
 import com.luntsys.luntbuild.facades.lb12.BuildFacade;
+import com.luntsys.luntbuild.facades.lb12.ProjectFacade;
 import com.luntsys.luntbuild.facades.lb12.ScheduleFacade;
 import com.luntsys.luntbuild.facades.lb12.UserFacade;
 import com.luntsys.luntbuild.utility.Luntbuild;
@@ -61,16 +64,16 @@ import org.quartz.SimpleTrigger;
 
 
 /**
- * Implementation of interface {@link com.luntsys.luntbuild.facades.ILuntbuild}
+ * Luntbuild service implementation.
+ * 
  * @author robin shine
  */
-public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuild {
+public class LuntbuildService implements ILuntbuild {
 
     private static Log logger = LogFactory.getLog(LuntbuildService.class);
 
     /**
-     * Return all projects configured in the system
-     * @return list of {@link com.luntsys.luntbuild.facades.lb12.ProjectFacade}
+     * @inheritDoc
      */
     public List getAllProjects() {
         List facades = new ArrayList();
@@ -83,8 +86,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Return all schedules configured for all projects in the system
-     * @return list of {@link com.luntsys.luntbuild.facades.lb12.ScheduleFacade}
+     * @inheritDoc
      */
     public List getAllSchedules() {
         List facades = new ArrayList();
@@ -97,9 +99,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Return all schedules configured for specified project
-     * @param projectName
-     * @return list of {@link com.luntsys.luntbuild.facades.lb12.ScheduleFacade}
+     * @inheritDoc
      */
     public List getAllSchedulesOfProject(String projectName) {
         List facades = new ArrayList();
@@ -112,10 +112,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get project by project name, if more than one project have the same name, a random project
-     * will be returned
-     * @param projectName name of the returned project
-     * @return one of the project with specified name, or null if no projects have this name
+     * @inheritDoc
      */
     public ProjectFacade getProjectByName(String projectName) {
         Project project = null;
@@ -141,13 +138,9 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get schedule by project and schedule name.
-     * @param projectName project name of the schedule
-     * @param scheduleName name of the schedule
-     * @return schedule with specified project and name, or null if no schedules within specified project
-     * have this specified name
+     * @inheritDoc
      */
-    public com.luntsys.luntbuild.facades.lb12.ScheduleFacade getScheduleByName(String projectName, String scheduleName) {
+    public ScheduleFacade getScheduleByName(String projectName, String scheduleName) {
         Schedule schedule = null;
         try {
             schedule = Luntbuild.getDao().loadSchedule(projectName, scheduleName);
@@ -159,12 +152,9 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Trigger a build within specified project name, schedule name, and with specified build params
-     * @param projectName project name to trigger build in
-     * @param scheduleName schedule name to trigger build in
-     * @param buildParams build parameters
+     * @inheritDoc
      */
-    public void triggerBuild(String projectName, String scheduleName, com.luntsys.luntbuild.facades.BuildParams buildParams) {
+    public void triggerBuild(String projectName, String scheduleName, BuildParams buildParams) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(projectName, scheduleName);
         buildParams.setScheduleId(schedule.getId());
 
@@ -233,10 +223,9 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Update properties of a project based on its facade object
-     * @param projectFacade
+     * @inheritDoc
      */
-    public void saveProject(com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade) {
+    public void saveProject(ProjectFacade projectFacade) {
         Project project = Luntbuild.getDao().loadProject(projectFacade.getId());
         project.setFacade(projectFacade);
         project.validate();
@@ -245,10 +234,9 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Update properties of a schedule based on its facade object
-     * @param scheduleFacade
+     * @inheritDoc
      */
-    public void saveSchedule(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade) {
+    public void saveSchedule(ScheduleFacade scheduleFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleFacade.getId());
         schedule.setFacade(scheduleFacade);
         schedule.validate();
@@ -257,20 +245,14 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get luntbuild system property value by specifying property name.
-     * Refer to {@link com.luntsys.luntbuild.facades.Constants} for defined system property names
-     * @param propertyName
-     * @return luntbuild system property value
+     * @inheritDoc
      */
     public String getSystemProperty(String propertyName) {
         return (String) Luntbuild.getProperties().get(propertyName);
     }
 
     /**
-     * Set luntbuild system property value. Refer to {@link com.luntsys.luntbuild.facades.Constants} for
-     * defined system property names
-     * @param propertyName
-     * @param propertyValue
+     * @inheritDoc
      */
     public void setSystemProperty(String propertyName, String propertyValue) {
         if (propertyValue != null) {
@@ -283,12 +265,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Search for builds in the system
-     * @param condition the condition matching builds should meet
-     * @param start start position of search operation
-     * @param count number of builds to retrieve. No limit will be set on number of
-     * returned builds if this value equals to 0
-     * @return found builds
+     * @inheritDoc
      */
     public List searchBuilds(SearchCriteria condition, int start,  int count) {
         List buildFacades = new ArrayList();
@@ -301,20 +278,14 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Delete builds matching specified search criteria.
-     *
-     * @param searchCriteria criteria
-     * @since 1.3
+     * @inheritDoc
      */
-    public void deleteBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria) {
+    public void deleteBuilds(SearchCriteria searchCriteria) {
         Luntbuild.getDao().deleteBuilds(searchCriteria);
     }
 
     /**
-     * Delete specified build.
-     *
-     * @param buildFacade build facade
-     * @since 1.3
+     * @inheritDoc
      */
     public void deleteBuild(BuildFacade buildFacade) {
         Build build = new Build();
@@ -325,15 +296,9 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Move builds matching specified search criteria to specified schedule.
-     *
-     * @param searchCriteria criteria
-     * @param projectName project name
-     * @param scheduleName schedule name
-     * @since 1.3
+     * @inheritDoc
      */
-    public void moveBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria,
-            String projectName, String scheduleName) {
+    public void moveBuilds(SearchCriteria searchCriteria, String projectName, String scheduleName) {
         Schedule schedule = null;
         try {
             schedule = Luntbuild.getDao().loadSchedule(projectName, scheduleName);
@@ -344,11 +309,8 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
         Luntbuild.getDao().moveBuilds(searchCriteria, schedule.getId());
     }
 
-    /** Move build to specified project/schedule.
-     * @param buildFacade build
-     * @param projectName project name
-     * @param scheduleName schedule name
-     * @since 1.3
+    /**
+     * @inheritDoc
      */
     public void moveBuild(BuildFacade buildFacade, String projectName, String scheduleName) {
         Schedule schedule = null;
@@ -362,11 +324,9 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get latest build for specified schedule
-     * @param scheduleFacade
-     * @return maybe null if there are not any builds inside this schedule
+     * @inheritDoc
      */
-    public com.luntsys.luntbuild.facades.lb12.BuildFacade getLastBuild(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade) {
+    public BuildFacade getLastBuild(ScheduleFacade scheduleFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleFacade.getId());
         Build build = Luntbuild.getDao().loadLastBuild(schedule);
         if (build != null) {
@@ -376,11 +336,9 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get last successful build for specified schedule
-     * @param scheduleFacade
-     * @return maybe null if there are not any successful builds inside this schedule
+     * @inheritDoc
      */
-    public com.luntsys.luntbuild.facades.lb12.BuildFacade getLastSuccessBuild(com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade) {
+    public BuildFacade getLastSuccessBuild(ScheduleFacade scheduleFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleFacade.getId());
         Build build = Luntbuild.getDao().loadLastSuccessBuild(schedule);
         if (build != null) {
@@ -390,29 +348,21 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get latest build for specified schedule
-     * @param projectName
-     * @param scheduleName
-     * @return maybe null if there are not any builds inside this schedule
+     * @inheritDoc
      */
     public BuildFacade getLastBuild(String projectName, String scheduleName) {
         return getLastBuild(getScheduleByName(projectName, scheduleName));
     }
 
     /**
-     * Get last successful build for specified schedule
-     * @param projectName
-     * @param scheduleName
-     * @return maybe null if there are not any successful builds inside this schedule
+     * @inheritDoc
      */
     public BuildFacade getLastSuccessBuild(String projectName, String scheduleName) {
         return getLastSuccessBuild(getScheduleByName(projectName, scheduleName));
     }
 
     /**
-     * Create project based on its facade object
-     * @param projectFacade
-     * @since 1.3
+     * @inheritDoc
      */
     public void createProject(ProjectFacade projectFacade) {
         Project project = new Project();
@@ -521,9 +471,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     *  Delete project by project name
-     * @param projectName
-     * @since 1.3
+     * @inheritDoc
      */
     public void deleteProject(String projectName) {
         Luntbuild.getDao().deleteProject(Luntbuild.getDao().loadProject(projectName));
@@ -531,9 +479,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Create schedule based on its facade object
-     * @param scheduleFacade
-     * @since 1.3
+     * @inheritDoc
      */
     public void createSchedule(ScheduleFacade scheduleFacade) {
         try {
@@ -559,9 +505,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     *  Delete schedule by schedule object
-     * @param scheduleFacade
-     * @since 1.3
+     * @inheritDoc
      */
     public void deleteSchedule(ScheduleFacade scheduleFacade) {
         Luntbuild.getDao().deleteSchedule(Luntbuild.getDao().loadSchedule(scheduleFacade.getId()));
@@ -569,12 +513,9 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Delete all schedules configured for specified project
-     * @param projectName
-     * @since 1.3
+     * @inheritDoc
      */
     public void deleteAllSchedulesOfProject(String projectName) {
-        List facades = new ArrayList();
         Iterator it = Luntbuild.getDao().loadProject(projectName).getSchedules().iterator();
         while (it.hasNext()) {
             Schedule schedule = (Schedule) it.next();
@@ -584,12 +525,8 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
         Luntbuild.getSchedService().rescheduleBuilds();
     }
 
-
     /**
-     * Get build log of the specified build
-     * @param buildFacade
-     * @return build log as array of strings
-     * @since 1.3
+     * @inheritDoc
      */
     public String[] getBuildLog(BuildFacade buildFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(buildFacade.getScheduleId());
@@ -604,10 +541,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get build log of the specified build in Html
-     * @param buildFacade
-     * @return build log as array of strings
-     * @since 1.3
+     * @inheritDoc
      */
     public String[] getBuildLogHtml(BuildFacade buildFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(buildFacade.getScheduleId());
@@ -622,10 +556,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get revision log of the specified build
-     * @param buildFacade
-     * @return revision log as array of strings
-     * @since 1.3
+     * @inheritDoc
      */
     public String[] getRevisionLog(BuildFacade buildFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(buildFacade.getScheduleId());
@@ -640,10 +571,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get revision log of the specified build in Html
-     * @param buildFacade
-     * @return revision log as array of strings
-     * @since 1.3
+     * @inheritDoc
      */
     public String[] getRevisionLogHtml(BuildFacade buildFacade) {
         Schedule schedule = Luntbuild.getDao().loadSchedule(buildFacade.getScheduleId());
@@ -658,9 +586,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get system log
-     * @return system log as array of strings
-     * @since 1.3
+     * @inheritDoc
      */
     public String[] getSystemLog() {
         String servletUrl = Luntbuild.getServletUrl();
@@ -673,9 +599,7 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
     }
 
     /**
-     * Get system log
-     * @return system log as array of strings
-     * @since 1.3
+     * @inheritDoc
      */
     public String[] getSystemLogHtml() {
         String servletUrl = Luntbuild.getServletUrl();
@@ -710,11 +634,8 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
         return log;
     }
 
-    /** Return true if user exists and can create project.
-     *
-     * @param username of a user
-     * @return true if user exists and can create project
-     * @since 1.3
+    /**
+     * @inheritDoc
      */
     public boolean canCreateProject(String username) {
         if (!Luntbuild.getDao().isUserExist(username)) {
@@ -726,9 +647,8 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
         return luntUser.isCanCreateProject();
     }
 
-    /** Returns list of all users.
-     * @return list of all users
-     * @since 1.3
+    /**
+     * @inheritDoc
      */
     public List getUsers() {
         List users = Luntbuild.getDao().loadUsers();
@@ -740,14 +660,11 @@ public class LuntbuildService implements com.luntsys.luntbuild.facades.ILuntbuil
         return facades;
     }
 
-    /** Returns user facade if user exists.
-     * @param username of a user
-     * @return user facade if user exists.
-     * @since 1.3
+    /**
+     * @inheritDoc
      */
     public UserFacade getUser(String username) {
         User user = Luntbuild.getDao().loadUser(username);
         return (user == null) ? null : user.getFacade();
     }
 }
-

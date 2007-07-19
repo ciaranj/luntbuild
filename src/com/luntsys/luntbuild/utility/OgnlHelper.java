@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.utility;
 
 import com.luntsys.luntbuild.db.Project;
@@ -46,7 +47,7 @@ import org.apache.commons.logging.LogFactory;
 import ognl.OgnlException;
 
 /**
- * This class helps ognl evaluation
+ * Helper class for OGNL evaluation.
  *
  * @author alvin shen
  */
@@ -78,38 +79,84 @@ public class OgnlHelper {
 	 */
 	private static ThreadLocal testMode = new ThreadLocal();
 
+	/**
+	 * Gets the revisions object for this thread.
+	 * 
+	 * @return the revisions object
+	 */
 	public static Revisions getRevisions() {
 		return (Revisions) revisions.get();
 	}
 
+	/**
+	 * Sets the revisions object for this thread.
+	 * 
+	 * @param revisions the revisions object
+	 */
 	public static void setRevisions(Revisions revisions) {
 		OgnlHelper.revisions.set(revisions);
 	}
 
+	/**
+	 * Gets the ant project for this thread.
+	 * 
+	 * @return the ant project
+	 */
 	public static org.apache.tools.ant.Project getAntProject() {
 		return (org.apache.tools.ant.Project) antProject.get();
 	}
 
+	/**
+	 * Sets the ant project for this thread.
+	 * 
+	 * @param antProject the ant project
+	 */
 	public static void setAntProject(org.apache.tools.ant.Project antProject) {
 		OgnlHelper.antProject.set(antProject);
 	}
 
+	/**
+	 * Checks if test mode is on for this thread when evaluating expressions.
+	 * 
+	 * @return <code>true</code> if test mode is on
+	 */
 	public static boolean isTestMode() {
 		return ((Boolean) OgnlHelper.testMode.get()).booleanValue();
 	}
 
+	/**
+	 * Sets test mode for this thread when evaluating expressions.
+	 * 
+	 * @param testMode set <code>true</code> for test mode
+	 */
 	public static void setTestMode(boolean testMode) {
 		OgnlHelper.testMode.set(new Boolean(testMode));
 	}
 
+	/**
+	 * Gets the currently running schedule for this tread.
+	 * 
+	 * @return the currently running schedule
+	 */
 	public static Schedule getWorkingSchedule() {
 		return (Schedule) workingSchedule.get();
 	}
 
+	/**
+	 * Sets the currently running schedule for this tread.
+	 * 
+	 * @param workingSchedule the currently running schedule
+	 */
 	public static void setWorkingSchedule(Schedule workingSchedule) {
 		OgnlHelper.workingSchedule.set(workingSchedule);
 	}
 
+	/**
+	 * Evaluates the value of an OGNL expression for the currently working schedule.
+	 * 
+	 * @param val the OGNL expression
+	 * @return the evaluated string
+	 */
 	public static String evaluateScheduleValue(String val) {
 		if (val == null || val.trim().length() == 0) return "";
 		Schedule workingSchedule = OgnlHelper.getWorkingSchedule();
@@ -125,34 +172,43 @@ public class OgnlHelper {
 	}
 
 	/**
-	 * Get project object with specified name
-	 * @param projectName
-	 * @return project object with specified name
+	 * Gets the project with specified name.
+	 * 
+	 * @param projectName the project name
+	 * @return the project
 	 */
 	public Project getProject(String projectName) {
 		return Luntbuild.getDao().loadProject(projectName);
 	}
 
 	/**
-	 * Empty method, only want to conform with ognl indexed property requirement
-	 * @param projectName
-	 * @param project
+	 * Empty method, only want to conform with OGNL indexed property requirement.
+	 * 
+	 * @param projectName the project name
+	 * @param project the project
 	 */
 	public void setProject(String projectName, Project project) {
 		// empty methods, only want to conform to ognl indexed property
 	}
 
+	/**
+	 * Gets the name of this object.
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return "system";
 	}
 
 	/**
-	 * Execute the specified command. This method requires the following thread local variables
-	 * in {@link com.luntsys.luntbuild.utility.OgnlHelper}
-	 * <i> antProject
+	 * Executes the specified command. This method requires the following thread local variables
+	 * in <code>OgnlHelper</code>:
+	 * <ul>
+	 * <li>antProject</li>
+	 * </ul>
 	 *
-	 * @param command
-	 * @return result
+	 * @param command the command to execute
+	 * @return the result of the command
 	 */
 	public int execute(String command) {
 		String message = "Execute command during ognl expression evaluation: " + command;
@@ -165,8 +221,9 @@ public class OgnlHelper {
 	}
 
 	/**
-	 * Get day of month, possible values are 01 to 31
-	 * @return day of month
+	 * Gets the day of month, possible values are 01 to 31.
+	 * 
+	 * @return the day of month
 	 */
 	public String getDayOfMonth() {
 		String dayOfMonth;
@@ -179,8 +236,9 @@ public class OgnlHelper {
 	}
 
 	/**
-	 * Get day of week, for example: Mon, Sat, etc.
-	 * @return day of week
+	 * Gets the day of week, for example: Mon, Sat, etc.
+	 * 
+	 * @return the day of week
 	 */
 	public String getDayOfWeek() {
 		return new DateFormatSymbols(Locale.US).
@@ -188,24 +246,27 @@ public class OgnlHelper {
 	}
 
 	/**
-	 * Get numeric day of week, possible values are 1 to 7
-	 * @return numeric day of week
+	 * Gets the numeric day of week, possible values are 1 to 7.
+	 * 
+	 * @return the numeric day of week
 	 */
 	public String getNumericDayOfWeek() {
 		return String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1);
 	}
 
 	/**
-	 * Get day of year, possible values are 1 to 365
-	 * @return day of year
+	 * Gets the day of year, possible values are 1 to 365.
+	 * 
+	 * @return the day of year
 	 */
 	public String getDayOfYear() {
 		return String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_YEAR));
 	}
 
 	/**
-	 * Get hour, possible values are 00 to 23
-	 * @return hour
+	 * Gets the hour, possible values are 00 to 23.
+	 * 
+	 * @return the hour
 	 */
 	public String getHour() {
 		String hour;
@@ -218,8 +279,9 @@ public class OgnlHelper {
 	}
 
 	/**
-	 * Get minute, possible values are 00 to 59
-	 * @return minute
+	 * Gets the minute, possible values are 00 to 59.
+	 * 
+	 * @return the minute
 	 */
 	public String getMinute() {
 		String minute;
@@ -232,8 +294,9 @@ public class OgnlHelper {
 	}
 
 	/**
-	 * Get month, for example: Jan, Feb, ...
-	 * @return month
+	 * Gets the month, for example: Jan, Feb, etc.
+	 * 
+	 * @return the month
 	 */
 	public String getMonth() {
 		return new DateFormatSymbols(Locale.US).
@@ -241,8 +304,9 @@ public class OgnlHelper {
 	}
 
 	/**
-	 * Get numeric month, possible values are 01 to 12
-	 * @return numeric month
+	 * Gets the numeric month, possible values are 01 to 12.
+	 * 
+	 * @return the numeric month
 	 */
 	public String getNumericMonth() {
 		String numericMonth;
@@ -255,31 +319,38 @@ public class OgnlHelper {
 	}
 
 	/**
-	 * Get week of year, for example: 1, 2, ...
-	 * @return week of year
+	 * Gets the week of year, for example: 1, 2, etc.
+	 * 
+	 * @return the week of year
 	 */
 	public String getWeekOfYear() {
 		return String.valueOf(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR));
 	}
 
 	/**
-	 * Get year, for example: 2005, 2006, ...
-	 * @return year
+	 * Gets the year, for example: 2005, 2006, etc.
+	 * 
+	 * @return the year
 	 */
 	public String getYear() {
 		return String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 	}
 
 	/**
-	 * Get short representation of year, for example: 05, 06, ...
-	 * @return short representation of year
+	 * Gets the short representation of year, for example: 05, 06, etc.
+	 * 
+	 * @return the short representation of year
 	 */
 	public String getShortYear() {
 		return String.valueOf(Calendar.getInstance().get(Calendar.YEAR)).substring(2);
 	}
 
-	/*
-	 * Get a extension class instance.
+	/**
+	 * Gets the extension class instance with the specified name.
+	 * 
+	 * @param name the name
+	 * @return the extension class instance
+	 * @throws RuntimeException if no extension with that name exists
 	 */
 	public Object getExtension(String name) {
 
@@ -291,15 +362,20 @@ public class OgnlHelper {
 		if (result == null) throw new RuntimeException("Extension " + name + " doesn't exist");
 
 		return result;
-
 	}
 
-	/*
-	 * First time this method is run,
-	 * 1) it searches classpath for files named luntbuild_extension.properties
-	 * 2) it instantiates the classes and stores the instances to Hashtable extensions
+	/**
+	 * Loads extensions.
+	 * 
+	 * <p>First time this method is run:</p>
+	 * <ol>
+	 * <li>it searches classpath for files named luntbuild_extension.properties</li>
+	 * <li>it instantiates the classes and stores the instances to Hashtable extensions</li>
+	 * </ol>
 	 *
-	 * After the first time the method does nothing
+	 * <p>After the first time the method does nothing.</p>
+	 * 
+	 * @throws RuntimeException if an extension fails to load
 	 */
 	private synchronized void loadExtensions() {
 
@@ -348,9 +424,7 @@ public class OgnlHelper {
 
 				logger.info("Adding extension, name: \"" + extensionName + "\" class: " + className);
 				extensions.put(extensionName, extension);
-
 			}
 		}
 	}
-
 }

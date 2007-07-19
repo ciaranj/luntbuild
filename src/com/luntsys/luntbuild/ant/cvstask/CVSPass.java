@@ -77,7 +77,7 @@ public class CVSPass extends Task {
     }
 
     /**
-     * Does the work.
+     * Adds the specified password the the specifed cvspass file for the specified CVS repository.
      *
      * @exception BuildException if something goes wrong with the build
      */
@@ -143,7 +143,7 @@ public class CVSPass extends Task {
     }
 
     /**
-     * The CVS repository to add an entry for.
+     * Sets the CVS repository to add an entry for.
      *
      * @param cvsRoot the CVS repository
      */
@@ -152,21 +152,20 @@ public class CVSPass extends Task {
     }
 
     /**
-     * Password file to add the entry to.
+     * Sets the password file to add the entry to.
      *
-     * @param passFile the password file.
+     * @param passFile the password file
      */
     public void setPassfile(File passFile) {
         this.passFile = passFile;
     }
 
     /**
-     * Password to be added to the password file.
+     * Sets the password to be added to the password file.
      *
-     * @param password the password.
+     * @param password the password
      */
     public void setPassword(String password) {
         this.password = password;
     }
-
 }

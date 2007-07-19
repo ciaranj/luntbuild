@@ -17,15 +17,13 @@
 
 package com.luntsys.luntbuild.ant.cvstask;
 
-import com.luntsys.luntbuild.ant.cvstask.*;
-
 /**
  * Performs operations on a CVS repository.
  *
- * original 1.20
+ * <p>original 1.20</p>
  *
- *  NOTE: This implementation has been moved to AbstractCvsTask with
- *  the addition of some accessors for extensibility.
+ * <p>NOTE: This implementation has been moved to <code>AbstractCvsTask</code> with
+ * the addition of some accessors for extensibility.</p>
  *
  *
  * @author costin@dnt.ro
@@ -36,14 +34,15 @@ import com.luntsys.luntbuild.ant.cvstask.*;
  *         <a href="mailto:kevin.ross@bredex.com">kevin.ross@bredex.com</a>
  *
  * @since Ant 1.1
- *
+ * @see AbstractCvsTask
  * @ant.task category="scm"
  */
-public class Cvs extends com.luntsys.luntbuild.ant.cvstask.AbstractCvsTask {
+public class Cvs extends AbstractCvsTask {
 
     /**
-     * CVS Task - now implemented by the Abstract CVS Task base class
+     * CVS Task - now implemented by the Abstract CVS Task base class.
      */
     public Cvs() {
+    	super();
     }
 }

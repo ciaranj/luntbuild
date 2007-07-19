@@ -25,10 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
+ * AccuRev VCS module facade.
+ * 
  * @author Jason Carreira <jcarreira@eplus.com>
+ * @see com.luntsys.luntbuild.vcs.AccurevAdaptor.AccurevModule
  */
 public class AccurevModuleFacade extends ModuleFacade {
 	private String depot;
@@ -37,42 +41,92 @@ public class AccurevModuleFacade extends ModuleFacade {
 	private String buildStream;
 	private String label;
 
+	/**
+	 * Gets the AccuRev depot name.
+	 * 
+	 * @return the depot name
+	 */
 	public String getDepot() {
 		return depot;
 	}
 
+	/**
+	 * Sets the AccuRev depot name.
+	 * 
+	 * @param depot the depot name
+	 */
 	public void setDepot(String depot) {
 		this.depot = depot;
 	}
 
+	/**
+	 * Gets the source path where this module should be put.
+	 * 
+	 * @return the source path
+	 */
 	public String getSrcPath() {
 		return srcPath;
 	}
 
+	/**
+	 * Sets the source path where this module should be put.
+	 * 
+	 * @param srcPath the source path
+	 */
 	public void setSrcPath(String srcPath) {
 		this.srcPath = srcPath;
 	}
 
+	/**
+	 * Gets the backing stream.
+	 * 
+	 * @return the backing stream
+	 */
 	public String getBackingStream() {
 		return backingStream;
 	}
 
+	/**
+	 * Sets the backing stream.
+	 * 
+	 * @param backingStream the backing stream
+	 */
 	public void setBackingStream(String backingStream) {
 		this.backingStream = backingStream;
 	}
 
+	/**
+	 * Gets the backing stream for this build module.
+	 * 
+	 * @return the build stream
+	 */
 	public String getBuildStream() {
 		return buildStream;
 	}
 
+	/**
+	 * Sets the backing stream for this build module.
+	 * 
+	 * @param buildStream the build stream
+	 */
 	public void setBuildStream(String buildStream) {
 		this.buildStream = buildStream;
 	}
 
+	/**
+	 * Gets the transaction number with which to sync.
+	 * 
+	 * @return the transaction number
+	 */
 	public String getLabel() {
 		return label;
 	}
 
+	/**
+	 * Sets the transaction number with which to sync.
+	 * 
+	 * @param label the transaction number
+	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}

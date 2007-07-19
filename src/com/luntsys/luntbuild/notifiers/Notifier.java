@@ -36,52 +36,61 @@ import java.util.Set;
  */
 
 /**
- * Build notifier abstract class.
+ * Base class for all build notifiers.
  * @author robin shine
  */
 public abstract class Notifier {
-    
-	/**
-	 * @return name
-	 */
+
+    /**
+     * Gets the display name for this notifier.
+     *
+     * @return the display name for this notifier
+     */
 	public abstract String getDisplayName();
 
 	/**
-	 * @return comment
+	 * Gets the display comment for this notifier.
+	 * 
+	 * @return comment the display comment
 	 */
 	public String getComment() {
 		return "";
 	}
 
 	/**
-	 * Notify specified list of users of status of current build
-	 * @param checkinUsers list of {@link com.luntsys.luntbuild.db.User},
-	 * denotes who are checked in for this build
-	 * @param subscribeUsers list of {@link com.luntsys.luntbuild.db.User},
-	 * denotes who are subscribed to receive notifications of this build
-	 * @param build build to notify about
-	 * @param antProject ant project used for logging purpose
+	 * Notifies the specified list of users of the result of a build.
+	 * 
+	 * @param checkinUsers the list of users who have checked in code for this build
+	 * @param subscribeUsers the list of users who are subscribed to receive notifications for this build
+	 * @param build the build to notify about
+	 * @param antProject the ant project used for logging purpose
+	 * @see com.luntsys.luntbuild.db.User
 	 */
 	public abstract void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject);
 
 	/**
-	 * Notify specified list of users of status of current schedule
-	 * @param subscribeUsers list of {@link com.luntsys.luntbuild.db.User}, denotes
-	 * who are subscribed to receive notifications of this schedule
-	 * @param schedule schedule to notify about
-	 * @param antProject ant project used for logging purpose
+	 * Notifies the specified list of users of the status of the a schedule.
+	 * 
+	 * @param subscribeUsers the list of users who are subscribed to receive notifications for this schedule
+	 * @param schedule the schedule to notify about
+	 * @param antProject the ant project used for logging purpose
+	 * @see com.luntsys.luntbuild.db.User
 	 */
 	public abstract void sendScheduleNotification(Set subscribeUsers, Schedule schedule, Project antProject);
 
 	/**
-	 * Get system level properties of current notifier
-	 * @return list of {@link com.luntsys.luntbuild.utility.DisplayProperty}
+	 * Gets the system level properties of this notifier.
+	 * 
+	 * @return the list of properties
+	 * @see com.luntsys.luntbuild.utility.NotifierProperty
 	 */
 	public abstract List getSystemLevelProperties();
 
 	/**
-	 * Get user level properties of current notifier
-	 * @return list of NotifierProperty
+	 * Gets the user level properties of this notifier.
+	 * 
+	 * @return the list of properties
+	 * @see com.luntsys.luntbuild.utility.NotifierProperty
 	 */
 	public abstract List getUserLevelProperties();
 }

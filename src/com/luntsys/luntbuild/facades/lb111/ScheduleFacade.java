@@ -25,17 +25,21 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of a luntbuild schedule.. Mainly used by web service client to operate on
- * properties of a schedule
+ * Schedule facade.
  *
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.Schedule
  */
 public class ScheduleFacade {
+	/** Trigger type, manual */
 	public final static int TRIGGER_MANUAL = 0;
+	/** Trigger type, simple */
 	public final static int TRIGGER_SIMPLE = 1;
+	/** Trigger type, cron */
 	public final static int TRIGGER_CRON = 2;
 
 	private long id;
@@ -57,103 +61,122 @@ public class ScheduleFacade {
 	 */
 	private String cronExpression;
 
-	/**
-	 * Get id of this schedule
-	 * @return id of this schedule
-	 */
+    /**
+     * Gets the indentifier of this schedule.
+     * 
+     * @return the indentifier of this schedule
+     */
 	public long getId() {
 		return id;
 	}
 
-	/**
-	 * Set id of this schedule
-	 * @param id
-	 */
+    /**
+     * Sets the indentifier of this schedule.
+     * 
+     * @param id the indentifier of this schedule
+     */
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	/**
-	 * Get name of this schedule
-	 * @return name of this schedule
-	 */
+    /**
+     * Gets the name of this schedule.
+     * 
+     * @return the name
+     */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * Set name of this schedule
-	 * @param name
-	 */
+    /**
+     * Sets the name of this schedule.
+     *
+     * @param name the name
+     */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	/**
-	 * Get description of this schedule
-	 * @return description of this schedule
-	 */
+    /**
+     * Gets the description of this schedule.
+     * 
+     * @return the description
+     */
 	public String getDescription() {
 		return description;
 	}
 
-	/**
-	 * Set description of this schedule
-	 * @param description
-	 */
+    /**
+     * Sets the description of this schedule.
+     * 
+     * @param description the description
+     */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/**
-	 * Get trigger type of this schedule
-	 * @return one value of {@link ScheduleFacade#TRIGGER_CRON}, {@link ScheduleFacade#TRIGGER_MANUAL},
-	 * {@link ScheduleFacade#TRIGGER_SIMPLE}
+	 * Gets the trigger type of this schedule.
+	 * 
+	 * @return the trigger type
+	 * @see ScheduleFacade#TRIGGER_CRON
+	 * @see ScheduleFacade#TRIGGER_MANUAL
+	 * @see ScheduleFacade#TRIGGER_SIMPLE
 	 */
 	public int getTriggerType() {
 		return triggerType;
 	}
 
 	/**
-	 * Set trigger type of this schedule
-	 * @param triggerType one value of {@link ScheduleFacade#TRIGGER_CRON}, {@link ScheduleFacade#TRIGGER_MANUAL},
-	 * {@link ScheduleFacade#TRIGGER_SIMPLE}
+	 * Sets the trigger type of this schedule.
+	 * 
+	 * @param triggerType the trigger type
+	 * @see ScheduleFacade#TRIGGER_CRON
+	 * @see ScheduleFacade#TRIGGER_MANUAL
+	 * @see ScheduleFacade#TRIGGER_SIMPLE
 	 */
 	public void setTriggerType(int triggerType) {
 		this.triggerType = triggerType;
 	}
-
 	/**
-	 * Get repeat interval of this schedule, only meaningful when result of {@link ScheduleFacade#getTriggerType()}
-	 * is {@link ScheduleFacade#TRIGGER_SIMPLE}
-	 * @return repeat interval of this schedule
+	 * Gets the repeat interval of this schedule.
+	 * Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
+	 * is {@link ScheduleFacade#TRIGGER_SIMPLE}.
+	 * 
+	 * @return the repeat interval of this schedule
 	 */
 	public long getRepeatInterval() {
 		return repeatInterval;
 	}
 
 	/**
-	 * Set repeat interval of this schedule. Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
-	 * is {@link ScheduleFacade#TRIGGER_SIMPLE}
-	 * @param repeatInterval
+	 * Sets the repeat interval of this schedule.
+	 * Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
+	 * is {@link ScheduleFacade#TRIGGER_SIMPLE}.
+	 * 
+	 * @param repeatInterval the repeat interval of this schedule
 	 */
 	public void setRepeatInterval(long repeatInterval) {
 		this.repeatInterval = repeatInterval;
 	}
 
 	/**
-	 * Get cron expression of this schedule. Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
-	 * is {@link ScheduleFacade#TRIGGER_CRON}
-	 * @return cron expression of this schedule
+	 * Gets the cron expression of this schedule.
+	 * Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
+	 * is {@link ScheduleFacade#TRIGGER_CRON}.
+	 * 
+	 * @return the cron expression of this schedule
 	 */
 	public String getCronExpression() {
 		return cronExpression;
 	}
 
 	/**
-	 * Set cron expression of this schedule. Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
-	 * is {@link ScheduleFacade#TRIGGER_CRON}
-	 * @param cronExpression
+	 * Sets the cron expression of this schedule.
+	 * Only meaningful when result of {@link ScheduleFacade#getTriggerType()}
+	 * is {@link ScheduleFacade#TRIGGER_CRON}.
+	 * 
+	 * @param cronExpression the cron expression of this schedule
 	 */
 	public void setCronExpression(String cronExpression) {
 		this.cronExpression = cronExpression;

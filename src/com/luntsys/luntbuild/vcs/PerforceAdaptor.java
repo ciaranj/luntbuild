@@ -1,5 +1,5 @@
 /*
- * Copyright luntsys (c) 2004-2005,
+ * Original Copyright luntsys (c) 2004-2005,
  * Date: 2004-7-16
  * Time: 7:02:00
  *
@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.ant.Commandline;
@@ -34,7 +35,10 @@ import com.luntsys.luntbuild.ant.perforce.P4Labelsync;
 import com.luntsys.luntbuild.ant.perforce.P4Base;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
+import com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.PerforceModuleFacade;
+import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.*;
 
 import org.apache.tapestry.form.IPropertySelectionModel;
@@ -47,7 +51,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Perforce adaptor
+ * Perforce VCS adaptor implementation.
+ * 
+ * <p>This adaptor is safe for remote hosts.</p>
  *
  * @author robin shine
  */
@@ -57,7 +63,7 @@ public class PerforceAdaptor extends Vcs {
      */
     static final long serialVersionUID = 1;
     private static final SimpleDateFormat P4_DATE_FORMAT =
-            new SimpleDateFormat("yyyy/MM/dd:HH:mm:ss");
+            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static final String clientNamePattern = "^//([^\\s/]+)/";
 
     /**
@@ -78,22 +84,85 @@ public class PerforceAdaptor extends Vcs {
 
 	private String p4Dir;
 
+    /** Perforce web interface to itegrate with */
+    private String webInterface;
+    /** Perforce web interface URL */
+    private String webUrl;
+
+    private int clientChange;
+    private int tipChange;
+
+    /**
+     * @inheritDoc
+     */
     public String getDisplayName() {
         return "Perforce";
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getIconName() {
         return "perforce.jpg";
     }
 
+	/**
+	 * Gets the path to the Perforce executable.
+	 * 
+	 * @return the path to the Perforce executable
+	 */
 	public String getP4Dir() {
 		return p4Dir;
 	}
 
+	/**
+	 * Sets the path to the Perforce executable.
+	 * 
+	 * @param p4Dir the path to the Perforce executable
+	 */
 	public void setP4Dir(String p4Dir) {
 		this.p4Dir = p4Dir;
 	}
 
+    /**
+     * Gets the web interface to integrate with.
+     * 
+     * @return the web interface to integrate with
+     */
+    public String getWebInterface() {
+        return webInterface;
+    }
+
+    /**
+     * Sets the web interface to integrate with.
+     * 
+     * @param webInterface the web interface to integrate with
+     */
+    public void setWebInterface(String webInterface) {
+        this.webInterface = webInterface;
+    }
+
+    /**
+     * Gets the web interface URL.
+     * 
+     * @return the web interface URL
+     */
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    /**
+     * Sets the web interface URL.
+     * 
+     * @param webUrl the web interface URL
+     */
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public List getVcsSpecificProperties() {
         List properties = new ArrayList();
         properties.add(new DisplayProperty() {
@@ -195,7 +264,7 @@ public class PerforceAdaptor extends Vcs {
         p.setSelectionModel(model);
         // Add property to properties list
         properties.add(p);
-
+        
 		properties.add(new DisplayProperty() {
 			public String getDisplayName() {
 				return "Path for p4 executable";
@@ -218,13 +287,65 @@ public class PerforceAdaptor extends Vcs {
 				setP4Dir(value);
 			}
 		});
+        p = new DisplayProperty() {
+            public String getDisplayName() {
+                return "Web interface";
+            }
+
+            public String getDescription() {
+                return "Set the web interface to integrate with.";
+            }
+
+            public boolean isRequired() {
+                return false;
+            }
+
+            public boolean isSelect() {
+                return true;
+            }
+
+            public String getValue() {
+                return getWebInterface();
+            }
+
+            public void setValue(String value) {
+                setWebInterface(value);
+            }
+        };
+        // Create selection model
+        model = new PerforceWebInterfaceSelectionModel();
+        // Set selection model
+        p.setSelectionModel(model);
+        // Add property to properties list
+        properties.add(p);
+        properties.add(new DisplayProperty() {
+            public String getDisplayName() {
+                return "URL to web interface";
+            }
+
+            public String getDescription() {
+                return "The URL to access the repository in your chosen web interface.";
+            }
+
+            public boolean isRequired() {
+                return false;
+            }
+
+            public String getValue() {
+                return getWebUrl();
+            }
+
+            public void setValue(String value) {
+                setWebUrl(value);
+            }
+        });
 		return properties;
 	}
 
 	/**
-	 * Build the executable part of a commandline object
-	 *
-	 * @return
+	 * Constructs the executable part of a commandline object.
+	 * 
+	 * @return the commandline object
 	 */
 	protected Commandline buildP4Executable() {
 		Commandline cmdLine = new Commandline();
@@ -235,33 +356,67 @@ public class PerforceAdaptor extends Vcs {
 		return cmdLine;
 	}
 
+	/**
+	 * Selection model used for user interface of <code>PerforceAdaptor</code>.
+	 */
     class PerforceLineEndSelectionModel implements IPropertySelectionModel {
         String[] values = {"local", "unix", "mac", "win", "share"};
+
+		/**
+		 * Gets the number of options.
+		 * 
+		 * @return the number of options
+		 */
         public int getOptionCount() {
             return this.values.length;
         }
 
+		/**
+		 * Gets an option.
+		 * 
+		 * @param index the index of the opiton
+		 * @return the option
+		 */
         public Object getOption(int index) {
             return this.values[index];
         }
 
+		/**
+		 * Gets the display label of an option.
+		 * 
+		 * @param index the index of the opiton
+		 * @return the label
+		 */
         public String getLabel(int index) {
             return this.values[index];
         }
 
+		/**
+		 * Gets the value of an option.
+		 * 
+		 * @param index the index of the opiton
+		 * @return the value
+		 */
         public String getValue(int index) {
             return this.values[index];
         }
 
+		/**
+		 * Gets the option that corresponds to a value.
+		 * 
+		 * @param value the value
+		 * @return the option
+		 */
         public Object translateValue(String value) {
             return value;
         }
     }
 
     /**
-     * Setup perforce client specification based on current build information
-     *
-     * @param antProject
+     * Sets up a perforce client specification based on current build information.
+     * 
+     * @param schedule the schedule
+     * @param antProject the ant project used for logging
      */
     private void setupP4Client(Schedule schedule, Project antProject) {
         antProject.log("Setup Perforce client specification...", Project.MSG_INFO);
@@ -294,6 +449,11 @@ public class PerforceAdaptor extends Vcs {
         p4Client.write();
     }
 
+    /**
+     * Validates the properties of this VCS.
+     *
+     * @throws ValidationException if a property has an invalid value
+     */
     public void validateProperties() {
         super.validateProperties();
         if (!Luntbuild.isEmpty(getLineEnd())) {
@@ -308,10 +468,11 @@ public class PerforceAdaptor extends Vcs {
     }
 
     /**
-     * Setup perforce label based on current build
-     *
-     * @param label
-     * @param antProject
+     * Sets up a perforce label based on current build information.
+     * 
+     * @param schedule the schedule
+     * @param label the label to create
+     * @param antProject the ant project used for logging
      */
     private void setupP4Label(Schedule schedule, String label, Project antProject) {
         antProject.log("Setup label specification...", Project.MSG_INFO);
@@ -342,12 +503,13 @@ public class PerforceAdaptor extends Vcs {
         }
     }
 
-    /**
-     * Retrieve specified module
-     *
-     * @param module
-     * @param antProject
-     * @param force
+	/**
+	 * Retrieves the contents of a module.
+	 * 
+	 * @param schedule the schedule
+     * @param module the module
+     * @param antProject the ant project used for logging
+     * @param force set <code>true</code> if checkout should be forced
      */
     private void retrieveModule(Schedule schedule, PerforceModule module, Project antProject, boolean force) {
         if (force)
@@ -370,11 +532,12 @@ public class PerforceAdaptor extends Vcs {
     }
 
     /**
-     * Label specified module
-     *
-     * @param module
-     * @param label
-     * @param antProject
+     * Labels the specified module.
+     * 
+	 * @param schedule the schedule
+     * @param module the module
+     * @param label the label to use
+     * @param antProject the ant project used for logging
      */
     private void labelModule(Schedule schedule, PerforceModule module, String label, Project antProject) {
         antProject.log("Label depot path: " + module.getActualDepotPath(), Project.MSG_INFO);
@@ -391,6 +554,9 @@ public class PerforceAdaptor extends Vcs {
         p4LabelSync.execute();
     }
 
+	/**
+     * @inheritDoc
+	 */
     public void checkoutActually(Build build, Project antProject) {
         setupP4Client(build.getSchedule(), antProject);
 
@@ -409,6 +575,9 @@ public class PerforceAdaptor extends Vcs {
         }
     }
 
+	/**
+     * @inheritDoc
+	 */
     public void label(Build build, Project antProject) {
         setupP4Label(build.getSchedule(), Luntbuild.getLabelByVersion(build.getVersion()), antProject);
         Iterator it = getModules().iterator();
@@ -422,12 +591,12 @@ public class PerforceAdaptor extends Vcs {
     }
 
     /**
-     * Retrieves client name from a p4 client path, For example, if passed-in client path is
-     * "//build/testperforce/...", client name returned should be build
+     * Retrieves the client name from a p4 client path. For example, if the passed-in client path is
+     * "//build/testperforce/...", client name returned should be "build".
      *
-     * @param p4ClientPath specifies a perforce client path, for example: //build/testperforce/...
-     * @return client name extracted from the p4 client path
-     * @throws ValidationException
+     * @param p4ClientPath a perforce client path, for example: //build/testperforce/...
+     * @return the client name extracted from the p4 client path
+     * @throws ValidationException if the client path is invalid
      */
     private String getP4Client(String p4ClientPath) {
         Pattern pattern = Pattern.compile((clientNamePattern));
@@ -438,44 +607,247 @@ public class PerforceAdaptor extends Vcs {
             return matcher.group(1);
     }
 
-    public String getPort() {
-        return port;
-    }
-
+	/**
+     * @inheritDoc
+	 * @see PerforceModule
+	 */
     public Module createNewModule() {
         return new PerforceModule();
     }
 
+	/**
+     * @inheritDoc
+	 * @see PerforceModule
+	 */
     public Module createNewModule(Module module) {
         return new PerforceModule((PerforceModule)module);
     }
 
+    /**
+     * Creates a P4Web link to the specified changelist.
+     * 
+     * @param changelist the changelist
+     * @return the link
+     */
+    public String createLinkForChangelist(String changelist) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl())
+                || Luntbuild.isEmpty(changelist))
+            return changelist;
+        if (getWebInterface().equals("P4DB"))
+            return "<a href=\"" + getWebUrl() + "/changeView.cgi?CH=" + changelist + "\">" + changelist + "</a>";
+        else if (getWebInterface().equals("P4Web"))
+            return "<a href=\"" + getWebUrl() + "/" + changelist + "?ac=10\">" + changelist + "</a>";
+        else
+            return changelist;
+    }
+
+    /**
+     * Creates a P4Web link to the specified user.
+     * 
+     * @param user the user
+     * @return the link
+     */
+    public String createLinkForUser(String user) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl())
+                || Luntbuild.isEmpty(user))
+            return user;
+        if (getWebInterface().equals("P4DB"))
+            return "<a href=\"" + getWebUrl() + "/userView.cgi?USER=" + user + "\">" + user + "</a>";
+        else if (getWebInterface().equals("P4Web"))
+            return "<a href=\"" + getWebUrl() + "/" + user + "?ac=17\">" + user + "</a>";
+        else
+            return user;
+    }
+
+    /**
+     * Creates a P4Web link to the specified workspace.
+     * 
+     * @param workspace the workspace
+     * @return the link
+     */
+    public String createLinkForWorkspace(String workspace) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl())
+                || Luntbuild.isEmpty(workspace))
+            return workspace;
+        if (getWebInterface().equals("P4DB"))
+            return "<a href=\"" + getWebUrl() + "/clientView.cgi?CLIENT=" + workspace + "\">" + workspace + "</a>";
+        else if (getWebInterface().equals("P4Web"))
+            return "<a href=\"" + getWebUrl() + "/" + workspace + "?ac=15\">" + workspace + "</a>";
+        else
+            return workspace;
+    }
+
+    /**
+     * Creates a P4Web link to the specified job.
+     * 
+     * @param job the job
+     * @return the link
+     */
+    public String createLinkForJob(String job) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl())
+                || Luntbuild.isEmpty(job))
+            return job;
+        if (getWebInterface().equals("P4DB"))
+            return "<a href=\"" + getWebUrl() + "/jobView.cgi?JOB=" + job + "\">" + job + "</a>";
+        else if (getWebInterface().equals("P4Web"))
+            return "<a href=\"" + getWebUrl() + "/" + job + "?ac=111\">" + job + "</a>";
+        else
+            return job;
+    }
+
+    /**
+     * Creates a P4Web link to the specified file revision.
+     * 
+     * @param path the depot path for the file
+     * @param rev the file revision
+     * @return the link
+     */
+    public String createLinkForFile(String path, String rev) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl())
+                || Luntbuild.isEmpty(path))
+            return path + "#" + rev;
+        if (getWebInterface().equals("P4DB"))
+            return "<a href=\"" + getWebUrl() + "/fileViewer.cgi?FSPC=" + path + "&REV=" + rev + "\">" + path + "#" + rev + "</a>";
+        else if (getWebInterface().equals("P4Web"))
+            return "<a href=\"" + getWebUrl() + "/" + path + "?ac=64&rev1=" + rev + "\">" + path + "#" + rev + "</a>";
+        else
+            return path + "#" + rev;
+    }
+
+    /**
+     * Creates a P4Web link to diff the specified file and revision with the previous revision.
+     * 
+     * @param path the depot path for the file
+     * @param rev the file revision
+     * @return the link
+     */
+    public String createLinkForDiff(String path, String rev) {
+        if (Luntbuild.isEmpty(rev))
+            return "";
+        try {
+            int prev_rev = Integer.parseInt(rev) - 1;
+            if (prev_rev > 0)
+                return createLinkForDiff(path, rev, String.valueOf(prev_rev));
+        } catch (Exception e) {
+            // ignore
+        }
+        return "";
+    }
+
+    /**
+     * Creates a P4Web link to diff the specified file between the specified revisions.
+     * 
+     * @param path the depot path for the file
+     * @param rev the file revision (right hand side)
+     * @param prev_rev the previous file revision (left hand side)
+     * @return the link
+     */
+    public String createLinkForDiff(String path, String rev, String prev_rev) {
+        if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl())
+                || Luntbuild.isEmpty(path) || Luntbuild.isEmpty(rev) || Luntbuild.isEmpty(prev_rev))
+            return "";
+        if (getWebInterface().equals("P4DB"))
+            return "(<a href=\"" + getWebUrl() + "/fileDiffView.cgi?FSPC=" + path + "&ACT=edit&REV=" + prev_rev + "&REV2=" + rev + "\">diff</a>)";
+        else if (getWebInterface().equals("P4Web"))
+            return "(<a href=\"" + getWebUrl() + "/" + path + "?ac=19&rev1=" + prev_rev + "&rev2=" + rev + "\">diff</a>)";
+        else
+            return "";
+    }
+
+    /**
+     * Gets the server name and port to connect to the Perforce server with.
+     * 
+     * @return the server name and port
+     */
+    public String getPort() {
+        return port;
+    }
+
+    /**
+     * Sets the server name and port to connect to the Perforce server with.
+     * 
+     * @param port the server name and port
+     */
     public void setPort(String port) {
         this.port = port;
     }
 
+    /**
+     * Gets the login user to use.
+     * 
+     * @return the login user
+     */
     public String getUser() {
         return user;
     }
 
+    /**
+     * Sets the login user to use.
+     * 
+     * @param user the login user
+     */
     public void setUser(String user) {
         this.user = user;
     }
 
+    /**
+     * Gets the login password to use.
+     * 
+     * @return the login password
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Sets the login password to use.
+     * 
+     * @param password the login password
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+     * Gets the line end mode.
+     * 
+     * @return the line end mode
+     */
     public String getLineEnd() {
         return lineEnd;
     }
 
+    /**
+     * Sets the line end mode.
+     * 
+     * @param lineEnd the line end mode
+     */
     public void setLineEnd(String lineEnd) {
         this.lineEnd = lineEnd;
+    }
+
+    /**
+     * Gets the tip changelist. This is also the client changelist if called after {@link #getClientChangelist(Schedule, Project)}.
+     * 
+     * @return the tip changelist
+     */
+    public String getChangelist() {
+        return Integer.toString(tipChange);
+    }
+
+    /**
+     * Sets the tip changelist.
+     * 
+     * @param changelist the tip changelist
+     */
+    public void setChangelist(String changelist) {
+    	try {
+    		if (Luntbuild.isEmpty(changelist))
+    			changelist = "0";
+        	this.tipChange = Integer.parseInt(changelist);
+        } catch (NumberFormatException nfe) {
+        	this.tipChange = 0;
+        }
     }
 
     private void initP4Cmd(P4Base p4Cmd, Project antProject) {
@@ -491,11 +863,25 @@ public class PerforceAdaptor extends Vcs {
         p4Cmd.setFailonerror(true);
     }
 
-    private String getClient(Schedule schedule) {
-		PerforceModule firstModule = (PerforceModule) getModules().get(0);
-		return getP4Client(firstModule.getActualClientPath()) + "-" + schedule.getJobName();
+    /**
+     * Gets the client (workspace) name being used.
+     * 
+     * @param schedule the schedule
+     * @return the client name
+     */
+    public String getClient(Schedule schedule) {
+        PerforceModule firstModule = (PerforceModule) getModules().get(0);
+        if (firstModule != null)
+            return getP4Client(firstModule.getActualClientPath()) + "-" + schedule.getJobName();
+        else
+            return "";
     }
 
+    /**
+     * Validates the modules of this VCS.
+     *
+     * @throws ValidationException if a module is not invalid
+     */
     public void validateModules() {
         super.validateModules();
         PerforceModule firstModule = (PerforceModule) getModules().get(0);
@@ -508,13 +894,128 @@ public class PerforceAdaptor extends Vcs {
         }
     }
 
-    public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
-        String workingDir = workingSchedule.getWorkDirRaw();
-        final Revisions revisions = new Revisions();
-        setupP4Client(workingSchedule, antProject);
+    /**
+     * Gets the changelist number to which this workspace is synced.  This is
+     * used to generate the revisions report, which lists the changelists used
+     * in the build.
+     * 
+     * @param workingSchedule the currently running schedule
+     * @param antProject the ant project used for logging
+     * @return the client changelist
+     */
+    public int getClientChangelist(Schedule workingSchedule, Project antProject) {
+        /*
+            Perforce Tech Note #51 explains that if the latest changelist
+            contains purely deletes, the returned changelist does not reflect
+            it.  This is problematic, for us, because if we don't get the
+            correct "synced" changelist value, builds are unnecessarily
+            performed until the latest changelist contains a non-delete
+            action.
+
+            To resolve this, we need to add a test, verifying whether we are
+            already synced to the tip changelist.  If the workspace is
+            current, we ignore the apparent synced changelist and, instead,
+            return the tip changelist as our client (synced) changelist.
+        */
+
+        // Get the latest changelist in this workspace view:
         Commandline cmdLine = buildP4Executable();
         cmdLine.createArgument().setValue("-s");
         addCommonOpts(cmdLine);
+        cmdLine.createArgument().setLine("-c " + getClient(workingSchedule));
+        cmdLine.createArgument().setLine("changes -s submitted -m1 //" + getClient(workingSchedule) + "/...");
+        new MyExecTask("tipChange", antProject, workingSchedule.getWorkingDir(), cmdLine, null, null, -1) {
+            public void handleStdout(String line) {
+                if (line.startsWith("error:"))
+                    throw new BuildException(line);
+                else if (line.startsWith("exit: 1"))
+                    throw new BuildException(line);
+                else if (line.startsWith("info:")) {
+                    StringTokenizer st = new StringTokenizer(line);
+                    st.nextToken();
+                    st.nextToken();
+                    final String strChange = st.nextToken();
+                    try {
+                        tipChange = Integer.parseInt(strChange);
+                    } catch (NumberFormatException e) { }
+                }
+            }
+        }.execute();
+
+        // Get the (candidate) synced changelist:
+        cmdLine.clearArgs();
+        cmdLine = buildP4Executable();
+        cmdLine.createArgument().setValue("-s");
+        addCommonOpts(cmdLine);
+        cmdLine.createArgument().setLine("-c " + getClient(workingSchedule));
+        cmdLine.createArgument().setLine("changes -m1 @" + getClient(workingSchedule));
+        new MyExecTask("clientChange", antProject, workingSchedule.getWorkingDir(), cmdLine, null, null, -1) {
+            public void handleStdout(String line) {
+                if (line.startsWith("error:"))
+                    throw new BuildException(line);
+                else if (line.startsWith("exit: 1"))
+                    throw new BuildException(line);
+                else if (line.startsWith("info:")) {
+                    StringTokenizer st = new StringTokenizer(line);
+                    st.nextToken();
+                    st.nextToken();
+                    final String strChange = st.nextToken();
+                    try {
+                        clientChange = Integer.parseInt(strChange);
+                    } catch (NumberFormatException e) { }
+                }
+            }
+        }.execute();
+
+        /*
+            If we're already synced to the tip changelist, use that as our
+            client changelist.
+        */
+        if (clientChange != tipChange) {
+            cmdLine.clearArgs();
+            cmdLine = buildP4Executable();
+            cmdLine.createArgument().setValue("-s");
+            addCommonOpts(cmdLine);
+            cmdLine.createArgument().setLine("-c " + getClient(workingSchedule));
+            cmdLine.createArgument().setLine("sync -n @" + tipChange);
+            new MyExecTask("previewSync", antProject, workingSchedule.getWorkingDir(), cmdLine, null, null, -1) {
+                public void handleStdout(String line) {
+                    if (line.startsWith("exit: 1"))
+                        throw new BuildException(line);
+                    else if (line.equals("error: @" + tipChange + " - file(s) up-to-date.")) {
+                        /*
+                            Latest changelist(s) contain only deleted files.  We
+                            are actually synced to tipChange, so record that.
+                        */
+                        clientChange = tipChange;
+                    } else if (line.startsWith("error:")) {
+                        throw new BuildException(line);
+                    }
+                }
+            }.execute();
+        }
+
+        antProject.log("Client changelist:" + clientChange, Project.MSG_INFO);
+
+        return clientChange;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
+        String workingDir = workingSchedule.getWorkDirRaw();
+        final Revisions revisions = new Revisions();
+        revisions.addLog(this.getClass().getName(), toString());
+        revisions.getChangeLogs().add("*************************************************************");
+        revisions.getChangeLogs().add(toString());
+        revisions.getChangeLogs().add("");
+        setupP4Client(workingSchedule, antProject);
+        final int nextChange = getClientChangelist(workingSchedule, antProject) + 1;
+        Commandline cmdLine = buildP4Executable();
+        cmdLine.createArgument().setValue("-s");
+        addCommonOpts(cmdLine);
+
         cmdLine.createArgument().setLine("-c " + getClient(workingSchedule));
         cmdLine.createArgument().setLine("changes -s submitted");
         Iterator it = getModules().iterator();
@@ -561,13 +1062,59 @@ public class PerforceAdaptor extends Vcs {
             String changeNumber = (String) it.next();
             cmdLine.createArgument().setValue(changeNumber);
         }
-        final Pattern authorPattern = Pattern.compile("^Change.*by(.*)@.*");
+        final Pattern changelistPattern = Pattern.compile("^Change (.*) by (.*)@.* on (.*)");
+        final Pattern endChangelistPattern = Pattern.compile("^(Jobs fixed \\.\\.\\.)|(Affected files \\.\\.\\.)$");
+        final Pattern jobPattern = Pattern.compile("^(.*) on .* by (.*) (.*)$");
+        final Pattern jobDescPattern = Pattern.compile("^\\t(.*)");
+        final Pattern pathPattern = Pattern.compile("^\\.\\.\\. (.*)#(.*) (.*)$");
         new MyExecTask("describe", antProject, workingDir, cmdLine, null, null, Project.MSG_VERBOSE) {
+            private boolean revisionReady = false;
+            private String changelist = "";
+            private String author = "";
+            private Date date = null;
+            private String msg = "";
+            private boolean captureNextLineForJob = false;
+            private String job_name = "";
+            private String job_user = "";
+            private String job_status = "";
             public void handleStdout(String line) {
                 revisions.getChangeLogs().add(line);
-                Matcher matcher = authorPattern.matcher(line);
-                if (matcher.find())
-                    revisions.getChangeLogins().add(matcher.group(1).trim());
+                Matcher matcher = changelistPattern.matcher(line);
+                Matcher endmatcher = endChangelistPattern.matcher(line);
+                Matcher jobmatcher = jobPattern.matcher(line);
+                Matcher jobdescmatcher = jobDescPattern.matcher(line);
+                Matcher pathmatcher = pathPattern.matcher(line);
+                if (matcher.find()) {
+                    revisionReady = true;
+                    changelist = matcher.group(1).trim();
+                    author = matcher.group(2).trim();
+                    revisions.getChangeLogins().add(author);
+                    try {
+                        date = P4_DATE_FORMAT.parse(matcher.group(3).trim());
+                    } catch (Exception e) {
+                        logger.error("Failed to parse date from Perforce log", e);
+                        date = null;
+                    }
+                } else if (endmatcher.find() && revisionReady) {
+                    revisionReady = false;
+                    revisions.addEntryToLastLog(changelist, author, date, msg);
+                    msg = "";
+                } else if (jobmatcher.find()) {
+                    captureNextLineForJob = true;
+                    job_name = jobmatcher.group(1).trim();
+                    job_user = jobmatcher.group(2).trim();
+                    job_status = jobmatcher.group(3).trim();
+                } else if (jobdescmatcher.find()) {
+                    if (captureNextLineForJob) {
+                        captureNextLineForJob = false;
+                        revisions.addTaskToLastEntry(job_name, job_user, job_status, jobdescmatcher.group(1).trim());
+                    } else {
+                        msg += jobdescmatcher.group(1).trim() + "\r\n";
+                    }
+                } else if (pathmatcher.find()) {
+                    String action = pathmatcher.group(3).trim();
+                    revisions.addPathToLastEntry(pathmatcher.group(1).trim(), action, pathmatcher.group(2).trim());
+                }
             }
         }.execute();
 
@@ -575,9 +1122,9 @@ public class PerforceAdaptor extends Vcs {
     }
 
     /**
-     * Add common options for various p4 command
-     *
-     * @param cmdLine
+     * Adds common options for various P4 commands.
+     * 
+     * @param cmdLine the commandline object to add options to
      */
     private void addCommonOpts(Commandline cmdLine) {
         cmdLine.createArgument().setLine("-p " + getPort() + " -u " + getUser());
@@ -588,6 +1135,68 @@ public class PerforceAdaptor extends Vcs {
 		}
     }
 
+    /**
+     * Selection model used for user interface of <code>PerforceAdaptor</code>.
+     */
+    class PerforceWebInterfaceSelectionModel implements IPropertySelectionModel {
+        String[] values = {"", "P4DB", "P4Web"};
+        String[] display_values = {"", "P4DB", "P4Web"};
+
+        /**
+         * Gets the number of options.
+         * 
+         * @return the number of options
+         */
+        public int getOptionCount() {
+            return this.values.length;
+        }
+
+        /**
+         * Gets an option.
+         * 
+         * @param index the index of the opiton
+         * @return the option
+         */
+        public Object getOption(int index) {
+            return this.values[index];
+        }
+
+        /**
+         * Gets the display label of an option.
+         * 
+         * @param index the index of the opiton
+         * @return the label
+         */
+        public String getLabel(int index) {
+            return this.display_values[index];
+        }
+
+        /**
+         * Gets the value of an option.
+         * 
+         * @param index the index of the opiton
+         * @return the value
+         */
+        public String getValue(int index) {
+            return this.values[index];
+        }
+
+        /**
+         * Gets the option that corresponds to a value.
+         * 
+         * @param value the value
+         * @return the option
+         */
+        public Object translateValue(String value) {
+            return value;
+        }
+    }
+
+	/**
+	 * An Perforce module definition.
+	 *
+	 * @author robin shine
+	 */
     public class PerforceModule extends Module {
         /**
          * Keep tracks of version of this class, used when do serialization-deserialization
@@ -597,14 +1206,25 @@ public class PerforceAdaptor extends Vcs {
         private String label;
         private String clientPath;
 
+		/**
+		 * Constructor, creates a blank Perforce module.
+		 */
         public PerforceModule() {}
 
+		/**
+		 * Copy constructor, creates a Perforce module from another Perforce module.
+		 * 
+		 * @param module the module to create from
+		 */
         public PerforceModule(PerforceModule module) {
             this.depotPath = module.depotPath;
             this.label = module.label;
             this.clientPath = module.clientPath;
         }
 
+		/**
+		 * @inheritDoc
+		 */
         public List getProperties() {
             List properties = new ArrayList();
             properties.add(new DisplayProperty() {
@@ -679,52 +1299,106 @@ public class PerforceAdaptor extends Vcs {
             return properties;
         }
 
+        /**
+         * Gets the depot path.
+         * 
+         * @return the depot path
+         */
         public String getDepotPath() {
             return depotPath;
         }
 
+        /**
+         * Gets the depot path. This method will parse OGNL variables.
+         * 
+         * @return the depot path
+         */
         private String getActualDepotPath() {
         	return OgnlHelper.evaluateScheduleValue(getDepotPath());
         }
 
+        /**
+         * Sets the depot path.
+         * 
+         * @param depotPath the depot path
+         */
         public void setDepotPath(String depotPath) {
             this.depotPath = depotPath;
         }
 
+        /**
+         * Gets the label to use.
+         * 
+         * @return the label
+         */
         public String getLabel() {
             return label;
         }
 
+        /**
+         * Gets the label to use. This method will parse OGNL variables.
+         * 
+         * @return the label
+         */
         private String getActualLabel() {
         	return OgnlHelper.evaluateScheduleValue(getLabel());
         }
 
+        /**
+         * Sets the label to use.
+         * 
+         * @param label the label
+         */
         public void setLabel(String label) {
             this.label = label;
         }
 
+        /**
+         * Gets the client path.
+         * 
+         * @return the client path
+         */
         public String getClientPath() {
             return clientPath;
         }
 
+        /**
+         * Gets the client path. This method will parse OGNL variables.
+         * 
+         * @return the client path
+         */
         private String getActualClientPath() {
         	return OgnlHelper.evaluateScheduleValue(getClientPath());
         }
 
+        /**
+         * Sets the client path.
+         * 
+         * @param clientPath the client path
+         */
         public void setClientPath(String clientPath) {
             this.clientPath = clientPath;
         }
 
-        public com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade() {
-            PerforceModuleFacade facade = new com.luntsys.luntbuild.facades.lb12.PerforceModuleFacade();
+	    /**
+	     * @inheritDoc
+	     * @see PerforceModuleFacade
+	     */
+        public ModuleFacade getFacade() {
+            PerforceModuleFacade facade = new PerforceModuleFacade();
             facade.setClientPath(getClientPath());
             facade.setDepotPath(getDepotPath());
             facade.setLabel(getLabel());
             return facade;
         }
 
-        public void setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade facade) {
-            if (facade instanceof com.luntsys.luntbuild.facades.lb12.PerforceModuleFacade) {
+	    /**
+	     * @inheritDoc
+	     * @throws RuntimeException if the facade is not an <code>PerforceModuleFacade</code>
+	     * @see PerforceModuleFacade
+	     */
+        public void setFacade(ModuleFacade facade) {
+            if (facade instanceof PerforceModuleFacade) {
                 PerforceModuleFacade perforceModuleFacade = (PerforceModuleFacade) facade;
                 setClientPath(perforceModuleFacade.getClientPath());
                 setDepotPath(perforceModuleFacade.getDepotPath());
@@ -734,27 +1408,47 @@ public class PerforceAdaptor extends Vcs {
         }
     }
 
-    public void saveToFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
-        com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade perforceFacade = (com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade) facade;
+    /**
+     * @inheritDoc
+     * @see PerforceAdaptorFacade
+     */
+    public void saveToFacade(VcsFacade facade) {
+    	// TODO throw RuntimeException if the facade is not the right class
+        PerforceAdaptorFacade perforceFacade = (PerforceAdaptorFacade) facade;
         perforceFacade.setLineEnd(getLineEnd());
         perforceFacade.setPassword(getPassword());
         perforceFacade.setPort(getPort());
         perforceFacade.setUser(getUser());
 		perforceFacade.setP4Dir(getP4Dir());
+        perforceFacade.setWebInterface(getWebInterface());
+        perforceFacade.setWebUrl(getWebUrl());
+		perforceFacade.setChangelist(getChangelist());
     }
 
-    public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade))
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>PerforceAdaptorFacade</code>
+     * @see PerforceAdaptorFacade
+     */
+    public void loadFromFacade(VcsFacade facade) {
+        if (!(facade instanceof PerforceAdaptorFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade perforceFacade = (com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade) facade;
+        PerforceAdaptorFacade perforceFacade = (PerforceAdaptorFacade) facade;
         setLineEnd(perforceFacade.getLineEnd());
         setPassword(perforceFacade.getPassword());
         setPort(perforceFacade.getPort());
         setUser(perforceFacade.getUser());
 		setP4Dir(perforceFacade.getP4Dir());
+        setWebInterface(perforceFacade.getWebInterface());
+        setWebUrl(perforceFacade.getWebUrl());
+		setChangelist(perforceFacade.getChangelist());
     }
 
-	public com.luntsys.luntbuild.facades.lb12.VcsFacade constructFacade() {
-		return new com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade();
+    /**
+     * @inheritDoc
+     * @see PerforceAdaptorFacade
+     */
+	public VcsFacade constructFacade() {
+		return new PerforceAdaptorFacade();
 	}
 }

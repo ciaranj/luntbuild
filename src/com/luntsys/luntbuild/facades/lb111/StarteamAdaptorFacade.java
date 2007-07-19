@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of starteam adaptor
+ * StarTeam VCS adaptor facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.StarteamAdaptor
  */
 public class StarteamAdaptorFacade extends VcsFacade {
 	private String projectLocation;
@@ -37,72 +40,88 @@ public class StarteamAdaptorFacade extends VcsFacade {
 	private String password;
 	private String convertEOL;
 
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
+	public String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.StarteamAdaptor";
+	}
+
 	/**
-	 * Get project location of the starteam adaptor. This is a project level property.
-	 * Refer to user manual for detail information.
-	 * @return project location of the starteam adaptor
+	 * Gets the project location. This is a project level property.
+	 * <p>Location of a StarTeam project is defined as: <servername>:<portnum>/<projectname>,
+	 * where <servername> is the host where the StarTeam server runs, <portnum> is the port
+	 * number the StarTeam server uses, default value is 49201. <projectname> is a StarTeam
+	 * project under this StarTeam server.</p>
+	 * 
+	 * @return the project location
 	 */
 	public String getProjectLocation() {
 		return projectLocation;
 	}
 
 	/**
-	 * Set project location of the starteam adaptor
-	 * @param projectLocation
+	 * Sets the project location. This is a project level property.
+	 * 
+	 * @param projectLocation the project location
 	 */
 	public void setProjectLocation(String projectLocation) {
 		this.projectLocation = projectLocation;
 	}
 
 	/**
-	 * Get user name to access starteam server. This is a project level property
-	 * @return user name to access starteam server
+	 * Gets the login user. This is a project level property.
+	 * 
+	 * @return the login user
 	 */
 	public String getUser() {
 		return user;
 	}
 
 	/**
-	 * Set user name to access starteam server
-	 * @param user
+	 * Sets the login user. This is a project level property.
+	 * 
+	 * @param user the login user
 	 */
 	public void setUser(String user) {
 		this.user = user;
 	}
 
 	/**
-	 * Get password to access starteam server. This is a project level property
-	 * @return password to access starteam server
+	 * Gets the login password. This is a project level property.
+	 * 
+	 * @return the login password
 	 */
 	public String getPassword() {
 		return password;
 	}
 
 	/**
-	 * Set password to access starteam server
-	 * @param password
+	 * Sets the login password. This is a project level property.
+	 * 
+	 * @param password the login password
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
 	/**
-	 * Get convert eol indication string. This is a project level property
-	 * @return "yes" if convert eol, other wise "no"
+	 * Gets the convert EOL property ("yes"/"no").
+	 * 
+	 * @return the convert EOL property
 	 */
 	public String getConvertEOL() {
 		return convertEOL;
 	}
 
 	/**
-	 * Set convert eol indication string. Should be "yes" or "no".
-	 * @param convertEOL
+	 * Sets the convert EOL property ("yes"/"no").
+	 * 
+	 * @param convertEOL the convert EOL property
 	 */
 	public void setConvertEOL(String convertEOL) {
 		this.convertEOL = convertEOL;
-	}
-
-	public String getVcsClassName() {
-		return "com.luntsys.luntbuild.vcs.StarteamAdaptor";
 	}
 }

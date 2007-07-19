@@ -7,7 +7,7 @@
   <tr>
     <td height="26" colspan="4" align="center" bgcolor="#AEDFFF"> <table width="100%" height="24"  border="0" cellpadding="0" cellspacing="0">
         <tr>
-          <td width="70%" align="center" class="buildTitleLeft"><strong><span jwcid="@Insert" value="ognl:build.version">luntbuild1.0</span></strong></td>
+          <td width="60%" align="center" class="buildTitleLeft"><strong><span jwcid="@Insert" value="ognl:build.version">luntbuild1.0</span></strong></td>
 
           <td width="10%" align="center" class="buildTitleRight">
 		  	<span jwcid="@Conditional" condition="ognl:junitHtmlReport!=null">
@@ -20,33 +20,57 @@
           <td width="10%" height="19" align="center" class="buildTitleRight">
           	<a jwcid="@GenericLink" href="ognl:build.getRevisionLogUrl()" title="revision log">revision log</a>
           </td>
+          <td width="10%" height="19" align="center" class="buildTitleRight">
+            <a jwcid="@GenericLink" href="ognl:'api/rss/builds/'+build.schedule.project.name+'/'+build.schedule.name">
+              <img src="images/feed.gif" width="16" height="16" border="0" align="absmiddle" title="feed: builds from parent schedule">
+            </a>
+          </td>
         </tr>
       </table></td>
   </tr>
   <tr>
-    <td width="24%" height="29" class="propertyListName1"><strong><img src="images/project.gif" width="16" height="16" align="absmiddle"> project</strong></td>
-    <td width="30%" class="propertyListName1">
+    <td width="24%" height="29" class="propertyListName propertyListName1"><strong><img src="images/project.gif" width="16" height="16" align="absmiddle"> project</strong></td>
+    <td width="30%" class="propertyListName propertyListName1">
     	<a jwcid="@DirectLink" listener="ognl:container.listeners.gotoProject" parameters="ognl:build.schedule.project.id" href="#"> <span jwcid="@Insert" value="ognl:build.schedule.project.name">project1</span> </a>
      </td>
-    <td width="24%" height="29" class="propertyListName1"><strong><img src="images/date.gif" width="16" height="14" align="absmiddle"> build start date </strong></td>
-    <td width="29%" class="propertyListValue1"><span jwcid="@Insert" value="ognl:buildStartDate">2004/4/1</span></td>
+    <td width="24%" height="29" class="propertyListName propertyListName1"><strong><img src="images/date.gif" width="16" height="14" align="absmiddle"> build start date </strong></td>
+    <td width="29%" class="propertyListValue propertyListValue1"><span jwcid="@Insert" value="ognl:buildStartDate">2004/4/1</span></td>
   </tr>
   <tr>
-    <td height="29" class="propertyListName2"><strong><img src="images/time.gif" width="17" height="14" align="absmiddle">  schedule</strong></td>
-    <td class="propertyListName2">
+    <td height="29" class="propertyListName propertyListName2"><strong><img src="images/time.gif" width="17" height="14" align="absmiddle">  schedule</strong></td>
+    <td class="propertyListName propertyListName2">
     	<a jwcid="@DirectLink" listener="ognl:container.listeners.gotoSchedule" parameters="ognl:build.schedule.project.id" href="#" anchor="ognl:build.schedule.id"> <span jwcid="@Insert" value="ognl:build.schedule.name">schedule1</span> </a>
     </td>
-    <td width="24%" height="29" class="propertyListName2"><strong><img src="images/date.gif" width="16" height="14" align="absmiddle"> build finish date </strong></td>
-    <td width="29%" class="propertyListValue2"><span jwcid="@Insert" value="ognl:buildEndDate">2004/4/1</span></td>
+    <td width="24%" height="29" class="propertyListName propertyListName2"><strong><img src="images/date.gif" width="16" height="14" align="absmiddle"> build finish date </strong></td>
+    <td width="29%" class="propertyListValue propertyListValue2"><span jwcid="@Insert" value="ognl:buildEndDate">2004/4/1</span></td>
   </tr>
   <tr>
-    <td width="24%" height="29" class="propertyListName1"><strong><img src="images/status.gif" width="21" height="18" align="absmiddle"> build status </strong></td>
-    <td class="propertyListName1"><img jwcid="@Any" src="ognl:buildStatusGif" width="20" height="20" align="absmiddle"/> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.facades.Constants@getBuildStatusText(build.status)">success</span> </td>
-    <td class="propertyListName1"><strong><img src="images/interval.gif" width="16" height="14" align="absmiddle"> build duration</strong></td>
-    <td class="propertyListValue1"><span jwcid="@Insert" value="ognl:buildCostTime">10</span> minutes</td>
+    <td width="24%" height="29" class="propertyListName propertyListName1"><strong><img src="images/status.gif" width="21" height="18" align="absmiddle"> build status </strong></td>
+    <td class="propertyListName propertyListName1"><img jwcid="@Any" src="ognl:buildStatusGif" width="20" height="20" align="absmiddle"/> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.facades.Constants@getBuildStatusText(build.status)">success</span> </td>
+    <td class="propertyListName propertyListName1"><strong><img src="images/interval.gif" width="16" height="14" align="absmiddle"> build duration</strong></td>
+    <td class="propertyListValue propertyListValue1"><span jwcid="@Insert" value="ognl:buildCostTime">10</span> minutes</td>
   </tr>
   <tr>
-    <td colspan="4" valign="top"> <table width="100%"  border="0" cellpadding="0" cellspacing="0">
+    <td colspan="4" valign="top">
+      <table width="100%" border="0" cellpadding="0" cellspacing="0" class="iconTable">
+        <tr>
+          <td width="10%">&nbsp;</td>
+          <td><a jwcid="@DirectLink" listener="ognl:listeners.changeDetail" parameters="ognl:'artifacts'" href="#" title="Build Artifacts"><strong>Build Artifacts</strong></a></td>
+          <td><a jwcid="@DirectLink" listener="ognl:listeners.changeDetail" parameters="ognl:'vcs'" href="#" title="VCS Adaptors"><strong>VCS Adaptors</strong></a></td>
+          <td><a jwcid="@DirectLink" listener="ognl:listeners.changeDetail" parameters="ognl:'revisions'" href="#" title="VCS Revisions"><strong>VCS Revisions</strong></a></td>
+          <td width="10%">&nbsp;</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4" valign="top"> <span jwcid="@RenderBlock" block="ognl:getComponent(detail)"/> </td>
+  </tr>
+</table>
+</span>
+</span>
+<span jwcid="artifacts@Block">
+      <table width="100%"  border="0" cellpadding="0" cellspacing="0">
         <tr>
           <td colspan="2"><table width="100%" height="100%"  border="0" cellpadding="0" cellspacing="0">
               <tr>
@@ -100,13 +124,163 @@
 		  </td>
         </tr>
 		</span>
-      </table></td>
-  </tr>
-</table>
-</span> </span> <span jwcid="rebuild@Block"> <span jwcid="rebuildEditorComponent@RebuildEditor"/> </span> <span jwcid="deleteFile@Block">
+      </table>
+</span>
+<span jwcid="vcs@Block">
+      <table width="100%"  border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td colspan="2"><table width="100%" height="100%"  border="0" cellpadding="0" cellspacing="0">
+          	  <colgroup><col width="20%"/><col width="15%"/><col width="15%"/><col width="15%"/><col width="15%"/><col width="20%"/></colgroup>
+              <tr>
+                <td height="24" colspan="6" align="center" class="artifactsTitle"><strong>VCS Adaptors</strong></td>
+              </tr>
+			  <span jwcid="@Conditional" condition="ognl:cssIndex = 1"/>
+              <tr>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+              </tr>
+              <span jwcid="@Foreach" source="ognl:build.vcsList" value="ognl:vcs" index="ognl:vcsIndex">
+                <span jwcid="@contrib:Choose">
+			      <span jwcid="@contrib:When" condition="ognl:vcs.class.name.equals('com.luntsys.luntbuild.vcs.CvsAdaptor')">
+              	    <tr jwcid="@Any" class="ognl:fileRowCssClass">
+              	      <td height="25" colspan="2"> <img src="images/cvs.jpg" width="16" height="16" title="CvsRoot"> <span jwcid="@Insert" value="ognl:vcs.cvsRoot">cvs:1224</span></td>
+              	      <td height="25" colspan="2"><span jwcid="@Insert" value="ognl:vcs.cvsDir">c:\cvs</span></td>
+              	      <td height="25" colspan="2"><span jwcid="@Insert" raw="true" value="ognl:vcs.createLinkForRepository()"></span></td>
+              	    </tr>
+                    <span jwcid="@Foreach" source="ognl:vcs.modules" value="ognl:module">
+                      <tr jwcid="@Any" class="ognl:fileRowCssClass">
+                        <td height="25" colspan="1">&nbsp;</td>
+                        <td height="25" colspan="2"><img src="images/cvs_archive.gif" width="16" height="16" title="archive folder"> <span jwcid="@Insert" value="ognl:module.srcPath">main/bld</span></td>
+                        <td height="25" colspan="1"><span jwcid="@Insert" value="ognl:module.branch">REL_3_0_0</span></td>
+                        <td height="25" colspan="2"><span jwcid="@Insert" value="ognl:module.label">my_label_1058_20070124_1532</span></td>
+                      </tr>
+                    </span>
+                    <span jwcid="@Conditional" condition="ognl: cssIndex = cssIndex + 1"/>
+                  </span>
+			      <span jwcid="@contrib:When" condition="ognl:vcs.class.name.equals('com.luntsys.luntbuild.vcs.FileSystemAdaptor')">
+              	    <tr jwcid="@Any" class="ognl:fileRowCssClass">
+              	      <td height="25" colspan="5"> <img src="images/filesystem.gif" width="16" height="16" title="source directory"> <span jwcid="@Insert" raw="true" value="ognl:vcs.createLinkForFile(vcs.sourceDir)">C:\test\mysource</span></td>
+              	      <td height="25" colspan="1">&nbsp;</td>
+              	    </tr>
+                    <span jwcid="@Conditional" condition="ognl: cssIndex = cssIndex + 1"/>
+                  </span>
+			      <span jwcid="@contrib:When" condition="ognl:vcs.class.name.equals('com.luntsys.luntbuild.vcs.PerforceAdaptor')">
+              	    <tr jwcid="@Any" class="ognl:fileRowCssClass">
+              	      <td height="25" colspan="1"> <img src="images/perforce.jpg" width="16" height="16" title="P4Port"> <span jwcid="@Insert" value="ognl:vcs.port">perforce:1600</span></td>
+              	      <td height="25" colspan="2"><img src="images/p4_client.gif" width="16" height="16" title="workspace"> <span jwcid="@Insert" raw="true" value="ognl:vcs.createLinkForWorkspace(vcs.getClient(build.schedule))">test</span></td>
+              	      <td height="25" colspan="1"><img src="images/p4_changelist.gif" width="16" height="16" title="changelist"> <span jwcid="@Insert" raw="true" value="ognl:vcs.createLinkForChangelist(vcs.changelist)">165684</span></td>
+              	    	<td height="25" colspan="2">&nbsp;</td>
+              	    </tr>
+                    <span jwcid="@Foreach" source="ognl:vcs.modules" value="ognl:module">
+                      <tr jwcid="@Any" class="ognl:fileRowCssClass">
+                        <td height="25" colspan="1">&nbsp;</td>
+                        <td height="25" colspan="2"><img src="images/p4_depot.gif" width="16" height="16" title="depot"> <span jwcid="@Insert" value="ognl:module.depotPath">//my/source/location</span></td>
+                        <td height="25" colspan="1"><img src="images/p4_label.gif" width="16" height="16" title="label"> <span jwcid="@Insert" value="ognl:module.label">my_label</span></td>
+                        <td height="25" colspan="2"><img src="images/p4_workspace.gif" width="16" height="16" title="workspace"> <span jwcid="@Insert" value="ognl:module.clientPath">C:\my\destination\location</span></td>
+                      </tr>
+                    </span>
+                    <span jwcid="@Conditional" condition="ognl: cssIndex = cssIndex + 1"/>
+                  </span>
+			      <span jwcid="@contrib:When" condition="ognl:vcs.class.name.equals('com.luntsys.luntbuild.vcs.SvnAdaptor')">
+              	    <tr jwcid="@Any" class="ognl:fileRowCssClass">
+              	      <td height="25" colspan="4"> <img src="images/svn.jpg" width="16" height="16" title="Repository URL"> <span jwcid="@Insert" value="ognl:vcs.urlBase">http://svn.collab.net/repos/svn </span></td>
+              	      <td height="25" colspan="2"><span jwcid="@Insert" raw="true" value="ognl:vcs.createLinkForRepository()"></span></td>
+              	    </tr>
+                    <span jwcid="@Foreach" source="ognl:vcs.modules" value="ognl:module">
+                      <tr jwcid="@Any" class="ognl:fileRowCssClass">
+                        <td height="25" colspan="1">&nbsp;</td>
+                        <td height="25" colspan="2"><span jwcid="@Insert" value="ognl:module.srcPath">/subversion</span></td>
+                        <td height="25" colspan="1"><span jwcid="@Insert" value="ognl:module.branch">REL_3_0_0</span></td>
+                        <td height="25" colspan="1"><span jwcid="@Insert" value="ognl:module.label">my_label_1058_20070124_1532</span></td>
+                        <td height="25" colspan="1"><span jwcid="@Insert" value="ognl:module.destPath">subversion</span></td>
+                      </tr>
+                    </span>
+                    <span jwcid="@Conditional" condition="ognl: cssIndex = cssIndex + 1"/>
+                  </span>
+			      <span jwcid="@contrib:When" condition="ognl:vcs.class.name.equals('com.luntsys.luntbuild.vcs.SvnExeAdaptor')">
+              	    <tr jwcid="@Any" class="ognl:fileRowCssClass">
+              	      <td height="25" colspan="2"> <img src="images/svn.jpg" width="16" height="16" title="Repository URL"> <span jwcid="@Insert" value="ognl:vcs.urlBase">http://svn.collab.net/repos/svn </span></td>
+              	      <td height="25" colspan="2"><span jwcid="@Insert" value="ognl:vcs.svnDir">c:\svn</span></td>
+              	      <td height="25" colspan="2"><span jwcid="@Insert" raw="true" value="ognl:vcs.createLinkForRepository()"></span></td>
+              	    </tr>
+                    <span jwcid="@Foreach" source="ognl:vcs.modules" value="ognl:module">
+                      <tr jwcid="@Any" class="ognl:fileRowCssClass">
+                        <td height="25" colspan="1">&nbsp;</td>
+                        <td height="25" colspan="2"><span jwcid="@Insert" value="ognl:module.srcPath">/subversion</span></td>
+                        <td height="25" colspan="1"><span jwcid="@Insert" value="ognl:module.branch">REL_3_0_0</span></td>
+                        <td height="25" colspan="1"><span jwcid="@Insert" value="ognl:module.label">my_label_1058_20070124_1532</span></td>
+                        <td height="25" colspan="1"><span jwcid="@Insert" value="ognl:module.destPath">subversion</span></td>
+                      </tr>
+                    </span>
+                    <span jwcid="@Conditional" condition="ognl: cssIndex = cssIndex + 1"/>
+                  </span>
+			      <span jwcid="@contrib:When" condition="ognl:vcs.class.name.equals('com.luntsys.luntbuild.vcs.VssAdaptor')">
+              	    <tr jwcid="@Any" class="ognl:fileRowCssClass">
+              	      <td height="25" colspan="2"> <img src="images/vss.jpg" width="16" height="16" title="VssPath"> <span jwcid="@Insert" value="ognl:vcs.vssPath">\\source</span></td>
+              	      <td height="25" colspan="2"><span jwcid="@Insert" value="ognl:vcs.ssDir">c:\vss</span></td>
+              	      <td height="25" colspan="2">&nbsp;</td>
+              	    </tr>
+                    <span jwcid="@Foreach" source="ognl:vcs.modules" value="ognl:module">
+                      <tr jwcid="@Any" class="ognl:fileRowCssClass">
+                        <td height="25" colspan="1">&nbsp;</td>
+                        <td height="25" colspan="2"><img src="images/vss_archive.gif" width="16" height="16" title="archive folder"> <span jwcid="@Insert" value="ognl:module.srcPath">$/my/source/location</span></td>
+                        <td height="25" colspan="1"><img src="images/vss_label.gif" width="16" height="16" title="label"> <span jwcid="@Insert" value="ognl:module.label">my_label</span></td>
+                        <td height="25" colspan="2"><img src="images/vss_working.gif" width="16" height="16" title="working folder"> <span jwcid="@Insert" value="ognl:module.destPath">my\destination\location</span></td>
+                      </tr>
+                    </span>
+                  </span>
+                  <span jwcid="@contrib:Otherwise">
+                    <tr jwcid="@Any" class="ognl:fileRowCssClass">
+              	      <td colspan="6"><span jwcid="@Insert" raw="true" value="ognl:vcs.toString()"></span></td>
+              	    </tr>
+                  </span>
+                </span>
+              </span>
+            </table></td>
+        </tr>
+      </table>
+</span>
+<span jwcid="revisions@Block">
+      <table width="100%"  border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td colspan="2"><table width="100%" height="100%"  border="0" cellpadding="0" cellspacing="0">
+          	  <colgroup><col width="10%"/><col width="10%"/><col width="10%"/><col width="10%"/><col width="10%"/>
+          	  <col width="10%"/><col width="10%"/><col width="10%"/><col width="10%"/><col width="10%"/></colgroup>
+              <tr>
+                <td height="24" colspan="10" align="center" class="artifactsTitle"><strong>VCS Revisions</strong></td>
+              </tr>
+			  <span jwcid="@Conditional" condition="ognl:cssIndex = 1"/>
+              <tr>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+                <td height="1" style="font-size:1px">&nbsp;</td>
+              </tr>
+              <span jwcid="@Foreach" source="ognl:revisionLogs" value="ognl:log" index="ognl:vcsIndex">
+                <span jwcid="@Insert" raw="true" value="ognl:getRevisionLogGraphical(log)"/>
+              </span>
+            </table></td>
+        </tr>
+      </table>
+</span>
+<span jwcid="rebuild@Block">
+	<span jwcid="rebuildEditorComponent@RebuildEditor"/>
+</span>
+<span jwcid="deleteFile@Block">
 <table width="100%" height="100%"  border="0" cellspacing="0">
   <tr>
     <td height="400" align="center" valign="middle"> <span jwcid="@luntbuild:YesNoBox" msg="Do you really want to delete this?" okListener="ognl:listeners.confirmDeleteFile" cancelListener="ognl:listeners.cancelDeleteFile"/> </td>
   </tr>
 </table>
-</span> </span>
+</span>
+</span>

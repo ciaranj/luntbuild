@@ -25,10 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.dao;
 
 import com.luntsys.luntbuild.db.*;
+import com.luntsys.luntbuild.facades.SearchCriteria;
 import com.luntsys.luntbuild.facades.lb12.DataCollection;
+import com.luntsys.luntbuild.facades.lb12.ProjectCollection;
+import org.springframework.dao.DataAccessException;
 
 import java.util.Date;
 import java.util.List;
@@ -41,320 +45,531 @@ import java.util.Map;
  */
 public interface Dao {
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Saves the system level properties to the persistent data store.
+	 * 
+	 * @param properties the properties
+	 * @throws DataAccessException if an error occurs durring the operation
+	 * @see Property
 	 */
 	void saveProperties(Map properties);
 
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads the system level properties from the persistent data store.
+	 * 
+	 * @return the properties
+	 * @throws DataAccessException if an error occurs durring the operation
+	 * @see Property
 	 */
 	Map loadProperties();
 
-	/** Save project
-     * @param project
-	 * @throws org.springframework.dao.DataAccessException
+	/**
+	 * Saves the given project.
+	 * 
+     * @param project the project
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void saveProject(Project project);
 
-    /** Save project - for internal use only to avoid security
-     * @param project
-     * @throws org.springframework.dao.DataAccessException
+    /**
+     * Saves the given project - for internal use only to avoid security.
+     * 
+     * @param project the project
+     * @throws DataAccessException if an error occurs durring the operation
      */
     void saveProjectInternal(Project project);
 
 	/**
-	 * Load all projects from persistence. Collections of the project may not be loaded.
-	 * @return a list of project objects order by name
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads all projects from the persistent data store.
+	 * Collections of the project may not be loaded.
+	 * 
+	 * @return a list of project objects ordered by name
+	 * @throws DataAccessException if an error occurs durring the operation
+	 * @see Project
  	 */
 	List loadProjects();
 
     /**
-     * Load all projects from persistence - for INTERNAL use so it is not authorized.
+     * Loads all projects from the persistent data store - for INTERNAL use so it is not authorized.
      * Collections of the project may not be loaded.
+     * 
      * @return a list of project objects order by name
-     * @throws org.springframework.dao.DataAccessException
+     * @throws DataAccessException if an error occurs durring the operation
+	 * @see Project
      */
     List loadProjectsInternal();
 
 	/**
-	 * Loads project information based on the project id. Collections of the project should be loaded.
-	 * @param projectId the identifier of the project to load
-	 * @return Project
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads the project that matches the project identifier.
+	 * Collections of the project should be loaded.
+	 * 
+	 * @param projectId the identifier of the project
+	 * @return the project or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Project loadProject(long projectId);
-
+	
 	/**
-	 * Load project information based on the project name. Collections of the project should be
-	 * loaded
-	 * @param projectName name of the project
-	 * @return Project
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads the project that matches the project name.
+	 * Collections of the project should be loaded.
+	 * 
+	 * @param projectName the name of the project
+	 * @return the project or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Project loadProject(String projectName);
 
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Deletes the given project.
+	 * 
+	 * @param project the project
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void deleteProject(Project project);
 
 	/**
-     * @param user
-	 * @throws org.springframework.dao.DataAccessException
+	 * Saves the given user.
+	 * 
+     * @param user the user
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void saveUser(User user);
 
-    /** Save user, only for internal use without security checking!
-     * @param user
-     * @throws org.springframework.dao.DataAccessException
+    /**
+     * Saves the given user - for internal use only to avoid security.
+     * 
+     * @param user the user
+     * @throws DataAccessException if an error occurs durring the operation
      */
     void saveUserInternal(User user);
 
     /**
-	 * @throws org.springframework.dao.DataAccessException
+     * Loads all users from the persistent data store.
+     * Collections of the user may not be loaded.
+     * 
+     * @return a list of user object ordered by name
+	 * @throws DataAccessException if an error occurs durring the operation
+	 * @see User
  	 */
 	List loadUsers();
 
 	/**
-	 *  for authentication purpose
-	 *  we need to search for loginName
-	 * @param userName
-	 * @return
+	 * Loads the user that matches the user name.
+	 * Collections of the user should be loaded.
+	 * <p>For authentication purpose we need to search for loginName.</p>
+	 * 
+	 * @param userName the name of the user
+	 * @return the user or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	User loadUser(String userName);
 
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads the user that matches the user identifier.
+	 * Collections of the user should be loaded.
+	 * 
+	 * @param userId the identifier of the user
+	 * @return the user or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	User loadUser(long userId);
 
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Deletes the user that matches the user identifier.
+	 * 
+	 * @param userId the identifier of the user
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void deleteUser(long userId);
 
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Saves the given schedule.
+	 * 
+     * @param schedule the schedule
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void saveSchedule(Schedule schedule);
 
 	/**
-	 * Loads all schedules configured in the system. Collections of each schedule may not be loaded, but parent objects
-	 * should be loaded
-	 * @return
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads all schedules from the persistent data store.
+	 * Collections of each schedule may not be loaded, but parent objects should be loaded.
+	 * 
+	 * @return a list of schedules object ordered by name
+	 * @throws DataAccessException if an error occurs durring the operation
+	 * @see Schedule
 	 */
 	List loadSchedules();
 
 	/**
-	 * Loads schedule information based on the schedule id. Parent objects and Collections of the schedule should be loaded..
-	 * @param scheduleId
-	 * @return
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads the schedule that matches the schedule identifier.
+	 * Parent objects and collections of the schedule should be loaded.
+	 * 
+	 * @param scheduleId the identifier of the schedule
+	 * @return the schedule or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Schedule loadSchedule(long scheduleId);
 
 	/**
-	 * Loads schedule information based on project name and schedule name. Parent objects and Collections of this schedule
-	 * will also get loaded
-	 * @param projectName name of the belonging project
-	 * @param scheduleName name of the schedule to load
-	 * @return
+	 * Loads the schedule that matches the project name and schedule name.
+	 * Parent objects and collections of this schedule will also get loaded.
+	 * 
+	 * @param projectName name of the parent project
+	 * @param scheduleName name of the schedule
+	 * @return the schedule or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Schedule loadSchedule(String projectName, String scheduleName);
 
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Deletes the given schedule.
+	 * 
+	 * @param schedule the schedule
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void deleteSchedule(Schedule schedule);
 
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads the VCS login that matches the VCS login identifier.
+	 * Collections of the VCS login should be loaded.
+	 * 
+	 * @param vcsLoginId the identifier of the VCS login
+	 * @return the VCS login or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	VcsLogin loadVcsLogin(long vcsLoginId);
 
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Saves the given VCS login.
+	 * 
+     * @param vcsLogin the VCS login
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void saveVcsLogin(VcsLogin vcsLogin);
 
 	/**
-	 * @throws org.springframework.dao.DataAccessException
+	 * Deletes the given VCS login.
+	 * 
+	 * @param vcsLogin the VCS login
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void deleteVcsLogin(VcsLogin vcsLogin);
 
 	/**
-	 * Save a execution result of a schedule
-	 * @param build execution result of a particular triggered execution of a particular schedule
-	 * @throws org.springframework.dao.DataAccessException
+	 * Saves the given build.
+	 * 
+     * @param build the build
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void saveBuild(Build build);
 
 	/**
-	 * Load the build by specifying the build identify. All parent object of this build should be loaded
-	 * @param buildId
-	 * @return
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads the build that matches the build identifier.
+	 * All parent object of this build should be loaded.
+	 * 
+	 * @param buildId the identifier of the build
+	 * @return the build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Build loadBuild(long buildId);
 
 	/**
-	 * Load build by specifying project name, schedule name and build version. All parent object and
-	 * lazy collections of this build will be loaded also
-	 * @param projectName
-	 * @param scheduleName
-	 * @param buildVersion
-	 * @return
+	 * Loads the build that matches the project name, schedule name and build version.
+	 * All parent object and lazy collections of this build will be loaded also.
+	 * 
+	 * @param projectName the name of the parent project
+	 * @param scheduleName the name of the parent schedule
+	 * @param buildVersion the build version of the build
+	 * @return the build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Build loadBuild(String projectName, String scheduleName, String buildVersion);
 
 	/**
-	 * Load build by specifying project name, schedule name and build version. All parent object and
-	 * lazy collections of this build will be loaded also
-	 * @param projectName
-	 * @param scheduleName
-	 * @param buildVersion
-	 * @return
+	 * Loads the build that matches the project name, schedule name and build version
+	 * - for INTERNAL use so it is not authorized.
+	 * All parent object and lazy collections of this build will be loaded also.
+	 * 
+	 * @param projectName the name of the parent project
+	 * @param scheduleName the name of the parent schedule
+	 * @param buildVersion the build version of the build
+	 * @return the build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Build loadBuildInternal(String projectName, String scheduleName, String buildVersion);
 
 	/**
-	 * Delete the build by specifying the buildId
-	 * @param build
+	 * Deletes the given build.
+	 * 
+	 * @param build the build
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void deleteBuild(Build build);
 
 	/**
-	 * get the last build generated by the specified schedule
-	 * @param schedule
-	 * @return the last build, this value maybe null
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads the last build generated by the specified schedule.
+	 * 
+	 * @param schedule the schedule to load from
+	 * @return the last build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Build loadLastBuild(Schedule schedule);
 
 	/**
-	 * Get last build for specified schedule name in specified project name
-	 * @param projectName
-	 * @param scheduleName
-	 * @return last build for specified project and specified schedule. Maybe null if does not exist
+	 * Loads the last build for specified schedule name in specified project name.
+	 * 
+	 * @param projectName the name of the parent project
+	 * @param scheduleName the name of the schedule to load from
+	 * @return the last build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Build loadLastBuild(String projectName, String scheduleName);
 
 	/**
-	 * Get last build for specified schedule name in specified project name
-	 * @param projectName
-	 * @param scheduleName
-	 * @return last build for specified project and specified schedule. Maybe null if does not exist
+	 * Loads the last build for specified schedule name in specified project name
+	 * - for INTERNAL use so it is not authorized.
+	 * 
+	 * @param projectName the name of the parent project
+	 * @param scheduleName the name of the schedule to load from
+	 * @return the last build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Build loadLastBuildInternal(String projectName, String scheduleName);
 
 	/**
-	 * get the last successful build generated by the specified schedule
-	 * @param schedule
-	 * @return the last success build, value maybe null
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads last successful build for specified schedule.
+	 * 
+	 * @param schedule the schedule to load from
+	 * @return the last successful build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Build loadLastSuccessBuild(Schedule schedule);
 
 	/**
-	 * get last successful build of specified project and schedule name
-	 * @param projectName
-	 * @param scheduleName
-	 * @return last success build. Maybe null if does not exist
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads last successful build for specified schedule name in specified project name.
+	 * 
+	 * @param projectName the name of the parent project
+	 * @param scheduleName the name of the schedule to load from
+	 * @return the last successful build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Build loadLastSuccessBuild(String projectName, String scheduleName);
 
 	/**
-	 * Determines how many builds can be found using specified search criteria
-	 * @param searchCriteria
-	 * @return
+	 * Loads the build previous to the specified build.
+	 * 
+	 * @param build the after the desired build
+	 * @return the previous build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
-	int countBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria);
+	Build loadPreviousBuild(Build build);
 
 	/**
-	 * Searches builds by specifying search criteria
-	 * @param searchCriteria
+	 * Determines how many builds can be found using the specified search criteria.
+	 * 
+	 * @param searchCriteria the search criteria
+	 * @return the number of builds found
+	 * @throws DataAccessException if an error occurs durring the operation
+	 */
+	int countBuilds(SearchCriteria searchCriteria);
+
+	/**
+	 * Searches builds by specifying a search criteria.
+	 * 
+	 * @param searchCriteria the search criteria
 	 * @param start the start index (0 based) for the retrieved builds
-	 * @param count number of builds to retrieve. If this value equals 0, no limits will be set
+	 * @param count the number of builds to retrieve. If this value equals 0, no limits will be set
 	 * on the number of retrieved builds.
-	 * @return
+	 * @return the list of builds matching the search criteria
+	 * @throws DataAccessException if an error occurs durring the operation
+	 * @see Build
 	 */
-	List searchBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria,  int start, int count);
+	List searchBuilds(SearchCriteria searchCriteria,  int start, int count);
 
 	/**
-	 * This method checks if there is any un-finished builds in the system,
-	 * and mark them as failed. This method is called at  start up of the
-	 * system in order to clear status of un-finished build.
-	 * @throws org.springframework.dao.DataAccessException
+	 * Checks if there are any un-finished builds in the system,
+	 * and mark them as failed. This method is called at start up of the
+	 * system in order to clear status of un-finished builds.
+	 * 
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void processUnfinishedBuilds();
 
 	/**
-	 * This method checks if there is any running schedule in the system,
-	 * and mark them as failed. This method is called at startup of the system in order
-	 * to clear status of un-finished schedule executions
+	 * Checks if there are any running schedules in the system,
+	 * and mark them as failed. This method is called at start up of the
+	 * system in order to clear status of un-finished schedule executions.
+	 * 
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void processUnfinishedSchedules();
 
 	/**
-	 * Delete all builds matching specified search criteria
-	 * @param searchCriteria
-	 * @throws org.springframework.dao.DataAccessException
+	 * Deletes all builds matching the specified search criteria.
+	 * 
+	 * @param searchCriteria the search criteria
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
-	void deleteBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria);
+	void deleteBuilds(SearchCriteria searchCriteria);
 
 	/**
-	 * Loads current running build for specified schedule
-	 * @param schedule
-	 * @return maybe null if there is no running build inside the specified schedule
-	 * @throws org.springframework.dao.DataAccessException
+	 * Loads the currently running build for specified schedule.
+	 * 
+	 * @param schedule the schedule
+	 * @return the running build or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	Build loadRunningBuild(Schedule schedule);
 
 	/**
-	 * Move builds matching specified criteria to specified schedule
-	 * @param searchCriteria
-	 * @param scheduleId
-	 * @throws org.springframework.dao.DataAccessException
+	 * Moves all builds matching specified search criteria to specified schedule.
+	 * 
+	 * @param searchCriteria the search criteria
+	 * @param scheduleId the identifier of the destination schedule
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
-	void moveBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria, long scheduleId);
+	void moveBuilds(SearchCriteria searchCriteria, long scheduleId);
 
 	/**
-	 * Move specified build to specified schedule
-	 * @param buildId
-	 * @param scheduleId
-	 * @throws org.springframework.dao.DataAccessException
+	 * Moves the specified build to specified schedule.
+	 * 
+	 * @param buildId the identifier of the build to move
+	 * @param scheduleId the identifier of the destination schedule
+	 * @throws DataAccessException if an error occurs durring the operation
 	 */
 	void moveBuild(long buildId, long scheduleId);
 
     /**
-     *
-     * @return all predefined security roles from db
-     * @throws org.springframework.dao.DataAccessException
+     * Loads all security roles from the persistent data store.
+     * 
+     * @return all defined security roles
+     * @throws DataAccessException if an error occurs durring the operation
      */
     List loadRoles();
 
+	/**
+	 * Loads the role that matches the role name.
+	 * Collections of the role should be loaded.
+	 * 
+	 * @param roleName the name of the role
+	 * @return the role or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
+	 */
+	Role loadRole(String roleName);
+
+	/**
+	 * Checks if the user name of the specified, unsaved user is already used
+	 * by a saved user.
+	 * 
+	 * @param user the unsaved user
+	 * @return <code>true</code> if the user name is already used
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	boolean isUserNameUsed(User user);
 
+	/**
+	 * Checks if a user with the specified name exists.
+	 * 
+	 * @param userName the name to search for
+	 * @return <code>true</code> if a user with that name exists
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	boolean isUserExist(String userName);
 
+	/**
+	 * Initializes the persistent data store with required data.
+	 * 
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	void initialize();
 
+	/**
+	 * Checks if the project name of the specified, unsaved project is already used
+	 * by a saved project.
+	 * 
+	 * @param project the unsaved project
+	 * @return <code>true</code> if the project name is already in use
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	boolean isProjectNameUsed(Project project);
 
+	/**
+	 * Checks if the schedule name of the specified, unsaved schedule is already used
+	 * by a saved schedule.
+	 * 
+	 * @param schedule the unsaved schedule
+	 * @return <code>true</code> if the schedule name is already in use
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	boolean isScheduleNameUsed(Schedule schedule);
 
+	/**
+	 * Checks if the VCS login name of the specified, unsaved VCS login is already used
+	 * by a saved VCS login.
+	 * 
+	 * @param vcsLogin the unsaved VCS login
+	 * @return <code>true</code> if the VCS login name is already in use
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	boolean isVcsLoginNameUsed(VcsLogin vcsLogin);
 
+	/**
+	 * Removes all builds from a schedule except for the latest number of builds as
+	 * defined by <code>reserveCount</code>.
+	 * <p>If <code>reserveCount</code> is <code>5</code>, then this function would delete
+	 * all builds except the last <code>5</code> builds from the schedule.</p>
+	 * 
+	 * @param schedule the schedule
+	 * @param reserveCount the number of builds to keep
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	void reserveBuildsByCount(Schedule schedule, int reserveCount);
 
+	/**
+	 * Deletes all builds from a schedule that started before the specified date.
+	 * 
+	 * @param schedule the schedule
+	 * @param date the cut off date for deleting builds
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	void removeBuildsBefore(Schedule schedule, Date date);
 
+	/**
+	 * Loads all data from the persistent data store into a version 1.2 compatable facade collection object.
+	 * 
+	 * @return the facade collection object
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	DataCollection loadDataCollection12();
 
+	/**
+	 * Saves all data from a version 1.2 compatable facade collection object to the persistent data store.
+	 * 
+	 * @param data12 the facade collection
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	void saveDataCollection12(DataCollection data12);
 
+	/**
+	 * Loads all data for a project from the persistent data store into a version 1.2 compatable project facade collection object.
+	 * 
+	 * @param projectId the identifier of the project
+	 * @return the project facade collection object
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
+	ProjectCollection loadProjectCollection12(long projectId);
+
+	/**
+	 * Saves all data from a version 1.2 compatable project facade collection object to the persistent project data store.
+	 * 
+	 * @param project12 the project facade collection
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
+	void saveProjectCollection12(ProjectCollection project12);
+
+	/**
+	 * Erases all data stored in the persistent data store.
+	 * 
+     * @throws DataAccessException if an error occurs durring the operation
+	 */
 	void eraseExistingData();
 }

@@ -26,7 +26,6 @@
  *  
  */
 
-
 package com.luntsys.luntbuild;
 
 import javax.servlet.ServletContextEvent;
@@ -34,22 +33,19 @@ import javax.servlet.ServletContextListener;
 
 import com.luntsys.luntbuild.utility.Luntbuild;
 
-
 /**
- * Application specific Servlet lifecycle listener
- * needed for acegi security framework integration
+ * Application specific servlet lifecycle listener needed for acegi security framework integration.
+ * Used to handle application initialization and finalization.
  * 
- * used to handle application initialization and finalization
- * 
- *  
  * @author johannes plachy
  */
-
 public class LuntbuildContextListener implements ServletContextListener
 {
 
 	/**
-     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
+     * Used to initialize Luntbuild application.
+     * 
+     * @param contextEvent the servlet initialization event
      */
     public void contextInitialized(ServletContextEvent contextEvent)
     {
@@ -62,10 +58,9 @@ public class LuntbuildContextListener implements ServletContextListener
     }
 
     /**
-     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
+     * Used to clean webtier-shutdown.
      * 
-     * used to clean webtier-shutdown
-     * 
+     * @param contextEvent the servlet shutdown event
      */
     public void contextDestroyed(ServletContextEvent contextEvent)
     {
@@ -75,5 +70,4 @@ public class LuntbuildContextListener implements ServletContextListener
         
         System.out.println(contextEvent.getServletContext().getServletContextName() + " : --> context shutdown finished");
     }
-
 }

@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.notifiers;
 
 import com.luntsys.luntbuild.db.Build;
@@ -48,7 +49,7 @@ import java.util.*;
 import java.util.List;
 
 /**
- * The msn messenger notifier
+ * MSN Messenger notifier implementation.
  */
 public class MsnNotifier  extends TemplatedNotifier {
     /**
@@ -69,20 +70,32 @@ public class MsnNotifier  extends TemplatedNotifier {
 	private String errorMsg;
 
     /**
-     * Constructor
+     * Creates a MSN Messenger notifier.
      */
     public MsnNotifier() {
         super(MsnNotifier.class, "msn");
     }
 
+    /**
+     * @inheritDoc
+     */
 	public String getDisplayName() {
 		return "MSN Messenger";
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public String getComment() {
 		return "NOTE. Connecting using proxy is not yet supported.";
 	}
 
+	/**
+	 * Creates and initializes an MSN Messenger for the account configured in the system level properties.
+	 * 
+	 * @return the MSN Messenger
+	 * @throws RuntimeException if the MSN Messenger could not be created
+	 */
 	private MSNMessenger createMessenger() {
 		NotifierProperty property = (NotifierProperty) getSystemLevelProperties().get(MSN_ACCOUNT);
 		String msnAccount = property.getValue(Luntbuild.getProperties());
@@ -100,6 +113,13 @@ public class MsnNotifier  extends TemplatedNotifier {
 		return messenger;
 	}
 
+	/**
+	 * Logs in the specified MSN Messenger.
+	 * 
+	 * @param messenger the MSN Messenger to log in
+	 * @param antProject the ant project used for logging purposes
+	 * @throws RuntimeException if the MSN Messenger could not log in
+	 */
 	private void login(MSNMessenger messenger, Project antProject) {
 		antProject.log("Login to MSN Messenger...", Project.MSG_INFO);
 		errorMsg = null;
@@ -120,11 +140,25 @@ public class MsnNotifier  extends TemplatedNotifier {
 		}
 	}
 
+	/**
+	 * Logs out the specified MSN Messenger.
+	 * 
+	 * @param messenger the MSN Messenger to log out
+	 * @param antProject the ant project used for logging purposes
+	 */
 	private void logout(MSNMessenger messenger, Project antProject) {
 		antProject.log("Logout from MSN Messenger...", Project.MSG_INFO);
 		messenger.logout();
 	}
 
+	/**
+	 * Sends a message using the specified MSN Messenger to the specified user's MSN account.
+	 * 
+	 * @param messenger the MSN Messenger to send with
+	 * @param user the user with an MSN Messenger account to send to
+	 * @param mimeMsg  the message to send
+	 * @param antProject the ant project used for logging purposes
+	 */
 	private void sendMessage(MSNMessenger messenger, User user, MimeMessage mimeMsg, Project antProject) {
 		String msnAccount =
             ((NotifierProperty)getUserLevelProperties().get(USER_MSN_ACCOUNT)).getValue(user.getContacts());
@@ -152,6 +186,12 @@ public class MsnNotifier  extends TemplatedNotifier {
 		}
 	}
 
+	/**
+	 * Constructions a schedule status notification message for MSN Messenger from the specified schedule.
+	 * 
+	 * @param schedule the schedule to notify about
+	 * @return the message for MSN Messenger
+	 */
 	private MimeMessage constructNotificationMsg(Schedule schedule) {
 		MimeMessage mimeMsg = new MimeMessage();
 		if (schedule.getStatus() == com.luntsys.luntbuild.facades.Constants.SCHEDULE_STATUS_SUCCESS) {
@@ -168,6 +208,13 @@ public class MsnNotifier  extends TemplatedNotifier {
 		return mimeMsg;
 	}
 
+	/**
+	 * Constructions a build result notification message for recent checkin users for MSN Messenger
+	 * from the specified build.
+	 * 
+	 * @param build the build to notify about
+	 * @return the message for MSN Messenger
+	 */
 	private MimeMessage constructNotificationMsg4CheckinUsers(Build build) {
 		MimeMessage mimeMsg = new MimeMessage();
 		if (build.getStatus() == com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_SUCCESS) {
@@ -182,6 +229,13 @@ public class MsnNotifier  extends TemplatedNotifier {
 		return mimeMsg;
 	}
 
+	/**
+	 * Constructions a build result notification message for subscribed users for MSN Messenger
+	 * from the specified build.
+	 * 
+	 * @param build the build to notify about
+	 * @return the message for MSN Messenger
+	 */
 	private MimeMessage constructNotificationMsg(Build build) {
 		MimeMessage mimeMsg = new MimeMessage();
 		if (build.getStatus() == Constants.BUILD_STATUS_SUCCESS) {
@@ -196,6 +250,9 @@ public class MsnNotifier  extends TemplatedNotifier {
 		return mimeMsg;
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject) {
 		MSNMessenger messenger = createMessenger();
 		login(messenger, antProject);
@@ -214,6 +271,9 @@ public class MsnNotifier  extends TemplatedNotifier {
 		}
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public void sendScheduleNotification(Set subscribeUsers, Schedule schedule, Project antProject) {
 		MSNMessenger messenger = createMessenger();
 		login(messenger, antProject);
@@ -228,6 +288,9 @@ public class MsnNotifier  extends TemplatedNotifier {
 		}
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public List getSystemLevelProperties() {
 		List properties = new ArrayList();
 		properties.add(new NotifierProperty() {
@@ -265,6 +328,9 @@ public class MsnNotifier  extends TemplatedNotifier {
 		return properties;
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public List getUserLevelProperties() {
         List properties = new ArrayList();
         properties.add(new NotifierProperty() {
@@ -283,13 +349,27 @@ public class MsnNotifier  extends TemplatedNotifier {
         return properties;
 	}
 
-	class MsnListener extends MsnAdapter {
+	/**
+	 * Listener for MSN Messenger events.
+	 */
+	public class MsnListener extends MsnAdapter {
+
+		/**
+		 * Executes when a log in completes successfully.
+		 * 
+		 * @param msnFriend
+		 */
 		public void loginComplete(MsnFriend msnFriend) {
 			synchronized (loginLock) {
 				loginLock.notify();
 			}
 		}
 
+		/**
+		 * Executes when a log in fails.
+		 * 
+		 * @param s the error message
+		 */
 		public void loginError(String s) {
 			synchronized (loginLock) {
 				loginLock.notify();
@@ -297,6 +377,9 @@ public class MsnNotifier  extends TemplatedNotifier {
 			}
 		}
 
+		/**
+		 * Executes after a log out.
+		 */
 		public void logoutNotify() {
 			synchronized(loginLock) {
 				loginLock.notify();

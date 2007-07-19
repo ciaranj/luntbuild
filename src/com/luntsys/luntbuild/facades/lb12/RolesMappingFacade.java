@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade of RolesMapping
+ * Roles mapping facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.RolesMapping
  */
 public class RolesMappingFacade {
 	private long id;
@@ -37,34 +40,74 @@ public class RolesMappingFacade {
 	private long userId;
 	private long roleId;
 
+	/**
+	 * Gets the identifer of this roles mapping.
+	 * 
+	 * @return the identifer of this roles mapping
+	 */
 	public long getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the identifier of this roles mapping.
+	 *
+	 * @param id the identifier of this roles mapping
+	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the identifier of the project of this roles mapping.
+	 * 
+	 * @return the identifier of the project
+	 */
 	public long getProjectId() {
 		return projectId;
 	}
 
+	/**
+	 * Sets the identifier of the project of this roles mapping.
+	 * 
+	 * @param projectId the identifier of the project
+	 */
 	public void setProjectId(long projectId) {
 		this.projectId = projectId;
 	}
 
+	/**
+	 * Gets the identifier of the user of this roles mapping.
+	 * 
+	 * @return the identifier of the user
+	 */
 	public long getUserId() {
 		return userId;
 	}
 
+	/**
+	 * Sets the identifier of the user of this roles mapping.
+	 * 
+	 * @param userId the identifier of the user
+	 */
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
+	/**
+	 * Gets the identifier of the role of this roles mapping.
+	 * 
+	 * @return the identifier of the role
+	 */
 	public long getRoleId() {
 		return roleId;
 	}
 
+	/**
+	 * Sets the identifier of the role of this roles mapping.
+	 * 
+	 * @param roleId the identifier of the role
+	 */
 	public void setRoleId(long roleId) {
 		this.roleId = roleId;
 	}

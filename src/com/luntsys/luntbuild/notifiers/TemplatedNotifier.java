@@ -30,7 +30,7 @@ import com.luntsys.luntbuild.scrapers.MSVSScraper;
  * @author Dustin Hunter
  */
 public abstract class TemplatedNotifier extends Notifier implements ReferenceInsertionEventHandler {
-    /** logger */
+    /** Logger */
     protected Log logger = null;
     /** template dir */
     public String templateDir = null;
@@ -42,16 +42,18 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     private Object ognlRoot = null;
     private MSVSScraper visualStudioScraper = new MSVSScraper();
 
-    /** base template dir */
+    /** Base template directory */
     public static final String TEMPLATE_BASE_DIR = Luntbuild.installDir + File.separator + "templates";
     private static final String QUOTE_FILE = "quotes.txt";
     private static final String TEMPLATE_DEF_FILE = "set-template.txt";
     private static final String DEFAULT_TEMPLATE_BUILD = "simple-build.vm";
     private static final String DEFAULT_TEMPLATE_SCHEDULE = "simple-schedule.vm";
 
-    /** Constructor
-     * @param logClass log class
-     * @param subdir template subdir (in installdir/templates)
+    /**
+     * Creates a templated notifier.
+     * 
+     * @param logClass the log class
+     * @param subdir the template subdir (in installdir/templates)
      */
     public TemplatedNotifier(Class logClass, String subdir) {
         this.logger = LogFactory.getLog(logClass);
@@ -59,10 +61,19 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         setTemplateFiles();
     }
 
+    /**
+     * Sets the template files from the default properties.
+     */
     private void setTemplateFiles() {
     	setTemplateFiles("");
     }
 
+    /**
+     * Sets the template files from the specified property. If the property does not exist, the default
+     * properties will be used.  If the default properties do not exist, the default file names will be used.
+     * 
+     * @param templatePropertyName the property name to use
+     */
     private void setTemplateFiles(String templatePropertyName) {
         File f = new File(this.templateDir + File.separator + TEMPLATE_DEF_FILE);
         if (!f.exists()) {
@@ -93,8 +104,10 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     }
 
     /**
-     *
-     * Initialize velocity
+     * Initializes Velocity and uses the specified property for template files.
+     * 
+     * @param templatePropertyName the property name to use
+     * @throws Exception from {@link Velocity#init(Properties)}
      */
     private void init(String templatePropertyName) throws Exception {
         Properties props = new Properties();
@@ -109,18 +122,38 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     }
 
     /**
-     * Process the template.
+     * Processes the template for a build notification.
+     * 
+     * @param build the build
+     * @param ctx a Velocity context
+     * @throws Exception from {@link Velocity#getTemplate(String)}
      */
     private String processTemplate(Build build, VelocityContext ctx) throws Exception {
         return processTemplate(Velocity.getTemplate(this.templateBuildFile),
                 build, ctx);
     }
 
+    /**
+     * Processes the template for a schedule notification.
+     * 
+     * @param schedule the schedule
+     * @param ctx a Velocity context
+     * @throws Exception from {@link Velocity#getTemplate(String)}
+     */
     private String processTemplate(Schedule schedule, VelocityContext ctx) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.templateScheduleFile),
-                schedule, ctx);
+        return processTemplate(Velocity.getTemplate(this.templateScheduleFile), schedule, ctx);
     }
 
+    /**
+     * Processes the template for a build notification.
+     * 
+     * @param template the template
+     * @param build the build
+     * @param ctx a Velocity context
+     * @throws Exception from {@link Velocity#init()}
+     * @throws Exception from {@link #createContext(Build, VelocityContext)}
+     * @throws Exception from {@link Template#merge(org.apache.velocity.context.Context, Writer)}
+     */
     private String processTemplate(Template template, Build build, VelocityContext ctx) throws Exception {
 
         Velocity.init();
@@ -144,8 +177,17 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         }
     }
 
-    private String processTemplate(Template template, Schedule schedule, VelocityContext ctx)
-    throws Exception {
+    /**
+     * Processes the template for a schedule notification.
+     * 
+     * @param template the template
+     * @param schedule the schedule
+     * @param ctx a Velocity context
+     * @throws Exception from {@link Velocity#init()}
+     * @throws Exception from {@link #createContext(Schedule, VelocityContext)}
+     * @throws Exception from {@link Template#merge(org.apache.velocity.context.Context, Writer)}
+     */
+    private String processTemplate(Template template, Schedule schedule, VelocityContext ctx) throws Exception {
 
         Velocity.init();
 
@@ -168,6 +210,9 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public Object referenceInsert(String reference, Object value) {
         if (value != null) return value;
         try {
@@ -185,8 +230,11 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     }
 
 	/**
-     * Populates the context with the variables which are exposed to the
-     * build template.
+     * Populates the context with the variables which are exposed to the build template.
+     * 
+     * @param build the build
+     * @param ctx the Velocity context
+     * @throws Exception from {@link #extractRootUrl(String)}
      */
     private VelocityContext createContext(Build build, VelocityContext ctx) throws Exception {
         VelocityContext context = new VelocityContext(ctx);
@@ -211,6 +259,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         context.put("build_status", Constants.getBuildStatusText(build.getStatus()));
         context.put("build_isSuccess", new Boolean(build.getStatus() == Constants.BUILD_STATUS_SUCCESS));
         context.put("build_isFailure", new Boolean(build.getStatus() == Constants.BUILD_STATUS_FAILED));
+        context.put("build_changelist", build.getChangelist());
 
         // Time Info
         context.put("build_start", Luntbuild.DATE_DISPLAY_FORMAT.format(build.getStartDate()));
@@ -252,8 +301,11 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     }
 
     /**
-     * Populates the context with the variables which are exposed to the
-     * build template.
+     * Populates the context with the variables which are exposed to the schedule template.
+     * 
+     * @param schedule the schedule
+     * @param ctx the Velocity context
+     * @throws Exception from {@link #extractRootUrl(String)}
      */
     private VelocityContext createContext(Schedule schedule, VelocityContext ctx) throws Exception {
         VelocityContext context = new VelocityContext(ctx);
@@ -286,16 +338,34 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         return context;
     }
 
+    /**
+     * Creates a message title for a schedule notification.
+     * 
+     * @param schedule the schedule
+     * @return the message title
+     */
     protected String constructNotificationTitle(Schedule schedule) {
         String scheduleDesc = schedule.getProject().getName() + "/" + schedule.getName();
         return "[luntbuild] schedule \"" + scheduleDesc + "\" " +
             com.luntsys.luntbuild.facades.Constants.getScheduleStatusText(schedule.getStatus());
     }
 
+    /**
+     * Creates a message body for a schedule notification.
+     * 
+     * @param schedule the schedule
+     * @return the message body
+     */
     protected String constructNotificationBody(Schedule schedule) {
         return constructNotificationBody(schedule, null);
     }
 
+    /**
+     * Creates a message title for a build notification.
+     * 
+     * @param build the build
+     * @return the message title
+     */
     protected String constructNotificationTitle(Build build) {
         String buildDesc = build.getSchedule().getProject().getName() +
         "/" + build.getSchedule().getName() + "/" + build.getVersion();
@@ -303,6 +373,12 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         "\" " + com.luntsys.luntbuild.facades.Constants.getBuildStatusText(build.getStatus());
     }
 
+    /**
+     * Creates a message body for a build notification for recent checkin users.
+     * 
+     * @param build the build
+     * @return the message body
+     */
     protected String constructNotificationBody4CheckinUsers(Build build) {
         VelocityContext context = new VelocityContext();
         context.put("build_user_msg",
@@ -310,6 +386,12 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         return constructNotificationBody(build, context);
     }
 
+    /**
+     * Creates a message body for a build notification for subscribed users.
+     * 
+     * @param build the build
+     * @return the message body
+     */
     protected String constructNotificationBody(Build build) {
         VelocityContext context = new VelocityContext();
         context.put("build_user_msg",
@@ -317,6 +399,13 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         return constructNotificationBody(build, context);
     }
 
+    /**
+     * Creates a message body for a build notification.
+     * 
+     * @param build the build
+     * @param ctx the Velocity context
+     * @return the message body
+     */
     private String constructNotificationBody(Build build, VelocityContext ctx) {
         try {
             init(build.getSchedule().getProject().getName().replaceAll(" ","_") + "_" + build.getSchedule().getName().replaceAll(" ","_"));
@@ -341,6 +430,13 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         }
     }
 
+    /**
+     * Creates a message body for a schedule notification.
+     * 
+     * @param schedule the schedule
+     * @param ctx the Velocity context
+     * @return the message body
+     */
     private String constructNotificationBody(Schedule schedule, VelocityContext ctx) {
         try {
             init(schedule.getProject().getName().replaceAll(" ","_") + "_" + schedule.getName().replaceAll(" ","_"));
@@ -366,7 +462,11 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     }
 
     /**
-     * A convience method for reading in a file.
+     * Gets the contents of a file.
+     * 
+     * @param filename the name of the file
+     * @return the contents of the file
+     * @throws Exception if the file cannot be read
      */
     private static final String readFile(String filename) throws Exception {
         FileInputStream fis = null;
@@ -396,7 +496,11 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     }
 
     /**
-     * A convience method for reading the contents at a url.
+     * Gets the contents of a URL.
+     * 
+     * @param url the URL
+     * @return the contents of the URL
+     * @throws Exception if the URL cannot be read
      */
     private static final String readUrl(String url) throws Exception{
         URL source = new URL(url);
@@ -413,14 +517,23 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     }
 
     /**
-     * A convience method for determining the hostname and port of the
-     * server.
+     * Determins the hostname and port of the server.
+     * 
+     * @param text the URL of the server
+     * @return the root of the URL with only the protocol, hostname and port
      */
     private static final String extractRootUrl(String text) throws Exception {
         URL url = new URL(text);
         return url.getProtocol() + "://" + url.getHost() + ":" + url.getPort();
     }
 
+    /**
+     * Gets a random quote from the quote file in the specified directory.
+     * 
+     * @param templateDir the template directory
+     * @return a random quote, or <code>null</code> if the quote file could not be found
+     * @throws Exception if the quote file cannot be read
+     */
     private static final String getRandomQuote(String templateDir) throws Exception {
     	try {
     		String quotes = readFile(templateDir + "/" + QUOTE_FILE);
@@ -434,6 +547,5 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         	// If the files not there, the just ignore it
             return null;
         }
-
     }
 }

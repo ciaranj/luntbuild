@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.maintenance;
 
 import org.quartz.StatefulJob;
@@ -41,17 +42,31 @@ import java.util.Iterator;
 import java.util.Date;
 
 /**
- * System maintenance class runs every mid-night
+ * System maintenance class to run other system care proceedures.
  * @author robin shine
  */
 public class SystemCare implements StatefulJob {
 	private static Log logger = LogFactory.getLog(SystemCare.class);
 
+	/** Job name for system care. */
 	public static final String JOB_NAME = "system care";
+	/** Job group for system care. */
 	public static final String JOB_GROUP = "system care";
+	/** Trigger name for system care. */
 	public static final String TRIGGER_NAME = "system care";
+	/** Trigger group for system care. */
 	public static final String TRIGGER_GROUP = "system care";
 
+	/**
+	 * Executes system care proceedures.
+	 * <p>The individual proceedures are:</p>
+	 * <ul>
+	 *    <li>Remove Builds - Removes old builds according to the build cleanup strategy of each schedule</li>
+	 * </ul>
+	 * 
+	 * @param jobExecutionContext the job context
+	 * @throws JobExecutionException not thrown
+	 */
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		SecurityHelper.runAsSiteAdmin();
 		List schedules = Luntbuild.getDao().loadSchedules();

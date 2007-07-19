@@ -25,77 +25,88 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade of a svn module
+ * Subversion Executable VCS module facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.SvnExeAdaptor.SvnExeModule
  */
-public class SvnExeModuleFacade extends com.luntsys.luntbuild.facades.lb12.ModuleFacade {
+public class SvnExeModuleFacade extends ModuleFacade {
 	private String srcPath;
 	private String branch;
 	private String label;
 	private String destPath;
 
 	/**
-	 * Get source path in repository of this module
-	 * @return source path in repository
+	 * Gets the Subversion source path.
+	 * 
+	 * @return the source path
 	 */
 	public String getSrcPath() {
 		return srcPath;
 	}
 
 	/**
-	 * Set source path in repository of this module
-	 * @param srcPath
+	 * Sets the Subversion source path.
+	 * 
+	 * @param srcPath the source path
 	 */
 	public void setSrcPath(String srcPath) {
 		this.srcPath = srcPath;
 	}
 
 	/**
-	 * Get branch of the source path
-	 * @return branch of the source path
+	 * Gets the branch.
+	 * 
+	 * @return the branch
 	 */
 	public String getBranch() {
 		return branch;
 	}
 
 	/**
-	 * Set branch of the source path
-	 * @param branch
+	 * Sets the branch.
+	 * 
+	 * @param branch the branch
 	 */
 	public void setBranch(String branch) {
 		this.branch = branch;
 	}
 
 	/**
-	 * Get label of the source path.
-	 * @return label of the source path
+	 * Gets the label.
+	 * 
+	 * @return the label
 	 */
 	public String getLabel() {
 		return label;
 	}
 
 	/**
-	 * Set label of the source path
-	 * @param label
+	 * Sets the label.
+	 * 
+	 * @param label the label
 	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
 	/**
-	 * Get destination path of this module
-	 * @return destination path of this module
+	 * Gets the destination path.
+	 * 
+	 * @return the destination path
 	 */
 	public String getDestPath() {
 		return destPath;
 	}
 
 	/**
-	 * Set destination path of this module
-	 * @param destPath
+	 * Sets the destination path.
+	 * 
+	 * @param destPath the destination path
 	 */
 	public void setDestPath(String destPath) {
 		this.destPath = destPath;

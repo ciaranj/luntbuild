@@ -30,17 +30,19 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.ExecuteStreamHandler;
 import org.apache.tools.ant.taskdefs.PumpStreamHandler;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
-import org.apache.tools.ant.types.Commandline;
 import org.apache.tools.ant.types.Environment;
 import org.apache.tools.ant.util.StringUtils;
+import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.ant.Execute;
 
 /**
- * original Cvs.java 1.20
+ * Performs operations on a CVS repository.
+ * 
+ * <p>original Cvs.java 1.20</p>
  *
- *  NOTE: This implementation has been moved here from Cvs.java with
- *  the addition of some accessors for extensibility.  Another task
- *  can extend this with some customized output processing.
+ * <p>NOTE: This implementation has been moved here from <code>Cvs</code> with
+ * the addition of some accessors for extensibility.  Another task
+ * can extend this with some customized output processing.</p>
  *
  * @author costin@dnt.ro
  * @author stefano@apache.org
@@ -52,10 +54,7 @@ import com.luntsys.luntbuild.ant.Execute;
  * @since Ant 1.5
  */
 public abstract class AbstractCvsTask extends Task {
-    /**
-     * Default compression level to use, if compression is enabled via
-     * setCompression( true ).
-     */
+    /** Default compression level to use, if compression is enabled via <code>setCompression(true)</code>. */
     public static final int DEFAULT_COMPRESSION_LEVEL = 3;
     private static final int MAXIMUM_COMRESSION_LEVEL = 9;
 
@@ -156,13 +155,16 @@ public abstract class AbstractCvsTask extends Task {
     private OutputStream outputStream;
     private OutputStream errorStream;
 
-    /** empty no-arg constructor*/
+    /**
+     * Creates a new cvs task with no arguments.
+     */
     public AbstractCvsTask() {
         super();
     }
 
     /**
-     * sets the handler
+     * Sets the handler.
+     * 
      * @param handler a handler able of processing the output and error streams from the cvs exe
      */
     public void setExecuteStreamHandler(ExecuteStreamHandler handler) {
@@ -170,8 +172,9 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * find the handler and instantiate it if it does not exist yet
-     * @return handler for output and error streams
+     * Finds the handler or instantiates it if it does not exist yet.
+     * 
+     * @return the handler for output and error streams
      */
     protected ExecuteStreamHandler getExecuteStreamHandler() {
 
@@ -184,8 +187,9 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * sets a stream to which the output from the cvs executable should be sent
-     * @param outputStream stream to which the stdout from cvs should go
+     * Sets a stream to which the output from the cvs executable should be sent.
+     * 
+     * @param outputStream the stream to which the stdout from cvs should go
      */
     protected void setOutputStream(OutputStream outputStream) {
 
@@ -193,12 +197,13 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * access the stream to which the stdout from cvs should go
-     * if this stream has already been set, it will be returned
-     * if the stream has not yet been set, if the attribute output
-     * has been set, the output stream will go to the output file
-     * otherwise the output will go to ant's logging system
-     * @return output stream to which cvs' stdout should go to
+     * Accesses the stream to which the stdout from cvs should go.
+     * If this stream has already been set, it will be returned.
+     * If the stream has not yet been set and the attribute output
+     * has been set, the output stream will go to the output file.
+     * Otherwise, the output will go to ant's logging system.
+     * 
+     * @return the output stream to which cvs' stdout should go to
      */
     protected OutputStream getOutputStream() {
 
@@ -223,7 +228,8 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * sets a stream to which the stderr from the cvs exe should go
+     * Sets a stream to which the stderr from the cvs exe should go.
+     * 
      * @param errorStream an output stream willing to process stderr
      */
     protected void setErrorStream(OutputStream errorStream) {
@@ -232,12 +238,13 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * access the stream to which the stderr from cvs should go
-     * if this stream has already been set, it will be returned
-     * if the stream has not yet been set, if the attribute error
-     * has been set, the output stream will go to the file denoted by the error attribute
-     * otherwise the stderr output will go to ant's logging system
-     * @return output stream to which cvs' stderr should go to
+     * Accesses the stream to which the stderr from cvs should go.
+     * If this stream has already been set, it will be returned.
+     * If the stream has not yet been set and the attribute error
+     * has been set, the output stream will go to the file denoted by the error attribute.
+     * Otherwise, the stderr output will go to ant's logging system.
+     * 
+     * @return the output stream to which cvs' stderr should go to
      */
     protected OutputStream getErrorStream() {
 
@@ -262,9 +269,10 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * Sets up the environment for toExecute and then runs it.
+     * Sets up the environment for <code>toExecute</code> and then runs it.
+     * 
      * @param toExecute the command line to execute
-     * @throws BuildException if failonError is set to true and the cvs command fails
+     * @throws BuildException if <code>failonError</code> is set to <code>true</code> and the cvs command fails
      */
     protected void runCommand(Commandline toExecute) throws BuildException {
         // XXX: we should use JCVS (www.ice.com/JCVS) instead of
@@ -336,8 +344,8 @@ public abstract class AbstractCvsTask extends Task {
             dest = getProject().getBaseDir();
         }
 
-        if (!dest.exists()) {
-            dest.mkdirs();
+        if (!com.luntsys.luntbuild.utility.Luntbuild.existsDir(dest.getPath())) {
+            com.luntsys.luntbuild.utility.Luntbuild.createDir(dest.getPath());
         }
 
         exe.setWorkingDirectory(dest);
@@ -398,8 +406,9 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * do the work
-     * @throws BuildException if failonerror is set to true and the cvs command fails.
+     * Executes the cvs task.
+     * 
+     * @throws BuildException if <code>failOnError</code> is set to <code>true</code> and the cvs command fails
      */
     public void execute() throws BuildException {
 
@@ -430,6 +439,12 @@ public abstract class AbstractCvsTask extends Task {
         }
     }
 
+    /**
+     * Converts an <code>Execute</code> object into a string.  The string will not be an executable command.
+     * 
+     * @param execute the execute to convert
+     * @return a string representation of the execute object
+     */
     private String executeToString(Execute execute) {
 
         StringBuffer stringBuffer =
@@ -455,7 +470,7 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * The CVSROOT variable.
+     * Sets the CVSROOT variable.
      *
      * @param root the CVSROOT variable
      */
@@ -472,8 +487,9 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * access the CVSROOT variable
-     * @return CVSROOT
+     * Gets the CVSROOT variable.
+     * 
+     * @return the CVSROOT variable
      */
     public String getCvsRoot() {
 
@@ -481,7 +497,7 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * The CVS_RSH variable.
+     * Sets the CVS_RSH variable.
      *
      * @param rsh the CVS_RSH variable
      */
@@ -497,7 +513,8 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * access the CVS_RSH variable
+     * Gets the CVS_RSH variable.
+     * 
      * @return the CVS_RSH variable
      */
     public String getCvsRsh() {
@@ -506,17 +523,18 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * Port used by CVS to communicate with the server.
+     * Sets the port used by CVS to communicate with the server.
      *
-     * @param port port of CVS
+     * @param port the port
      */
     public void setPort(int port) {
         this.port = port;
     }
 
     /**
-     * access the port of CVS
-     * @return the port of CVS
+     * Gets the port used by CVS to communicate with the server.
+     * 
+     * @return the port
      */
     public int getPort() {
 
@@ -524,17 +542,18 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * Password file to read passwords from.
+     * Sets the file to read passwords from.
      *
-     * @param passFile password file to read passwords from
+     * @param passFile the password file
      */
     public void setPassfile(File passFile) {
         this.passFile = passFile;
     }
 
     /**
-     * find the password file
-     * @return password file
+     * Gets the file to read passwords from.
+     * 
+     * @return the password file
      */
     public File getPassFile() {
 
@@ -542,22 +561,22 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * The directory where the checked out files should be placed.
+     * Sets the directory where the checked out files should be placed.
      *
      * <p>Note that this is different from CVS's -d command line
      * switch as Ant will never shorten pathnames to avoid empty
      * directories.</p>
      *
-     * @param dest directory where the checked out files should be placed
+     * @param dest the destination directory
      */
     public void setDest(File dest) {
         this.dest = dest;
     }
 
     /**
-     * get the file where the checked out files should be placed
+     * Gets the directory where the checked out files should be placed
      *
-     * @return directory where the checked out files should be placed
+     * @return the destination directory
      */
     public File getDest() {
 
@@ -565,26 +584,27 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * The package/module to operate upon.
+     * Sets the package or module to operate upon.
      *
-     * @param p package or module to operate upon
+     * @param p the package or module
      */
     public void setPackage(String p) {
         this.cvsPackage = p;
     }
 
     /**
-     * access the package or module to operate upon
+     * Gets the package or module to operate upon.
      *
-     * @return package/module
+     * @return the package or module
      */
     public String getPackage() {
 
         return this.cvsPackage;
     }
     /**
-     * tag or branch
-     * @return tag or branch
+     * Gets the tag or branch.
+     * 
+     * @return the tag or branch
      * @since ant 1.6.1
      */
     public String getTag() {
@@ -592,8 +612,8 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * The tag of the package/module to operate upon.
-     * @param p tag
+     * Sets the tag of the package or module to operate upon.
+     * @param p the tag or branch
      */
     public void setTag(String p) {
         // Check if not real tag => set it to null
@@ -604,33 +624,34 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * This needs to be public to allow configuration
-     *      of commands externally.
-     * @param arg command argument
+     * Adds an argument to the command line.
+     * This needs to be public to allow configuration of commands externally.
+     * 
+     * @param arg the command argument
      */
     public void addCommandArgument(String arg) {
         this.addCommandArgument(cmd, arg);
     }
 
     /**
-     * add a command line argument to an external command
+     * Adds a command line argument to an external command.
      *
-     * I do not understand what this method does in this class ???
-     * particularly not why it is public ????
-     * AntoineLL July 23d 2003
+     * <p>I do not understand what this method does in this class ???<br/>
+     * particularly not why it is public ????<br/>
+     * AntoineLL July 23d 2003</p>
      *
-     * @param c  command line to which one argument should be added
-     * @param arg argument to add
+     * @param c the command line to which one argument should be added
+     * @param arg the argument to add
      */
     public void addCommandArgument(Commandline c, String arg) {
         c.createArgument().setValue(arg);
     }
 
-
     /**
-     * Use the most recent revision no later than the given date.
+     * Sets the <code>-D</code> flag to use the most recent revision no later than the given date.
+     * 
      * @param p a date as string in a format that the CVS executable can understand
-     * see man cvs
+     * @see "man cvs"
      */
     public void setDate(String p) {
         if (p != null && p.trim().length() > 0) {
@@ -641,38 +662,40 @@ public abstract class AbstractCvsTask extends Task {
 
     /**
      * The CVS command to execute.
-     *
-     * This should be deprecated, it is better to use the Commandline class ?
-     * AntoineLL July 23d 2003
-     *
+     * 
+     * <p>This should be deprecated, it is better to use the Commandline class ?<br/>
+     * AntoineLL July 23d 2003</p>
+     * 
      * @param c a command as string
      */
     public void setCommand(String c) {
         this.command = c;
     }
     /**
-     * accessor to a command line as string
+     * Gets the command line as a string.
      *
-     * This should be deprecated
-     * AntoineLL July 23d 2003
+     * <p>This should be deprecated<br/>
+     * AntoineLL July 23d 2003</p>
      *
-     * @return command line as string
+     * @return the command line as a string
      */
     public String getCommand() {
         return this.command;
     }
 
     /**
-     * If true, suppress informational messages.
-     * @param q  if true, suppress informational messages
+     * Sets the quiet setting. If <code>true</code>, suppress informational messages.
+     * 
+     * @param q if <code>true</code>, suppress informational messages
      */
     public void setQuiet(boolean q) {
         quiet = q;
     }
 
     /**
-     * If true, suppress all messages.
-     * @param q  if true, suppress all messages
+     * Sets the really quiet setting. If <code>true</code>, suppress all messages.
+     * 
+     * @param q if <code>true</code>, suppress all messages
      * @since Ant 1.6
      */
     public void setReallyquiet(boolean q) {
@@ -681,16 +704,17 @@ public abstract class AbstractCvsTask extends Task {
 
 
     /**
-     * If true, report only and don't change any files.
+     * Sets the no exec setting. If <code>true</code>, report only and don't change any files.
      *
-     * @param ne if true, report only and do not change any files.
+     * @param ne if <code>true</code>, report only and do not change any files
      */
     public void setNoexec(boolean ne) {
         noexec = ne;
     }
 
     /**
-     * The file to direct standard output from the command.
+     * Sets the file to direct standard output from the command.
+     * 
      * @param output a file to which stdout should go
      */
     public void setOutput(File output) {
@@ -698,7 +722,7 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * The file to direct standard error from the command.
+     * Sets the file to direct standard error from the command.
      *
      * @param error a file to which stderr should go
      */
@@ -707,28 +731,28 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * Whether to append output/error when redirecting to a file.
-     * @param value true indicated you want to append
+     * Sets the file append setting. If <code>true</code>, the output/error will be appended when redirecting to a file.
+     * @param value <code>true</code> indicates you want to append
      */
     public void setAppend(boolean value) {
         this.append = value;
     }
 
     /**
-     * Stop the build process if the command exits with
-     * a return code other than 0.
-     * Defaults to false.
-     * @param failOnError stop the build process if the command exits with
-     * a return code other than 0
+     * Stops the build process if the command exits with
+     * a return code other than <code>0</code>.
+     * Defaults to <code>false</code>.
+     * 
+     * @param failOnError if <code>true</code>, stops the build process if the command exits with
+     * a return code other than <code>0</code>
      */
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;
     }
 
     /**
-     * Configure a commandline element for things like cvsRoot, quiet, etc.
-     * @param c the command line which will be configured
-     * if the commandline is initially null, the function is a noop
+     * Configures a commandline element for things like cvsRoot, quiet, etc.
+     * <p>If the commandline is initially <code>null</code>, the function is a noop
      * otherwise the function append to the commandline arguments concerning
      * <ul>
      * <li>
@@ -742,7 +766,9 @@ public abstract class AbstractCvsTask extends Task {
      * </li>
      * <li>cvsroot</li>
      * <li>noexec</li>
-     * </ul>
+     * </ul></p>
+     * 
+     * @param c the command line which will be configured
      */
     protected void configureCommandline(Commandline c) {
         if (c == null) {
@@ -774,16 +800,18 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-     * remove a particular command from a vector of command lines
-     * @param c command line which should be removed
+     * Removes a particular command from a vector of command lines.
+     * 
+     * @param c the command line which should be removed
      */
     protected void removeCommandline(Commandline c) {
         vecCommandlines.removeElement(c);
     }
 
     /**
-     * Adds direct command-line to execute.
-     * @param c command line to execute
+     * Adds a direct command-line to execute.
+     * 
+     * @param c the command line to execute
      */
     public void addConfiguredCommandline(Commandline c) {
         this.addConfiguredCommandline(c, false);
@@ -791,12 +819,12 @@ public abstract class AbstractCvsTask extends Task {
 
     /**
      * Configures and adds the given Commandline.
-     * @param c commandline to insert
-     * @param insertAtStart If true, c is
+     * 
+     * @param c the commandline to insert
+     * @param insertAtStart if <code>true</code>, <code>c</code> is
      * inserted at the beginning of the vector of command lines
     */
-    public void addConfiguredCommandline(Commandline c,
-                                         boolean insertAtStart) {
+    public void addConfiguredCommandline(Commandline c, boolean insertAtStart) {
         if (c == null) {
             return;
         }
@@ -809,29 +837,41 @@ public abstract class AbstractCvsTask extends Task {
     }
 
     /**
-    * If set to a value 1-9 it adds -zN to the cvs command line, else
+    * Sets the compression level. If set to a value 1-9 it adds <code>-zN</code> to the cvs command line, else
     * it disables compression.
-     * @param level compression level 1 to 9
+    * 
+     * @param level the compression level (1 to 9)
     */
     public void setCompressionLevel(int level) {
         this.compression = level;
     }
 
     /**
-     * If true, this is the same as compressionlevel="3".
+     * Sets compression. If <code>true</code>, this is the same as compression level "3".
      *
-     * @param usecomp If true, turns on compression using default
-     * level, AbstractCvsTask.DEFAULT_COMPRESSION_LEVEL.
+     * @param usecomp if <code>true</code>, turns on compression using default
+     * level
+     * @see AbstractCvsTask#DEFAULT_COMPRESSION_LEVEL
      */
     public void setCompression(boolean usecomp) {
         setCompressionLevel(usecomp
             ? AbstractCvsTask.DEFAULT_COMPRESSION_LEVEL : 0);
     }
 
+    /**
+     * Gets the CVSDIR variable.
+     * 
+     * @return the CVSDIR variable
+     */
 	public String getCvsDir() {
 		return cvsDir;
 	}
 
+	/**
+	 * Sets the CVSDIR variable.
+	 * 
+	 * @param cvsDir the CVSDIR variable
+	 */
 	public void setCvsDir(String cvsDir) {
 		this.cvsDir = cvsDir;
 	}

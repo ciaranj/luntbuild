@@ -25,10 +25,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.facades.lb12.BaseClearcaseAdaptorFacade;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.utility.*;
@@ -53,6 +55,11 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	 */
 	static final long serialVersionUID = 2;
 
+    /**
+     * Gets the display name for this VCS.
+     *
+     * @return the display name for this VCS
+     */
 	public String getDisplayName() {
 		return "Base Clearcase";
 	}
@@ -77,6 +84,12 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
         // EMPTY
     }
 
+	/**
+	 * Checks out the contents from the VCS without waiting.
+	 * 
+	 * @param build the build
+	 * @param antProject the ant project used for logging
+	 */
     public void checkoutActually(Build build, Project antProject) {
 		String workingDir = getClearcaseWorkDirRaw(build.getSchedule());
 		List loadElements = getLoadElements();
@@ -105,6 +118,12 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 		}
 	}
 
+	/**
+	 * Labels the contents in the VCS.
+	 * 
+	 * @param build the build
+	 * @param antProject the ant project used for logging
+	 */
 	public void label(Build build, Project antProject) {
 		if (containLatestVersion()) {
 			List loadElements = getLoadElements();
@@ -185,9 +204,9 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	}
 
 	/**
-	 * Get the elements configured for load in the view config spec
+	 * Gets the elements configured for load in the view config spec.
 	 *
-	 * @return
+	 * @return the list of elements to load
 	 */
 	private List getLoadElements() {
 		BufferedReader reader = new BufferedReader(new StringReader(viewCfgSpec.replace(';', '\n')));
@@ -218,10 +237,6 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 		}
     }
 
-	public VcsFacade constructFacade() {
-		return new com.luntsys.luntbuild.facades.lb12.BaseClearcaseAdaptorFacade();
-	}
-
     protected void saveAdditionalStuffToFacade(VcsFacade facade) {
         // EMPTY        
     }
@@ -229,7 +244,13 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
     protected void loadAdditionalStuffFromFacade(VcsFacade facade) {
         // EMPTY        
     }
-    
+
+	/**
+	 * Cleans up this VCS object's checked out contents.
+	 * 
+	 * @param workingSchedule the currently running schedule
+	 * @param antProject the ant project used for logging
+	 */
 	public void cleanupCheckout(Schedule workingSchedule, Project antProject) {
 		String workingDir = getClearcaseWorkDirRaw(workingSchedule);
 		if (ccViewExists(workingSchedule, antProject)) {
@@ -237,5 +258,15 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 			Luntbuild.createDir(workingDir);
 		} else
 			super.cleanupCheckout(workingSchedule, antProject);
+	}
+
+    /**
+     * Constructs a blank VCS facade object.
+     *
+     * @return the VCS facade object
+     * @see BaseClearcaseAdaptorFacade
+     */
+	public VcsFacade constructFacade() {
+		return new BaseClearcaseAdaptorFacade();
 	}
 }

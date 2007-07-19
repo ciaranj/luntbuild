@@ -45,9 +45,8 @@ import org.quartz.impl.StdSchedulerFactory;
 import java.util.*;
 
 /**
- * This class provides quartz scheduler access service. It will loaded by
- * spring framework as a singleton
- *
+ * Quartz scheduler implementation. This will loaded by Spring framework as a singleton.
+ * 
  * @author robin shine
  */
 public class QuartzService implements IScheduler {
@@ -59,11 +58,15 @@ public class QuartzService implements IScheduler {
 	 */
 	private Scheduler sched = null;
 
+	/** Name for triggers that should be ignored. */
 	public static final String DUMMY_TRIGGER_NAME = "dummy";
+	/** Name for jobs that should be ignored. */
 	public static final String DUMMY_JOB_NAME = "dummy";
 
 	/**
-	 * reschedule builds based on build scheduling information existed in the persistent storage
+	 * Reschedules builds based on build scheduling information existed in the persistent storage.
+	 * 
+	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void rescheduleBuilds() {
 		validateSched();
@@ -146,10 +149,11 @@ public class QuartzService implements IScheduler {
 	}
 
 	/**
-	 * Schedule a build for specified schedule using specified trigger
+	 * Schedules a build for specified schedule using specified trigger.
 	 *
-	 * @param schedule
-	 * @param trigger
+	 * @param schedule the schedule
+	 * @param trigger the trigger
+	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void scheduleBuild(Schedule schedule, Trigger trigger) {
 		synchronized (schedLock) {
@@ -185,10 +189,11 @@ public class QuartzService implements IScheduler {
 	}
 
 	/**
-	 * Remove specified trigger
+	 * Removes the specified trigger.
 	 *
-	 * @param triggerName
-	 * @param triggerGroup
+	 * @param triggerName the name of the trigger
+	 * @param triggerGroup the group the trigger is in
+	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void unscheduleBuild(String triggerName, String triggerGroup) {
 		synchronized (schedLock) {
@@ -202,11 +207,12 @@ public class QuartzService implements IScheduler {
 	}
 
 	/**
-	 * Get list of triggers manually triggered for specified schedule, the list is ordered increasely
-	 * by start time of the trigger
+	 * Gets the list of triggers manually triggered for the specified schedule, the list is ordered ascending
+	 * by the start time of the trigger.
 	 *
-	 * @param schedule
-	 * @return
+	 * @param schedule the schedule
+	 * @return the manual triggers
+	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public List getWaitingManualBuildTriggers(Schedule schedule) {
 		synchronized (schedLock) {
@@ -243,11 +249,12 @@ public class QuartzService implements IScheduler {
 	}
 
 	/**
-	 * Get rebuilds for specified schedule, rebuilds are a map from trigger to Build
-	 * It is ordered by trigger start time
+	 * Gets any rebuilds for the specified schedule, rebuilds are a map from trigger to build.
+	 * It is ordered by the start time of the trigger.
 	 *
 	 * @param schedule
-	 * @return
+	 * @return a map of rebuilds
+	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public Map getRebuilds(Schedule schedule) {
 		synchronized (schedLock) {
@@ -291,12 +298,13 @@ public class QuartzService implements IScheduler {
 	}
 
 	/**
-	 * Initialize and startup the quartz scheduler
+	 * Initialize and startup the scheduler.
+	 * 
+	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void startup() {
 		try {
 			StdSchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
-
 			Properties props = new Properties();
 			props.setProperty("org.quartz.scheduler.instanceName", "DefaultQuartzScheduler");
 			props.setProperty("org.quartz.scheduler.rmi.export", "false");
@@ -323,8 +331,7 @@ public class QuartzService implements IScheduler {
 	}
 
 	/**
-	 * Shutdown the quartz scheduler. The scheduler can not be re-started after
-	 * a shutdown
+	 * Shutdown the scheduler. The scheduler can not be re-started after a shutdown.
 	 */
 	public void shutdown() {
 		if (sched != null) {
@@ -337,11 +344,11 @@ public class QuartzService implements IScheduler {
 	}
 
 	/**
-	 * Validates if specified trigger is schedulable
-	 *
-	 * @param trigger
-	 * @throws com.luntsys.luntbuild.utility.ValidationException
-	 *
+	 * Validates a trigger.
+	 * 
+	 * @param trigger the trigger
+	 * @throws ValidationException if the trigger is not valid
+	 * @throws RuntimeException if validate fails without a message
 	 */
 	public void validateTrigger(Trigger trigger) {
 		synchronized (schedLock) {
@@ -373,11 +380,11 @@ public class QuartzService implements IScheduler {
 	}
 
 	/**
-	 * Removes un-necessary manual builds in a schedule. Un-necessary manual
-	 * builds are defined as builds that scheduled to occur before time of this function is
-	 * called
-	 *
-	 * @param schedule
+	 * Removes un-necessary manual builds for a schedule. Un-necessary manual
+	 * builds are defined as builds that are scheduled to occur before time this function is called.
+	 * 
+	 * @param schedule the schedule
+	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void removeUnNecessaryManualTriggers(Schedule schedule) {
 		synchronized (schedLock) {
@@ -410,6 +417,12 @@ public class QuartzService implements IScheduler {
 		}
 	}
 
+	/**
+	 * Checks if the specified trigger is scheduled.
+	 * 
+	 * @param trigger the trigger
+	 * @return <code>true</code> if the trigger is scheduled
+	 */
 	public boolean isTriggerAvailable(Trigger trigger) {
 		synchronized (schedLock) {
 			try {
@@ -423,6 +436,11 @@ public class QuartzService implements IScheduler {
 		}
 	}
 
+	/**
+	 * Schedules system backup jobs. Ensures that the jobs are schedule, safe to call multiple times.
+	 * 
+	 * @throws RuntimeException from {@link Scheduler}
+	 */
 	public void scheduleSystemBackup() {
 		validateSched();
 		synchronized (schedLock) {
@@ -456,6 +474,11 @@ public class QuartzService implements IScheduler {
 		}
 	}
 
+	/**
+	 * Schedules system care jobs. Ensures that the jobs are schedule, safe to call multiple times.
+	 * 
+	 * @throws RuntimeException from {@link Scheduler}
+	 */
 	public void scheduleSystemCare() {
 		validateSched();
 		synchronized (schedLock) {

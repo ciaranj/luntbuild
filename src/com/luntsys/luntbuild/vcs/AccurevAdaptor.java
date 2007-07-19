@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2005 Your Corporation. All Rights Reserved.
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.ant.Commandline;
@@ -14,6 +15,7 @@ import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.ValidationException;
 import com.luntsys.luntbuild.vcs.accurev.AccurevHelper;
 import com.luntsys.luntbuild.vcs.accurev.AccurevModuleInterface;
 import com.luntsys.luntbuild.vcs.accurev.ReferenceTreeInfo;
@@ -32,7 +34,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Adapter to an Accurev VCS
+ * AccuRev VCS adaptor implementation.
+ * 
+ * <p>This adaptor is NOT safe for remote hosts.</p>
  *
  * @author Jason Carreira <jcarreira@eplus.com>
  */
@@ -41,47 +45,81 @@ public class AccurevAdaptor extends Vcs {
      * Keep tracks of version of this class, used when do serialization-deserialization
      */
     static final long serialVersionUID = 23L;
+    /** Date format for AccuRev. */
     public static final SimpleDateFormat ACCUREV_DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
 
 	private String user;
 	private String password;
 
+	/**
+	 * Gets the password to login to the AccuRev server.
+	 * 
+	 * @return the password
+	 */
 	public String getPassword() {
 		return this.password;
 	}
 
+	/**
+	 * Sets the password to login to the AccuRev server.
+	 * 
+	 * @param password the password
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * Gets the user to login to the AccuRev server.
+	 * 
+	 * @return the user
+	 */
 	public String getUser() {
 		return this.user;
 	}
 
+	/**
+	 * Sets the user to login to the AccuRev server.
+	 * 
+	 * @param user the user
+	 */
 	public void setUser(String user) {
 		this.user = user;
 	}
 
-	/**
-     * @return a string value describes type of the version control system
+    /**
+     * @inheritDoc
      */
     public String getDisplayName() {
         return "AccuRev";
     }
 
+    /**
+     * @inheritDoc
+     */
     public String getIconName() {
         return "accurev.jpg";
     }
 
+	/**
+     * @inheritDoc
+	 * @see AccurevModule
+	 */
     public Module createNewModule() {
         return new AccurevModule();
     }
 
+	/**
+     * @inheritDoc
+	 * @see AccurevModule
+	 */
     public Module createNewModule(Module module) {
         return new AccurevModule((AccurevModule)module);
     }
 
+    /**
+     * @inheritDoc
+     */
     public List getVcsSpecificProperties() {
         List properties = new ArrayList();
 		properties.add(new DisplayProperty() {
@@ -125,6 +163,11 @@ public class AccurevAdaptor extends Vcs {
         return properties;
     }
 
+    /**
+     * Validates the modules of this VCS.
+     *
+     * @throws ValidationException if a module is not invalid
+     */
     public void validateModules() {
         super.validateModules();
 //        List modules = getModules();
@@ -133,6 +176,10 @@ public class AccurevAdaptor extends Vcs {
 //        }
     }
 
+    /**
+     * @inheritDoc
+     * @see AccurevAdaptorFacade
+     */
     public VcsFacade getFacade() {
         AccurevAdaptorFacade facade = new AccurevAdaptorFacade();
         List modules = getModules();
@@ -143,7 +190,12 @@ public class AccurevAdaptor extends Vcs {
         return facade;
     }
 
+    /**
+     * @inheritDoc
+     * @see AccurevAdaptorFacade
+     */
     public void setFacade(VcsFacade facade) {
+    	// TODO throw RuntimeException if the facade is not the right class
         AccurevAdaptorFacade accurevAdaptorFacade = (AccurevAdaptorFacade) facade;
         getModules().clear();
         Iterator it = accurevAdaptorFacade.getModules().iterator();
@@ -155,13 +207,23 @@ public class AccurevAdaptor extends Vcs {
         }
     }
 
+    /**
+     * @inheritDoc
+     * @see com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade
+     */
     public void saveToFacade(VcsFacade facade) {
+    	// TODO throw RuntimeException if the facade is not the right class
         com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade accuFacade =
             (com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade) facade;
         accuFacade.setUser(getUser());
         accuFacade.setPassword(getPassword());
     }
 
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>AccurevAdaptorFacade</code>
+     * @see com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade
+     */
     public void loadFromFacade(VcsFacade facade) {
         if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
@@ -171,24 +233,28 @@ public class AccurevAdaptor extends Vcs {
         setPassword(accuFacade.getPassword());
     }
 
+    /**
+     * @inheritDoc
+     * @see AccurevAdaptorFacade
+     */
     public VcsFacade constructFacade() {
         return new AccurevAdaptorFacade();
     }
 
-    /**
-     * Get a list of change logs covered by current vcs config since
-     * the specified date.
-     *
-     * @param sinceDate       the oldest revision date to include
-     * @param workingSchedule
-     * @param antProject
-     * @return list of file modification descriptions
-     */
+	/**
+     * @inheritDoc
+	 */
     public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
         antProject.log("Getting Revisions... ");
         AccurevHelper.setUser(user, password, antProject);
         AccurevHelper.syncTime(antProject);
+
         final Revisions revisions = new Revisions();
+        revisions.addLog(this.getClass().getName(), toString());
+        revisions.getChangeLogs().add("*************************************************************");
+        revisions.getChangeLogs().add(toString());
+        revisions.getChangeLogs().add("");
+
         Iterator it = getModules().iterator();
         while (it.hasNext()) {
             AccurevModule module = (AccurevModule) it.next();
@@ -214,20 +280,26 @@ public class AccurevAdaptor extends Vcs {
             for (Iterator transactionIter = root.elementIterator("transaction"); transactionIter.hasNext();) {
                 buffer.setLength(0);
                 Element transaction = (Element) transactionIter.next();
+
                 final String userName = transaction.attributeValue("user");
                 revisions.getChangeLogins().add(userName);
-                final String timeAttr = transaction.attributeValue("time");
-                long timeVal = Long.parseLong(timeAttr);
+
+                long timeVal = Long.parseLong(transaction.attributeValue("time"));
                 timeVal = timeVal * 1000; // Accurev returns time in seconds
                 Date transDate = new Date(timeVal);
                 String dateString = ACCUREV_DATE_FORMAT.format(transDate);
+
                 final String transactionStr = transaction.attributeValue("id");
                 final long transactionNumber = Long.parseLong(transactionStr);
+
                 final String comment = transaction.elementText("comment");
+
                 buffer.append("Transaction ").append(transactionNumber).append(" date ")
                         .append(dateString).append(" by ").append(userName).append("\n\"")
                         .append(comment).append("\"");
                 revisions.getChangeLogs().add(buffer.toString());
+                revisions.addEntryToLastLog(transactionStr, userName, transDate, comment);
+
                 for (Iterator versionIter = transaction.elementIterator("version"); versionIter.hasNext();) {
                     revisions.setFileModified(true);
                     buffer.setLength(0);
@@ -236,18 +308,16 @@ public class AccurevAdaptor extends Vcs {
                     buffer.append(version.attributeValue("path").substring(2)).append(" (")
                             .append(version.attributeValue("virtual")).append(")");
                     revisions.getChangeLogs().add(buffer.toString());
+                    revisions.addPathToLastEntry(version.attributeValue("path").substring(2), "", "");
                 }
             }
         }
         return revisions;
     }
 
-    /**
-     * Label contents in version control system
-     *
-     * @param build
-     * @param antProject
-     */
+	/**
+     * @inheritDoc
+	 */
     public void label(Build build, Project antProject) {
         antProject.log("Labeling...");
 //        AccurevHelper.syncTime(antProject);
@@ -258,6 +328,12 @@ public class AccurevAdaptor extends Vcs {
         }
     }
 
+	/**
+	 * Labels the contents of a module.
+	 * 
+	 * @param module the module
+	 * @param antProject the ant project used for logging
+	 */
     private void labelModule(AccurevModule module, Project antProject) {
         antProject.log("Labeling module " + module);
         final String label = "" + AccurevHelper.getLastTransactionNumber(module, antProject);
@@ -265,12 +341,9 @@ public class AccurevAdaptor extends Vcs {
         module.setLabel(label);
     }
 
-    /**
-     * Checkout contents from version control system
-     *
-     * @param build
-     * @param antProject
-     */
+	/**
+     * @inheritDoc
+	 */
     public void checkoutActually(Build build, Project antProject) {
         antProject.log("Checking out...");
         AccurevHelper.setUser(user, password, antProject);
@@ -287,6 +360,15 @@ public class AccurevAdaptor extends Vcs {
         }
     }
 
+	/**
+	 * Checks out the contents from a module.
+	 * 
+	 * @param workingDir the working directory
+	 * @param module the module
+	 * @param isClean set <code>true</code> if this is a clean build
+	 * @param isRebuild set <code>true</code> if this is a rebuild
+	 * @param antProject the ant project used for logging
+	 */
     private void retrieveModule(String workingDir, AccurevModule module, boolean isClean, boolean isRebuild, Project antProject) {
         final String srcPath = module.getActualSrcPath();
         if (isClean)
@@ -351,6 +433,11 @@ public class AccurevAdaptor extends Vcs {
         }
     }
 
+	/**
+	 * An Accurev module definition.
+	 *
+	 * @author robin shine
+	 */
     public class AccurevModule extends Module implements AccurevModuleInterface {
         /**
          * Keep tracks of version of this class, used when do serialization-deserialization
@@ -363,8 +450,16 @@ public class AccurevAdaptor extends Vcs {
         private String buildStream;
         private String label;
 
+		/**
+		 * Constructor, creates a blank AccuRev module.
+		 */
         public AccurevModule() {}
 
+		/**
+		 * Copy constructor, creates a AccuRev module from another AccuRev module.
+		 * 
+		 * @param module the module to create from
+		 */
         public AccurevModule(AccurevModule module) {
             this.depot = module.depot;
             this.srcPath = module.srcPath;
@@ -373,70 +468,153 @@ public class AccurevAdaptor extends Vcs {
             this.label = module.label;
         }
 
+        /**
+         * Gets the AccuRev depot name.
+         * 
+         * @return the depot name
+         */
         public String getDepot() {
             return depot;
         }
 
+        /**
+         * Gets the AccuRev depot name. This method will parse OGNL variables.
+         * 
+         * @return the depot name
+         */
         private String getActualDepot() {
 			return OgnlHelper.evaluateScheduleValue(getDepot());
         }
 
+        /**
+         * Sets the AccuRev depot name.
+         * 
+         * @param depot the depot name
+         */
         public void setDepot(String depot) {
             this.depot = depot;
         }
 
+        /**
+         * Gets the source path where this module should be put.
+         * 
+         * @return the source path
+         */
         public String getSrcPath() {
             return srcPath;
         }
 
+        /**
+         * Gets the source path where this module should be put. This method will parse OGNL variables.
+         * 
+         * @return the source path
+         */
         private String getActualSrcPath() {
 			return OgnlHelper.evaluateScheduleValue(getSrcPath());
         }
 
+        /**
+         * Sets the source path where this module should be put.
+         * 
+         * @param srcPath the source path
+         */
         public void setSrcPath(String srcPath) {
             this.srcPath = srcPath;
         }
 
+        /**
+         * Gets the backing stream.
+         * 
+         * @return the backing stream
+         */
         public String getBackingStream() {
             return backingStream;
         }
 
+        /**
+         * Gets the backing stream. This method will parse OGNL variables.
+         * 
+         * @return the backing stream
+         */
         private String getActualBackingStream() {
 			return OgnlHelper.evaluateScheduleValue(getBackingStream());
         }
 
+        /**
+         * Sets the backing stream.
+         * 
+         * @param backingStream the backing stream
+         */
         public void setBackingStream(String backingStream) {
             this.backingStream = backingStream;
         }
 
+        /**
+         * Gets the backing stream for this build module.
+         * 
+         * @return the build stream
+         */
         public String getBuildStream() {
             return buildStream;
         }
 
+        /**
+         * Gets the backing stream for this build module. This method will parse OGNL variables.
+         * 
+         * @return the build stream
+         */
         private String getActualBuildStream() {
 			return OgnlHelper.evaluateScheduleValue(getBuildStream());
         }
 
+        /**
+         * Sets the backing stream for this build module.
+         * 
+         * @param buildStream the build stream
+         */
         public void setBuildStream(String buildStream) {
             this.buildStream = buildStream;
         }
 
+        /**
+         * Gets the transaction number with which to sync.
+         * 
+         * @return the transaction number
+         */
         public String getLabel() {
             return label;
         }
 
+        /**
+         * Gets the transaction number with which to sync. This method will parse OGNL variables.
+         * 
+         * @return the transaction number
+         */
         private String getActualLabel() {
 			return OgnlHelper.evaluateScheduleValue(getLabel());
         }
 
+        /**
+         * Sets the transaction number with which to sync.
+         * 
+         * @param label the transaction number
+         */
         public void setLabel(String label) {
             this.label = label;
         }
 
+        /**
+         * Gets the reference tree.
+         * 
+         * @return the reference tree
+         */
         public String getReferenceTree() {
             return getActualBuildStream() + "_reference";
         }
 
+		/**
+		 * @inheritDoc
+		 */
         public List getProperties() {
             List properties = new ArrayList();
             properties.add(new DisplayProperty() {
@@ -570,6 +748,10 @@ public class AccurevAdaptor extends Vcs {
             return properties;
         }
 
+	    /**
+	     * @inheritDoc
+	     * @see AccurevModuleFacade
+	     */
         public ModuleFacade getFacade() {
             AccurevModuleFacade facade = new AccurevModuleFacade();
             facade.setDepot(getDepot());
@@ -578,6 +760,11 @@ public class AccurevAdaptor extends Vcs {
             return facade;
         }
 
+	    /**
+	     * @inheritDoc
+	     * @throws RuntimeException if the facade is not an <code>AccurevModuleFacade</code>
+	     * @see AccurevModuleFacade
+	     */
         public void setFacade(ModuleFacade facade) {
             if (facade instanceof AccurevModuleFacade) {
                 AccurevModuleFacade moduleFacade = (AccurevModuleFacade) facade;
@@ -589,6 +776,11 @@ public class AccurevAdaptor extends Vcs {
                 throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
         }
 
+    	/**
+    	 * Converts this module to a string.
+    	 * 
+    	 * @return the string representation of this module
+    	 */
         public String toString() {
             return new ToStringBuilder(this)
                     .append("depot", getDepot())
@@ -597,7 +789,5 @@ public class AccurevAdaptor extends Vcs {
 //            .append("destination directory", getDestPath())
                     .toString();
         }
-
     }
-
 }

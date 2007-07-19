@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.notifiers;
 
 import com.luntsys.luntbuild.db.Build;
@@ -37,18 +38,16 @@ import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.SendEmail;
 
-
 import java.util.Set;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Email Notifier
+ * Email notifier implementation.
  *
  * @author Robin Shine
  * @author Dustin Hunter
- *
  */
 public class EmailNotifier extends TemplatedNotifier {
     /**
@@ -67,20 +66,26 @@ public class EmailNotifier extends TemplatedNotifier {
     private static final int USER_EMAIL = 0;
 
     /**
-     * Constructor
+     * Creates an email notifier.
      */
     public EmailNotifier() {
         super(EmailNotifier.class, "email");
     }
+
+    /**
+     * @inheritDoc
+     */
 	public String getDisplayName() {
 		return "Email";
 	}
 
-	/** Send e-mail
-	 * @param email email
-	 * @param antProject project
-	 * @param subject subject
-	 * @param body body
+	/**
+	 * Sends the notification E-mail.
+	 * 
+	 * @param email the E-mail address
+	 * @param antProject the ant project used for logging purposes
+	 * @param subject the E-mail's subject
+	 * @param body the E-mail's body
 	 */
 	public void sendMail(String email, Project antProject, String subject, String body) {
 		SendEmail mail = new SendEmail();
@@ -130,9 +135,13 @@ public class EmailNotifier extends TemplatedNotifier {
 			mail.execute();
 		} catch (Exception e) {
 			antProject.log(Luntbuild.getExceptionMessage(e), Project.MSG_ERR);
+			logger.error("", e);
 		}
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject) {
 		Iterator it = checkinUsers.iterator();
 		while (it.hasNext()) {
@@ -160,6 +169,9 @@ public class EmailNotifier extends TemplatedNotifier {
 		}
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public void sendScheduleNotification(Set subscribeUsers, Schedule schedule, Project antProject) {
 		Iterator it = subscribeUsers.iterator();
 		while (it.hasNext()) {
@@ -176,12 +188,17 @@ public class EmailNotifier extends TemplatedNotifier {
 	}
 
     /**
-     * @return key for contacts map
+     * Gets the key to access the E-mail address property in the user's contacts list.
+     * 
+     * @return the key for contacts map
      */
     public String getKey() {
         return ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getKey();
     }
 
+    /**
+     * @inheritDoc
+     */
 	public List getSystemLevelProperties() {
 		List properties = new ArrayList();
 		properties.add(new NotifierProperty() {
@@ -275,6 +292,9 @@ public class EmailNotifier extends TemplatedNotifier {
 		return properties;
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public List getUserLevelProperties() {
         List properties = new ArrayList();
         properties.add(new NotifierProperty() {
@@ -349,4 +369,3 @@ public class EmailNotifier extends TemplatedNotifier {
         }
     }
 }
-

@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.security;
 
 import com.luntsys.luntbuild.db.Build;
@@ -38,15 +39,22 @@ import org.acegisecurity.acl.AclEntry;
 import org.acegisecurity.acl.AclProvider;
 
 /**
- * Luntbuild specific acl provider.
+ * Luntbuild specific ACL provider.
  *
  * @author alvin shen
  */
 public class LuntbuildAclProvider implements AclProvider {
+
+	/**
+	 * @inheritDoc
+	 */
 	public AclEntry[] getAcls(Object o) {
 		return new AclEntry[0];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public AclEntry[] getAcls(Object o, Authentication authentication) {
 		Project project;
 		if (o instanceof Project)
@@ -73,6 +81,9 @@ public class LuntbuildAclProvider implements AclProvider {
 		return new AclEntry[]{aclEntry};
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public boolean supports(Object o) {
 		if (o == null)
 			return false;

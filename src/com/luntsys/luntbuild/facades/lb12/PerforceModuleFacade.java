@@ -25,61 +25,70 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade for perforce module
+ * Perforce VCS module facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.PerforceAdaptor.PerforceModule
  */
-public class PerforceModuleFacade extends com.luntsys.luntbuild.facades.lb12.ModuleFacade {
+public class PerforceModuleFacade extends ModuleFacade {
 	private String depotPath;
 	private String label;
 	private String clientPath;
 
-	/**
-	 * Get depot path of this module
-	 * @return depot path of this module
-	 */
+    /**
+     * Gets the depot path.
+     * 
+     * @return the depot path
+     */
 	public String getDepotPath() {
 		return depotPath;
 	}
 
-	/**
-	 * Set depot path of this module
-	 * @param depotPath
-	 */
+    /**
+     * Sets the depot path.
+     * 
+     * @param depotPath the depot path
+     */
 	public void setDepotPath(String depotPath) {
 		this.depotPath = depotPath;
 	}
 
-	/**
-	 * Get label of the depot path
-	 * @return label of the depot path
-	 */
+    /**
+     * Gets the label to use.
+     * 
+     * @return the label
+     */
 	public String getLabel() {
 		return label;
 	}
 
-	/**
-	 * Set label of the depot path
-	 * @param label
-	 */
+    /**
+     * Sets the label to use.
+     * 
+     * @param label the label
+     */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
-	/**
-	 * Get client path of this module
-	 * @return client path of this module
-	 */
+    /**
+     * Gets the client path.
+     * 
+     * @return the client path
+     */
 	public String getClientPath() {
 		return clientPath;
 	}
 
-	/**
-	 * Set client path of this module
-	 * @param clientPath
-	 */
+    /**
+     * Sets the client path.
+     * 
+     * @param clientPath the client path
+     */
 	public void setClientPath(String clientPath) {
 		this.clientPath = clientPath;
 	}

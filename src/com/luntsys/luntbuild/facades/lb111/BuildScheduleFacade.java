@@ -25,40 +25,61 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 import java.util.Date;
 
 /**
- * Facade of a luntbuild build schedule. Mainly used by web service client to operate
- * on properties of a build schedule
+ * Build schedule facade.
  */
 public class BuildScheduleFacade {
+	/** Build schedule status, running */
 	public static final int UNKNOWN = 0;
+	/** Build schedule status, success */
 	public static final int SUCCESS = 1;
+	/** Build schedule status, failed */
 	public static final int FAILED =2;
+	/** Build schedule status, running */
 	public static final int RUNNING = 3;
 
+	/** Build type, clean */
 	public static final String BUILD_TYPE_CLEAN = "clean";
+	/** Build type, increment */
 	public static final String BUILD_TYPE_INCREMENT = "increment";
 
+	/** Build strategy, build when necessary */
 	public static final String BUILD_WHEN_NECESSARY = "build when necessary";
+	/** Build strategy, build always if failed */
 	public static final String BUILD_ALWAYS_IF_FAILED = "build always if failed";
+	/** Build strategy, build always */
 	public static final String BUILD_ALWAYS = "build always";
+	/** Build strategy, do not build */
 	public static final String BUILD_NONE = "do not build";
 
+	/** Label strategy, label successful builds */
 	public static final String LABEL_WHEN_SUCCESS = "label successful builds";
+	/** Label strategy, do not label */
 	public static final String LABEL_NONE = "do not label";
+	/** Label strategy, label always */
 	public static final String LABEL_ALWAYS = "label always";
 
+	/** Notify strategy, notify when build success */
 	public static final String NOTIFY_WHEN_SUCCESS = "notify when build success";
+	/** Notify strategy, notify when build failed */
 	public static final String NOTIFY_WHEN_FAILED = "notify when build failed";
+	/** Notify strategy, do not notify */
 	public static final String NOTIFY_NONE = "do not notify";
+	/** Notify strategy, notify always */
 	public static final String NOTIFY_ALWAYS = "notify always";
 
+	/** Post-build strategy, do not post-build */
 	public static final String POSTBUILD_NONE = "do not post-build";
+	/** Post-build strategy, post-build when success */
 	public static final String POSTBUILD_WHEN_SUCCESS = "post-build when success";
+	/** Post-build strategy, post-build when failed */
 	public static final String POSTBUILD_WHEN_FAILED = "post-build when failed";
+	/** Post-build strategy, post-build always */
 	public static final String POSTBUILD_ALWAYS = "post-build always";
 
 	private long id;
@@ -73,176 +94,238 @@ public class BuildScheduleFacade {
 	private long viewId;
 	private long scheduleId;
 
-	/**
-	 * Get id of this build schedule
-	 * @return id of this build schedule
-	 */
+    /**
+     * Gets the indentifier of this build schedule.
+     * 
+     * @return the indentifier of this build schedule
+     */
 	public long getId() {
 		return id;
 	}
 
-	/**
-	 * Set id of this build schedule
-	 * @param id
-	 */
+    /**
+     * Sets the indentifier of this build schedule.
+     * 
+     * @param id the indentifier of this build schedule
+     */
 	public void setId(long id) {
 		this.id = id;
 	}
 
 	/**
-	 * Wheter or not this build schedule schedules clean build
-	 * @return boolean value
+	 * Checks if this build schedule schedules a clean build.
+	 * 
+	 * @return <code>true</code> if this build schedule schedules a clean build
 	 */
 	public boolean isCleanBuild() {
 		return cleanBuild;
 	}
 
 	/**
-	 * Set whether or not this build schedules clean build
-	 * @param cleanBuild
+	 * Sets whether this build schedule schedules a clean build.
+	 * 
+	 * @param cleanBuild set <code>true</code> if this build schedule schedules a clean build
 	 */
 	public void setCleanBuild(boolean cleanBuild) {
 		this.cleanBuild = cleanBuild;
 	}
 
-	/**
-	 * Get build strategy of this build schedule.
-	 * @return one of the value of {@link BuildScheduleFacade#BUILD_ALWAYS},
-	 * {@link BuildScheduleFacade#BUILD_ALWAYS_IF_FAILED}, {@link BuildScheduleFacade#BUILD_NONE},
-	 * {@link BuildScheduleFacade#BUILD_WHEN_NECESSARY}
-	 */
+    /**
+     * Gets the build strategy of this build schedule.
+     * 
+     * @return the build strategy
+     * @see BuildScheduleFacade#BUILD_ALWAYS
+     * @see BuildScheduleFacade#BUILD_ALWAYS_IF_FAILED
+     * @see BuildScheduleFacade#BUILD_NONE
+     * @see BuildScheduleFacade#BUILD_WHEN_NECESSARY
+     */
 	public String getBuildStrategy() {
 		return buildStrategy;
 	}
 
-	/**
-	 * Set build strategy of this build schedule
-	 * @param buildStrategy one of the value of {@link BuildScheduleFacade#BUILD_ALWAYS},
-	 * {@link BuildScheduleFacade#BUILD_ALWAYS_IF_FAILED}, {@link BuildScheduleFacade#BUILD_NONE},
-	 * {@link BuildScheduleFacade#BUILD_WHEN_NECESSARY}
-	 */
+    /**
+     * Sets the build strategy of this build schedule.
+     * 
+     * @param buildStrategy the build strategy
+     * @see BuildScheduleFacade#BUILD_ALWAYS
+     * @see BuildScheduleFacade#BUILD_ALWAYS_IF_FAILED
+     * @see BuildScheduleFacade#BUILD_NONE
+     * @see BuildScheduleFacade#BUILD_WHEN_NECESSARY
+     */
 	public void setBuildStrategy(String buildStrategy) {
 		this.buildStrategy = buildStrategy;
 	}
 
-	/**
-	 * Get label strategy of this build schedule
-	 * @return one of the value of {@link BuildScheduleFacade#LABEL_ALWAYS},
-	 * {@link BuildScheduleFacade#LABEL_NONE}, {@link BuildScheduleFacade#LABEL_WHEN_SUCCESS}
-	 */
+    /**
+     * Gets the label strategy of this build schedule.
+     * 
+     * @return the label strategy
+     * @see BuildScheduleFacade#LABEL_ALWAYS
+     * @see BuildScheduleFacade#LABEL_NONE
+     * @see BuildScheduleFacade#LABEL_WHEN_SUCCESS
+     */
 	public String getLabelStrategy() {
 		return labelStrategy;
 	}
 
-	/**
-	 * Set label strategy of this build schedule
-	 * @param labelStrategy one of the value of {@link BuildScheduleFacade#LABEL_ALWAYS},
-	 * {@link BuildScheduleFacade#LABEL_NONE}, {@link BuildScheduleFacade#LABEL_WHEN_SUCCESS}
-	 */
+    /**
+     * Sets the label strategy of this build schedule.
+     * 
+     * @param labelStrategy the label strategy
+     * @see BuildScheduleFacade#LABEL_ALWAYS
+     * @see BuildScheduleFacade#LABEL_NONE
+     * @see BuildScheduleFacade#LABEL_WHEN_SUCCESS
+     */
 	public void setLabelStrategy(String labelStrategy) {
 		this.labelStrategy = labelStrategy;
 	}
 
-	/**
-	 * Get notify strategy of this build schedule
-	 * @return one of the value of {@link BuildScheduleFacade#NOTIFY_ALWAYS},
-	 * {@link BuildScheduleFacade#NOTIFY_NONE}, {@link BuildScheduleFacade#NOTIFY_WHEN_FAILED},
-	 * {@link BuildScheduleFacade#NOTIFY_WHEN_SUCCESS}
-	 */
+    /**
+     * Gets the notify strategy of this build schedule.
+     * 
+     * @return the notify strategy
+     * @see BuildScheduleFacade#NOTIFY_ALWAYS
+     * @see BuildScheduleFacade#NOTIFY_NONE
+     * @see BuildScheduleFacade#NOTIFY_WHEN_FAILED
+     * @see BuildScheduleFacade#NOTIFY_WHEN_SUCCESS
+     */
 	public String getNotifyStrategy() {
 		return notifyStrategy;
 	}
 
-	/**
-	 * Set notify strategy of this build
-	 * @param notifyStrategy
-	 */
+    /**
+     * Sets the notify strategy of this build schedule.
+     * 
+     * @param notifyStrategy the notify strategy
+     * @see BuildScheduleFacade#NOTIFY_ALWAYS
+     * @see BuildScheduleFacade#NOTIFY_NONE
+     * @see BuildScheduleFacade#NOTIFY_WHEN_FAILED
+     * @see BuildScheduleFacade#NOTIFY_WHEN_SUCCESS
+     */
 	public void setNotifyStrategy(String notifyStrategy) {
 		this.notifyStrategy = notifyStrategy;
 	}
 
-	/**
-	 * Get status of this build schedule
-	 * @return one of the value of {@link BuildScheduleFacade#FAILED}, {@link BuildScheduleFacade#RUNNING},
-	 * {@link BuildScheduleFacade#UNKNOWN}, {@link BuildScheduleFacade#SUCCESS}
-	 */
+    /**
+     * Gets the status of this build schedule.
+     * 
+     * @return the status
+     * @see BuildScheduleFacade#UNKNOWN
+     * @see BuildScheduleFacade#SUCCESS
+     * @see BuildScheduleFacade#FAILED
+     * @see BuildScheduleFacade#RUNNING
+     */
 	public int getStatus() {
 		return status;
 	}
 
-	/**
-	 * Set status of this build schedule
-	 * @param status one of the value of {@link BuildScheduleFacade#FAILED}, {@link BuildScheduleFacade#RUNNING},
-	 * {@link BuildScheduleFacade#UNKNOWN}, {@link BuildScheduleFacade#SUCCESS}
-	 */
+    /**
+     * Sets the status of this build schedule.
+     * 
+     * @param status the status
+     * @see BuildScheduleFacade#UNKNOWN
+     * @see BuildScheduleFacade#SUCCESS
+     * @see BuildScheduleFacade#FAILED
+     * @see BuildScheduleFacade#RUNNING
+     */
 	public void setStatus(int status) {
 		this.status = status;
 	}
 
-	/**
-	 * Get the date when this build schedule get its current status
-	 * @return date when current status occurs
-	 */
+    /**
+     * Gets the date when the status of this build schedule was last updated.
+     * 
+     * @return the date
+     */
 	public Date getStatusDate() {
 		return statusDate;
 	}
 
-	/**
-	 * Set date when this build schedule get its current status
-	 * @param statusDate
-	 */
+    /**
+     * Sets the date when the status of this build schedule was last updated.
+     * 
+     * @param statusDate the date
+     */
 	public void setStatusDate(Date statusDate) {
 		this.statusDate = statusDate;
 	}
 
-	/**
-	 * Get url of this build schedule
-	 * @return url of this build schedule
-	 */
+    /**
+     * Gets the URL to this build schedule.
+     * 
+     * @return the URL
+     */
 	public String getUrl() {
 		return url;
 	}
 
-	/**
-	 * Set url of this build schedule
-	 * @param url
-	 */
+    /**
+     * Sets the URL to this build schedule.
+     * 
+     * @param url the URL
+     */
 	public void setUrl(String url) {
 		this.url = url;
 	}
 
-	/**
-	 * Get post-build strategy of this build schedule
-	 * @return one of the value of {@link BuildScheduleFacade#POSTBUILD_ALWAYS},
-	 * {@link BuildScheduleFacade#POSTBUILD_NONE}, {@link BuildScheduleFacade#POSTBUILD_WHEN_FAILED},
-	 * {@link BuildScheduleFacade#POSTBUILD_WHEN_SUCCESS}
-	 */
+    /**
+     * Gets the post-build strategy of this build schedule.
+     * 
+     * @return the post-build strategy
+     * @see BuildScheduleFacade#POSTBUILD_ALWAYS
+     * @see BuildScheduleFacade#POSTBUILD_NONE
+     * @see BuildScheduleFacade#POSTBUILD_WHEN_FAILED
+     * @see BuildScheduleFacade#POSTBUILD_WHEN_SUCCESS
+     */
 	public String getPostbuildStrategy() {
 		return postbuildStrategy;
 	}
 
-	/**
-	 * Set post-build strategy of this build schedule
-	 * @param postbuildStrategy one of the value of {@link BuildScheduleFacade#POSTBUILD_ALWAYS},
-	 * {@link BuildScheduleFacade#POSTBUILD_NONE}, {@link BuildScheduleFacade#POSTBUILD_WHEN_FAILED},
-	 * {@link BuildScheduleFacade#POSTBUILD_WHEN_SUCCESS}
-	 */
+    /**
+     * Sets the post-build strategy of this build schedule.
+     * 
+     * @param postbuildStrategy the post-build strategy
+     * @see BuildScheduleFacade#POSTBUILD_ALWAYS
+     * @see BuildScheduleFacade#POSTBUILD_NONE
+     * @see BuildScheduleFacade#POSTBUILD_WHEN_FAILED
+     * @see BuildScheduleFacade#POSTBUILD_WHEN_SUCCESS
+     */
 	public void setPostbuildStrategy(String postbuildStrategy) {
 		this.postbuildStrategy = postbuildStrategy;
 	}
 
+    /**
+     * Gets the identifier of the view of this build schedule.
+     * 
+     * @return the identifier of the view
+     */
 	public long getViewId() {
 		return viewId;
 	}
 
+    /**
+     * Sets the identifier of the view of this build schedule.
+     * 
+     * @param viewId the identifier of the view
+     */
 	public void setViewId(long viewId) {
 		this.viewId = viewId;
 	}
 
+    /**
+     * Gets the identifier of the schedule of this build schedule.
+     * 
+     * @return the identifier of the schedule
+     */
 	public long getScheduleId() {
 		return scheduleId;
 	}
 
+    /**
+     * Sets the identifier of the schedule of this build schedule.
+     * 
+     * @param scheduleId the identifier of the schedule
+     */
 	public void setScheduleId(long scheduleId) {
 		this.scheduleId = scheduleId;
 	}

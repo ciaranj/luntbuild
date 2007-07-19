@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.security;
 
 import com.caucho.hessian.io.HessianOutput;
@@ -44,12 +45,16 @@ import java.io.IOException;
 
 /**
  * This class is provided to replace {@link org.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint}. The reason is to
- * make authentication failure response compatible with hessian protocol in case request is initiated by a hessian client
+ * make authentication failure response compatible with hessian protocol in case request is initiated by a hessian client.
+ * 
  * @author robin shine
  */
 public class BasicProcessingFilterEntryPoint implements AuthenticationEntryPoint {
 	private static Log logger = LogFactory.getLog(BasicProcessingFilterEntryPoint.class);
 
+    /**
+     * @inheritDoc
+     */
     public void commence(final ServletRequest request, final ServletResponse response, final AuthenticationException exception)
 			throws IOException, ServletException {
         final HttpServletRequest httpRequest = (HttpServletRequest) request;

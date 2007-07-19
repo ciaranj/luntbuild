@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.db;
 
 import com.luntsys.luntbuild.BuildGenerator;
@@ -59,12 +60,15 @@ import java.text.ParseException;
 import java.util.*;
 
 /**
- * Schedule utilize a quartz(http://www.opensymphony.com/quartz/) trigger to
- * implement its functionality for schedules. By utilizing this trigger, it can be
+ * A schedule for executing a <code>Project</code>.
+ * 
+ * <p><code>Schedule</code> utilizes a quartz(http://www.opensymphony.com/quartz/) trigger to
+ * implement its functionality. By utilizing this trigger, it is
  * able to achieve periodical schedules or cron-like schedules. This is a hibernate
- * mapping class
+ * mapping class.</p>
  *
  * @author robin shine
+ * @see Project
  */
 public class Schedule implements DependentNode, VariableHolder {
     private static Log logger = LogFactory.getLog(Schedule.class);
@@ -106,7 +110,7 @@ public class Schedule implements DependentNode, VariableHolder {
     private Project project;
 
     private int buildType = Constants.BUILD_TYPE_CLEAN;
-    private int labelStrategy = Constants.LABEL_IF_SUCCESS;
+    private int labelStrategy = Constants.LABEL_NONE;
     private int notifyStrategy = Constants.NOTIFY_WHEN_STATUS_CHANGED;
     private int postbuildStrategy = Constants.POSTBUILD_NONE;
 
@@ -140,11 +144,13 @@ public class Schedule implements DependentNode, VariableHolder {
     private List dependentSchedules;
 
     /**
-     * Create schedule
+     * Create a <code>Schedule</code>.
      */
     public Schedule() {}
 
-    /** Create schedule
+    /**
+     * Create a <code>Schedule</code> from an existing <code>Schedule</code>.
+     * 
      * @param schedule used for creation
      */
     public Schedule(Schedule schedule) {
@@ -179,111 +185,120 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * set a unique identify for this schedule, called automatically by hibernate
-     *
-     * @param id
+     * Sets the indentifier of this schedule, called automatically by hibernate.
+     * 
+     * @param id the indentifier of this schedule
      */
     public void setId(long id) {
         this.id = id;
     }
 
     /**
-     * Get identifer of this schedule
-     * @return id
+     * Gets the indentifier of this schedule.
+     * 
+     * @return the indentifier of this schedule
      */
     public long getId() {
         return id;
     }
 
     /**
-     * set a name for this schedule
+     * Sets the name of this schedule.
      *
-     * @param name
+     * @param name the name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Get name of this schedule
-     * @return name of this schedule
+     * Gets the name of this schedule.
+     * 
+     * @return the name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Set description of this schedule
-     * @param description
+     * Sets the description of this schedule.
+     * 
+     * @param description the description
      */
     public void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * Get description of this schedule
-     * @return description of this schedule
+     * Gets the description of this schedule.
+     * 
+     * @return the description
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * set trigger of this schedule
-     *
-     * @param trigger
-     * @see org.quartz.Trigger
+     * Sets the trigger of this schedule.
+     * 
+     * @param trigger the trigger
      */
     public void setTrigger(Trigger trigger) {
         this.trigger = trigger;
     }
 
     /**
-     * Get trigger of this schedule
-     * @return trigger of this schedule
+     * Gets the trigger of this schedule.
+     * 
+     * @return the trigger
      */
     public Trigger getTrigger() {
         return trigger;
     }
 
     /**
-     * Returns true if this schedule is disabled
-     * @return true if disabled
+     * Checks if this schedule is disabled.
+     * 
+     * @return <code>true</code> if disabled
      */
     public boolean isDisabled() {
         return scheduleDisabled;
     }
 
     /**
-     * Set disabled state of this schedule
-     *
-     * @param scheduleDisabled state
+     * Sets the disabled state of this schedule.
+     * 
+     * @param scheduleDisabled set <code>true</code> if schedule is disabled
      */
     public void setScheduleDisabled(boolean scheduleDisabled) {
     	this.scheduleDisabled = scheduleDisabled;
     }
 
     /**
-     * Get disabled state of this schedule
-     * @return disabled state
+     * Checks if this schedule is disabled.
+     * 
+     * @return <code>true</code> if disabled
      */
     public boolean isScheduleDisabled() {
         return scheduleDisabled;
     }
 
     /**
-     * Get project of this schedule
-     * @return project of this schedule
+     * Gets the project of this schedule.
+     * 
+     * @return the project
      */
     public Project getProject() {
         return project;
     }
 
-    /**
-     * Get project of this schedule
-     * @param name name
-     * @return project of this schedule
-     */
+	/**
+	 * Gets the project with the specified name. The project does not have to be the
+	 * project of this schedule.
+	 * 
+	 * @param name the name of the project
+	 * @return the project with the specified name
+	 */
     public Project getProject(String name) {
         List projects = Luntbuild.getDao().loadProjects();
         for (Iterator iter = projects.iterator(); iter.hasNext();) {
@@ -294,30 +309,42 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Set project of this schedule
-     * @param project
+     * Sets the project of this schedule.
+     * 
+     * @param project the project
      */
     public void setProject(Project project) {
         this.project = project;
     }
 
     /**
-     * Get build type of this schedule.
-     * @return one value of {@link com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN},
-     * and {@link com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT}
+     * Gets the build type of this schedule.
+     * 
+     * @return the build type
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT
      */
     public int getBuildType() {
         return buildType;
     }
 
     /**
-     * Set build type of this schedule
-     * @param buildType refer to return value of {@link #getBuildType()}
+     * Sets the build type of this schedule.
+     * 
+     * @param buildType the build type
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_CLEAN
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_TYPE_INCREMENT
      */
     public void setBuildType(int buildType) {
         this.buildType = buildType;
     }
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj the reference object with which to compare
+	 * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
+	 */
     public boolean equals(Object obj) {
         if (obj != null && obj instanceof Schedule) {
             if (getId() == ((Schedule) obj).getId())
@@ -326,25 +353,33 @@ public class Schedule implements DependentNode, VariableHolder {
         return false;
     }
 
+	/**
+	 * Returns a hash code value for the object.
+	 * 
+	 * @return a hash code value for this object
+	 * @see #equals(Object)
+	 */
     public int hashCode() {
         return (int) getId();
     }
 
     /**
-     * Validates this schedule at build time, this is different from the validate() method
-     * in the way that it enforces a project build time validation
+     * Validates this schedule at build time, this is different from the <code>validate()</code> method
+     * in the way that it enforces a project build time validation.
+     * 
+	 * @throws ValidationException if a property has an invalid value
      */
-    public void validateAtBuildTime() {
+    public void validateAtBuildTime() throws ValidationException {
         getProject().validateAtBuildTime();
         validate();
     }
 
     /**
-     * Validates properties of this schedule
-     *
-     * @throws ValidationException
+     * Validates properties of this schedule.
+     * 
+	 * @throws ValidationException if a property has an invalid value
      */
-    public void validate() {
+    public void validate() throws ValidationException {
         try {
             Luntbuild.validatePathElement(getName());
         } catch (ValidationException e) {
@@ -389,7 +424,15 @@ public class Schedule implements DependentNode, VariableHolder {
             throw new ValidationException("No post-builders defined for schedule: " + getProject().getName() + "/" + getName());
     }
 
-    private static void validateBuildCleanupStrategy(int buildCleanupStrategy, String buildCleanupStrategyData) {
+    /**
+     * Validates a build cleanup strategy.
+     * 
+     * @param buildCleanupStrategy
+     * @param buildCleanupStrategyData
+	 * @throws ValidationException if the build cleanup strategy is invalid
+     */
+    private static void validateBuildCleanupStrategy(int buildCleanupStrategy, String buildCleanupStrategyData)
+    		throws ValidationException {
         if (buildCleanupStrategy != Constants.BUILD_CLEANUP_NONE &&
                 buildCleanupStrategy != Constants.BUILD_KEEP_BY_COUNT &&
                 buildCleanupStrategy != Constants.BUILD_KEEP_BY_DAYS)
@@ -406,66 +449,89 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get label strategy of this schedule
-     * @return one value of {@link com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS},
-     * {@link com.luntsys.luntbuild.facades.Constants#LABEL_NONE}, and
-     * {@link com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS}
+     * Gets the label strategy of this schedule.
+     * 
+     * @return the label strategy
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS
      */
     public int getLabelStrategy() {
         return labelStrategy;
     }
 
     /**
-     * Set label strategy of this schedule
-     * @param labelStrategy refer to return value of {@link #getLabelStrategy()}
+     * Sets the label strategy of this schedule.
+     * 
+     * @param labelStrategy the label strategy
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#LABEL_IF_SUCCESS
      */
     public void setLabelStrategy(int labelStrategy) {
         this.labelStrategy = labelStrategy;
     }
 
     /**
-     * Get notify strategy of this schedule
-     * @return one value of {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_ALWAYS},
-     * {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_NONE},
-     * {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED},
-     * {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_SUCCESS}, and
-     * {@link com.luntsys.luntbuild.facades.Constants#NOTIFY_WHEN_STATUS_CHANGED}
+     * Gets the notify strategy of this schedule.
+     * 
+     * @return the notify strategy
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_WHEN_STATUS_CHANGED
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED_OR_CHANGED
      */
     public int getNotifyStrategy() {
         return notifyStrategy;
     }
 
     /**
-     * Set notify strategy of this schedule
-     * @param notifyStrategy refer to return value of {@link #getNotifyStrategy()}
+     * Sets the notify strategy of this schedule.
+     * 
+     * @param notifyStrategy the notify strategy
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_SUCCESS
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_WHEN_STATUS_CHANGED
+     * @see com.luntsys.luntbuild.facades.Constants#NOTIFY_IF_FAILED_OR_CHANGED
      */
     public void setNotifyStrategy(int notifyStrategy) {
         this.notifyStrategy = notifyStrategy;
     }
 
     /**
-     * Get post-build strategy of this schedule
-     * @return one of the value of {@link com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS},
-     * {@link com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE},
-     * {@link com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED},
-     * {@link com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS}
+     * Gets the post-build strategy of this schedule.
+     * 
+     * @return the post-build strategy
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS
      */
     public int getPostbuildStrategy() {
         return postbuildStrategy;
     }
 
     /**
-     * Set post-build strategy of this schedule
-     * @param postbuildStrategy refer to return value of {@link #getPostbuildStrategy()}
+     * Sets the post-build strategy of this schedule.
+     * 
+     * @param postbuildStrategy the post-build strategy
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_ALWAYS
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#POSTBUILD_IF_SUCCESS
      */
     public void setPostbuildStrategy(int postbuildStrategy) {
         this.postbuildStrategy = postbuildStrategy;
     }
 
     /**
-     * Get the work directory of the current schedule 'workdir'/'project'/'schedule'
-     *
-     * @return work directory of the current schedule 'workdir'/'project'/'schedule'
+     * Gets the work directory of this schedule 'workdir'/'project'/'schedule'.
+     * 
+     * @return the work directory
      */
     public String getWorkDirRaw() {
         String workingDir;
@@ -490,33 +556,15 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get the work directory of the current schedule 'workdir'/'project'/'schedule'
-     * <strong>
-     * Note this method should be used in Ognl expressions only because of beckslash handling!
-     * </strong>
+     * Gets the work directory of this schedule 'workdir'/'project'/'schedule'.
+     * <p><strong>
+     * Note: this method should be used in OGNL expressions only because of beckslash handling!
+     * </strong></p>
      *
-     * @return work directory of the current schedule 'workdir'/'project'/'schedule'
+     * @return the work directory
      */
     public String getWorkingDir() {
-        String workingDir;
-        String globalWorkingDir =
-            (String) Luntbuild.getProperties().get(com.luntsys.luntbuild.facades.Constants.WORKING_DIR);
-        if (Luntbuild.isEmpty(globalWorkingDir))
-            globalWorkingDir = new File(Luntbuild.installDir + File.separator + "work").getAbsolutePath();
-        if (Luntbuild.isEmpty(getWorkingPath()))
-            workingDir = globalWorkingDir + File.separator + getProject().getName();
-        else {
-            if (new File(getWorkingPath()).isAbsolute())
-                workingDir = getWorkingPath();
-            else
-                workingDir = globalWorkingDir + File.separator + getWorkingPath();
-        }
-        try {
-            workingDir = new File(workingDir).getCanonicalPath();
-            return workingDir.replaceAll("\\\\", "\\\\\\\\"); // in order to keep back slash for ognl expression evaluation
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return getWorkDirRaw().replaceAll("\\\\", "\\\\\\\\"); // in order to keep back slash for ognl expression evaluation
     }
 
     /**
@@ -524,8 +572,8 @@ public class Schedule implements DependentNode, VariableHolder {
      * absolute file path, it will just return this path. Otherwise it will prefix the file path with
      * this schedule's working directory and return that.
      *
-     * @param filePath
-     * @return absolute path
+     * @param filePath the relative or absolute path to the file
+     * @return the absolute path
      */
     public String resolveAbsolutePath(String filePath) {
         if (Luntbuild.isEmpty(filePath))
@@ -537,8 +585,13 @@ public class Schedule implements DependentNode, VariableHolder {
             return getWorkDirRaw() + File.separator + filePath;
     }
 
-    public com.luntsys.luntbuild.facades.lb12.ScheduleFacade getFacade() {
-        com.luntsys.luntbuild.facades.lb12.ScheduleFacade facade = new ScheduleFacade();
+	/**
+	 * Gets the facade of this schedule.
+	 * 
+	 * @return the facade of this schedule
+	 */
+    public ScheduleFacade getFacade() {
+        ScheduleFacade facade = new ScheduleFacade();
         facade.setId(getId());
         facade.setName(getName());
         facade.setScheduleDisabled(isScheduleDisabled());
@@ -576,8 +629,14 @@ public class Schedule implements DependentNode, VariableHolder {
         return facade;
     }
 
-    public void setFacade(ScheduleFacade facade) {
-    	setScheduleDisabled(facade.isScheduleDisabled());
+	/**
+	 * Sets the facade of this schedule.
+	 * 
+	 * @param facade the schedule facade
+	 * @throws RuntimeException if the cron expression  for a cron trigger is invalid
+	 */
+    public void setFacade(ScheduleFacade facade) throws RuntimeException {
+        setScheduleDisabled(facade.isScheduleDisabled());
         setDescription(facade.getDescription());
         setNextVersion(facade.getNextVersion());
         setVariables(facade.getVariables());
@@ -615,42 +674,51 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get status of this schedule
-     * @return one value of {@link com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_FAILED},
-     * {@link com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_RUNNING}, and
-     * {@link com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_SUCCESS}
+     * Gets the status of this schedule.
+     * 
+     * @return the status
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_RUNNING
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_SUCCESS
      */
     public int getStatus() {
         return status;
     }
 
     /**
-     * Set status of this schedule
-     * @param status refer to return value of {@link #getStatus()}
+     * Sets the status of this schedule.
+     * 
+     * @param status the status
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_FAILED
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_RUNNING
+     * @see com.luntsys.luntbuild.facades.Constants#SCHEDULE_STATUS_SUCCESS
      */
     public void setStatus(int status) {
         this.status = status;
     }
 
     /**
-     * Get the date when this schedule get its current status
-     * @return date when current status occurs
+     * Gets the date when the status of this schedule was last updated.
+     * 
+     * @return the date
      */
     public Date getStatusDate() {
         return statusDate;
     }
 
     /**
-     * Set date when this schedule get its current status
-     * @param statusDate
+     * Sets the date when the status of this schedule was last updated.
+     * 
+     * @param statusDate the date
      */
     public void setStatusDate(Date statusDate) {
         this.statusDate = statusDate;
     }
 
     /**
-     * Get list of builds belonging to this schedule
-     * @return list of builds belonging to this schedule
+     * Gets the list of builds belonging to this schedule.
+     * 
+     * @return the list
      */
     public Set getBuilds() {
         if (builds == null)
@@ -659,42 +727,44 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Set list of builds belonging to this schedule
-     * @param builds
+     * Sets the list of builds belonging to this schedule.
+     * 
+     * @param builds the list
      */
     public void setBuilds(Set builds) {
         this.builds = builds;
     }
 
     /**
-     * Validates post-build strategy
-     *
-     * @param postbuildStrategy
-     * @throws ValidationException
+     * Validates a post-build strategy.
+     * 
+     * @param postbuildStrategy the post-build strategy
+     * @throws ValidationException if the post-build strategy is invalid
      */
-    public static void validatePostbuildStrategy(int postbuildStrategy) {
+    public static void validatePostbuildStrategy(int postbuildStrategy) throws ValidationException {
         if (postbuildStrategy != Constants.POSTBUILD_ALWAYS && postbuildStrategy != Constants.POSTBUILD_IF_FAILED &&
                 postbuildStrategy != Constants.POSTBUILD_IF_SUCCESS && postbuildStrategy != com.luntsys.luntbuild.facades.Constants.POSTBUILD_NONE)
             throw new ValidationException("Invalid post-build strategy");
     }
 
     /**
-     * Validate build type
-     *
-     * @param buildType
-     * @throws ValidationException
+     * Validates a build type.
+     * 
+     * @param buildType the build type
+     * @throws ValidationException if the build type is invalid
      */
-    public static void validateBuildType(int buildType) {
+    public static void validateBuildType(int buildType) throws ValidationException {
         if (buildType != com.luntsys.luntbuild.facades.Constants.BUILD_TYPE_CLEAN && buildType != Constants.BUILD_TYPE_INCREMENT)
             throw new ValidationException("Invalid build type");
     }
 
     /**
-     * Validate dependent triggering strategy
-     *
-     * @param triggerDependencyStrategy
+     * Validates a dependent triggering strategy.
+     * 
+     * @param triggerDependencyStrategy the dependent triggering strategy
+     * @throws ValidationException if the dependent triggering strategy is invalid
      */
-    public static void validateTriggerDependencyStrategy(int triggerDependencyStrategy) {
+    public static void validateTriggerDependencyStrategy(int triggerDependencyStrategy) throws ValidationException {
         if (triggerDependencyStrategy != Constants.TRIGGER_ALL_DEPENDENT_SCHEDULES &&
                 triggerDependencyStrategy != com.luntsys.luntbuild.facades.Constants.TRIGGER_NONE_DEPENDENT_SCHEDULES &&
                 triggerDependencyStrategy != Constants.TRIGGER_SCHEDULES_DEPENDS_ON_THIS &&
@@ -702,7 +772,13 @@ public class Schedule implements DependentNode, VariableHolder {
             throw new ValidationException("Invalid dependent triggering strategy");
     }
 
-    public static void validateBuildNecessaryCondition(String buildNecessaryCondition) {
+    /**
+     * Validates a build necessary condition.
+     * 
+     * @param buildNecessaryCondition the build necessary condition
+     * @throws ValidationException if the build necessary condition is invalid
+     */
+    public static void validateBuildNecessaryCondition(String buildNecessaryCondition) throws ValidationException {
         if (Luntbuild.isEmpty(buildNecessaryCondition))
             throw new ValidationException("Invalid build necessary condition: should not be empty!");
         if (buildNecessaryCondition.indexOf(Luntbuild.TRIGGER_NAME_SEPERATOR) != -1)
@@ -717,24 +793,24 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Validate the label strategy
-     *
-     * @param labelStrategy
-     * @throws ValidationException
+     * Validates a label strategy.
+     * 
+     * @param labelStrategy the label strategy
+     * @throws ValidationException if the label strategy is invalid
      */
-    public static void validateLabelStrategy(int labelStrategy) {
+    public static void validateLabelStrategy(int labelStrategy) throws ValidationException {
         if (labelStrategy != Constants.LABEL_ALWAYS && labelStrategy != Constants.LABEL_IF_SUCCESS &&
                 labelStrategy != Constants.LABEL_NONE)
             throw new ValidationException("Invalid label strategy");
     }
 
     /**
-     * Validate the notify strategy
-     *
-     * @param notifyStrategy
-     * @throws ValidationException
+     * Validates a notify strategy.
+     * 
+     * @param notifyStrategy the notify strategy
+     * @throws ValidationException if the notify strategy is invalid
      */
-    public static void validateNotifyStrategy(int notifyStrategy) {
+    public static void validateNotifyStrategy(int notifyStrategy) throws ValidationException {
         if (notifyStrategy != Constants.NOTIFY_WHEN_STATUS_CHANGED && notifyStrategy != Constants.NOTIFY_ALWAYS &&
                 notifyStrategy != Constants.NOTIFY_IF_FAILED && notifyStrategy != Constants.NOTIFY_IF_SUCCESS &&
                 notifyStrategy != Constants.NOTIFY_NONE && notifyStrategy != Constants.NOTIFY_IF_FAILED_OR_CHANGED)
@@ -742,8 +818,9 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get url to this schedule
-     * @return url to this schedule
+     * Gets the URL to this schedule.
+     * 
+     * @return the URL
      */
     public String getUrl() {
         return Luntbuild.getServletUrl() + "?service=external/ProjectPage&sp=l" +
@@ -751,9 +828,10 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get publishing directory of this schedule, builds generated in this schedule will be put under this
-     * directory
-     * @return publishing directory of this schedule
+     * Gets the publishing directory of this schedule, builds generated in this schedule will be put under this
+     * directory.
+     * 
+     * @return the publishing
      */
     public String getPublishDir() {
         String publishDir = getProject().getPublishDir() + File.separator + getName();
@@ -765,17 +843,28 @@ public class Schedule implements DependentNode, VariableHolder {
         }
     }
 
+	/**
+	 * Checks if this schedule is selected.
+	 * 
+	 * @return <code>true</code> if selected
+	 */
     public boolean isSelected() {
         return selected;
     }
 
+	/**
+	 * Sets if this schedule is selected.
+	 * 
+	 * @param selected if <code>true</code>, schedule is selected
+	 */
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
 
     /**
-     * Get list of schedule ids this schedule depends on
-     * @return list of schedule ids this schedule depends on
+     * Gets the list of schedule ids this schedule depends on.
+     * 
+     * @return the list of schedule ids
      */
     public List getDependentScheduleIds() {
         if (dependentScheduleIds == null) {
@@ -785,13 +874,20 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Set list of schedule ids this schedule depends on
-     * @param dependentScheduleIds
+     * Sets the list of schedule ids this schedule depends on.
+     * 
+     * @param dependentScheduleIds the list of schedule ids
      */
     public void setDependentScheduleIds(List dependentScheduleIds) {
         this.dependentScheduleIds = dependentScheduleIds;
     }
 
+	/**
+	 * Gets the sub set of schedules that this schedule depends from a list of schedules.
+	 * 
+	 * @param userData the list of schedules
+	 * @return the sub set of schedules from <code>userData</code> that this schedule depends on
+	 */
     public Set getDependsOn(Object userData) {
         List schedules = (List) userData;
         Set dependsOn = new HashSet();
@@ -806,6 +902,12 @@ public class Schedule implements DependentNode, VariableHolder {
         return dependsOn;
     }
 
+	/**
+	 * Schedules a trigger for this schedule as part of dependency execution.
+	 * 
+	 * @param userData the list of build params
+	 * @see BuildParams
+	 */
     public void visit(Object userData) {
         logger.debug("Visit schedule \"" + getProject().getName() + "/" + getName() + "\"");
         try {
@@ -814,7 +916,7 @@ public class Schedule implements DependentNode, VariableHolder {
             if (userData == null)
                 buildParams = getBuildParams();
             else
-                buildParams = (com.luntsys.luntbuild.facades.BuildParams) userData;
+                buildParams = (BuildParams) userData;
 
             SimpleTrigger trigger = new SimpleTrigger();
             trigger.setGroup(BuildGenerator.DEPENDENT_GROUP);
@@ -838,29 +940,31 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get build necessary condition for this schedule
-     * @return build necessary condition
+     * Gets the build necessary condition for this schedule.
+     * 
+     * @return the build necessary condition
      */
     public String getBuildNecessaryCondition() {
         return buildNecessaryCondition;
     }
 
     /**
-     * Sete build necessary condition of this schedule
-     * @param buildNecessaryCondition
+     * Sets the build necessary condition of this schedule.
+     * 
+     * @param buildNecessaryCondition the build necessary condition
      */
     public void setBuildNecessaryCondition(String buildNecessaryCondition) {
         this.buildNecessaryCondition = buildNecessaryCondition;
     }
 
     /**
-     * Determines if content of vcs has been modified for project of schedule since last build of this schedule.
-     * Need the following thread local variables been set in {@link com.luntsys.luntbuild.utility.OgnlHelper}
-     * <i> antProject
-     * <i> workingSchedule
-     * <i> revisions
-     *
-     * @return if content of vcs has been modified
+     * Determines if the VCS contents have changed for the project of this schedule since last build of this schedule.
+     * This function will use the following thread local variables in {@link OgnlHelper}:
+	 * <p><code>workingSchedule</code>, this variable denotes the project which this method is initiated by</p>
+	 * <p><code>antProject</code>, this variable denotes the logging ant project this method should use</p>
+	 * <p><code>revisions</code>, this variable denotes the revisions for the working schedule</p>
+     * 
+	 * @return <code>true</code> if the VCS contents of the project has changed
      */
     public boolean isVcsModified() {
         Schedule workingSchedule = OgnlHelper.getWorkingSchedule();
@@ -877,8 +981,9 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Whether or not there are new builds generated in schedules which current schedule depends on
-     * @return Whether or not there are new builds generated
+     * Whether or not there are new builds generated in schedules which this schedule depends on.
+     * 
+     * @return <code>true</code> if there are new builds
      */
     public boolean isDependencyNewer() {
         Build lastBuild = Luntbuild.getDao().loadLastBuild(this);
@@ -898,10 +1003,20 @@ public class Schedule implements DependentNode, VariableHolder {
         return isDependentNewer;
     }
 
+    /**
+     * Whether or not all schedules which this schedule depends on were successful.
+     * 
+     * @return <code>true</code> if all dependencies were successful
+     */
     public boolean isDependencySuccessful() {
         return getNotSatisfiedDependency() == null;
     }
 
+	/**
+	 * Gets the first dependent schedule found that has not be satisfied (successful build).
+	 * 
+	 * @return the unsatisfied dependency or <code>null</code>
+	 */
     public Schedule getNotSatisfiedDependency() {
         Set dependents = getDependsOn(Luntbuild.getDao().loadSchedules());
         Iterator it = dependents.iterator();
@@ -914,24 +1029,28 @@ public class Schedule implements DependentNode, VariableHolder {
         return null;
     }
 
-    /** Returns true, always run build.
-     * @return true, always run build.
+    /**
+     * Whether or not this schedule should always run a build when triggered.
+     * 
+     * @return <code>true</code> if builds should always run
      */
     public boolean isAlways() {
         return true;
     }
 
     /**
-     * Returns false, never run build.
-     * @return false, never run build.
+     * Whether or not this schedule should never run a build when triggered.
+     * 
+     * @return <code>true</code> if builds should never run
      */
     public boolean isNever() {
         return false;
     }
 
     /**
-     * Return true if last build is failed
-     * @return true if last build is failed
+     * Whether or not the last build of this schedule failed.
+     * 
+     * @return <code>true</code> if last build failed
      */
     public boolean isAlwaysIfFailed() {
         Build lastBuild = getLastBuild();
@@ -942,35 +1061,48 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get system object. Mainly used for ognl evaluation
-     * @return system object
+     * Gets the system object. Mainly used for ognl evaluation.
+     * 
+     * @return the system object
      */
     public OgnlHelper getSystem() {
         return new OgnlHelper();
     }
 
     /**
-     * Get dependent triggering strategy, should be one value of
-     * @return one value of
-     * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_ALL_DEPENDENT_SCHEDULES},
-     * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_NONE_DEPENDENT_SCHEDULES},
-     * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_DEPENDS_ON_THIS},
-     * {@link com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_THIS_DEPENDS_ON}
-
+     * Gets the dependent triggering strategy.
+     * 
+     * @return the dependent triggering strategy
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_ALL_DEPENDENT_SCHEDULES
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_NONE_DEPENDENT_SCHEDULES
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_DEPENDS_ON_THIS
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_THIS_DEPENDS_ON
      */
     public int getTriggerDependencyStrategy() {
         return triggerDependencyStrategy;
     }
 
     /**
-     * Set dependent triggering strategy
-     * @param triggerDependencyStrategy see reteurn value of {@link Schedule#getTriggerDependencyStrategy()}
+     * Sets the dependent triggering strategy.
+     * 
+     * @param triggerDependencyStrategy the dependent triggering strategy
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_ALL_DEPENDENT_SCHEDULES
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_NONE_DEPENDENT_SCHEDULES
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_DEPENDS_ON_THIS
+     * @see com.luntsys.luntbuild.facades.Constants#TRIGGER_SCHEDULES_THIS_DEPENDS_ON
      */
     public void setTriggerDependencyStrategy(int triggerDependencyStrategy) {
         this.triggerDependencyStrategy = triggerDependencyStrategy;
     }
 
-    public static String constructTriggerName(com.luntsys.luntbuild.facades.BuildParams buildParams) {
+	/**
+	 * Constructs a unique tigger name from build parameters.
+	 * 
+	 * @param buildParams the build parameters
+	 * @return the trigger name
+	 * @see #parseTriggerName(String)
+	 */
+    public static String constructTriggerName(BuildParams buildParams) {
         String triggerName = buildParams.getBuildNecessaryCondition() +
                 Luntbuild.TRIGGER_NAME_SEPERATOR + buildParams.getBuildType() +
                 Luntbuild.TRIGGER_NAME_SEPERATOR + buildParams.getBuildVersion() +
@@ -983,8 +1115,15 @@ public class Schedule implements DependentNode, VariableHolder {
         return triggerName;
     }
 
-    public static com.luntsys.luntbuild.facades.BuildParams parseTriggerName(String triggerName) {
-        BuildParams buildParams = new com.luntsys.luntbuild.facades.BuildParams();
+	/**
+	 * Gets build parameters from a trigger name.
+	 * 
+	 * @param triggerName the trigger name
+	 * @return the build params
+	 * @see #constructTriggerName(BuildParams)
+	 */
+    public static BuildParams parseTriggerName(String triggerName) {
+        BuildParams buildParams = new BuildParams();
         String fields[] = triggerName.split("\\" + Luntbuild.TRIGGER_NAME_SEPERATOR);
         buildParams.setBuildNecessaryCondition(fields[0]);
         buildParams.setBuildType(new Integer(fields[1]).intValue());
@@ -997,8 +1136,13 @@ public class Schedule implements DependentNode, VariableHolder {
         return buildParams;
     }
 
-    public com.luntsys.luntbuild.facades.BuildParams getBuildParams() {
-        com.luntsys.luntbuild.facades.BuildParams buildParams = new BuildParams();
+	/**
+	 * Gets the build params for this schedule.
+	 * 
+	 * @return the build params
+	 */
+    public BuildParams getBuildParams() {
+        BuildParams buildParams = new BuildParams();
         buildParams.setBuildNecessaryCondition(getBuildNecessaryCondition());
         buildParams.setBuildType(getBuildType());
         buildParams.setBuildVersion("");
@@ -1010,41 +1154,49 @@ public class Schedule implements DependentNode, VariableHolder {
         return buildParams;
     }
 
+	/**
+	 * Returns a string representation of this object.
+	 * 
+	 * @return a string representation of this object
+	 */
     public String toString() {
         return getProject().getName() + "/" + getName();
     }
 
     /**
-     * Get latest build of this schedule, maybe null if there are not any builds in
-     * this schedule
-     * @return latest build of this schedule
+     * Gets the latest build of this schedule. <code>null</code> if there are no builds in this schedule.
+     * 
+     * @return the latest build
      */
     public Build getLastBuild() {
         return Luntbuild.getDao().loadLastBuild(this);
     }
 
     /**
-     * Get last success build for this schedule. Maybe null if there are not any successful
-     * builds in this schedule
-     * @return last success build for this schedule
+     * Gets the last success build for this schedule. <code>null</code> if there are no successful
+     * builds in this schedule.
+     * 
+     * @return the last success build
      */
     public Build getLastSuccessBuild() {
         return Luntbuild.getDao().loadLastSuccessBuild(this);
     }
 
     /**
-     * Get running build of this schedule. Maybe null if there is no running builds in
-     * this schedule when this method is called
-     * @return running build of this schedule
+     * Gets the running build of this schedule. <code>null</code> if there are no running builds in
+     * this schedule when this method is called.
+     * 
+     * @return the running build
      */
     public Build getRunningBuild() {
         return Luntbuild.getDao().loadRunningBuild(this);
     }
 
     /**
-     * Get build with specified version
-     * @param version
-     * @return build with specified version
+     * Gets the build with specified version.
+     * 
+     * @param version the build version
+     * @return the build with specified version
      */
     public Build getBuild(String version) {
         return Luntbuild.getDao().loadBuild(getProject().getName(), getName(), version);
@@ -1059,67 +1211,92 @@ public class Schedule implements DependentNode, VariableHolder {
         // empty method, just used to conform with ognl index property
     }
 
+	/**
+	 * Sets the current execution thread for this schedule.
+	 * 
+	 * @param currentThread the new current thread
+	 */
     public void setCurrentThread(Thread currentThread) {
         currentThreads.put(new Long(getId()), currentThread);
     }
 
+	/**
+	 * Gets the current execution thread for this schedule.
+	 * 
+	 * @return the current thread
+	 */
     public Thread getCurrentThread() {
         return (Thread) currentThreads.get(new Long(getId()));
     }
 
     /**
-     * Get build cleanup strategy
-     * @return one value of {@link com.luntsys.luntbuild.facades.Constants#BUILD_CLEANUP_NONE},
-     * {@link com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_COUNT},
-     * {@link com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_DAYS}
+     * Gets the build cleanup strategy.
+     * 
+     * @return the build cleanup strategy.
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_CLEANUP_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_COUNT
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_DAYS
      */
     public int getBuildCleanupStrategy() {
         return buildCleanupStrategy;
     }
 
     /**
-     * Set build cleanup strategy
-     * @param buildCleanupStrategy see return value of {@link Schedule#getBuildCleanupStrategy()}
+     * Sets the build cleanup strategy.
+     * 
+     * @param buildCleanupStrategy the build cleanup strategy.
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_CLEANUP_NONE
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_COUNT
+     * @see com.luntsys.luntbuild.facades.Constants#BUILD_KEEP_BY_DAYS
      */
     public void setBuildCleanupStrategy(int buildCleanupStrategy) {
         this.buildCleanupStrategy = buildCleanupStrategy;
     }
 
     /**
-     * Get build cleanup data
-     * @return build cleanup data
+     * Gets the build cleanup data.
+     * 
+     * @return the build cleanup data
      */
     public String getBuildCleanupStrategyData() {
         return buildCleanupStrategyData;
     }
 
     /**
-     * Set build cleanup data
-     * @param buildCleanupStrategyData
+     * Sets the build cleanup data.
+     * 
+     * @param buildCleanupStrategyData the build cleanup data
      */
     public void setBuildCleanupStrategyData(String buildCleanupStrategyData) {
         this.buildCleanupStrategyData = buildCleanupStrategyData;
     }
 
     /**
-     * Set the build version number for the next build. This property is updated automatically
-     * by the building process, And can also be adjusted manually from user interface
-     *
-     * @param nextVersion
+     * Sets the build version number for the next build. This property is updated automatically
+     * by the building process and can also be adjusted manually from user interface.
+     * 
+     * @param nextVersion the next build version
      */
     public void setNextVersion(String nextVersion) {
         this.nextVersion = nextVersion;
     }
 
     /**
-     * Get next build version of this schedule
-     * @return next build version of this schedule
+     * Gets the next build version of this schedule.
+     * 
+     * @return the next build version
      */
     public String getNextVersion() {
         return nextVersion;
     }
 
-    public void validateBuildVersion(String buildVersion) {
+    /**
+     * Validates a build version.
+     * 
+     * @param buildVersion the build version
+     * @throws ValidationException if the build version is invalid
+     */
+    public void validateBuildVersion(String buildVersion) throws ValidationException {
         if (Luntbuild.isEmpty(buildVersion))
             throw new ValidationException("version string can not be empty!");
         try {
@@ -1137,7 +1314,8 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get all variables encoded in a string
+     * Gets all variables encoded in a string.
+     * 
      * @return all variables encoded in a string
      */
     public String getVariables() {
@@ -1145,17 +1323,19 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Set all variables encoded in a string
-     * @param variables
+     * Sets all variables encoded in a string.
+     * 
+     * @param variables all variables encoded in a string
      */
     public void setVariables(String variables) {
     	this.variables = variables;
     }
 
     /**
-     * Get Variable with specified variable name
-     * @param name
-     * @return Variable with specified variable name
+     * Gets the variable with specified variable name.
+     * 
+     * @param name the variable name
+     * @return the variable, will not be <code>null</code>
      */
     public Variable getVar(String name) {
     	if (!Luntbuild.isEmpty(getVariables())) {
@@ -1179,9 +1359,11 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Set value of specified variable
-     * @param name name of the variable to set
-     * @param var value of variable is stored in this parameter
+     * Sets the value of specified variable.
+     * 
+     * @param name the name of the variable to set
+     * @param var the value to set
+	 * @throws AccessDeniedException if the currently logged in user is not a project admin for this project
      */
     public void setVar(String name, Variable var) {
     	if (!SecurityHelper.isPrjAdministrable(getId()))
@@ -1214,10 +1396,11 @@ public class Schedule implements DependentNode, VariableHolder {
     	Luntbuild.getDao().saveSchedule(this);
     }
 
-
     /**
-     * Get list of associated builder names
-     * @return list of associated builder names
+     * Gets the list of associated builder names.
+     * 
+     * @return the list of associated builder names
+     * @see #getAssociatedBuilders()
      */
     public List getAssociatedBuilderNames() {
         if (associatedBuilderNames == null)
@@ -1232,8 +1415,10 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get list associated builders
-     * @return list associated builders
+     * Gets the list associated builders.
+     * 
+     * @return the list associated builders
+     * @see Builder
      */
     public List getAssociatedBuilders() {
         List associatedBuilders = new ArrayList();
@@ -1248,16 +1433,19 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Set list of associated builder names for this schedule
-     * @param associatedBuilderNames
+     * Sets the list of associated builder names for this schedule.
+     * 
+     * @param associatedBuilderNames the list of associated builder names
      */
     public void setAssociatedBuilderNames(List associatedBuilderNames) {
         this.associatedBuilderNames = associatedBuilderNames;
     }
 
     /**
-     * Get list of associated post-builder names
-     * @return list of associated post-builder names
+     * Gets the list of associated post-builder names.
+     * 
+     * @return the list of associated post-builder names
+     * @see #getAssociatedPostbuilders()
      */
     public List getAssociatedPostbuilderNames() {
         if (associatedPostbuilderNames == null)
@@ -1272,8 +1460,10 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get list of associated post-builders
-     * @return list of associated post-builders
+     * Gets the list of associated post-builders.
+     * 
+     * @return the list of associated post-builders
+     * @see Builder
      */
     public List getAssociatedPostbuilders() {
         List associatedPostbuilders = new ArrayList();
@@ -1288,16 +1478,19 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Set list of associated post-builder names for this schedule
-     * @param associatedPostbuilderNames
+     * Sets the list of associated post-builder names for this schedule.
+     * 
+     * @param associatedPostbuilderNames the list of associated post-builder names
      */
     public void setAssociatedPostbuilderNames(List associatedPostbuilderNames) {
         this.associatedPostbuilderNames = associatedPostbuilderNames;
     }
 
     /**
-     * Get list of schedules
-     * @return list of schedules
+     * Gets the list of schedules that depend on this schedule.
+     * 
+     * @return the list of schedules
+     * @see Schedule
      */
     public List getDependentSchedules() {
         if (dependentSchedules == null)
@@ -1306,16 +1499,18 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Set list of dependent schedules
-     * @param dependentSchedules
+     * Sets the list of schedules that depend on this schedule.
+     * @param dependentSchedules the list of schedules
+     * @see Schedule
      */
     public void setDependentSchedules(List dependentSchedules) {
         this.dependentSchedules = dependentSchedules;
     }
 
     /**
-     * Get quartz job name for this schedule
-     * @return quartz job name for this schedule
+     * Gets the quartz job name for this schedule.
+     * 
+     * @return the quartz job name
      */
     public String getJobName() {
         String workingDir = getWorkDirRaw();
@@ -1328,17 +1523,20 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
     /**
-     * Get working path setting of this schedule. NOTE: Do not call this method to  get
-     * working directory of this schedule. Instead, you should call {@link Schedule#getWorkDirRaw()}
-     * @return working path setting of this schedule
+     * Gets the working path setting of this schedule.
+     * <p>NOTE: Do not call this method to get working directory of this schedule.
+     * Instead, you should call {@link Schedule#getWorkDirRaw()}.</p>
+     * 
+     * @return the working path
      */
     public String getWorkingPath() {
         return workingPath;
     }
 
     /**
-     * Set working path of this schedule.
-     * @param workingPath
+     * Sets the working path of this schedule.
+     * 
+     * @param workingPath the working path
      */
     public void setWorkingPath(String workingPath) {
         this.workingPath = workingPath;

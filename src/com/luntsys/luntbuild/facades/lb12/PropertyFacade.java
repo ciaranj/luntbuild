@@ -25,27 +25,50 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade class of system property
+ * Property facade.
+ * 
+ * @see com.luntsys.luntbuild.db.Property
  */
 public class PropertyFacade {
 	private String name;
 	private String value;
 
+	/**
+	 * Sets the name of this property.
+	 * 
+	 * @param name the name of this property
+	 */
 	public void setName(String name){
 		this.name = name;
 	}
 
+	/**
+	 * Gets the name of this property.
+	 * 
+	 * @return the name of this property
+	 */
 	public String getName(){
 		return name;
 	}
 
+	/**
+	 * Sets the value of this property.
+	 * 
+	 * @param value the value of this property
+	 */
 	public void setValue(String value){
 		this.value = value;
 	}
 
+	/**
+	 * Gets the value of this property.
+	 * 
+	 * @return the value of this property
+	 */
 	public String getValue(){
 		return value;
 	}

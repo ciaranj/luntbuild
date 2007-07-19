@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of a cvs module
+ * CVS VCS module facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.CvsAdaptor.CvsModule
  */
-public class CvsModuleFacade extends com.luntsys.luntbuild.facades.lb111.CommonModuleFacade {
+public class CvsModuleFacade extends CommonModuleFacade {
 }

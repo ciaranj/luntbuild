@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.notifiers;
 
 import com.lotus.sametime.commui.CommUI;
@@ -46,13 +47,11 @@ import com.lotus.sametime.im.InstantMessagingService;
 import java.util.*;
 
 /**
- * Place class description here.
+ * Sametime message sender and listener.
  *
- * @author		inger
+ * @author inger
  */
-
-public class SametimeMessageSender
-        implements LoginListener, CommUIListener, ImListener {
+public class SametimeMessageSender implements LoginListener, CommUIListener, ImListener {
 
     private static final long LOGIN_TIMEOUT = 10000;
 
@@ -70,24 +69,52 @@ public class SametimeMessageSender
     private boolean loggedIn = false;
     private RuntimeException runtimeException;
 
+    /**
+     * A Sametime message.
+     */
     public static final class Message {
         private String partner;
         private String message;
 
+        /**
+         * Creates a Sametime message.
+         * 
+         * @param partner the partner
+         * @param message the message
+         */
         public Message(String partner, String message) {
             this.partner = partner;
             this.message = message;
         }
 
+        /**
+         * Gets the partner to send the message to.
+         * 
+         * @return the partner
+         */
         public String getPartner() {
             return partner;
         }
 
+        /**
+         * Gets the message.
+         * 
+         * @return the message
+         */
         public String getMessage() {
             return message;
         }
     }
 
+    /**
+     * Creates a Samtime message sender with a partner and a message.
+     * 
+     * @param host the Sametime host
+     * @param login the login name/id
+     * @param password the login password
+     * @param partner the partner
+     * @param message the message
+     */
     public SametimeMessageSender(String host,
                                  String login,
                                  String password,
@@ -96,6 +123,14 @@ public class SametimeMessageSender
         this(host, login, password, new Message(partner, message));
     }
 
+    /**
+     * Creates a Samtime message sender with a Sametime message.
+     * 
+     * @param host the Sametime host
+     * @param login the login name/id
+     * @param password the login password
+     * @param message the Sametime message
+     */
     public SametimeMessageSender(String host,
                                  String login,
                                  String password,
@@ -103,6 +138,14 @@ public class SametimeMessageSender
         this(host, login, password, new Message[]{message});
     }
 
+    /**
+     * Creates a Samtime message sender with a list of Sametime messages.
+     * 
+     * @param host the Sametime host
+     * @param login the login name/id
+     * @param password the login password
+     * @param messages the list of Sametime messages
+     */
     public SametimeMessageSender(String host,
                                  String login,
                                  String password,
@@ -124,6 +167,11 @@ public class SametimeMessageSender
         this.imMap = new HashMap();
     }
 
+    /**
+     * Sends all Sametime messages stored in this Sametime message sender.
+     * 
+     * @throws RuntimeException if an error occurs
+     */
     public void send() {
         try {
             session = new STSession("Luntbuild" + this);
@@ -179,6 +227,11 @@ public class SametimeMessageSender
 
     }
 
+    /**
+     * Executes after succesfully logging in.
+     * 
+     * @param event the login event
+     */
     public void loggedIn(LoginEvent event) {
         loggedIn = true;
         Iterator it = messageMap.keySet().iterator();
@@ -188,13 +241,28 @@ public class SametimeMessageSender
         }
     }
 
+    /**
+     * Executes after logging out.
+     * 
+     * @param event the login event
+     */
     public void loggedOut(LoginEvent event) {
     }
 
+    /**
+     * Executes when a failed name resolution event occurs.
+     * 
+     * @param event the event
+     */
     public void resolveFailed(CommUIEvent event) {
         runtimeException = new RuntimeException("failed to resolve name: " + event.getName());
     }
 
+    /**
+     * Executes when a successful name resolution event occurs.
+     * 
+     * @param event the event
+     */
     public void resolved(CommUIEvent event) {
         STUser stUser = event.getUser();
         Im im = imService.createIm(stUser,
@@ -205,16 +273,36 @@ public class SametimeMessageSender
         im.open();
     }
 
+    /**
+     * Executes when a data received event occurs.
+     * 
+     * @param event the event
+     */
     public void dataReceived(ImEvent event) {
     }
 
+    /**
+     * Executes when a text received event occurs.
+     * 
+     * @param event the event
+     */
     public void textReceived(ImEvent event) {
     }
 
+    /**
+     * Executes when an IM closed event occurs.
+     * 
+     * @param event the event
+     */
     public void imClosed(ImEvent event) {
         imMap.remove(event.getIm());
     }
 
+    /**
+     * Executes when a successful IM opened event occurs.
+     * 
+     * @param event the event
+     */
     public void imOpened(ImEvent event) {
         List messages = (List) imMap.get(event.getIm());
 
@@ -227,6 +315,11 @@ public class SametimeMessageSender
         count++;
     }
 
+    /**
+     * Executes when a failed IM opened event occurs.
+     * 
+     * @param event the event
+     */
     public void openImFailed(ImEvent event) {
         runtimeException = new RuntimeException("failed to open IM connection");
     }

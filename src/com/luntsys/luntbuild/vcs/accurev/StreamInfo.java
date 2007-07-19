@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2005 Your Corporation. All Rights Reserved.
  */
+
 package com.luntsys.luntbuild.vcs.accurev;
 
 import org.apache.tools.ant.Project;
@@ -10,9 +11,8 @@ import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.vcs.AccurevAdaptor;
 import com.luntsys.luntbuild.ant.Commandline;
 
-
 /**
- * StreamInfo
+ * Stream info object.
  *
  * @author Jason Carreira <jcarreira@eplus.com>
  */
@@ -23,11 +23,12 @@ public class StreamInfo {
     private StreamType type;
 
     /**
-     * Creates a new StreamInfo instance
-     * @param name
-     * @param backingStream
-     * @param depot
-     * @param type
+     * Creates a new stream info object.
+     * 
+     * @param name the name of the stream
+     * @param backingStream the backing stream
+     * @param depot the AccuRev depot
+     * @param type the type
      */
     public StreamInfo(String name, String backingStream, String depot, StreamType type) {
         this.name = name;
@@ -37,10 +38,12 @@ public class StreamInfo {
     }
 
     /**
-     * Reads the name, basis, and type attributes of the element to create a new StreamInfo instance
-     * @param streamElement
-     * @param depot
-     * @return
+     * Creates a new stream info object from an element.
+     * Reads the name, basis, and type attributes of the element to create a new stream info object.
+     * 
+     * @param streamElement the element
+     * @param depot the AccuRev depot
+     * @return the stream info object
      */
     public static StreamInfo buildStreamInfo(Element streamElement, String depot) {
         if (streamElement == null) {
@@ -55,12 +58,13 @@ public class StreamInfo {
     }
 
     /**
-     * Creates a new Stream in Accurev and returns a StreamInfo describing it
-     * @param streamName
-     * @param module
-     * @param lastTransaction
-     * @param antProject
-     * @return
+     * Creates a new stream in AccuRev and returns a stream info object describing it.
+     * 
+     * @param streamName the name for the new stream
+     * @param module the module
+     * @param lastTransaction the AccuRev transaction number to build the stream from, may be <code>null</code>
+     * @param antProject the ant project used for logging
+     * @return the stream info object
      */
     public static StreamInfo buildStream(String streamName, AccurevAdaptor.AccurevModule module, Long lastTransaction, Project antProject) {
         String backingStream = module.getBackingStream();
@@ -81,22 +85,50 @@ public class StreamInfo {
         return streamInfo;
     }
 
+    /**
+     * Gets the name of the stream.
+     * 
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the backing stream.
+     * 
+     * @return the backing stream
+     */
     public String getBackingStream() {
         return backingStream;
     }
 
+    /**
+     * Gets the AccuRev depot.
+     * 
+     * @return the depot
+     */
     public String getDepot() {
         return depot;
     }
 
+    /**
+     * Gets the type.
+     * 
+     * @return the type
+     */
     public StreamType getType() {
         return type;
     }
 
+    /**
+     * Gets the stream info object for the specified stream by name.
+     * 
+     * @param depot the AccuRev depot
+     * @param stream the name of the stream
+     * @param antProject the ant project used for logging
+     * @return the stream info object, or <code>null</code> if the stream could not be found
+     */
     public static StreamInfo findStreamInfo(String depot, String stream, Project antProject) {
          antProject.log("Getting Stream info for Stream : depot = " + depot + " stream = " + stream);
         Commandline cmdLine = new Commandline();
@@ -108,9 +140,16 @@ public class StreamInfo {
         }
         Element streamElement = (Element) doc.selectSingleNode("/streams/stream");
         return buildStreamInfo(streamElement, depot);
-
     }
 
+    /**
+     * Gets the stream info object for the specified stream by number.
+     * 
+     * @param depot the AccuRev depot
+     * @param streamNum the stream number
+     * @param antProject the ant project used for logging
+     * @return the stream info object, or <code>null</code> if the stream could not be found
+     */
     public static StreamInfo findStreamInfoByStreamNumber(String depot, long streamNum, Project antProject) {
          antProject.log("Getting Stream info for Stream : depot = " + depot + " stream number = " + streamNum);
         Commandline cmdLine = new Commandline();
@@ -124,6 +163,12 @@ public class StreamInfo {
         return buildStreamInfo(streamElement, depot);
     }
 
+    /**
+     * Locks this stream.
+     * 
+     * @param comment the comment, may be <code>null</code>
+     * @param antProject the ant project used for logging
+     */
     private void lockStream(String comment, Project antProject) {
         antProject.log("Locking stream " + name + " with comment \"" + comment + "\"");
         Commandline cmdLine = new Commandline();
@@ -137,10 +182,10 @@ public class StreamInfo {
     }
 
     /**
-     * Updates the Stream represented by the StreamInfo using (optionally) the given
-     * transaction number as the point-in-time to sync to
-     * @param lastTransaction - optionally the Accurev transaction number to sync to
-     * @param antProject
+     * Updates this stream using (optionally) the given transaction number as the point-in-time to sync to.
+     * 
+     * @param lastTransaction the AccuRev transaction number to sync to, may be <code>null</code>
+     * @param antProject the ant project used for logging
      */
     public void updateStream(Long lastTransaction, Project antProject) {
         antProject.log("Updating stream " + name + " from stream " + backingStream
@@ -159,6 +204,11 @@ public class StreamInfo {
                 + ((lastTransaction != null) ? " at last transaction  " + lastTransaction : ""), antProject);
     }
 
+    /**
+     * Unlocks this stream.
+     * 
+     * @param antProject the ant project used for logging
+     */
     private void unlockStream(Project antProject) {
         antProject.log("Unlocking stream " + name);
         Commandline cmdLine = new Commandline();

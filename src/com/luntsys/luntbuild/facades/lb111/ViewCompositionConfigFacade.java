@@ -25,10 +25,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * This class is facade of ViewCompositionConfig class
+ * View composition config facade.
+ * 
  * @author robin shine
  */
 public class ViewCompositionConfigFacade {
@@ -36,26 +38,56 @@ public class ViewCompositionConfigFacade {
 	private long compositeViewId;
 	private long basicViewId;
 
+	/**
+	 * Gets the identifer of this view composition config.
+	 * 
+	 * @return the identifer of this view composition config
+	 */
 	public long getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the identifier of this view composition config.
+	 *
+	 * @param id the identifier of this view composition config
+	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the identifier of the composite view of this view composition config.
+	 * 
+	 * @return the identifier of the composite view
+	 */
 	public long getCompositeViewId() {
 		return compositeViewId;
 	}
 
+	/**
+	 * Sets the identifier of the composite view of this view composition config.
+	 * 
+	 * @param compositeViewId the identifier of the composite view
+	 */
 	public void setCompositeViewId(long compositeViewId) {
 		this.compositeViewId = compositeViewId;
 	}
 
+	/**
+	 * Gets the identifier of the basic view of this view composition config.
+	 * 
+	 * @return the identifier of the basic view
+	 */
 	public long getBasicViewId() {
 		return basicViewId;
 	}
 
+	/**
+	 * Sets the identifier of the basic view of this view composition config.
+	 * 
+	 * @param basicViewId the identifier of the basic view
+	 */
 	public void setBasicViewId(long basicViewId) {
 		this.basicViewId = basicViewId;
 	}

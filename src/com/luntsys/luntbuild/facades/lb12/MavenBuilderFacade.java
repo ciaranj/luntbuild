@@ -25,13 +25,16 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade class for maven builder
+ * Maven builder facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.builders.MavenBuilder
  */
-public class MavenBuilderFacade extends com.luntsys.luntbuild.facades.lb12.BuilderFacade {
+public class MavenBuilderFacade extends BuilderFacade {
 	/**
 	 * The command to run maven
 	 */
@@ -52,63 +55,84 @@ public class MavenBuilderFacade extends com.luntsys.luntbuild.facades.lb12.Build
 	 */
 	private String buildProperties;
 
+    /**
+     * Gets the corresponding builder class name.
+     *
+     * @return the builder class name
+     */
+	public String getBuilderClassName() {
+		return "com.luntsys.luntbuild.builders.MavenBuilder";
+	}
+
 	/**
-	 * Get command to run maven
-	 * @return command to run maven
+	 * Gets the command to run maven.
+	 * 
+	 * @return the command to run maven
 	 */
 	public String getCommand() {
 		return command;
 	}
 
 	/**
-	 * Set command to run maven
-	 * @param command
+	 * Sets the command to run maven.
+	 * 
+	 * @param command the command to run maven
 	 */
 	public void setCommand(String command) {
 		this.command = command;
 	}
 
 	/**
-	 * Get directory to run maven in
-	 * @return directory to run maven in
+	 * Gets the directory to run maven in.
+	 * 
+	 * @return the directory to run maven in
 	 */
 	public String getDirToRunMaven() {
 		return dirToRunMaven;
 	}
 
 	/**
-	 * Set directory to run maven in
-	 * @param dirToRunMaven
+	 * Sets the directory to run maven in.
+	 * 
+	 * @param dirToRunMaven the directory to run maven in
 	 */
 	public void setDirToRunMaven(String dirToRunMaven) {
 		this.dirToRunMaven = dirToRunMaven;
 	}
 
 	/**
-	 * Get goals to build
-	 * @return goals to build
+	 * Gets the goals.
+	 * 
+	 * @return the goals
 	 */
 	public String getGoals() {
 		return goals;
 	}
 
 	/**
-	 * Set goals to build
-	 * @param goals
+	 * Sets the goals.
+	 * 
+	 * @param goals the goals
 	 */
 	public void setGoals(String goals) {
 		this.goals = goals;
 	}
 
+	/**
+	 * Gets the build properties.
+	 * 
+	 * @return the build properties
+	 */
 	public String getBuildProperties() {
 		return buildProperties;
 	}
 
+	/**
+	 * Sets the build properties.
+	 * 
+	 * @param buildProperties the build properties
+	 */
 	public void setBuildProperties(String buildProperties) {
 		this.buildProperties = buildProperties;
-	}
-
-	public String getBuilderClassName() {
-		return "com.luntsys.luntbuild.builders.MavenBuilder";
 	}
 }

@@ -29,18 +29,18 @@ package com.luntsys.luntbuild.builders;
 
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
+import com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
 
 import org.apache.tapestry.form.IPropertySelectionModel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implements for a command line builder
+ * Command line builder implementation.
  */
 public class CommandBuilder extends Builder {
 	/**
@@ -64,6 +64,9 @@ public class CommandBuilder extends Builder {
 	 */
 	private String waitForFinish;
 
+    /**
+     * Constructor, creates a new command builder with default settings.
+     */
     public CommandBuilder() {
         if (System.getProperty("os.name").startsWith("Windows")) {
             this.command = "\"${build.schedule.workingDir}\\build\\build.bat\"" + this.command;
@@ -72,38 +75,77 @@ public class CommandBuilder extends Builder {
         }
     }
 
-	public String getCommand() {
-		return command;
-	}
+	/**
+	 * Gets the command to run.
+	 * 
+	 * @return the command to run
+	 */
+    public String getCommand() {
+        return command;
+    }
 
-	public void setCommand(String command) {
-		this.command = command;
-	}
+	/**
+	 * Sets the command to run.
+	 * 
+	 * @param command the command to run
+	 */
+    public void setCommand(String command) {
+        this.command = command;
+    }
 
+	/**
+	 * Gets the directory to run command in.
+	 * 
+	 * @return the directory to run command in
+	 */
 	public String getDirToRunCmd() {
 		return dirToRunCmd;
 	}
 
+	/**
+	 * Sets the directory to run command in.
+	 * 
+	 * @param dirToRunCmd the directory to run command in
+	 */
 	public void setDirToRunCmd(String dirToRunCmd) {
 		this.dirToRunCmd = dirToRunCmd;
 	}
 
+    /**
+     * Gets the wait for builder to finish setting (yes/no).
+     *
+     * @return the wait for builder setting
+     */
 	public String getWaitForFinish() {
 		return waitForFinish;
 	}
 
+    /**
+     * Sets the wait for builder to finish setting (yes/no).
+     *
+     * @param waitForFinish the wait for builder setting
+     */
 	public void setWaitForFinish(String waitForFinish) {
 		this.waitForFinish = waitForFinish;
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public String getDisplayName() {
 		return "Command builder";
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public String getIconName() {
 		return "command.gif";
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public List getBuilderSpecificProperties() {
 		List properties = new ArrayList();
 		properties.add(new DisplayProperty() {
@@ -186,6 +228,9 @@ public class CommandBuilder extends Builder {
 		return properties;
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public void validate() {
 		super.validate();
 		try {
@@ -196,11 +241,9 @@ public class CommandBuilder extends Builder {
 	}
 
 	/**
-	 * Construct command to run cmd
-	 *
-	 * @return command to run cmd
+     * @inheritDoc
 	 */
-	public String constructBuildCmd(Build build) throws IOException {
+	public String constructBuildCmd(Build build) {
 		String buildCmd = getCommand();
 		buildCmd = buildCmd.replace('\n', ' ');
 		buildCmd = buildCmd.replace('\r', ' ');
@@ -208,6 +251,9 @@ public class CommandBuilder extends Builder {
 		return buildCmd;
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public String constructBuildCmdDir(Build build) {
 		if (Luntbuild.isEmpty(getDirToRunCmd()))
 			return build.getSchedule().getWorkDirRaw();
@@ -215,47 +261,93 @@ public class CommandBuilder extends Builder {
 			return build.getSchedule().resolveAbsolutePath(getDirToRunCmd());
 	}
 
+    /**
+     * @inheritDoc
+     * @see CommandBuilderFacade
+     */
 	public BuilderFacade constructFacade() {
-		return new com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade();
+		return new CommandBuilderFacade();
 	}
 
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>CommandBuilderFacade</code>
+     * @see CommandBuilderFacade
+     */
 	public void loadFromFacade(BuilderFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade))
+		if (!(facade instanceof CommandBuilderFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade cmdBuilderFacade = (com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade) facade;
+		CommandBuilderFacade cmdBuilderFacade = (CommandBuilderFacade) facade;
 		setCommand(cmdBuilderFacade.getCommand());
 		setDirToRunCmd(cmdBuilderFacade.getDirToRunCmd());
 		setWaitForFinish(cmdBuilderFacade.getWaitForFinish());
 	}
 
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>CommandBuilderFacade</code>
+     * @see CommandBuilderFacade
+     */
 	public void saveToFacade(BuilderFacade facade) {
-		if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade))
+		if (!(facade instanceof CommandBuilderFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-		com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade cmdBuilderFacade = (com.luntsys.luntbuild.facades.lb12.CommandBuilderFacade) facade;
+		CommandBuilderFacade cmdBuilderFacade = (CommandBuilderFacade) facade;
 		cmdBuilderFacade.setCommand(getCommand());
 		cmdBuilderFacade.setDirToRunCmd(getDirToRunCmd());
 		cmdBuilderFacade.setWaitForFinish(getWaitForFinish());
 	}
 
+	/**
+	 * Selection model used for user interface of <code>waitForFinish</code> property of <code>CommandBuilder</code>.
+	 */
 	class WaitYesNoSelectionModel implements IPropertySelectionModel {
 		String[] values = {"Yes", "No"};
 
+		/**
+		 * Gets the number of options.
+		 * 
+		 * @return the number of options
+		 */
 		public int getOptionCount() {
 			return this.values.length;
 		}
 
+		/**
+		 * Gets an option.
+		 * 
+		 * @param index the index of the opiton
+		 * @return the option
+		 */
 		public Object getOption(int index) {
 			return this.values[index];
 		}
 
+		/**
+		 * Gets the display label of an option.
+		 * 
+		 * @param index the index of the opiton
+		 * @return the label
+		 */
 		public String getLabel(int index) {
 			return this.values[index];
 		}
 
+		/**
+		 * Gets the value of an option.
+		 * 
+		 * @param index the index of the opiton
+		 * @return the value
+		 */
 		public String getValue(int index) {
 			return this.values[index];
 		}
 
+		/**
+		 * Gets the option that corresponds to a value.
+		 * 
+		 * @param value the value
+		 * @return the option
+		 */
 		public Object translateValue(String value) {
 			return value;
 		}

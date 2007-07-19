@@ -35,12 +35,16 @@ import com.luntsys.luntbuild.utility.ValidationException;
 import java.util.*;
 
 /**
- * As the name indicates, this class represents an user in the system.
- * This class is a hibernate mapping class
+ * A Luntbuild user.
+ * 
+ * <p>This is a hibernate mapping class.</p>
  *
  * @author robin shine
  */
 public class User {
+	/**
+	 * Name of the user object representing users who recently check in code.
+	 */
 	public static final String CHECKIN_USER_NAME = "<users who checked in code recently>";
 
 	private long id;
@@ -63,65 +67,101 @@ public class User {
 	private Map contacts;
 
 	/**
-	 * set the unique identity of this user, will be called by hibernate
+	 * Sets the unique identifier of this user, will be called by hibernate.
 	 *
-	 * @param id
+	 * @param id the identifier of this user
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the unique identifier of this user.
+	 *
+	 * @return the identifier of this user
+	 */
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * set the name of this user
+	 * Sets the name of this user.
 	 *
-	 * @param name
+	 * @param name the name of this user
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Gets the name of this user.
+	 *
+	 * @return the name of this user
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Gets the password of this user.
+	 *
+	 * @return the password of this user
+	 */
 	public String getPassword() {
 		return this.password;
 	}
 
+	/**
+	 * Sets the password of this user.
+	 *
+	 * @param password the password of this user
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * Gets the validation copy of the password of this user.
+	 *
+	 * @return the validation password of this user
+	 */
     public String getValidatedPassword() {
         return this.validatedPassword;
     }
 
+	/**
+	 * Sets the validation copy of the password of this user.
+	 *
+	 * @param password the validation password of this user
+	 */
     public void setValidatedPassword(String password) {
         this.validatedPassword = password;
     }
 
 	/**
-	 * Returns decrypted password.
+	 * Returns the decrypted password.
 	 *
-	 * @return decrypted password
+	 * @return the decrypted password
 	 */
 	public String getDecryptedPassword() {
 		return Luntbuild.decryptPassword(this.password);
 	}
 
 	/**
-	 * Set password in the decryped form, the password will be first be encryped and then saved.
+	 * Sets the password in the decryped form, the password will first be encryped and then saved.
 	 *
-	 * @param decrypedPassword
+	 * @param decrypedPassword the decrypted password
 	 */
 	public void setDecryptedPassword(String decrypedPassword) {
 		this.password = Luntbuild.encryptPassword(decrypedPassword);
 	}
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj the reference object with which to compare
+	 * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
+	 */
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof User) {
 			if (getId() == ((User) obj).getId())
@@ -130,30 +170,66 @@ public class User {
 		return false;
 	}
 
+	/**
+	 * Returns a hash code value for the object.
+	 * 
+	 * @return a hash code value for this object
+	 * @see #equals(Object)
+	 */
 	public int hashCode() {
 		return (int) getId();
 	}
 
+	/**
+	 * Gets the VCS logins of this user.
+	 *
+	 * @return the VCS logins of this user
+	 * @see VcsLogin
+	 */
 	public Set getVcsLogins() {
 		if (vcsLogins == null)
 			vcsLogins = new HashSet();
 		return vcsLogins;
 	}
 
+	/**
+	 * Sets the VCS logins of this user.
+	 *
+	 * @param vcsLogins the VCS logins of this user
+	 * @see VcsLogin
+	 */
 	public void setVcsLogins(Set vcsLogins) {
 		this.vcsLogins = vcsLogins;
 	}
 
+	/**
+	 * Gets the notify mappings of this user.
+	 *
+	 * @return the notify mappings of this user
+	 * @see NotifyMapping
+	 */
 	public Set getNotifyMappings() {
 		if (notifyMappings == null)
 			notifyMappings = new HashSet();
 		return notifyMappings;
 	}
 
+	/**
+	 * Sets the notify mappings of this user.
+	 *
+	 * @param notifyMappings the notify mappings of this user
+	 * @see NotifyMapping
+	 */
 	public void setNotifyMappings(Set notifyMappings) {
 		this.notifyMappings = notifyMappings;
 	}
 
+	/**
+	 * Gets the contacts of this user.
+	 *
+	 * @return the contacts of this user
+	 * @see NotifyMapping
+	 */
 	public Map getContacts() {
 		if (contacts == null) {
 			/*Do not use HashMap here, cause entry order of HashMap is not determined. This
@@ -166,35 +242,60 @@ public class User {
 		return contacts;
 	}
 
+	/**
+	 * Sets the contacts of this user.
+	 *
+	 * @param contacts the contacts of this user
+	 * @see NotifyMapping
+	 */
 	public void setContacts(Map contacts) {
 		this.contacts = contacts;
 	}
 
+	/**
+	 * Gets the full name of the user.
+	 * 
+	 * @return the full name of the user
+	 */
 	public String getFullname() {
 		return fullname;
 	}
 
 	/**
-	 * @param loginname The loginname to set.
+	 * Sets the full name of the user.
+	 * 
+	 * @param loginname the full name of the user
 	 */
 	public void setFullname(String loginname) {
 		this.fullname = loginname;
 	}
 
+	/**
+	 * Gets the roles mappings of this user.
+	 *
+	 * @return the roles mappings of this user
+	 * @see RolesMapping
+	 */
 	public Set getRolesMappings() {
 		if (rolesMappings == null)
 			rolesMappings = new HashSet();
 		return rolesMappings;
 	}
 
+	/**
+	 * Sets the roles mappings of this user.
+	 *
+	 * @param rolesMappings the roles mappings of this user
+	 * @see RolesMapping
+	 */
 	public void setRolesMappings(Set rolesMappings) {
 		this.rolesMappings = rolesMappings;
 	}
 
 	/**
-	 * Validates properties of this user
-	 *
-	 * @throws ValidationException
+	 * Validates properties of this user.
+	 * 
+	 * @throws ValidationException if a property has an invalid value
 	 */
 	public void validate() {
 		if (Luntbuild.isEmpty(getName()))
@@ -218,20 +319,40 @@ public class User {
 		}
 	}
 
+	/**
+	 * Returns a string representation of this object.
+	 * 
+	 * @return a string representation of this object
+	 */
 	public String toString() {
 		return getName();
 	}
 
+	/**
+	 * Checks if this user is allowed to create a new project.
+	 * 
+	 * @return <code>true</code> if this user can create a new project
+	 */
 	public boolean isCanCreateProject() {
 		return canCreateProject;
 	}
 
+	/**
+	 * Sets the permission for this user to create a new project.
+	 * 
+	 * @param canCreateProject if <code>true</code>, this user can create a new project
+	 */
 	public void setCanCreateProject(boolean canCreateProject) {
 		this.canCreateProject = canCreateProject;
 	}
 
+	/**
+	 * Gets the facade of this user.
+	 * 
+	 * @return the facade of this user
+	 */
 	public UserFacade getFacade() {
-		com.luntsys.luntbuild.facades.lb12.UserFacade facade = new com.luntsys.luntbuild.facades.lb12.UserFacade();
+		UserFacade facade = new UserFacade();
 		facade.setCanCreateProject(isCanCreateProject());
 		facade.setFullname(getFullname());
 		facade.setId(getId());
@@ -241,6 +362,11 @@ public class User {
 		return facade;
 	}
 
+	/**
+	 * Sets the facade of this user.
+	 * 
+	 * @param facade the user facade
+	 */
 	public void setFacade(UserFacade facade) {
 		setCanCreateProject(facade.isCanCreateProject());
 		setFullname(facade.getFullname());

@@ -16,10 +16,9 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 /**
- * String Encrypter/Decrypter that uses DES or DESEDE method for encryption
+ * String encrypter/decrypter that uses DES or DESEDE method for encryption.
  *
  * @author lubosp
- *
  */
 public class StringEncrypter {
     
@@ -36,18 +35,22 @@ public class StringEncrypter {
     
     private static final String UNICODE_FORMAT = "UTF8";
 
-    /** Creates StringEncrypter with default key
-     * @param encryptionScheme scheme
-     * @throws EncryptionException if fails
+    /**
+     * Creates a string encrypter with a default encryption key.
+     * 
+     * @param encryptionScheme the encryption scheme to use
+     * @throws EncryptionException if encryption fails
      */
     public StringEncrypter( String encryptionScheme ) throws EncryptionException {
         this( encryptionScheme, DEFAULT_ENCRYPTION_KEY );
     }
 
-    /** Creates StringEncrypter
-     * @param encryptionScheme scheme
-     * @param encryptionKey key
-     * @throws EncryptionException if fails
+    /**
+     * Creates a string encrypter.
+     * 
+     * @param encryptionScheme the encryption scheme to use
+     * @param encryptionKey the encryption key to use
+     * @throws EncryptionException if encryption fails
      */
     public StringEncrypter( String encryptionScheme, String encryptionKey )
             throws EncryptionException {
@@ -99,10 +102,12 @@ public class StringEncrypter {
 
     }
 
-    /** Return encrypted string
-     * @param unencryptedString unencrypted string
-     * @return encrypted string
-     * @throws EncryptionException if fails
+    /**
+     * Encrypts the specified string.
+     * 
+     * @param unencryptedString the unencrypted string
+     * @return the encrypted string
+     * @throws EncryptionException if encryption fails
      */
     public String encrypt( String unencryptedString ) throws EncryptionException
     {
@@ -126,10 +131,12 @@ public class StringEncrypter {
         }
     }
 
-    /** Return decrypted string
-     * @param encryptedString encrypted string
-     * @return decrypted string
-     * @throws EncryptionException if fails
+    /**
+     * Decrypts the specified string.
+     * 
+     * @param encryptedString the encrypted string
+     * @return the decrypted string
+     * @throws EncryptionException if decryption fails
      */
     public String decrypt( String encryptedString ) throws EncryptionException
     {
@@ -163,18 +170,17 @@ public class StringEncrypter {
     }
 
     /**
-     * EncryptionException
-     *
+     * Luntbuild encryption specific exception.
+     * 
      * @author lubosp
-     *
      */
     public static class EncryptionException extends Exception
     {
         /**
-         * Creates EncryptionException
-         *
-         * @param t throwable
-         *
+         * Constructs a new encryption exception with the specified cause.
+         * 
+         * @param t the cause. The cause is saved for later retrieval by the 
+         * {@link Throwable#getCause()} method.
          */
         public EncryptionException( Throwable t )
         {

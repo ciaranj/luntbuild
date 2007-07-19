@@ -25,19 +25,30 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.migration;
 
 /**
- * Luntbuild migration specific exception
+ * Luntbuild migration specific exception.
  * @author robin shine
  */
 public class MigrationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public MigrationException(String message){
+	/**
+	 * Constructs a new migration exception with the specified detail message.
+	 * 
+	 * @param message the detail message. The detail message is saved for later retrieval by the
+	 * {@link java.lang.Throwable#getMessage()} method.
+	 */
+	public MigrationException(String message) {
 		super(message);
 	}
-	public MigrationException(){
+
+	/**
+	 * Constructs a new migration exception with <code>null</code> as its detail message.
+	 */
+	public MigrationException() {
 		super();
 	}
 }

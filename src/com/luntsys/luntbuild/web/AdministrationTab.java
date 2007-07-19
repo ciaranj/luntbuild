@@ -27,14 +27,17 @@
  */
 package com.luntsys.luntbuild.web;
 
+import com.luntsys.luntbuild.db.Project;
 import com.luntsys.luntbuild.migration.MigrationException;
 import com.luntsys.luntbuild.migration.MigrationManager;
 import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.web.selectionmodels.ProjectSelectionModel;
 import com.thoughtworks.xstream.XStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.form.IPropertySelectionModel;
 
 import java.io.*;
 
@@ -57,13 +60,29 @@ public abstract class AdministrationTab extends TabPageComponent {
 
 	public abstract String getFilePathToImport();
 
+	public abstract String getProjectPathToExport();
+
+	public abstract String getProjectPathToImport();
+
+	public abstract Project getProjectToExport();
+
 	public abstract void setFilePathToImport(String filePathToImport);
 
 	public abstract void setFilePathToExport(String filePathToExport);
 
+	public abstract void setProjectPathToImport(String projectPathToImport);
+
+	public abstract void setProjectPathToExport(String projectPathToExport);
+
+	public abstract void setProjectToExport(Project projectToExport);
+
 	public abstract void setErrorMsg(String errorMsg);
 
 	public abstract void setSuccessMsg(String successMsg);
+
+	public IPropertySelectionModel getProjectSelectionModel() {
+		return new ProjectSelectionModel(Luntbuild.getDao().loadProjects());
+	}
 
 	public void exportData(IRequestCycle cycle) {
 		ensureCurrentTab();
@@ -110,19 +129,13 @@ public abstract class AdministrationTab extends TabPageComponent {
 			setErrorMsg("You should specify the file to import from!");
 			return;
 		}
-		File xmlDataFile = new File(getFilePathToImport().trim());
-		if (!(xmlDataFile.exists())) {
-            if (!xmlDataFile.isAbsolute()) {
-                xmlDataFile = new File(Luntbuild.installDir + File.separator + getFilePathToImport().trim());
-                if (!xmlDataFile.exists()) {
-                    setErrorMsg("Specified importing file does not exist!");
-                    return;
-                }
-            } else {
-                setErrorMsg("Specified importing file does not exist!");
-                return;
-            }
+        if (!(new File(fileName).isAbsolute()))
+            fileName = Luntbuild.installDir + File.separator + fileName;
+		if (!(new File(fileName).exists())) {
+			setErrorMsg("Specified importing file does not exist!");
+			return;
 		}
+		setFilePathToImport(fileName);
 		setAction("import");
 	}
 
@@ -150,6 +163,74 @@ public abstract class AdministrationTab extends TabPageComponent {
 
 	public void cancelImport(IRequestCycle cycle) {
 		ensureCurrentTab();
+	}
+
+	public void exportProjectData(IRequestCycle cycle) {
+		ensureCurrentTab();
+        String fileName = getProjectPathToExport().trim();
+		Project project = getProjectToExport();
+		if (Luntbuild.isEmpty(fileName)) {
+			setErrorMsg("You should specify the file to export to!");
+			return;
+		}
+		if (project == null) {
+			setErrorMsg("You should specify a project to export!");
+			return;
+		}
+		com.luntsys.luntbuild.facades.lb12.ProjectCollection dataCollection = Luntbuild.getDao().loadProjectCollection12(project.getId());
+		OutputStream os = null;
+		PrintWriter pw = null;
+        if (!(new File(fileName).isAbsolute()))
+            fileName = Luntbuild.installDir + File.separator + fileName;
+		try {
+			os = new FileOutputStream(fileName);
+			pw = new PrintWriter(os);
+			XStream xstream = new XStream();
+			xstream.alias("ProjectCollection", com.luntsys.luntbuild.facades.lb12.ProjectCollection.class);
+			pw.print(xstream.toXML(dataCollection));
+			pw.close();
+			pw = null;
+			os.close();
+			os = null;
+			setSuccessMsg("Project has been exported successfully!");
+			setProjectPathToExport(null);
+		} catch (IOException e) {
+			setErrorMsg("ERROR: " + e.getMessage());
+		} finally {
+			if (pw != null)
+				pw.close();
+			if (os != null)
+				try {
+					os.close();
+				} catch (IOException e) {
+					// ignores
+				}
+		}
+	}
+
+	public void importProjectData(IRequestCycle cycle) {
+		ensureCurrentTab();
+        String fileName = getProjectPathToImport().trim();
+		if (Luntbuild.isEmpty(fileName)) {
+			setErrorMsg("You should specify the file to import from!");
+			return;
+		}
+        if (!(new File(fileName).isAbsolute()))
+            fileName = Luntbuild.installDir + File.separator + fileName;
+		if (!(new File(fileName).exists())) {
+			setErrorMsg("Specified importing file does not exist!");
+			return;
+		}
+		try {
+			com.luntsys.luntbuild.facades.lb12.ProjectCollection projectCollection =
+					MigrationManager.importAsProjectCollection12(new File(fileName));
+			Luntbuild.getDao().saveProjectCollection12(projectCollection);
+			Luntbuild.getSchedService().rescheduleBuilds();
+			setSuccessMsg("Project has been imported successfully!");
+		} catch (MigrationException me) {
+			setErrorMsg(me.getMessage());
+		}
+		setProjectPathToImport(null);
 	}
 
 	public abstract String getAction();

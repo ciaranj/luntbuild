@@ -77,7 +77,7 @@
     <panels>
         <panel classname="CheckedHelloPanel"/>
         <!-- Fix for JDK panel: http://lists.berlios.de/pipermail/izpack-devel/2006-December/002262.html -->
-        <!--<panel classname="JDKPathPanel"/> This does not work well-->
+        <panel classname="JDKPathPanel"/>
         <panel classname="InfoPanel"/>
         <panel classname="LicencePanel"/>
         <panel classname="TargetPanel"/>

@@ -25,10 +25,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.utility;
 
 /**
- * This class denotes a format validation exception
+ * Luntbuild validation specific exception.
  *
  * @author robin shine
  */
@@ -37,9 +38,20 @@ public class ValidationException extends RuntimeException {
 	 * Comment for <code>serialVersionUID</code>
 	 */
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Constructs a new validation exception with the specified detail message.
+	 * 
+	 * @param message the detail message. The detail message is saved for later retrieval by the
+	 * {@link java.lang.Throwable#getMessage()} method.
+	 */
 	public ValidationException(String message){
 		super(message);
 	}
+
+	/**
+	 * Constructs a new validation exception with <code>null</code> as its detail message.
+	 */
 	public ValidationException(){
 		super();
 	}

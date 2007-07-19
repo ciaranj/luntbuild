@@ -31,7 +31,7 @@ package com.luntsys.luntbuild.facades.lb111;
 import java.util.Map;
 
 /**
- * Represents facade of User class
+ * User facade.
  *
  * @author robin shine
  */
@@ -48,41 +48,73 @@ public class UserFacade{
 	private Map contacts;
 
 	/**
-	 * set the unique identity of this user, will be called by hibernate
-	 * @param id
+	 * Gets the unique identifier of this user.
+	 *
+	 * @return the identifier of this user
 	 */
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	public long getId() {
 		return id;
 	}
 
 	/**
-	 * set the name of this user
-	 * @param name
+	 * Sets the unique identifier of this user.
+	 *
+	 * @param id the identifier of this user
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	/**
+	 * Gets the name of this user.
+	 *
+	 * @return the name of this user
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the name of this user.
+	 *
+	 * @param name the name of this user
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getName() {
-		return name;
-	}
-
+	/**
+	 * Gets the password of this user.
+	 *
+	 * @return the password of this user
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * Sets the password of this user.
+	 *
+	 * @param password the password of this user
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * Gets the contacts of this user.
+	 *
+	 * @return the contacts of this user
+	 */
 	public Map getContacts() {
 		return contacts;
 	}
 
+	/**
+	 * Sets the contacts of this user.
+	 *
+	 * @param contacts the contacts of this user
+	 */
 	public void setContacts(Map contacts) {
 		this.contacts = contacts;
 	}

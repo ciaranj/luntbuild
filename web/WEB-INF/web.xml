@@ -64,6 +64,12 @@
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 
+	<servlet>
+		<servlet-name>api</servlet-name>
+		<servlet-class>com.luntsys.luntbuild.APIServlet</servlet-class>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>luntbuild</servlet-name>
 		<url-pattern>*.do</url-pattern>
@@ -84,6 +90,15 @@
 	<servlet-mapping>
 		<servlet-name>resourceAccessor</servlet-name>
 		<url-pattern>/logs/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>resourceAccessor</servlet-name>
+		<url-pattern>*.xsl</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>api</servlet-name>
+		<url-pattern>/api/*</url-pattern>
 	</servlet-mapping>
 
 	<session-config>

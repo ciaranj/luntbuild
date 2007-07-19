@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2005 Your Corporation. All Rights Reserved.
  */
+
 package com.luntsys.luntbuild.vcs.accurev;
 
 import com.luntsys.luntbuild.utility.MyExecTask;
@@ -19,11 +20,16 @@ import java.io.IOException;
 import java.io.StringReader;
 
 /**
- * AccurevHelper
+ * AccuRev helper.
  *
  * @author Jason Carreira <jcarreira@eplus.com>
  */
  public class AccurevHelper {
+    /**
+     * Syncs time with AccuRev.
+     * 
+     * @param antProject the ant project used for logging
+     */
     public static void syncTime(Project antProject) {
         antProject.log("Syncing time...");
         Commandline cmdLine = new Commandline();
@@ -32,6 +38,13 @@ import java.io.StringReader;
         executeVoidCommand(cmdLine, antProject);
     }
     
+    /**
+     * Sets the AccuRev user.
+     * 
+     * @param username the user name
+     * @param password the user's password
+     * @param antProject the ant project used for logging
+     */
     public static void setUser(String username, String password, Project antProject) {
     	antProject.log("Setting User: "+ username) ;
     	
@@ -45,8 +58,15 @@ import java.io.StringReader;
     	cmd.setExecutable("accurev") ;
     	cmd.createArgument().setLine("setlocalpasswd " + password) ;
     	executeVoidCommand(cmd, antProject) ;
-    	    }
+    }
 
+    /**
+     * Gets the last transaction number for the specified module.
+     * 
+     * @param module the module
+     * @param antProject the ant project used for logging
+     * @return the last transaction number, or <code>null</code> if none exists
+     */
     public static Long getLastTransactionNumber(AccurevModuleInterface module, Project antProject) {
         String backingStream = module.getBackingStream();
         antProject.log("Getting last transaction number for backing stream " + backingStream);
@@ -70,6 +90,13 @@ import java.io.StringReader;
         return null;
     }
 
+    /**
+     * Forces a refresh of the working directory.
+     * 
+     * @param workingDir the working directory
+     * @param module the module
+     * @param antProject the ant project used for logging
+     */
     public static void forceWorkingDirRefresh(String workingDir, AccurevAdaptor.AccurevModule module, Project antProject) {
         antProject.log("Temporarily removing reference tree " + module.getReferenceTree());
         Commandline cmdLine = new Commandline();
@@ -95,6 +122,13 @@ import java.io.StringReader;
         executeVoidCommand(cmdLine,antProject);
     }
 
+    /**
+     * Executes a commandline object and ignores the return value.
+     * 
+     * @param cmdLine the commandline object to execute
+     * @param antProject the ant project used for logging
+     * @throws BuildException from {@link Execute#execute()}
+     */
     public static void executeVoidCommand(Commandline cmdLine, Project antProject) {
         antProject.log("Executing command line with no return: " + cmdLine.toString(), Project.MSG_INFO);
         Execute exec = new Execute();
@@ -111,6 +145,14 @@ import java.io.StringReader;
         }
     }
 
+    /**
+     * Constructs a response document.
+     * 
+     * @param cmdLine the commandline object to execute
+     * @param antProject the ant project used for logging
+     * @return the response document, or <code>null</code> if the stream does not exist
+     * @throws BuildException if unable to create the document
+     */
     public static Document buildResponseDocument(Commandline cmdLine, final Project antProject) {
         antProject.log("Executing command line to parse output: " + cmdLine.toString(), Project.MSG_INFO);
 

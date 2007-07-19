@@ -28,64 +28,73 @@
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Base facade class for builders
+ * Base class for all builder facades.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.builders.Builder
  */
 public abstract class BuilderFacade {
 	private String name;
 	private String environments;
 	private String buildSuccessCondition;
 
-	/**
-	 * Get corresponding builders class name for this facade
-	 * @return corresponding builders class name for this facade
-	 */
+    /**
+     * Gets the corresponding builder class name.
+     *
+     * @return the builder class name
+     */
 	public abstract String getBuilderClassName();
 
-	/**
-	 * Get the build success condition for this builder
-	 * @return build success condition for current builder
-	 */
+    /**
+     * Gets the build success condition for this builder.
+     *
+     * @return the build success condition
+     */
 	public String getBuildSuccessCondition() {
 		return buildSuccessCondition;
 	}
 
-	/**
-	 * Set build success condition for this builder
-	 * @param buildSuccessCondition
-	 */
+    /**
+     * Sets the build success condition for this builder.
+     *
+     * @param buildSuccessCondition the build success condition
+     */
 	public void setBuildSuccessCondition(String buildSuccessCondition) {
 		this.buildSuccessCondition = buildSuccessCondition;
 	}
 
-	/**
-	 * Get environments for this builder.
-	 * @return environments for this builder
-	 */
+    /**
+     * Gets the environment settings for this builder.
+     * 
+     * @return the environment settings
+     */
 	public String getEnvironments() {
 		return environments;
 	}
 
-	/**
-	 * Set environments for this builder
-	 * @param environments
-	 */
+    /**
+     * Sets the environment settings for this builder.
+     * 
+     * @param environments the environment settings
+     */
 	public void setEnvironments(String environments) {
 		this.environments = environments;
 	}
 
-	/**
-	 * Get name of the builder
-	 * @return name of the builder
-	 */
+    /**
+     * Gets the name of this builder.
+     * 
+     * @return the name
+     */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * Set name of the builder
-	 * @param name
-	 */
+    /**
+     * Sets the name of this builder.
+     * 
+     * @param name the name
+     */
 	public void setName(String name) {
 		this.name = name;
 	}

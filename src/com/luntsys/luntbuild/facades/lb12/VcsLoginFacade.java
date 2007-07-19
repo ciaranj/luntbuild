@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb12;
 
 /**
- * Facade of VcsLogin
+ * VCS login facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.db.VcsLogin
  */
 public class VcsLoginFacade {
 	private long id;
@@ -37,34 +40,74 @@ public class VcsLoginFacade {
 	private long userId;
 	private String login;
 
+	/**
+	 * Gets the identifier of this VCS login.
+	 *
+	 * @return the identifier of this VCS login
+	 */
 	public long getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the identifier of this VCS login.
+	 *
+	 * @param id the identifier of this VCS login
+	 */
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	/**
+	 * Gets the identifier of the project of this VCS login.
+	 *
+	 * @return the identifier of the project
+	 */
 	public long getProjectId() {
 		return projectId;
 	}
 
+	/**
+	 * Sets the identifier of the project of this VCS login.
+	 *
+	 * @param projectId the identifier of the project
+	 */
 	public void setProjectId(long projectId) {
 		this.projectId = projectId;
 	}
 
+	/**
+	 * Gets the identifier of the user of this VCS login.
+	 *
+	 * @return the identifier of the user
+	 */
 	public long getUserId() {
 		return userId;
 	}
 
+	/**
+	 * Sets the identifier of the user of this VCS login.
+	 *
+	 * @param userId the identifier of the user
+	 */
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
+	/**
+	 * Gets the VCS login name/id of this VCS login.
+	 *
+	 * @return the VCS login name/id of this VCS login
+	 */
 	public String getLogin() {
 		return login;
 	}
 
+	/**
+	 * Sets the VCS login name/id of this VCS login.
+	 *
+	 * @param login the VCS login name/id of this VCS login
+	 */
 	public void setLogin(String login) {
 		this.login = login;
 	}

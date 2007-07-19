@@ -25,11 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade of a svn module
+ * Subversion VCS module facade.
+ * 
  * @author robin shine
+ * @see com.luntsys.luntbuild.vcs.SvnAdaptor.SvnModule
  */
-public class SvnModuleFacade extends com.luntsys.luntbuild.facades.lb111.CommonModuleFacade {
+public class SvnModuleFacade extends CommonModuleFacade {
 }

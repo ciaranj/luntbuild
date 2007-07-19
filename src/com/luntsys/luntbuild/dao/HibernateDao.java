@@ -25,12 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.dao;
 
 import com.luntsys.luntbuild.db.*;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.SearchCriteria;
 import com.luntsys.luntbuild.facades.lb12.DataCollection;
+import com.luntsys.luntbuild.facades.lb12.ProjectCollection;
 import com.luntsys.luntbuild.migration.MigrationManager;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
@@ -55,7 +57,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 /**
- * Implementor of data access interface using hibernate as persistent layer
+ * Implementation of data access interface using hibernate as persistent layer.
  *
  * @author robin shine
  */
@@ -63,10 +65,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     private static Log logger = LogFactory.getLog(HibernateDao.class);
 
     /**
-     * @param properties to save
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#saveProperties(java.util.Map)
+     * @inheritDoc
      */
     public void saveProperties(Map properties) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -88,10 +87,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @return properties
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadProperties()
+     * @inheritDoc
      */
     public Map loadProperties() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -111,20 +107,14 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @return projects
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadProjects()
+     * @inheritDoc
      */
     public List loadProjects() {
         return loadProjectsInternal();
     }
 
-    /** For internal use to bypass authorization
-     * @return projects
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadProjects()
+    /**
+     * @inheritDoc
      */
     public List loadProjectsInternal() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -138,10 +128,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param user to save
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#saveUser(com.luntsys.luntbuild.db.User)
+     * @inheritDoc
      */
     public void saveUser(User user) {
         if (!SecurityHelper.isSiteAdmin() && !user.getName().equals(SecurityHelper.getPrincipalAsString())) {
@@ -150,11 +137,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         saveUserInternal(user);
     }
 
-    /** Save user, only for internal use without security checking!
-     * @param user to save
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#saveUser(com.luntsys.luntbuild.db.User)
+    /**
+     * @inheritDoc
      */
     public void saveUserInternal(User user) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -167,10 +151,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @return users
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadUsers()
+     * @inheritDoc
      */
     public List loadUsers() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -184,11 +165,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param userId to load
-     * @return
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadUser(long)
+     * @inheritDoc
      */
     public User loadUser(long userId) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -211,10 +188,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param userId to delete
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#deleteUser(long)
+     * @inheritDoc
      */
     public void deleteUser(long userId) {
         if (!SecurityHelper.isSiteAdmin())
@@ -231,18 +205,14 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param project to save
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#saveProject(com.luntsys.luntbuild.db.Project)
+     * @inheritDoc
      */
     public void saveProject(Project project) {
         saveProjectInternal(project);
     }
 
-    /** Save project - for internal use only to avoid security
-     * @param project
-     * @throws org.springframework.dao.DataAccessException
+    /**
+     * @inheritDoc
      */
     public void saveProjectInternal(Project project) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -275,11 +245,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param projectId to load
-     * @return
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadProject(long)
+     * @inheritDoc
      */
     public Project loadProject(long projectId) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -305,11 +271,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param projectName to load
-     * @return
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadProject(java.lang.String)
+     * @inheritDoc
      */
     public Project loadProject(String projectName) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -334,10 +296,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param project to delete
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#deleteProject(com.luntsys.luntbuild.db.Project)
+     * @inheritDoc
      */
     public void deleteProject(Project project) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -360,10 +319,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @return schedules
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadSchedules()
+     * @inheritDoc
      */
     public List loadSchedules() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -382,11 +338,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param scheduleId to load
-     * @return
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadSchedule(long)
+     * @inheritDoc
      */
     public Schedule loadSchedule(long scheduleId) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -407,12 +359,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param projectName project
-     * @param scheduleName schedule
-     * @return schedule
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadSchedule(java.lang.String, java.lang.String)
+     * @inheritDoc
      */
     public Schedule loadSchedule(String projectName, String scheduleName) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -436,10 +383,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param schedule to save
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#saveSchedule(com.luntsys.luntbuild.db.Schedule)
+     * @inheritDoc
      */
     public void saveSchedule(Schedule schedule) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -472,10 +416,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param schedule to delete
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#deleteSchedule(com.luntsys.luntbuild.db.Schedule)
+     * @inheritDoc
      */
     public void deleteSchedule(Schedule schedule) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -498,11 +439,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param vcsLoginId to load
-     * @return
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadVcsLogin(long)
+     * @inheritDoc
      */
     public VcsLogin loadVcsLogin(long vcsLoginId) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -524,10 +461,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param vcsLogin to save
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#saveVcsLogin(com.luntsys.luntbuild.db.VcsLogin)
+     * @inheritDoc
      */
     public void saveVcsLogin(VcsLogin vcsLogin) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -540,10 +474,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param vcsLogin to delete
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#deleteVcsLogin(com.luntsys.luntbuild.db.VcsLogin)
+     * @inheritDoc
      */
     public void deleteVcsLogin(VcsLogin vcsLogin) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -558,10 +489,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param build to save
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#saveBuild(com.luntsys.luntbuild.db.Build)
+     * @inheritDoc
      */
     public void saveBuild(Build build) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -574,11 +502,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param buildId to load
-     * @return
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadBuild(long)
+     * @inheritDoc
      */
     public Build loadBuild(long buildId) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -599,13 +523,14 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param projectName project
-     * @param scheduleName schedule
-     * @param buildVersion to load
-     * @return
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadBuild(java.lang.String, java.lang.String, java.lang.String)
+     * @inheritDoc
+     */
+    public Build loadBuild(String projectName, String scheduleName, String buildVersion) {
+    	return loadBuildInternal(projectName, scheduleName, buildVersion);
+    }
+
+    /**
+     * @inheritDoc
      */
     public Build loadBuildInternal(String projectName, String scheduleName, String buildVersion) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -631,23 +556,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param projectName project
-     * @param scheduleName schedule
-     * @param buildVersion to load
-     * @return
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadBuild(java.lang.String, java.lang.String, java.lang.String)
-     */
-    public Build loadBuild(String projectName, String scheduleName, String buildVersion) {
-    	return loadBuildInternal(projectName, scheduleName, buildVersion);
-    }
-
-    /**
-     * @param build to delete
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#deleteBuild(com.luntsys.luntbuild.db.Build)
+     * @inheritDoc
      */
     public void deleteBuild(Build build) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -663,11 +572,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param schedule for last build
-     * @return last build
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadLastBuild(com.luntsys.luntbuild.db.Schedule)
+     * @inheritDoc
      */
     public Build loadLastBuild(Schedule schedule) {
         if (schedule.getBuilds() == null)
@@ -689,12 +594,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param projectName project
-     * @param scheduleName schedule
-     * @return last build
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadLastBuild(java.lang.String, java.lang.String)
+     * @inheritDoc
      */
     public Build loadLastBuildInternal(String projectName, String scheduleName) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -720,24 +620,14 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param projectName project
-     * @param scheduleName schedule
-     * @return last build
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadLastBuild(java.lang.String, java.lang.String)
+     * @inheritDoc
      */
     public Build loadLastBuild(String projectName, String scheduleName) {
     	return loadLastBuildInternal(projectName, scheduleName);
     }
 
     /**
-     * @param projectName project
-     * @param scheduleName schedule
-     * @return last successful build
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadLastSuccessBuild(java.lang.String, java.lang.String)
+     * @inheritDoc
      */
     public Build loadLastSuccessBuild(String projectName, String scheduleName) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -765,11 +655,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param schedule schedule
-     * @return last successful build
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadLastSuccessBuild(com.luntsys.luntbuild.db.Schedule)
+     * @inheritDoc
      */
     public Build loadLastSuccessBuild(Schedule schedule) {
         if (schedule.getBuilds() == null)
@@ -780,7 +666,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             Query query = session.createFilter(schedule.getBuilds(), "where this.status = " +
                     ":buildStatus order by this.endDate desc");
             query.setParameter("buildStatus",
-                    new Integer(com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_SUCCESS),
+                    new Integer(Constants.BUILD_STATUS_SUCCESS),
                     Hibernate.INTEGER);
             query.setMaxResults(1);
             List results = query.list();
@@ -795,13 +681,35 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param searchCriteria criteria
-     * @return number of builds
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#countBuilds(com.luntsys.luntbuild.facades.SearchCriteria)
+     * @inheritDoc
      */
-    public int countBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria) {
+    public Build loadPreviousBuild(Build build) {
+        if (build == null)
+            return null;
+        Schedule schedule = build.getSchedule();
+        if (schedule.getBuilds() == null)
+            return null;
+        Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
+        try {
+            session.lock(schedule, LockMode.NONE);
+            Query query = session.createFilter(schedule.getBuilds(), "where this.id < " + build.getId()
+            	+ " order by this.id desc");
+            query.setMaxResults(1);
+            List results = query.list();
+            if (results.size() != 0)
+                return (Build) results.get(0);
+            else
+                return null;
+        } catch (HibernateException ex) {
+            logger.error("Error in loadPreviousBuild: ", ex);
+            throw SessionFactoryUtils.convertHibernateAccessException(ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public int countBuilds(SearchCriteria searchCriteria) {
         if (searchCriteria == null) return -1;
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
@@ -816,13 +724,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param searchCriteria criteria
-     * @param start start
-     * @param count count
-     * @return builds
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#searchBuilds(com.luntsys.luntbuild.facades.SearchCriteria, int, int)
+     * @inheritDoc
      */
     public List searchBuilds(SearchCriteria searchCriteria, int start, int count) {
         if (searchCriteria == null) return new ArrayList();
@@ -845,12 +747,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param searchCriteria criteria
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#deleteBuilds(com.luntsys.luntbuild.facades.SearchCriteria)
+     * @inheritDoc
      */
-    public void deleteBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria) {
+    public void deleteBuilds(SearchCriteria searchCriteria) {
         if (searchCriteria == null) return;
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
@@ -880,11 +779,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param schedule for build
-     * @return running build
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadRunningBuild(com.luntsys.luntbuild.db.Schedule)
+     * @inheritDoc
      */
     public Build loadRunningBuild(Schedule schedule) {
         if (schedule.getBuilds() == null)
@@ -895,7 +790,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             Query query = session.createFilter(schedule.getBuilds(), "where this.status = " +
                     ":buildStatus");
             query.setParameter("buildStatus",
-                    new Integer(com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_RUNNING),
+                    new Integer(Constants.BUILD_STATUS_RUNNING),
                     Hibernate.INTEGER);
             query.setMaxResults(1);
             List results = query.list();
@@ -910,13 +805,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param searchCriteria criteria
-     * @param scheduleId schedule
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#moveBuilds(com.luntsys.luntbuild.facades.SearchCriteria, long)
+     * @inheritDoc
      */
-    public void moveBuilds(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria, long scheduleId) {
+    public void moveBuilds(SearchCriteria searchCriteria, long scheduleId) {
         // make sure destination schedule have write access
         if (!SecurityHelper.isPrjAdministrable(loadSchedule(scheduleId).getProject().getId()))
             throw new AccessDeniedException("Access denied!");
@@ -960,12 +851,12 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * Build HQL where clause based on specified search criteria
+     * Build HQL where clause based on specified search criteria.
      *
-     * @param searchCriteria
-     * @return sql where clause
+     * @param searchCriteria the search criteria
+     * @return the hql where clause
      */
-    private String buildHQLWhereClause(com.luntsys.luntbuild.facades.SearchCriteria searchCriteria) {
+    private String buildHQLWhereClause(SearchCriteria searchCriteria) {
         String whereClause = "";
         if (!Luntbuild.isEmpty(searchCriteria.getVersion())) {
             if (searchCriteria.isExactMatch())
@@ -973,7 +864,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             else
                 whereClause += "where build.version like :version ";
         }
-        if (searchCriteria.getStatus() != com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_ALL) {
+        if (searchCriteria.getStatus() != Constants.BUILD_STATUS_ALL) {
             if (whereClause.equals(""))
                 whereClause += "where build.status = :status ";
             else
@@ -1005,19 +896,19 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * Fill query parameters with specified search criteria
+     * Fill query parameters with specified search criteria.
      *
-     * @param query
-     * @param searchCriteria
+     * @param query the query to fill
+     * @param searchCriteria the search criteria
      */
-    private void fillQueryParams(Query query, com.luntsys.luntbuild.facades.SearchCriteria searchCriteria) {
+    private void fillQueryParams(Query query, SearchCriteria searchCriteria) {
         if (!Luntbuild.isEmpty(searchCriteria.getVersion())) {
             if (searchCriteria.isExactMatch())
                 query.setString("version", searchCriteria.getVersion());
             else
                 query.setString("version", searchCriteria.getVersion() + "%");
         }
-        if (searchCriteria.getStatus() != com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_ALL)
+        if (searchCriteria.getStatus() != Constants.BUILD_STATUS_ALL)
             query.setInteger("status", searchCriteria.getStatus());
         if (searchCriteria.getFrom() != null)
             query.setDate("from", searchCriteria.getFrom());
@@ -1026,10 +917,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * Process unfinished builds
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#processUnfinishedBuilds()
+     * @inheritDoc
      */
     public void processUnfinishedBuilds() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1038,9 +926,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             PreparedStatement pstmt =
                 connection.prepareStatement("update LB_BUILD set STATUS = ?, END_DATE = ? " +
                     "where STATUS  = ?");
-            pstmt.setInt(1, com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_FAILED);
+            pstmt.setInt(1, Constants.BUILD_STATUS_FAILED);
             pstmt.setTimestamp(2, new Timestamp(new Date().getTime()));
-            pstmt.setInt(3, com.luntsys.luntbuild.facades.Constants.BUILD_STATUS_RUNNING);
+            pstmt.setInt(3, Constants.BUILD_STATUS_RUNNING);
             pstmt.executeUpdate();
         } catch (HibernateException ex) {
             logger.error("Error in processUnfinishedBuilds: ", ex);
@@ -1052,10 +940,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * Process unfinished schedules
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#processUnfinishedSchedules()
+     * @inheritDoc
      */
     public void processUnfinishedSchedules() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1064,9 +949,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             PreparedStatement pstmt =
                 connection.prepareStatement("update LB_SCHEDULE set STATUS = ?, STATUS_DATE = ? " +
                     "where STATUS  = ?");
-            pstmt.setInt(1, com.luntsys.luntbuild.facades.Constants.SCHEDULE_STATUS_FAILED);
+            pstmt.setInt(1, Constants.SCHEDULE_STATUS_FAILED);
             pstmt.setTimestamp(2, new Timestamp(new Date().getTime()));
-            pstmt.setInt(3, com.luntsys.luntbuild.facades.Constants.SCHEDULE_STATUS_RUNNING);
+            pstmt.setInt(3, Constants.SCHEDULE_STATUS_RUNNING);
             pstmt.executeUpdate();
         } catch (HibernateException ex) {
             logger.error("Error in processUnfinishedSchedules: ", ex);
@@ -1078,11 +963,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param buildId build
-     * @param scheduleId schedule
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#moveBuild(long, long)
+     * @inheritDoc
      */
     public void moveBuild(long buildId, long scheduleId) {
         // check permissions
@@ -1115,11 +996,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param userName name
-     * @return user
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadUser(java.lang.String)
+     * @inheritDoc
      */
     public User loadUser(String userName) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1145,10 +1022,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @return roles
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadRoles()
+     * @inheritDoc
      */
     public List loadRoles() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1162,11 +1036,29 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param user user
-     * @return true if named user
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#isUserNameUsed(com.luntsys.luntbuild.db.User)
+     * @inheritDoc
+     */
+    public Role loadRole(String roleName) {
+        Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
+        try {
+            Query query = session.createQuery("from Role role where role.name = :name");
+            query.setParameter("name", roleName);
+            List results = query.list();
+
+            if (results.size() == 0 || results.get(0) == null)
+                throw new DataRetrievalFailureException("Specified role can not " +
+                        "be found in the database!");
+
+            Role role = (Role) results.get(0);
+            return role;
+        } catch (HibernateException ex) {
+            logger.error("Error in loadRole: ", ex);
+            throw SessionFactoryUtils.convertHibernateAccessException(ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
      */
     public boolean isUserNameUsed(User user) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1188,11 +1080,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param userName user
-     * @return true if user exist
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#isUserExist(java.lang.String)
+     * @inheritDoc
      */
     public boolean isUserExist(String userName) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1209,10 +1097,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * Initialize
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#initialize()
+     * @inheritDoc
      */
     public void initialize() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1245,11 +1130,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param project project
-     * @return true if project name used
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#isProjectNameUsed(com.luntsys.luntbuild.db.Project)
+     * @inheritDoc
      */
     public boolean isProjectNameUsed(Project project) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1270,11 +1151,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param schedule schedule
-     * @return true if schedule name used
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#isScheduleNameUsed(com.luntsys.luntbuild.db.Schedule)
+     * @inheritDoc
      */
     public boolean isScheduleNameUsed(Schedule schedule) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1298,11 +1175,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param vcsLogin vcs login
-     * @return true if vcs login name used
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#isVcsLoginNameUsed(com.luntsys.luntbuild.db.VcsLogin)
+     * @inheritDoc
      */
     public boolean isVcsLoginNameUsed(VcsLogin vcsLogin) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1326,11 +1199,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param schedule schedule
-     * @param reserveCount count
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#reserveBuildsByCount(com.luntsys.luntbuild.db.Schedule, int)
+     * @inheritDoc
      */
     public void reserveBuildsByCount(Schedule schedule, int reserveCount) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1361,12 +1230,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param schedule schedule
-     * @param date date
-     *
-     * (non-Javadoc)
-     * @see
-     *  com.luntsys.luntbuild.dao.Dao#removeBuildsBefore(com.luntsys.luntbuild.db.Schedule, java.util.Date)
+     * @inheritDoc
      */
     public void removeBuildsBefore(Schedule schedule, Date date) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1395,10 +1259,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @return 1.2 data collection
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#loadDataCollection12()
+     * @inheritDoc
      */
     public DataCollection loadDataCollection12() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1466,11 +1327,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * @param data12 1.2 data collection
-     *
-     * (non-Javadoc)
-     * @see
-     *  com.luntsys.luntbuild.dao.Dao#saveDataCollection12(com.luntsys.luntbuild.facades.lb12.DataCollection)
+     * @inheritDoc
      */
     public void saveDataCollection12(DataCollection data12) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1547,10 +1404,111 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     }
 
     /**
-     * Erase existing data
-     *
-     * (non-Javadoc)
-     * @see com.luntsys.luntbuild.dao.Dao#eraseExistingData()
+     * @inheritDoc
+     */
+    public ProjectCollection loadProjectCollection12(long projectId) {
+        Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
+        try {
+        	ProjectCollection project12 = new ProjectCollection();
+        	Project project = loadProject(projectId);
+
+        	project12.setProject(project.getFacade());
+
+            Iterator it = project.getSchedules().iterator();
+            while (it.hasNext()) {
+                Schedule schedule = (Schedule) it.next();
+                project12.getSchedules().add(schedule.getFacade());
+                it = schedule.getBuilds().iterator();
+                while (it.hasNext()) {
+                    Build build = (Build) it.next();
+                    project12.getBuilds().add(build.getFacade());
+                }
+            }
+            Query query = session.createQuery("from User user");
+            it = query.list().iterator();
+            while (it.hasNext()) {
+                User user = (User) it.next();
+                project12.getUsers().add(user.getFacade());
+            }
+            query = session.createQuery("from Role role");
+            it = query.list().iterator();
+            while (it.hasNext()) {
+                Role role = (Role) it.next();
+                project12.getRoles().add(role.getFacade());
+            }
+            it = project.getRolesMappings().iterator();
+            while (it.hasNext()) {
+                RolesMapping rolesMapping = (RolesMapping) it.next();
+                project12.getRolesMapping().add(rolesMapping.getFacade());
+            }
+            it = project.getNotifyMappings().iterator();
+            while (it.hasNext()) {
+                NotifyMapping notifyMapping = (NotifyMapping) it.next();
+                project12.getNotifyMapping().add(notifyMapping.getFacade());
+            }
+            query = session.createQuery("from VcsLogin vcsLogin" +
+                    " where vcsLogin.project.id = :projectId");
+            query.setParameter("projectId", new Long(project.getId()));
+            it = query.list().iterator();
+            while (it.hasNext()) {
+                VcsLogin vcsLogin = (VcsLogin) it.next();
+                project12.getVcsLoginMapping().add(vcsLogin.getFacade());
+            }
+            return project12;
+        } catch (HibernateException ex) {
+            logger.error("Error in loadProjectCollection: ", ex);
+            throw SessionFactoryUtils.convertHibernateAccessException(ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void saveProjectCollection12(ProjectCollection project12) {
+        Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
+        try {
+            com.luntsys.luntbuild.db.ProjectCollection data = MigrationManager.deFacade(project12);
+
+            Iterator it = data.getUsers().iterator();
+            while (it.hasNext()) {
+                User user = (User) it.next();
+                logger.info("Saving user: " + user.getName());
+                session.save(user);
+            }
+
+            Project project = data.getProject();
+            logger.info("Saving project: " + project.getName());
+            session.save(project);
+
+            it = data.getSchedules().iterator();
+            while (it.hasNext()) {
+                Schedule schedule = (Schedule) it.next();
+                logger.info("Saving schedule: " + schedule.getProject().getName() + "/" + schedule.getName());
+                session.save(schedule);
+            }
+
+            it = data.getBuilds().iterator();
+            while (it.hasNext()) {
+                Build build = (Build) it.next();
+                logger.info("Saving build: " + build.getSchedule().getProject().getName() +
+                        "/" + build.getSchedule().getName() + "/" + build.getVersion());
+                session.save(build);
+            }
+
+            logger.info("Saving vcs logins...");
+            it = data.getVcsLoginMapping().iterator();
+            while (it.hasNext()) {
+                VcsLogin vcsLogin = (VcsLogin) it.next();
+                session.save(vcsLogin);
+            }
+        } catch (HibernateException ex) {
+            logger.error("Error in saveProjectCollection: ", ex);
+            throw SessionFactoryUtils.convertHibernateAccessException(ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
      */
     public void eraseExistingData() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
@@ -1570,7 +1528,19 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         }
     }
 
+    /**
+     * Schedule comparator, compares schedules by their name and their project's name.
+     */
     class ScheduleComparator implements java.util.Comparator {
+    	/**
+    	 * Compares two schedules by their name and their project's name.
+    	 * 
+    	 * @param o1 the first schedule
+    	 * @param o2 the second schedule
+    	 * @return <code>0</code> if both schedules are the same,
+    	 *         <code>1</code> if the second schedule comes before the first, or
+    	 *         <code>-1</code> if the first schedule comes before the second
+    	 */
     	public int compare(Object o1, Object o2) {
     		Schedule s1 = (Schedule) o1;
     		Schedule s2 = (Schedule) o2;

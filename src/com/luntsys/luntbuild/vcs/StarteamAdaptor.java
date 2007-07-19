@@ -25,10 +25,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.vcs;
 
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.StarteamAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.StarteamModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
@@ -44,7 +46,9 @@ import org.apache.tools.ant.Project;
 import java.util.*;
 
 /**
- * Borland starteam adaptor
+ * Borland StarTeam VCS adaptor implementation.
+ * 
+ * <p>This adaptor is NOT safe for remote hosts.</p>
  *
  * @author robin shine
  */
@@ -61,14 +65,23 @@ public class StarteamAdaptor extends Vcs {
 
 	private transient OLEDate checkoutDate;
 
+    /**
+     * @inheritDoc
+     */
 	public String getDisplayName() {
 		return "StarTeam";
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public String getIconName() {
 		return "starteam.jpg";
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public void checkoutActually(Build build, Project antProject) {
 		// record current time (minus 10 seconds to tolerate time difference between starteam server and build server
 		checkoutDate = new OLEDate(System.currentTimeMillis() - 10000);
@@ -86,6 +99,9 @@ public class StarteamAdaptor extends Vcs {
 		}
 	}
 
+	/**
+     * @inheritDoc
+	 */
 	public void label(Build build, Project antProject) {
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
@@ -95,6 +111,9 @@ public class StarteamAdaptor extends Vcs {
 		}
 	}
 
+    /**
+     * @inheritDoc
+     */
 	public List getVcsSpecificProperties() {
 		List properties = new ArrayList();
 		properties.add(new DisplayProperty() {
@@ -205,35 +224,69 @@ public class StarteamAdaptor extends Vcs {
         return properties;
 	}
 
+	/**
+	 * Selection model used for user interface of <code>StarteamAdaptor</code>.
+	 */
     class StarteamLineEndSelectionModel implements IPropertySelectionModel {
         String[] values = {"yes", "no"};
+
+		/**
+		 * Gets the number of options.
+		 * 
+		 * @return the number of options
+		 */
         public int getOptionCount() {
             return this.values.length;
         }
 
+		/**
+		 * Gets an option.
+		 * 
+		 * @param index the index of the opiton
+		 * @return the option
+		 */
         public Object getOption(int index) {
             return this.values[index];
         }
 
+		/**
+		 * Gets the display label of an option.
+		 * 
+		 * @param index the index of the opiton
+		 * @return the label
+		 */
         public String getLabel(int index) {
             return this.values[index];
         }
 
+		/**
+		 * Gets the value of an option.
+		 * 
+		 * @param index the index of the opiton
+		 * @return the value
+		 */
         public String getValue(int index) {
             return this.values[index];
         }
 
+		/**
+		 * Gets the option that corresponds to a value.
+		 * 
+		 * @param value the value
+		 * @return the option
+		 */
         public Object translateValue(String value) {
             return value;
         }
     }
 
 	/**
-	 * Method may throw a BuildException to indicates a module acquisition exception
-	 *
-	 * @param workingDir
-	 * @param module
-	 * @param antProject
+	 * Checks out the contents from a module.
+	 * 
+	 * @param workingDir the working directory
+	 * @param module the module
+	 * @param isClean set <code>true</code> if this is a clean build
+	 * @param antProject the ant project used for logging
 	 */
 	private void retrieveModule(String workingDir, StarteamModule module, boolean isClean, Project antProject) {
 		if (isClean)
@@ -267,9 +320,9 @@ public class StarteamAdaptor extends Vcs {
 		else
 			starteamTask.setURL(getActualProjectLocation() + "/" + module.getActualStarteamView());
 
-    if (!Luntbuild.isEmpty(module.getStarteamPromotionState()))
-      starteamTask.setPromotionState(module.getActualStarteamPromotionState());
-    else if (!Luntbuild.isEmpty(module.getLabel()))
+	    if (!Luntbuild.isEmpty(module.getStarteamPromotionState()))
+	      starteamTask.setPromotionState(module.getActualStarteamPromotionState());
+	    else if (!Luntbuild.isEmpty(module.getLabel()))
 			starteamTask.setLabel(module.getActualLabel());
 		else
 			starteamTask.setAsOfDate(checkoutDate);
@@ -286,11 +339,11 @@ public class StarteamAdaptor extends Vcs {
 	}
 
 	/**
-	 * Method may throw a BuildException to indicates errors while labeling
-	 *
-	 * @param module
-	 * @param label
-	 * @param antProject
+	 * Labels the contents of a module.
+	 * 
+	 * @param module the module
+	 * @param label the label to use
+	 * @param antProject the ant project used for logging
 	 */
 	private void labelModule(StarteamModule module, String label, Project antProject) {
 		antProject.log("Label source path \"" + module.getActualSrcPath() + "\" of StarTeam view \"" + module.getActualStarteamView() + "\"");
@@ -317,16 +370,31 @@ public class StarteamAdaptor extends Vcs {
 		starteamTask.execute();
 	}
 
-	public Vcs.Module createNewModule() {
+	/**
+     * @inheritDoc
+	 * @see StarteamModule
+	 */
+	public Module createNewModule() {
 		return new StarteamModule();
 	}
 
-    public Vcs.Module createNewModule(Vcs.Module module) {
+	/**
+     * @inheritDoc
+	 * @see StarteamModule
+	 */
+    public Module createNewModule(Module module) {
         return new StarteamModule((StarteamModule)module);
     }
 
+	/**
+     * @inheritDoc
+	 */
 	public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		Revisions revisions = new Revisions();
+        revisions.addLog(this.getClass().getName(), toString());
+        revisions.getChangeLogs().add("*************************************************************");
+        revisions.getChangeLogs().add(toString());
+        revisions.getChangeLogs().add("");
 
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
@@ -438,44 +506,99 @@ public class StarteamAdaptor extends Vcs {
 			revisions.getChangeLogins().add(user.getName());
 			userName = user.getName();
 		}
+		revisions.addEntryToLastLog("", userName, file.getModifiedTime().createDate(), file.getComment());
+		revisions.addPathToLastEntry(file.getParentFolderHierarchy() + file.getName(), action, "");
 		revisions.getChangeLogs().add(action + ": " + userName + " | " + file.getModifiedTime().createDate().toString() +
 				" | " + file.getParentFolderHierarchy() + file.getName());
 		revisions.getChangeLogs().add("Comment: " + file.getComment());
 		revisions.getChangeLogs().add("");
 	}
 
+	/**
+	 * Gets the project location.
+	 * <p>Location of a StarTeam project is defined as: <servername>:<portnum>/<projectname>,
+	 * where <servername> is the host where the StarTeam server runs, <portnum> is the port
+	 * number the StarTeam server uses, default value is 49201. <projectname> is a StarTeam
+	 * project under this StarTeam server.</p>
+	 * 
+	 * @return the project location
+	 */
 	public String getProjectLocation() {
 		return projectLocation;
 	}
 
+	/**
+	 * Gets the project location. This method will parse OGNL variables.
+	 * <p>Location of a StarTeam project is defined as: <servername>:<portnum>/<projectname>,
+	 * where <servername> is the host where the StarTeam server runs, <portnum> is the port
+	 * number the StarTeam server uses, default value is 49201. <projectname> is a StarTeam
+	 * project under this StarTeam server.</p>
+	 * 
+	 * @return the project location
+	 */
 	public String getActualProjectLocation() {
 		return OgnlHelper.evaluateScheduleValue(getProjectLocation());
 	}
 
+	/**
+	 * Sets the project location.
+	 * 
+	 * @param projectLocation the project location
+	 */
 	public void setProjectLocation(String projectLocation) {
 		this.projectLocation = projectLocation;
 	}
 
+	/**
+	 * Gets the login user.
+	 * 
+	 * @return the login user
+	 */
 	public String getUser() {
 		return user;
 	}
 
+	/**
+	 * Sets the login user.
+	 * 
+	 * @param user the login user
+	 */
 	public void setUser(String user) {
 		this.user = user;
 	}
 
+	/**
+	 * Gets the login password.
+	 * 
+	 * @return the login password
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * Sets the login password.
+	 * 
+	 * @param password the login password
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * Gets the convert EOL property ("yes"/"no").
+	 * 
+	 * @return the convert EOL property
+	 */
 	public String getConvertEOL() {
 		return convertEOL;
 	}
 
+	/**
+	 * Sets the convert EOL property ("yes"/"no").
+	 * 
+	 * @param convertEOL the convert EOL property
+	 */
 	public void setConvertEOL(String convertEOL) {
 		this.convertEOL = convertEOL;
 	}
@@ -487,6 +610,11 @@ public class StarteamAdaptor extends Vcs {
 		return fields[1].trim();
 	}
 
+    /**
+     * Validates the properties of this VCS.
+     *
+     * @throws ValidationException if a property has an invalid value
+     */
 	public void validateProperties() {
 		super.validateProperties();
 		String[] fields = getActualProjectLocation().split("/");
@@ -501,7 +629,12 @@ public class StarteamAdaptor extends Vcs {
 		}
 	}
 
-	public class StarteamModule extends Vcs.Module {
+	/**
+	 * A StarTeam module definition.
+	 *
+	 * @author robin shine
+	 */
+	public class StarteamModule extends Module {
 		/**
 		 * Keep tracks of version of this class, used when do serialization-deserialization
 		 */
@@ -514,12 +647,14 @@ public class StarteamAdaptor extends Vcs {
 		private String destPath;
 
 		/**
-		 * Constructor
+		 * Constructor, creates a blank StarTeam module.
 		 */
 		public StarteamModule() {}
 
 		/**
-		 * Copy Constructor
+		 * Copy constructor, creates a StarTeam module from another StarTeam module.
+		 * 
+		 * @param module the module to create from
 		 */
 		public StarteamModule(StarteamModule module) {
 			this.starteamView = module.starteamView;
@@ -528,6 +663,9 @@ public class StarteamAdaptor extends Vcs {
 			this.destPath = module.destPath;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public List getProperties() {
 			List properties = new ArrayList();
 			properties.add(new DisplayProperty() {
@@ -665,67 +803,147 @@ public class StarteamAdaptor extends Vcs {
 			return properties;
 		}
 
+		/**
+		 * Gets the StarTeam view.
+		 * 
+		 * @return the StarTeam view
+		 */
 		public String getStarteamView() {
 			return starteamView;
 		}
 
+		/**
+		 * Gets the StarTeam view. This method will parse OGNL variables.
+		 * 
+		 * @return the StarTeam view
+		 */
 		private String getActualStarteamView() {
 			return OgnlHelper.evaluateScheduleValue(getStarteamView());
 		}
 
+		/**
+		 * Sets the StarTeam view.
+		 * 
+		 * @param starteamView the StarTeam view
+		 */
 		public void setStarteamView(String starteamView) {
 			this.starteamView = starteamView;
 		}
 
+		/**
+		 * Gets the StarTeam promotion state.
+		 * 
+		 * @return the StarTeam promotion state
+		 */
 		public String getStarteamPromotionState() {
 			return starteamPromotionState;
 		}
 
+		/**
+		 * Gets the StarTeam promotion state. This method will parse OGNL variables.
+		 * 
+		 * @return the StarTeam promotion state
+		 */
 		private String getActualStarteamPromotionState() {
 			return OgnlHelper.evaluateScheduleValue(getStarteamPromotionState());
 		}
 
+		/**
+		 * Sets the StarTeam promotion state.
+		 * 
+		 * @param starteamPromotionState the StarTeam promotion state
+		 */
 		public void setStarteamPromotionState(String starteamPromotionState) {
 			this.starteamPromotionState = starteamPromotionState;
 		}
 
+		/**
+		 * Gets the source path. This path is relative to the StarTeam view.
+		 * 
+		 * @return the source path
+		 */
 		public String getSrcPath() {
 			return srcPath;
 		}
 
+		/**
+		 * Gets the source path. This path is relative to the StarTeam view.
+		 * This method will parse OGNL variables.
+		 * 
+		 * @return the source path
+		 */
 		private String getActualSrcPath() {
 			return OgnlHelper.evaluateScheduleValue(getSrcPath());
 		}
 
+		/**
+		 * Sets the source path.
+		 * 
+		 * @param srcPath the source path
+		 */
 		public void setSrcPath(String srcPath) {
 			this.srcPath = srcPath;
 		}
 
+		/**
+		 * Gets the label to use.
+		 * 
+		 * @return the label
+		 */
 		public String getLabel() {
 			return label;
 		}
 
+		/**
+		 * Gets the label to use. This method will parse OGNL variables.
+		 * 
+		 * @return the label
+		 */
 		private String getActualLabel() {
 			return OgnlHelper.evaluateScheduleValue(getLabel());
 		}
 
+		/**
+		 * Sets the label to use.
+		 * 
+		 * @param label the label
+		 */
 		public void setLabel(String label) {
 			this.label = label;
 		}
 
+		/**
+		 * Gets the destination path to check out to.
+		 * 
+		 * @return the destination path
+		 */
 		public String getDestPath() {
 			return destPath;
 		}
 
+		/**
+		 * Gets the destination path to check out to. This method will parse OGNL variables.
+		 * 
+		 * @return the destination path
+		 */
 		private String getActualDestPath() {
 			return OgnlHelper.evaluateScheduleValue(getDestPath());
 		}
 
+		/**
+		 * Sets the destination path to check out to.
+		 * 
+		 * @param destPath the destination path
+		 */
 		public void setDestPath(String destPath) {
 			this.destPath = destPath;
 		}
 
-		public com.luntsys.luntbuild.facades.lb12.ModuleFacade getFacade() {
+	    /**
+	     * @inheritDoc
+	     * @see StarteamModuleFacade
+	     */
+		public ModuleFacade getFacade() {
 			StarteamModuleFacade facade = new StarteamModuleFacade();
 			facade.setStarteamView(getStarteamView());
 			facade.setDestPath(getDestPath());
@@ -735,7 +953,12 @@ public class StarteamAdaptor extends Vcs {
 			return facade;
 		}
 
-		public void setFacade(com.luntsys.luntbuild.facades.lb12.ModuleFacade facade) {
+	    /**
+	     * @inheritDoc
+	     * @throws RuntimeException if the facade is not an <code>StarteamModuleFacade</code>
+	     * @see StarteamModuleFacade
+	     */
+		public void setFacade(ModuleFacade facade) {
 			if (facade instanceof StarteamModuleFacade) {
 				StarteamModuleFacade starteamModuleFacade = (StarteamModuleFacade) facade;
 				setStarteamView(starteamModuleFacade.getStarteamView());
@@ -748,7 +971,12 @@ public class StarteamAdaptor extends Vcs {
 		}
 	}
 
-	public void saveToFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
+    /**
+     * @inheritDoc
+     * @see StarteamAdaptorFacade
+     */
+	public void saveToFacade(VcsFacade facade) {
+    	// TODO throw RuntimeException if the facade is not the right class
 		StarteamAdaptorFacade starteamFacade = (StarteamAdaptorFacade) facade;
 		starteamFacade.setConvertEOL(getConvertEOL());
 		starteamFacade.setPassword(getPassword());
@@ -756,7 +984,12 @@ public class StarteamAdaptor extends Vcs {
 		starteamFacade.setUser(getUser());
 	}
 
-	public void loadFromFacade(com.luntsys.luntbuild.facades.lb12.VcsFacade facade) {
+    /**
+     * @inheritDoc
+     * @throws RuntimeException if the facade is not an <code>StarteamAdaptorFacade</code>
+     * @see StarteamAdaptorFacade
+     */
+	public void loadFromFacade(VcsFacade facade) {
 		if (!(facade instanceof StarteamAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
 		StarteamAdaptorFacade starteamFacade = (StarteamAdaptorFacade) facade;
@@ -766,6 +999,10 @@ public class StarteamAdaptor extends Vcs {
 		setUser(starteamFacade.getUser());
 	}
 
+    /**
+     * @inheritDoc
+     * @see StarteamAdaptorFacade
+     */
 	public VcsFacade constructFacade() {
 		return new StarteamAdaptorFacade();
 	}

@@ -44,15 +44,26 @@ class ProcessDestroyer implements Runnable {
     private class ProcessDestroyerImpl extends Thread {
         private boolean shouldDestroy = true;
 
+        /**
+         * Creates a new process destroyer thread to add or remove a shutdown hook.
+         */
         public ProcessDestroyerImpl() {
             super("ProcessDestroyer Shutdown Hook");
         }
+        /**
+         * Addes or removes the shutdown hook.
+         */
         public void run() {
             if (shouldDestroy) {
                 ProcessDestroyer.this.run();
             }
         }
 
+        /**
+         * Sets if a shutdown hook should be placed.
+         * 
+         * @param shouldDestroy if <code>true</code>, a shutdown hook should be placed
+         */
         public void setShouldDestroy(boolean shouldDestroy) {
             this.shouldDestroy = shouldDestroy;
         }
@@ -107,7 +118,7 @@ class ProcessDestroyer implements Runnable {
 
     /**
      * Removes this <code>ProcessDestroyer</code> as a shutdown hook,
-     * uses reflection to ensure pre-JDK 1.3 compatibility
+     * uses reflection to ensure pre-JDK 1.3 compatibility.
      */
     private void removeShutdownHook() {
         if (removeShutdownHookMethod != null && destroyProcessThread != null) {
@@ -144,8 +155,9 @@ class ProcessDestroyer implements Runnable {
 
     /**
      * Returns whether or not the ProcessDestroyer is registered as
-     * as shutdown hook
-     * @return true if this is currently added as shutdown hook
+     * as shutdown hook.
+     * 
+     * @return <code>true</code> if this is currently added as shutdown hook
      */
     public boolean isAddedAsShutdownHook() {
         return added;

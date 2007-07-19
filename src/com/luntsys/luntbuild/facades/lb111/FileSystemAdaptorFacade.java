@@ -25,28 +25,42 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  
  */
+
 package com.luntsys.luntbuild.facades.lb111;
 
 /**
- * Facade for file system adaptor
+ * File system VCS adaptor facade.
+ * 
  * @author robine shine
+ * @see com.luntsys.luntbuild.vcs.FileSystemAdaptor
  */
 public class FileSystemAdaptorFacade extends VcsFacade {
 	private String sourceDir;
 
+    /**
+     * Gets the corresponding VCS adaptor class name.
+     *
+     * @return the VCS adaptor class name
+     */
+	public String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.FileSystemAdaptor";
+	}
+
 	/**
-	 * Get the source directory of the file system adaptor
-	 * @return source directory of the file system adaptor
+	 * Gets the source directory.
+	 * 
+	 * @return the source directory
 	 */
 	public String getSourceDir() {
 		return sourceDir;
 	}
 
+	/**
+	 * Sets the source directory.
+	 * 
+	 * @param sourceDir the source directory
+	 */
 	public void setSourceDir(String sourceDir) {
 		this.sourceDir = sourceDir;
-	}
-
-	public String getVcsClassName() {
-		return "com.luntsys.luntbuild.vcs.FileSystemAdaptor";
 	}
 }

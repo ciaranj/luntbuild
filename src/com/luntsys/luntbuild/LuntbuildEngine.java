@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild;
 
 import org.acegisecurity.AccessDeniedException;
@@ -33,15 +34,16 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.tapestry.IPage;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.Tapestry;
+import org.apache.tapestry.engine.BaseEngine;
 import org.apache.tapestry.request.ResponseOutputStream;
 import org.apache.tapestry.request.RequestContext;
 
 import javax.servlet.ServletException;
 
 /**
- * customize the engine to do some extra initialization works before handle a request
+ * Customized engine to do some extra initialization work before handling a request.
  */
-public class LuntbuildEngine extends org.apache.tapestry.engine.BaseEngine {
+public class LuntbuildEngine extends BaseEngine {
 	/**
 	 * Comment for <code>serialVersionUID</code>
 	 */
@@ -49,10 +51,20 @@ public class LuntbuildEngine extends org.apache.tapestry.engine.BaseEngine {
 
 	private static Log logger = LogFactory.getLog(LuntbuildEngine.class);
 
+	/**
+	 * @inheritDoc
+	 */
 	protected void setupForRequest(RequestContext requestContext) {
 		super.setupForRequest(requestContext);
 	}
 
+	/**
+	 * Handles access denied exceptions.  All other exceptions are handled by
+	 * {@link BaseEngine#activateExceptionPage(IRequestCycle, ResponseOutputStream, Throwable)}.
+	 * 
+	 * @throws ServletException if unable to render the exception page
+	 * @see org.acegisecurity.AccessDeniedException
+	 */
 	protected void activateExceptionPage(IRequestCycle cycle, ResponseOutputStream output, Throwable cause) throws ServletException {
 		if (cause instanceof AccessDeniedException || cause.getCause() != null && cause.getCause() instanceof AccessDeniedException) {
 			try
