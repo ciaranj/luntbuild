@@ -63,7 +63,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	private IWebdavAuthorization fAuthorize = null;
 	
 
-	public void begin(Principal principal, Hashtable parameters, String defaultStorageLocation, IWebdavAuthorization authorize)
+	public void begin(HttpServletRequest req, Hashtable parameters, String defaultStorageLocation, IWebdavAuthorization authorize)
 			throws WebdavException {
 		if (debug == -1) {
 			String debugString = (String) parameters.get(DEBUG_PARAMETER);
@@ -96,12 +96,17 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 						+ ROOTPATH_PARAMETER);
 			}
 			
+			String servletPath = req.getServletPath();
+			if (!(rootPath.endsWith("/") || rootPath.endsWith("\\")))
+				rootPath += "/";
+			String path = rootPath + servletPath;
 			root = new File(rootPath);
-			if (!root.exists()) {
-				if (!root.mkdirs()) {
-					throw new WebdavException(ROOTPATH_PARAMETER + ": " + root
+			File servletRoot = new File(path);
+			if (!servletRoot.exists()) {
+				if (!servletRoot.mkdirs()) {
+					throw new WebdavException(ROOTPATH_PARAMETER + ": " + servletRoot
 							+ " does not exist and could not be created");
-				}
+				} 
 			}
 			
 			fAuthorize = authorize;

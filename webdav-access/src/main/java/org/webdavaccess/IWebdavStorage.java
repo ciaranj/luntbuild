@@ -41,8 +41,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface IWebdavStorage {
 
-	public static final String WEBDAV_STORAGE_AUTHENTICATION_IMPLEMENTATION = "AuthorizationHandlerImplementation";
-	public static final String WEBDAV_RESOURCE_IMPLEMENTATION = "ResourceHandlerImplementation";
+	public static final String WEBDAV_STORAGE_AUTHENTICATION_IMPLEMENTATION = "webdavAuthorizationImplementation";
+	public static final String WEBDAV_RESOURCE_IMPLEMENTATION = "webdavStoreImplementation";
 	public static final String DEBUG_PARAMETER = "servletDebug";
 
 	
@@ -54,9 +54,8 @@ public interface IWebdavStorage {
      * called by (@link WebdavStoreAdapter} at the beginning of each request.
      * 
      * 
-     * @param principal
-     *            the principal that started this request or <code>null</code>
-     *            if there is non available
+     * @param req
+     *            http request
      * @param parameters
      *            Hashtable containing the parameters' names and associated
      *            values configured in the <init-param> from web.xml
@@ -66,11 +65,11 @@ public interface IWebdavStorage {
      *            Authorization implementation, can be null.
      * @throws WebdavException
      */
-    void begin(Principal principal,  Hashtable parameters, String defaultStorageLocation, IWebdavAuthorization authorize)
+    void begin(HttpServletRequest req,  Hashtable parameters, String defaultStorageLocation, IWebdavAuthorization authorize)
             throws WebdavException;
 
     /**
-     * Checks if authentication information passed in {@link #begin(Service, Principal, Object, LoggerFacade, Hashtable)}
+     * Checks if authentication information passed in {@link #begin}
      * is valid. If not throws an exception.
      * 
      * @param req request to check authentication for

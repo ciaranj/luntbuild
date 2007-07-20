@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import junit.framework.TestCase;
 
 /**
@@ -17,6 +20,8 @@ import junit.framework.TestCase;
  */
 public class TestWebdavClient extends TestCase {
 
+	private static Log log = LogFactory.getLog(TestWebdavClient.class);
+	
 	private static final String webdavUrl = "http://localhost:8080/webdav-access/webdav";
 	/**
 	 * @param arg0
@@ -27,8 +32,6 @@ public class TestWebdavClient extends TestCase {
 
 	private static final WebdavClient webdavClient;
 
-	private static boolean isConnected = false; // Change to true to test, webdav has to be available
-	
 	static {
 		webdavClient = new WebdavClient();
 		File f = new File("src/test/uploaded.txt");
@@ -61,7 +64,6 @@ public class TestWebdavClient extends TestCase {
 	 * Test method for {@link com.insightful.splusserver.api.storage.ClientStorage#uploadFile(java.lang.String, java.io.File)}.
 	 */
 	public void testUploadFile() {
-		if (!isConnected) return;
 		try {
 			boolean status = webdavClient.doUploadFile(webdavUrl + "/uploaded.txt", new File("src/test/uploaded.txt"));
 			assertTrue("testUploadFile() - uploaded.txt", status);
@@ -74,7 +76,6 @@ public class TestWebdavClient extends TestCase {
 	 * Test method for {@link com.insightful.splusserver.api.storage.ClientStorage#downloadFile(java.lang.String, java.io.File)}.
 	 */
 	public void testDownloadFile() {
-		if (!isConnected) return;
 		try {
 			boolean status = webdavClient.doDownloadFile(webdavUrl + "/uploaded.txt", new File("src/test/downloaded.txt"));
 			assertTrue("testDownloadFile() - downloaded.txt", status);
@@ -93,7 +94,6 @@ public class TestWebdavClient extends TestCase {
 	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#createFolder(java.lang.String, java.lang.String)}.
 	 */
 	public void testCreateFolder() {
-		if (!isConnected) return;
 		try {
 			String dirname = new Date().toString().replaceAll(" ", "_").replaceAll(":", "_");
 			boolean status = webdavClient.createFolder(webdavUrl + "/" + dirname);
@@ -107,7 +107,6 @@ public class TestWebdavClient extends TestCase {
 	 * Test method for {@link com.insightful.splusserver.api.storage.ClientStorage#getList(java.lang.String)}.
 	 */
 	public void testGetList() {
-		if (!isConnected) return;
 		try {
 			Vector results = webdavClient.getList(webdavUrl);
 			assertTrue("testGetList()", results.size() > 0);
@@ -124,7 +123,6 @@ public class TestWebdavClient extends TestCase {
 	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#copy(java.lang.String, java.lang.String, boolean)}.
 	 */
 	public void testCopy() {
-		if (!isConnected) return;
 		try {
 			boolean status = webdavClient.createFolder(webdavUrl + "/fromcopytest");
 			status = webdavClient.createFolder(webdavUrl + "/tocopytest");
@@ -142,7 +140,6 @@ public class TestWebdavClient extends TestCase {
 	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#move(java.lang.String, java.lang.String, boolean)}.
 	 */
 	public void testMove() {
-		if (!isConnected) return;
 		try {
 			String filename = new Date().toString().replaceAll(" ", "_").replaceAll(":", "_") + ".txt";
 			boolean status = webdavClient.doUploadFile(webdavUrl + "/fromcopytest/" + filename, new File("src/test/uploaded.txt"));
@@ -160,7 +157,6 @@ public class TestWebdavClient extends TestCase {
 	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#delete(java.lang.String)}.
 	 */
 	public void testDelete() {
-		if (!isConnected) return;
 		try {
 			String dirname = new Date().toString().replaceAll(" ", "_").replaceAll(":", "_");
 			String url = webdavUrl + "/" + dirname;
@@ -178,7 +174,6 @@ public class TestWebdavClient extends TestCase {
 	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#findProperties(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	public void testFindProperties() {
-		if (!isConnected) return;
 		String[] propNames = new String[] {"resourcetype"};
 		try {
 			Vector results = webdavClient.findProperties(webdavUrl + "/fromcopytest", propNames);
@@ -192,7 +187,6 @@ public class TestWebdavClient extends TestCase {
 	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#setProperties(java.lang.String, java.lang.String[], java.lang.String[])}.
 	 */
 	public void testSetProperties() {
-		if (!isConnected) return;
 		String[] propNames = new String[] {"propname1", "propname2", "propname3"};
 		String[] propValues = new String[] {"propvalue1", "propvalue2", "propvalue3"};
 		try {

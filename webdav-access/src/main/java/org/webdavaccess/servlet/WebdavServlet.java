@@ -280,7 +280,7 @@ public class WebdavServlet extends HttpServlet {
 		}
 
 		try {
-			fStore.begin(req.getUserPrincipal(), fParameter, getServletContext().getRealPath("/"), fAuthorize);
+			fStore.begin(req, fParameter, getServletContext().getRealPath("/"), fAuthorize);
 			fStore.checkAuthentication(req);
 			resp.setStatus(WebdavStatus.SC_OK);
 

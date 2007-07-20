@@ -14,11 +14,19 @@
 		<servlet-name>webdav-access</servlet-name>
 		<servlet-class>org.webdavaccess.servlet.WebdavServlet</servlet-class>
 		<init-param>
-			<param-name>webdavStore</param-name>
+			<param-name>webdavStoreImplementation</param-name>
 			<param-value>org.webdavaccess.LocalFileSystemStorage</param-value>
 			<description>
 				name of the class that implements
 				org.webdavaccess.IWebdavStorage
+			</description>
+		</init-param>
+		<init-param>
+			<param-name>webdavAuthorizationImplementation</param-name>
+			<param-value></param-value>
+			<description>
+				name of the class that implements
+				org.webdavaccess.IWebdavAuthorization
 			</description>
 		</init-param>
 		<init-param>
@@ -67,11 +75,17 @@
 		<security-constraint>
 		<web-resource-collection>
 		<web-resource-name>The Entire Web Application</web-resource-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/webdav/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 		<role-name>webdav</role-name>
 		</auth-constraint>
+	-->
+        <!-- force https -->
+    <!--
+        <user-data-constraint>
+           <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
 		</security-constraint>
 		
 		<login-config>

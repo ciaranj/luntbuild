@@ -21,10 +21,25 @@
 	    <junitVersion>3.8.1</junitVersion>
 	    <log4jVersion>1.2.14</log4jVersion>
     	<commonsHttpclientVersion>3.0</commonsHttpclientVersion>
+    	<dom4jVersion>1.6.1</dom4jVersion>
+    	<jdomVersion>1.0</jdomVersion>
 	</properties>
 	
 	<build>
 		<plugins>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>javadoc</id>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+	        </plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -69,19 +84,21 @@
 								<jar basedir="target/classes" destfile="target/${artifactId}-${version}-client.jar">
 								</jar>
 								<echo>
-									Creating archive of 2 jar files to be installed in WEB-INF/lib
+									Creating archive of jar files to be installed in WEB-INF/lib
 								</echo>
 								<copy todir="target" preservelastmodified="true">
 									    <fileset dir="target/${artifactId}-${version}/WEB-INF/lib">
-									      <include name="slide-webdavlib*.jar"/>
+									      <include name="*.jar"/>
 									    </fileset>
 								</copy>
 								<zip destfile="target/${artifactId}-${version}-install.zip">
-									<zipfileset dir="target" prefix="" includes="${artifactId}-${version}-client.jar"/>
-									<zipfileset dir="target" prefix="" includes="slide-webdavlib*.jar"/>
+									<zipfileset dir="target" prefix="" includes="*.jar"/>
 								</zip>
 								<delete>
-									<fileset dir="target" includes="slide-webdavlib*.jar"/>
+									<fileset dir="target">
+										<include name="*.jar"/>
+									    <exclude name="${artifactId}*.jar"/>
+									</fileset>
 								</delete>
 								<echo>
 									Creating archive files with complete project
@@ -102,6 +119,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 	<repositories>
 		<repository>
 			<id>central</id>
@@ -123,6 +141,11 @@
 	      <artifactId>junit</artifactId>
 	      <version>${junitVersion}</version>
 	      <scope>test</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>jdom</groupId>
+	      <artifactId>jdom</artifactId>
+	      <version>${jdomVersion}</version>
 	    </dependency>
 	    <dependency>
 	      <groupId>commons-logging</groupId>

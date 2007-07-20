@@ -62,7 +62,7 @@ public class WebdavClient {
 	static {
 		System.setProperty(logging + ".Log", logging + ".impl.Log4JLogger");
 		System.setProperty("log4j.logger.org.apache.commons.httpclient", "error");
-		System.setProperty(logging + ".logging.simplelog.showdatetime", "true");
+		System.setProperty(logging + ".simplelog.showdatetime", "true");
 		System.setProperty(logging + ".simplelog.log.httpclient.wire", "error");
 		System.setProperty(logging + ".simplelog.log.org.apache.commons.httpclient", "error");
 	}
@@ -258,7 +258,7 @@ public class WebdavClient {
 	 * @param responseBodyFileName
 	 * @param requestHeaderNames
 	 * @param requestHeaderValues
-	 * @return
+	 * @return true if make new collection (folder)
 	 * @throws WebdavException
 	 */
 	public boolean doMkcol(String uri, String responseBodyFileName, 
@@ -283,10 +283,7 @@ public class WebdavClient {
 	 * Make new collection (folder) MKCOL
 	 * 
 	 * @param uri
-	 * @param responseBodyFileName
-	 * @param requestHeaderNames
-	 * @param requestHeaderValues
-	 * @return
+	 * @return true if folder (collection) created
 	 * @throws WebdavException
 	 */
 	public boolean createFolder(String uri) throws WebdavException {
