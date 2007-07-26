@@ -53,8 +53,6 @@ import java.util.Date;
  */
 public abstract class ManualBuildEditor extends BaseComponent implements PageDetachListener {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
     /**
 	 * Which page does the user trigger manual build from
 	 */
@@ -145,7 +143,7 @@ public abstract class ManualBuildEditor extends BaseComponent implements PageDet
 			}
 		} else if (getBuildTiming() == com.luntsys.luntbuild.facades.Constants.BUILD_TIMING_AT){
 			try{
-				Date startTime = DATE_FORMAT.parse(getBuildTime());
+					Date startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(getBuildTime());
 				trigger.setStartTime(startTime);
 			} catch (ParseException e){
 				setErrorMsg("Value of the property \"at\" is invalid: " + e.getMessage());

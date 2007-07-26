@@ -62,8 +62,6 @@ public class PerforceAdaptor extends Vcs {
      * Keep tracks of version of this class, used when do serialization-deserialization
      */
     static final long serialVersionUID = 1;
-    private static final SimpleDateFormat P4_DATE_FORMAT =
-            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static final String clientNamePattern = "^//([^\\s/]+)/";
 
     /**
@@ -1004,6 +1002,7 @@ public class PerforceAdaptor extends Vcs {
      * @inheritDoc
      */
     public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd:HH:mm:ss");
         String workingDir = workingSchedule.getWorkDirRaw();
         final Revisions revisions = new Revisions();
         revisions.addLog(this.getClass().getName(), toString());
@@ -1025,8 +1024,8 @@ public class PerforceAdaptor extends Vcs {
 				continue;
             if (Luntbuild.isEmpty(module.getLabel())) {
                 cmdLine.createArgument().setValue(module.getActualClientPath().replaceFirst(clientNamePattern,
-						"//" + getClient(workingSchedule) + "/") + "@" + P4_DATE_FORMAT.format(sinceDate) +
-						"," + P4_DATE_FORMAT.format(new Date()));
+						"//" + getClient(workingSchedule) + "/") + "@" + format.format(sinceDate) +
+						"," + format.format(new Date()));
             }
         }
 
@@ -1090,7 +1089,7 @@ public class PerforceAdaptor extends Vcs {
                     author = matcher.group(2).trim();
                     revisions.getChangeLogins().add(author);
                     try {
-                        date = P4_DATE_FORMAT.parse(matcher.group(3).trim());
+                        date = format.parse(matcher.group(3).trim());
                     } catch (Exception e) {
                         logger.error("Failed to parse date from Perforce log", e);
                         date = null;
