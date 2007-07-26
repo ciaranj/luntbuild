@@ -68,6 +68,7 @@ import java.util.regex.Pattern;
  * @author robin shine
  */
 public class CvsAdaptor extends Vcs {
+	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	/**
 	 * Keep tracks of version of this class, used when do serialization-deserialization
 	 */
@@ -575,13 +576,14 @@ public class CvsAdaptor extends Vcs {
 		envs.addVariable(var);
 		Commandline cmdLine = buildCvsExecutable();
 
-		if (!isDisableHistoryCmd()) {
+		final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+        if (!isDisableHistoryCmd()) {
 			final boolean commitsHappened[] = new boolean[1];
 			commitsHappened[0] = true;
 			cmdLine.clearArgs();
 			cmdLine.createArgument().setValue("-d" + getActualCvsRoot());
 			cmdLine.createArgument().setLine("-q history -c -a");
-			cmdLine.createArgument().setValue("-D" + CMD_DATE_FORMAT.format(sinceDate));
+			cmdLine.createArgument().setValue("-D" + format.format(sinceDate));
 			new MyExecTask("history", antProject, null, cmdLine, envs, null, -1) {
 				public void handleStdout(String line) {
 					if (line.equals("No records selected."))
@@ -612,7 +614,7 @@ public class CvsAdaptor extends Vcs {
 					cmdLine.createArgument().setLine("-q log -N");
 				else
 					cmdLine.createArgument().setLine("-q log -S -N");
-				cmdLine.createArgument().setValue("-d>" + CMD_DATE_FORMAT.format(sinceDate));
+				cmdLine.createArgument().setValue("-d>" + format.format(sinceDate));
 				if (Luntbuild.isEmpty(module.getBranch()))
 					cmdLine.createArgument().setValue("-b");
 				else
@@ -677,13 +679,14 @@ public class CvsAdaptor extends Vcs {
         }
         envs.addVariable(var);
         Commandline cmdLine = buildCvsExecutable();
+		final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         if (!isDisableHistoryCmd()) {
             antProject.log("History command enabled.");
             final boolean commitsHappened[] = new boolean[1];
             commitsHappened[0] = true;
             cmdLine.createArgument().setValue("-d" + getActualCvsRoot());
             cmdLine.createArgument().setLine("-q history -c -a");
-            cmdLine.createArgument().setValue("-D" + CMD_DATE_FORMAT.format(sinceDate));
+			cmdLine.createArgument().setValue("-D" + format.format(sinceDate));
             new MyExecTask("history", antProject, null, cmdLine, envs, null, -1) {
                 public void handleStdout(String line) {
                     if (line.equals("No records selected."))
@@ -730,7 +733,7 @@ public class CvsAdaptor extends Vcs {
                     cmdLine.createArgument().setLine("-q log -N");
                 else
                     cmdLine.createArgument().setLine("-q log -S -N");
-                cmdLine.createArgument().setValue("-d>" + CMD_DATE_FORMAT.format(sinceDate));
+				cmdLine.createArgument().setValue("-d>" + format.format(sinceDate));
                 if (Luntbuild.isEmpty(module.getBranch()))
                     cmdLine.createArgument().setValue("-b");
                 else

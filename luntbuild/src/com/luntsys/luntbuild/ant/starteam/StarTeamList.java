@@ -188,11 +188,9 @@ public class StarTeamList extends TreeBasedTask {
         }
     }
 
-    private static final SimpleDateFormat SDF =
-        new SimpleDateFormat("yyyy-MM-dd hh:mm:ss zzz");
-
     protected void list(File reposFile, java.io.File localFile)
             throws IOException {
+        SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss zzz");
         StringBuffer b = new StringBuffer();
         int status = reposFile.getStatus();
         java.util.Date displayDate = null;

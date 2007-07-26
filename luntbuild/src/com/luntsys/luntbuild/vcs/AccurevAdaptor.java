@@ -41,12 +41,13 @@ import java.util.List;
  * @author Jason Carreira <jcarreira@eplus.com>
  */
 public class AccurevAdaptor extends Vcs {
+    /** Date format for AccuRev. */
+    private static final String ACCUREV_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
+    
     /**
      * Keep tracks of version of this class, used when do serialization-deserialization
      */
     static final long serialVersionUID = 23L;
-    /** Date format for AccuRev. */
-    public static final SimpleDateFormat ACCUREV_DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	private String user;
 	private String password;
@@ -248,7 +249,7 @@ public class AccurevAdaptor extends Vcs {
         antProject.log("Getting Revisions... ");
         AccurevHelper.setUser(user, password, antProject);
         AccurevHelper.syncTime(antProject);
-
+        final SimpleDateFormat format = new SimpleDateFormat(ACCUREV_DATE_FORMAT);
         final Revisions revisions = new Revisions();
         revisions.addLog(this.getClass().getName(), toString());
         revisions.getChangeLogs().add("*************************************************************");
@@ -266,7 +267,7 @@ public class AccurevAdaptor extends Vcs {
             cmdLine.createArgument().setLine("-p " + module.getActualDepot());
             cmdLine.createArgument().setLine("-s " + module.getActualBackingStream());
             cmdLine.createArgument().setLine("-k promote");
-            cmdLine.createArgument().setLine("-t \"now-" + ACCUREV_DATE_FORMAT.format(sinceDate) + "\"");
+            cmdLine.createArgument().setLine("-t \"now-" + format.format(sinceDate) + "\"");
             cmdLine.createArgument().setValue("-fx");
             Document doc = AccurevHelper.buildResponseDocument(cmdLine, antProject);
             if (doc == null) {
@@ -287,8 +288,7 @@ public class AccurevAdaptor extends Vcs {
                 long timeVal = Long.parseLong(transaction.attributeValue("time"));
                 timeVal = timeVal * 1000; // Accurev returns time in seconds
                 Date transDate = new Date(timeVal);
-                String dateString = ACCUREV_DATE_FORMAT.format(transDate);
-
+                String dateString = format.format(transDate);
                 final String transactionStr = transaction.attributeValue("id");
                 final long transactionNumber = Long.parseLong(transactionStr);
 

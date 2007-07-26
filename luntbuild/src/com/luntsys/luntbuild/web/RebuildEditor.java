@@ -54,9 +54,7 @@ import java.util.Date;
  */
 public abstract class RebuildEditor extends BaseComponent implements PageDetachListener {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-	private int notifyStrategy;
+    private int notifyStrategy;
 
 	private int postbuildStrategy;
 
@@ -106,7 +104,7 @@ public abstract class RebuildEditor extends BaseComponent implements PageDetachL
 			}
 		} else if (getBuildTiming() == com.luntsys.luntbuild.facades.Constants.BUILD_TIMING_AT){
 			try{
-				Date startTime = DATE_FORMAT.parse(getBuildTime());
+				Date startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(getBuildTime());
 				trigger.setStartTime(startTime);
 			} catch (ParseException e){
 				setErrorMsg("Value of the property \"at\" is invalid: " + e.getMessage());

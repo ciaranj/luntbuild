@@ -659,7 +659,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
         } else {
             cmdLine.createArgument().setLine("-stgloc " + this.viewStgLoc);
         }
-
+        
         cmdLine.createArgument().setValue(isSnapshot() ? workingDir : this.vws);
         new MyExecTask("mkview", antProject, cmdLine, Project.MSG_INFO)
                 .execute();
@@ -920,8 +920,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 if (branch != null) {
                     cmdLine.createArgument().setLine("-branch " + branch);
                 }
+                final SimpleDateFormat format = new SimpleDateFormat("dd-MMMM-yyyy.HH:mm:ss",
+                                                new DateFormatSymbols(Locale.ENGLISH));
                 cmdLine.createArgument().setLine(
-                        "-since " + CMD_DATE_FORMAT.format(sinceDate));
+                        "-since " + format.format(sinceDate));
                 cmdLine.createArgument().setValue(path);
                 final Pattern authorPattern =
                         Pattern.compile("date:(.*)user:(.*)action:(.*)");

@@ -119,12 +119,26 @@ public class Luntbuild {
     /** Block size when operating files */
     public static final int FILE_BLOCK_SIZE = 25000;
 
-    /** Date format for web interface */
-    public static final SimpleDateFormat DATE_DISPLAY_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    /** Date format for the web interface */
+    public static final SynchronizedFormatter DATE_DISPLAY_FORMAT =
+            new SynchronizedFormatter("yyyy-MM-dd HH:mm");
+
     /** ISO date format, used by web feeds */
-    public static final SimpleDateFormat DATE_DISPLAY_FORMAT_ISO =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+    public static final SynchronizedFormatter DATE_DISPLAY_FORMAT_ISO =
+            new SynchronizedFormatter("yyyy-MM-dd'T'HH:mm:ssZ"); 
+
+    /** A synchronized wrapper around SimpleDateFormat */
+    public static class SynchronizedFormatter {
+        SimpleDateFormat delegate;
+        
+        public SynchronizedFormatter(String format) {
+            delegate = new SimpleDateFormat(format);
+        }
+        
+        public String format(Date date) {
+            return delegate.format(date);
+        }
+    }
 
     /** Log4j system log - HTML */
     public static final String log4jFileName = "luntbuild_log.html";

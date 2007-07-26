@@ -64,15 +64,6 @@ public class SvnExeAdaptor extends Vcs {
     static final long serialVersionUID = 1;
 
     private static final String SVN_COMMAND_INPUT = null;
-    private static final SimpleDateFormat INPUT_DATE_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    private static final SimpleDateFormat OUTPUT_DATE_FORMAT =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-    static {
-        INPUT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
-        OUTPUT_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
-    }
 
     private String urlBase;
     private String trunk;
@@ -739,6 +730,11 @@ public class SvnExeAdaptor extends Vcs {
      * @throws RuntimeException if an exception occurs while reading the SVN log
      */
     public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
+        final SimpleDateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        final SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        inFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        outFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        
         String workingDir = workingSchedule.getWorkDirRaw();
         SvnRevisions revisions = new SvnRevisions();
         revisions.addLog(this.getClass().getName(), toString());
@@ -766,8 +762,8 @@ public class SvnExeAdaptor extends Vcs {
                     }
                 }
                 cmdLine.createArgument().setLine("--non-interactive -v --xml -r");
-                cmdLine.createArgument().setValue("{" + INPUT_DATE_FORMAT.format(sinceDate) +
-                        "}:{" + INPUT_DATE_FORMAT.format(new Date()) + "}");
+                cmdLine.createArgument().setValue("{" + inFormat.format(sinceDate) +
+						"}:{" + inFormat.format(new Date()) + "}");
                 final StringBuffer buffer = new StringBuffer();
                 new MyExecTask("log", antProject, workingDir, cmdLine, null, SVN_COMMAND_INPUT, -1) {
                     public void handleStdout(String line) {
@@ -782,7 +778,7 @@ public class SvnExeAdaptor extends Vcs {
                     while (itElement.hasNext()) {
                         Element logEntry = (Element) itElement.next();
                         String dateString = logEntry.element("date").getText();
-                        Date revisionDate = OUTPUT_DATE_FORMAT.parse(dateString.substring(0, dateString.indexOf('Z') - 3));
+                        Date revisionDate = outFormat.parse(dateString.substring(0, dateString.indexOf('Z') - 3));
                         if (revisionDate.before(sinceDate))
                             continue;
                         Element authorElement = logEntry.element("author");
