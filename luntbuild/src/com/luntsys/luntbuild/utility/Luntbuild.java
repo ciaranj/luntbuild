@@ -28,33 +28,53 @@
 
 package com.luntsys.luntbuild.utility;
 
-import com.luntsys.luntbuild.ant.Commandline;
-import com.luntsys.luntbuild.ant.Execute;
-import com.luntsys.luntbuild.builders.AntBuilder;
-import com.luntsys.luntbuild.builders.MavenBuilder;
-import com.luntsys.luntbuild.builders.Maven2Builder;
-import com.luntsys.luntbuild.builders.CommandBuilder;
-import com.luntsys.luntbuild.builders.RakeBuilder;
-import com.luntsys.luntbuild.dao.Dao;
-import com.luntsys.luntbuild.db.User;
-import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.facades.ILuntbuild;
-import com.luntsys.luntbuild.listeners.ListenerSample;
-import com.luntsys.luntbuild.notifiers.BlogNotifier;
-import com.luntsys.luntbuild.notifiers.EmailNotifier;
-import com.luntsys.luntbuild.notifiers.MsnNotifier;
-import com.luntsys.luntbuild.notifiers.JabberNotifier;
-import com.luntsys.luntbuild.notifiers.SametimeNotifier;
-import com.luntsys.luntbuild.security.SecurityHelper;
-import com.luntsys.luntbuild.services.IScheduler;
-import com.luntsys.luntbuild.vcs.*;
-import org.acegisecurity.AuthenticationManager;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import ognl.Ognl;
 import ognl.OgnlException;
+
+import org.acegisecurity.AuthenticationManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.*;
+import org.apache.log4j.Appender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.HTMLLayout;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.tapestry.ApplicationRuntimeException;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.multipart.DefaultMultipartDecoder;
@@ -70,23 +90,37 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import com.luntsys.luntbuild.ant.Commandline;
+import com.luntsys.luntbuild.builders.AntBuilder;
+import com.luntsys.luntbuild.builders.CommandBuilder;
+import com.luntsys.luntbuild.builders.Maven2Builder;
+import com.luntsys.luntbuild.builders.MavenBuilder;
+import com.luntsys.luntbuild.builders.RakeBuilder;
+import com.luntsys.luntbuild.dao.Dao;
+import com.luntsys.luntbuild.db.User;
+import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.facades.ILuntbuild;
+import com.luntsys.luntbuild.listeners.ListenerSample;
+import com.luntsys.luntbuild.notifiers.BlogNotifier;
+import com.luntsys.luntbuild.notifiers.EmailNotifier;
+import com.luntsys.luntbuild.notifiers.JabberNotifier;
+import com.luntsys.luntbuild.notifiers.MsnNotifier;
+import com.luntsys.luntbuild.notifiers.SametimeNotifier;
+import com.luntsys.luntbuild.security.SecurityHelper;
+import com.luntsys.luntbuild.services.IScheduler;
+import com.luntsys.luntbuild.vcs.AccurevAdaptor;
+import com.luntsys.luntbuild.vcs.BaseClearcaseAdaptor;
+import com.luntsys.luntbuild.vcs.CvsAdaptor;
+import com.luntsys.luntbuild.vcs.DynamicClearcaseAdaptor;
+import com.luntsys.luntbuild.vcs.FileSystemAdaptor;
+import com.luntsys.luntbuild.vcs.MksAdaptor;
+import com.luntsys.luntbuild.vcs.PerforceAdaptor;
+import com.luntsys.luntbuild.vcs.StarteamAdaptor;
+import com.luntsys.luntbuild.vcs.SvnAdaptor;
+import com.luntsys.luntbuild.vcs.SvnExeAdaptor;
+import com.luntsys.luntbuild.vcs.UCMClearcaseAdaptor;
+import com.luntsys.luntbuild.vcs.Vcs;
+import com.luntsys.luntbuild.vcs.VssAdaptor;
 
 /**
  * Luntbuild utility class to provide easy access for some commonly used objects and functions.
@@ -309,15 +343,39 @@ public class Luntbuild {
      * Deletes a local directory and all the contents inside of it.
      *
      * @param directory the directory to delete
-     * @throws org.apache.tools.ant.BuildException when delete fails
      */
     public static void deleteDir(String directory) {
+        deleteDirWithExclude(directory, null, false);
+    }
+
+    /**
+     * Deletes a local directory and all the contents inside of it.
+     * 
+     * @param directory
+     *            the directory to delete
+     * @param excludes
+     *            a glob pattern of files that will not be deleted
+     * @param leaveTopLevelFolder
+     *            if true then only the contents of the folder are deleted, if
+     *            false then the top level folder will be deleted too (provided
+     *            no files are excluded)
+     */
+    public static void deleteDirWithExclude(String directory, String excludes,
+            boolean leaveTopLevelFolder) {
         try {
             Delete deleteTask = new Delete();
             deleteTask.setProject(new org.apache.tools.ant.Project());
             deleteTask.getProject().init();
             deleteTask.setDir(new File(directory));
             deleteTask.setFailOnError(false);
+            
+            // pass the excludes pattern, if we have one
+            if (excludes != null && excludes.length() > 0) {
+                deleteTask.setExcludes(excludes);
+            }
+            if (leaveTopLevelFolder) {
+                deleteTask.setIncludes("**/*");
+            }
             deleteTask.execute();
         } catch (Exception e) {
             logger.error("IOException during deleteDir: ", e);

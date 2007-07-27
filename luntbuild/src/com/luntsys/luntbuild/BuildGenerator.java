@@ -622,8 +622,8 @@ public class BuildGenerator implements StatefulJob {
      * @param build the build object
      */
     private void checkoutAndBuild(Build build) {
-        String publishDirPath = build.getPublishDir();
-        String buildLogPath = publishDirPath + File.separator + BuildGenerator.BUILD_LOG;
+        final String publishDirPathSep = build.getPublishDir() + File.separator;
+        String buildLogPath = publishDirPathSep + BuildGenerator.BUILD_LOG;
 
         // create a ant antProject used to receive ant task logs
         Project antProject = Luntbuild.createAntProject();
@@ -631,8 +631,9 @@ public class BuildGenerator implements StatefulJob {
         build.setLogger(buildLogger);
         buildLogger.setDirectMode(false);
         buildLogger.setEmacsMode(false);
+        final Schedule theSchedule = build.getSchedule();
         buildLogger.setMessageOutputLevel(
-                Luntbuild.convertToAntLogLevel(build.getSchedule().getProject().getLogLevel()));
+                Luntbuild.convertToAntLogLevel(theSchedule.getProject().getLogLevel()));
         antProject.addBuildListener(buildLogger);
         PrintStream logStream = null;
         boolean isCheckoutSuccess = false;
@@ -645,8 +646,8 @@ public class BuildGenerator implements StatefulJob {
             buildLogger.setErrorPrintStream(logStream);
 
             // checks if there are any failed dependencies unless build condition is always
-            if (!build.getSchedule().isAlways()) {
-                Schedule notSatisfiedDependentSchedule = build.getSchedule().getNotSatisfiedDependency();
+            if (!theSchedule.isAlways()) {
+                Schedule notSatisfiedDependentSchedule = theSchedule.getNotSatisfiedDependency();
                 if (notSatisfiedDependentSchedule != null) {
                     throw new BuildException("Dependency not satisfied : latest build in schedule \"" +
                             notSatisfiedDependentSchedule.getProject().getName() + "/" +
@@ -657,19 +658,19 @@ public class BuildGenerator implements StatefulJob {
 
             String name = SecurityHelper.getPrincipalAsString();
             if (name != null) {
-                logger.info("User \"" + name + "\" started the build: " + build.getSchedule().getName());
+                logger.info("User \"" + name + "\" started the build: " + theSchedule.getName());
                 antProject.log("User \"" + name + "\" started the build", Project.MSG_INFO);
             }
 
             if (build.isCleanBuild() || build.isRebuild()) {
                 String message = "Cleaning up project work directory \"" +
-                build.getSchedule().getWorkDirRaw() + "\"...";
+                theSchedule.getWorkDirRaw() + "\"...";
                 antProject.log(message, Project.MSG_INFO);
                 logger.info(message);
                 Iterator it = build.getVcsList().iterator();
                 while (it.hasNext()) {
                     Vcs vcs = (Vcs) it.next();
-                    vcs.cleanupCheckout(build.getSchedule(), antProject);
+                    vcs.cleanupCheckout(theSchedule, antProject);
                 }
             }
 
@@ -687,8 +688,8 @@ public class BuildGenerator implements StatefulJob {
                     org.apache.tools.ant.Project.MSG_INFO);
             currentTime = System.currentTimeMillis();
 
-            Luntbuild.createDir(publishDirPath + File.separator + Builder.ARTIFACTS_DIR);
-            Luntbuild.createDir(publishDirPath + File.separator + Builder.JUNIT_HTML_REPORT_DIR);
+            Luntbuild.createDir(publishDirPathSep + Builder.ARTIFACTS_DIR);
+            Luntbuild.createDir(publishDirPathSep + Builder.JUNIT_HTML_REPORT_DIR);
 
             logger.info("Build with defined builders...");
             it = build.getBuilderList().iterator();
@@ -778,16 +779,14 @@ public class BuildGenerator implements StatefulJob {
                     }
                 } else {
                     String message = "Cleaning up project work directory \"" +
-                            build.getSchedule().getWorkDirRaw() + "\" after rebuild...";
+                            theSchedule.getWorkDirRaw() + "\" after rebuild...";
                     antProject.log(message, Project.MSG_INFO);
                     logger.info(message);
                     Iterator it = build.getVcsList().iterator();
                     while (it.hasNext()) {
                         Vcs vcs = (Vcs) it.next();
-                        vcs.cleanupCheckout(build.getSchedule(), antProject);
+                        vcs.cleanupCheckout(theSchedule, antProject);
                     }
-                    // delete the working directory to force a clean build next time
-                    Luntbuild.deleteDir(build.getSchedule().getWorkDirRaw());
                 }
             }
         } catch (Throwable e) {
@@ -804,9 +803,9 @@ public class BuildGenerator implements StatefulJob {
             if (logStream != null)
                 logStream.close();
             build.setEndDate(new Date());
-            String buildXmlPath = publishDirPath + File.separator + BuildGenerator.BUILD_XML_LOG;
-            String buildHtmlPath = publishDirPath + File.separator + BuildGenerator.BUILD_HTML_LOG;
-            String buildTextPath = publishDirPath + File.separator + BuildGenerator.BUILD_LOG;
+            String buildXmlPath = publishDirPathSep + BuildGenerator.BUILD_XML_LOG;
+            String buildHtmlPath = publishDirPathSep + BuildGenerator.BUILD_HTML_LOG;
+            String buildTextPath = publishDirPathSep + BuildGenerator.BUILD_LOG;
 
             buildLogger.logHtml(buildXmlPath, Luntbuild.installDir + "/log.xsl", buildHtmlPath, buildTextPath);
             build.removeLogger();

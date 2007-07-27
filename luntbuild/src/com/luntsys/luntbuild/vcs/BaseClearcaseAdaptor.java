@@ -96,8 +96,9 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 		if (loadElements.size() == 0)
 			throw new BuildException("ERROR: No elements configured for load in the view config spec!");
 		if (build.isCleanBuild() || build.isRebuild()) {
+            antProject.log("Cleaning view...", Project.MSG_INFO);
+            Luntbuild.deleteDirWithExclude(workingDir, "view.dat", true); 
 			ensureViewPresent(build.getSchedule(), antProject);
-			Luntbuild.deleteDir(workingDir); // delete view path before create snapshot view
 			antProject.log("Retrieving source code from Clearcase...", Project.MSG_INFO);
 		} else
 			antProject.log("Updating source code from Clearcase...", Project.MSG_INFO);
@@ -225,16 +226,7 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	}
 
 	protected void prepForHistory(Schedule workingSchedule, Project antProject, String workingDir) {
-        try {
-			setCcViewCfgSpec(workingSchedule, viewCfgSpec, -1, antProject);
-		} catch (BuildException e) {
-			antProject.log("Failed to update the work directory with current config spec, " +
-					"try to re-create work directory...", Project.MSG_INFO);
-			cleanupCheckout(workingSchedule, antProject);
-			Luntbuild.deleteDir(workingDir);
-			createCcView(workingSchedule, antProject);
-			setCcViewCfgSpec(workingSchedule, viewCfgSpec, -1, antProject);
-		}
+		setCcViewCfgSpec(workingSchedule, viewCfgSpec, -1, antProject);
     }
 
     protected void saveAdditionalStuffToFacade(VcsFacade facade) {
@@ -254,10 +246,12 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	public void cleanupCheckout(Schedule workingSchedule, Project antProject) {
 		String workingDir = getClearcaseWorkDirRaw(workingSchedule);
 		if (ccViewExists(workingSchedule, antProject)) {
-			deleteCcView(workingDir, antProject);
-			Luntbuild.createDir(workingDir);
-		} else
-			super.cleanupCheckout(workingSchedule, antProject);
+            // View exists, just delete the files from within it
+            Luntbuild.deleteDirWithExclude(workingDir, "view.dat", true);
+		} else {
+            // View doesn't exist, just make sure folder doesn't exist
+            Luntbuild.deleteDir(workingSchedule.getWorkDirRaw());      
+        }
 	}
 
     /**
