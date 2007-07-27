@@ -600,15 +600,23 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
     protected final boolean ccViewExists(final Schedule schedule,
             final Project antProject) {
         if (null == this.m_viewExists) {
-            final Commandline cmdLine = buildCleartoolExecutable();
-            cmdLine.createArgument().setLine("lsview " + getViewName(schedule));
-            try {
-                new MyExecTask("lsview", antProject, cmdLine, Project.MSG_INFO)
-                        .execute();
-                this.m_viewExists = Boolean.TRUE;
-            } catch (final BuildException e) {
+            // first check if the view folder exists, if it doesn't then the
+            // mkview can't possibly return success
+            if (new File(getClearcaseWorkDirRaw(schedule)).exists()) {
+                final Commandline cmdLine = buildCleartoolExecutable();
+                cmdLine.createArgument().setLine("lsview " + getViewName(schedule));
+                try {
+                    new MyExecTask("lsview", antProject, cmdLine,
+                            Project.MSG_INFO).execute();
+                    this.m_viewExists = Boolean.TRUE;
+                } catch (final BuildException e) {
+                    this.m_viewExists = Boolean.FALSE;
+                }
+            } else {
+                // view folder didn't exist so view doesn't exist
                 this.m_viewExists = Boolean.FALSE;
             }
+            
         }
         return this.m_viewExists.booleanValue();
     }
@@ -642,6 +650,13 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
             final Project antProject) {
         final String workingDir = getClearcaseWorkDirRaw(schedule);
         final Commandline cmdLine = buildCleartoolExecutable();
+        
+        // if we have a snapshot view, then we need to make sure the working dir
+        // doesn't exist or else mkview will fail
+        if (isSnapshot()) {
+            Luntbuild.deleteDir(workingDir); 
+        }
+        
         cmdLine.createArgument().setLine("mkview");
         if (isSnapshot())
         	cmdLine.createArgument().setLine("-snapshot");
