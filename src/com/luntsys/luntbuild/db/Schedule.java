@@ -909,33 +909,37 @@ public class Schedule implements DependentNode, VariableHolder {
 	 * @see BuildParams
 	 */
     public void visit(Object userData) {
-        logger.debug("Visit schedule \"" + getProject().getName() + "/" + getName() + "\"");
-        try {
-            SecurityHelper.runAsSiteAdmin();
-            BuildParams buildParams;
-            if (userData == null)
-                buildParams = getBuildParams();
-            else
-                buildParams = (BuildParams) userData;
-
-            SimpleTrigger trigger = new SimpleTrigger();
-            trigger.setGroup(BuildGenerator.DEPENDENT_GROUP);
-            trigger.setName(constructTriggerName(buildParams));
-            trigger.setRepeatCount(0);
-            trigger.setRepeatInterval(0);
-            trigger.setStartTime(new Date(System.currentTimeMillis()));
-            Luntbuild.getSchedService().scheduleBuild(this, trigger);
-            while (true) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    // ignore
+        if (isDisabled()) {
+            logger.debug("Schedule \"" + getProject().getName() + "/" + getName() + "\" disabled, not visiting");
+        } else {
+            logger.debug("Visit schedule \"" + getProject().getName() + "/" + getName() + "\"");
+            try {
+                SecurityHelper.runAsSiteAdmin();
+                BuildParams buildParams;
+                if (userData == null)
+                    buildParams = getBuildParams();
+                else
+                    buildParams = (BuildParams) userData;
+    
+                SimpleTrigger trigger = new SimpleTrigger();
+                trigger.setGroup(BuildGenerator.DEPENDENT_GROUP);
+                trigger.setName(constructTriggerName(buildParams));
+                trigger.setRepeatCount(0);
+                trigger.setRepeatInterval(0);
+                trigger.setStartTime(new Date(System.currentTimeMillis()));
+                Luntbuild.getSchedService().scheduleBuild(this, trigger);
+                while (true) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        // ignore
+                    }
+                    if (!Luntbuild.getSchedService().isTriggerAvailable(trigger))
+                        break;
                 }
-                if (!Luntbuild.getSchedService().isTriggerAvailable(trigger))
-                    break;
+            } catch (Throwable throwable) {
+                logger.error("Visit of schedule \"" + getProject().getName() + "/" + getName() + "\" failed: " + throwable.getMessage());
             }
-        } catch (Throwable throwable) {
-            logger.error("Visit of schedule \"" + getProject().getName() + "/" + getName() + "\" failed: " + throwable.getMessage());
         }
     }
 
