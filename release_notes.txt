@@ -16,6 +16,7 @@ luntbuild XXXXX Release Notes
 - Fix: Common errors during export or import of configurations will no longer lead to an exception page
 - Fix: (Bug 5877) Solved intermitted failures due to unsynchronized use of SimpleDateFormat
 - Fix: (Bug 5876) Fixed creation of Clearcase UCM and Base Clearcase snapshot views.  Now longer deletes a view and recreates it for a clean build, just the contents of the view.
+- Fix: (Bug 5939) Fixed disabled schedules being triggered by dependency settings, disabled schedules should not run for any reason
 - Other: Greatly improved JavaDoc comments throughout Luntbuild codebase
 
 ==============================================
