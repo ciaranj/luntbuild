@@ -28,8 +28,8 @@
 
 package com.luntsys.luntbuild.facades.lb12;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.luntsys.luntbuild.db.Schedule;
 
@@ -290,24 +290,24 @@ public class ProjectFacade {
         this.notifyUsers = notifyUsers;
     }
 
-	/**
-	 * Gets the list of schedules of this project.
-	 * 
-	 * @return the schedules list of this project
-	 * @see Schedule
+    /**
+     * Gets the list of schedules of this project.
+     * 
+     * @return the schedules list of this project
+     * @see Schedule
      * @since 1.3
-	 */
+     */
     public final List getScheduleList() {
         return this.scheduleList;
     }
 
-	/**
-	 * Sets the list of schedules of this project.
-	 * 
-	 * @param scheduleList the list of schedules
-	 * @see Schedule
+    /**
+     * Sets the list of schedules of this project.
+     * 
+     * @param scheduleList the list of schedules
+     * @see Schedule
      * @since 1.3
-	 */
+     */
     public final void setScheduleList(List scheduleList) {
         this.scheduleList = scheduleList;
     }
