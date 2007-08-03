@@ -412,6 +412,30 @@ public class Project implements AclObjectIdentity, VariableHolder {
 			Builder builder = (Builder) it.next();
 			facade.getBuilderList().add(builder.getFacade());
 		}
+        List projectAdmins = new ArrayList();
+        List projectBuilders = new ArrayList();
+        List projectViewers = new ArrayList();
+        it = getRolesMappings().iterator();
+        while (it.hasNext()) {
+            RolesMapping role = (RolesMapping) it.next();
+            if (role.getRole().getName().equals("LUNTBUILD_PRJ_ADMIN")) {
+                projectAdmins.add(role.getUser().getName());
+            } else if (role.getRole().getName().equals("LUNTBUILD_PRJ_BUILDER")) {
+                projectBuilders.add(role.getUser().getName());
+            } else if (role.getRole().getName().equals("LUNTBUILD_PRJ_VIEWER")) {
+                projectViewers.add(role.getUser().getName());
+            }
+        }
+        facade.setProjectAdmins((String[]) projectAdmins.toArray());
+        facade.setProjectBuilders((String[]) projectBuilders.toArray());
+        facade.setProjectViewers((String[]) projectViewers.toArray());
+        List notifyUsers = new ArrayList();
+        it = getNotifyMappings().iterator();
+        while (it.hasNext()) {
+            NotifyMapping notify = (NotifyMapping) it.next();
+            notifyUsers.add(notify.getUser().getName());
+        }
+        facade.setNotifyUsers((String[]) notifyUsers.toArray());
 		return facade;
 	}
 
