@@ -640,8 +640,6 @@ public class LuntbuildLogger implements BuildLogger {
             	if (pout != null) {
             		pout.close();
             	}
-            	if (xmlSource != null) ((StreamSource)xmlSource).getReader().close();
-            	if (xsltSource != null) ((StreamSource)xsltSource).getReader().close();
             }
         } catch (Throwable e) {
             logHtmlFromText(textFilename, outFilename);
