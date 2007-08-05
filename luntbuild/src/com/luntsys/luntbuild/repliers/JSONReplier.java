@@ -306,7 +306,7 @@ public class JSONReplier extends Replier {
     public String getSystem() {
         String JSONText = "";
         JSONText += "{";
-        JSONText += "\"servletUrl\":\"" + escape((String) Luntbuild.getProperties().get(Constants.SERVLET_URL)) + "\",";
+        JSONText += "\"servletUrl\":\"" + escape((String) Luntbuild.getServletRootUrl()) + "\",";
         JSONText += "\"workingDir\":\"" + escape((String) Luntbuild.getProperties().get(Constants.WORKING_DIR)) + "\",";
         JSONText += "\"publishDir\":\"" + escape((String) Luntbuild.getProperties().get(Constants.PUBLISH_DIR)) + "\",";
         JSONText += "\"pageRefreshInterval\":" + ((String) Luntbuild.getProperties().get(Constants.PAGE_REFRESH_INTERVAL)) + ",";

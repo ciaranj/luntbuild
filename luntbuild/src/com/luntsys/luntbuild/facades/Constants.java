@@ -174,8 +174,6 @@ public class Constants {
     public static final int JABBER_SERVER_TYPE_GOOGLE = 2;
 
 	// System level property name constants
-    /** Name of Luntbuild servlet URL property */
-	public static final String SERVLET_URL = "servletUrl";
     /** Name of default working directory property */
 	public static final String WORKING_DIR = "workingDir";
     /** Name of root publishing directory property */
