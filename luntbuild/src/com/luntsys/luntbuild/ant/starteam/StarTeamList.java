@@ -234,7 +234,12 @@ public class StarTeamList extends TreeBasedTask {
      */
     private class UnmatchedListingMap extends UnmatchedFileMap {
 
-        protected boolean isActive() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 2940838705648345921L;
+
+		protected boolean isActive() {
             return StarTeamList.this.listUncontrolled;
         }
 

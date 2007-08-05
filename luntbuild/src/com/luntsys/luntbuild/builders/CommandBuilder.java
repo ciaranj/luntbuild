@@ -300,7 +300,7 @@ public class CommandBuilder extends Builder {
 	/**
 	 * Selection model used for user interface of <code>waitForFinish</code> property of <code>CommandBuilder</code>.
 	 */
-	class WaitYesNoSelectionModel implements IPropertySelectionModel {
+	static class WaitYesNoSelectionModel implements IPropertySelectionModel {
 		String[] values = {"Yes", "No"};
 
 		/**

@@ -70,10 +70,6 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 	 */
 	static final long serialVersionUID = 1L;
 
-    /** Date format for Clearcase base. */
-	protected static final SimpleDateFormat CMD_DATE_FORMAT =
-			new SimpleDateFormat("dd-MMMM-yyyy.HH:mm:ss", new DateFormatSymbols(Locale.ENGLISH));
-
 	/**
 	 * Server storage location to create clearcase view.
 	 */
@@ -456,6 +452,8 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 }
             } catch (final IOException e) {
                 // ignores
+            } finally {
+            	if (reader != null) try {reader.close();} catch (Exception e) {}
             }
         }
         validateClearcaseAdaptorProperties();
@@ -958,8 +956,10 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                             revisions.getChangeLogins().add(
                                     authorMatcher.group(2).trim());
                             action = authorMatcher.group(3).trim();
+                            /** Date format for Clearcase base. */
                             try {
-                                date = CMD_DATE_FORMAT.parse(authorMatcher.group(1).trim());
+                                date = new SimpleDateFormat("dd-MMMM-yyyy.HH:mm:ss", new DateFormatSymbols(Locale.ENGLISH)).
+                                	parse(authorMatcher.group(1).trim());
                             } catch (Exception e) {
                                 logger.error("Failed to parse date from log", e);
                                 date = null;
@@ -977,6 +977,8 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
             }
         } catch (final IOException e) {
             // ignores
+        } finally {
+        	if (reader != null) try {reader.close();} catch (Exception e) {}
         }
 
         return revisions;

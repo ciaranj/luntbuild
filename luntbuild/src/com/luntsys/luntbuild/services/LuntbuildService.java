@@ -614,9 +614,10 @@ public class LuntbuildService implements ILuntbuild {
     private String[] getFileAsStringArray(File logFile) {
         List logArr = new ArrayList();
         FileReader reader = null;
+        BufferedReader fr = null;
         try {
             reader = new FileReader(logFile);
-            BufferedReader fr = new BufferedReader(reader);
+            fr = new BufferedReader(reader);
             while(fr.ready()) {
                 logArr.add(fr.readLine());
             }
@@ -628,6 +629,8 @@ public class LuntbuildService implements ILuntbuild {
         } finally {
             if (reader != null)
                 try { reader.close(); } catch (Exception e) {/* ignore */}
+                if (fr != null)
+                    try { fr.close(); } catch (Exception e) {/* ignore */}
         }
 
         String[] log = (String[]) logArr.toArray(new String[]{});

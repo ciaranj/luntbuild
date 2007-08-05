@@ -357,7 +357,7 @@ public class PerforceAdaptor extends Vcs {
 	/**
 	 * Selection model used for user interface of <code>PerforceAdaptor</code>.
 	 */
-    class PerforceLineEndSelectionModel implements IPropertySelectionModel {
+    static class PerforceLineEndSelectionModel implements IPropertySelectionModel {
         String[] values = {"local", "unix", "mac", "win", "share"};
 
 		/**
@@ -1137,7 +1137,7 @@ public class PerforceAdaptor extends Vcs {
     /**
      * Selection model used for user interface of <code>PerforceAdaptor</code>.
      */
-    class PerforceWebInterfaceSelectionModel implements IPropertySelectionModel {
+    static class PerforceWebInterfaceSelectionModel implements IPropertySelectionModel {
         String[] values = {"", "P4DB", "P4Web"};
         String[] display_values = {"", "P4DB", "P4Web"};
 

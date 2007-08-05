@@ -28,8 +28,6 @@
 package com.luntsys.luntbuild.web;
 
 import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.facades.SearchCriteria;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.web.components.pagenavigator.PageNavigator;
 import org.apache.tapestry.BaseComponent;

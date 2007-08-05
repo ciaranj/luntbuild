@@ -31,7 +31,6 @@ package com.luntsys.luntbuild.vcs;
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.ant.cvstask.CVSPass;
 import com.luntsys.luntbuild.ant.cvstask.Cvs;
-import com.luntsys.luntbuild.builders.CommandBuilder;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.facades.Constants;
@@ -74,11 +73,6 @@ public class CvsAdaptor extends Vcs {
 	 */
 	static final long serialVersionUID = 1;
 	private static final String passwdFileName = ".cvspass";
-    /** Date format for CVS. */
-	private static final SimpleDateFormat CMD_DATE_FORMAT =
-		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private static final SimpleDateFormat CMD_LOG_DATE_FORMAT =
-		new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private String cvsRoot;
 	private String cvsPassword;
 	/**
@@ -768,7 +762,7 @@ public class CvsAdaptor extends Vcs {
                                             addRevision = true;
                                         } else if (authormatcher.find()) {
                                             try {
-                                                date = CMD_LOG_DATE_FORMAT.parse(authormatcher.group(1).trim());
+                                                date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(authormatcher.group(1).trim());
                                             } catch (Exception e) {
                                                 logger.error("Failed to parse date from CVS log", e);
                                                 date = null;
@@ -814,7 +808,7 @@ public class CvsAdaptor extends Vcs {
                                     addRevision = true;
                                 } else if (authormatcher.find()) {
                                     try {
-                                        date = CMD_LOG_DATE_FORMAT.parse(authormatcher.group(1).trim());
+                                        date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(authormatcher.group(1).trim());
                                     } catch (Exception e) {
                                         logger.error("Failed to parse date from CVS log", e);
                                         date = null;
@@ -864,7 +858,7 @@ public class CvsAdaptor extends Vcs {
                                 addRevision = true;
                             } else if (authormatcher.find()) {
                                 try {
-                                    date = CMD_LOG_DATE_FORMAT.parse(authormatcher.group(1).trim());
+                                    date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(authormatcher.group(1).trim());
                                 } catch (Exception e) {
                                     throw new BuildException("Failed to parse date from CVS log", e);
                                 }
@@ -1204,7 +1198,7 @@ public class CvsAdaptor extends Vcs {
 	/**
 	 * Selection model used for user interface of <code>CvsAdaptor</code>.
 	 */
-	class CvsYesNoSelectionModel implements IPropertySelectionModel {
+	static class CvsYesNoSelectionModel implements IPropertySelectionModel {
 		String[] values = {"no", "yes"};
 
 		/**
@@ -1260,7 +1254,7 @@ public class CvsAdaptor extends Vcs {
 	/**
 	 * Selection model used for user interface of <code>CvsAdaptor</code>.
 	 */
-	class CvsWebInterfaceSelectionModel implements IPropertySelectionModel {
+	static class CvsWebInterfaceSelectionModel implements IPropertySelectionModel {
 		String[] values = {"", "ViewVC", "Chora", "wwCVS"};
 		String[] display_values = {"", "CVSweb / ViewVC (ViewCVS)", "Chora", "wwCVS"};
 

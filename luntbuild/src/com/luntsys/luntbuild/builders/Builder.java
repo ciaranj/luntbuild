@@ -36,7 +36,6 @@ import com.luntsys.luntbuild.utility.*;
 import ognl.Ognl;
 import ognl.OgnlException;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Environment;
@@ -204,6 +203,8 @@ public abstract class Builder implements Serializable {
                 }
             } catch (IOException e) {
                 // ignores
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
             }
         }
         if (!Luntbuild.isEmpty(getBuildSuccessCondition())) {
@@ -350,6 +351,8 @@ public abstract class Builder implements Serializable {
                 }
             } catch (IOException e) {
                 // ignores
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
             }
         }
 

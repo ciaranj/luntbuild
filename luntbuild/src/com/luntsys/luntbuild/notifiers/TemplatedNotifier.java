@@ -117,10 +117,6 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         setTemplateFiles(templatePropertyName);
     }
 
-    private void init() throws Exception {
-        init("");
-    }
-
     /**
      * Processes the template for a build notification.
      * 

@@ -221,7 +221,7 @@ public abstract class TreeBasedTask extends StarTeamTask {
      * if excludes have been specified, emit the list to the log
      */
     protected void logIncludes() {
-        if (this.DEFAULT_INCLUDESETTING != this.includes) {
+        if (DEFAULT_INCLUDESETTING != this.includes) {
             log("  Includes specified: " + this.includes);
         }
     }
@@ -282,7 +282,7 @@ public abstract class TreeBasedTask extends StarTeamTask {
      * if excludes have been specified, emit the list to the log
      */
     protected void logExcludes() {
-        if (this.DEFAULT_EXCLUDESETTING != this.excludes) {
+        if (DEFAULT_EXCLUDESETTING != this.excludes) {
             log("  Excludes specified: " + this.excludes);
         }
     }

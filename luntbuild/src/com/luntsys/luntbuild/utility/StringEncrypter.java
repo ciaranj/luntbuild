@@ -177,6 +177,11 @@ public class StringEncrypter {
     public static class EncryptionException extends Exception
     {
         /**
+		 * 
+		 */
+		private static final long serialVersionUID = 7299528354030302859L;
+
+		/**
          * Constructs a new encryption exception with the specified cause.
          * 
          * @param t the cause. The cause is saved for later retrieval by the 

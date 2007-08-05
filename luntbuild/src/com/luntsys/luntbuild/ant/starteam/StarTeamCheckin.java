@@ -309,7 +309,13 @@ public class StarTeamCheckin extends TreeBasedTask {
      * handles the deletion of uncontrolled items
      */
     private class CheckinMap extends UnmatchedFileMap {
-        protected boolean isActive() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 5881931225605949631L;
+
+
+		protected boolean isActive() {
             return StarTeamCheckin.this.addUncontrolled;
         }
 

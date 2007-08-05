@@ -227,7 +227,7 @@ public class StarteamAdaptor extends Vcs {
 	/**
 	 * Selection model used for user interface of <code>StarteamAdaptor</code>.
 	 */
-    class StarteamLineEndSelectionModel implements IPropertySelectionModel {
+    static class StarteamLineEndSelectionModel implements IPropertySelectionModel {
         String[] values = {"yes", "no"};
 
 		/**

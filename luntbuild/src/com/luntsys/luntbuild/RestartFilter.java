@@ -39,9 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
-
-import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.ui.rememberme.TokenBasedRememberMeServices;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

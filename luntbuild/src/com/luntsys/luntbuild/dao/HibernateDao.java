@@ -50,6 +50,7 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.io.File;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -813,6 +814,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             throw new AccessDeniedException("Access denied!");
         if (searchCriteria == null) return;
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
+        PreparedStatement pstmt = null;
         try {
             // first move all matching build's publish directory to destination schedule's publish directory
             Schedule schedule = loadSchedule(scheduleId);
@@ -829,8 +831,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                 builds.add(build);
             }
             Connection connection = session.connection();
-            PreparedStatement pstmt =
-                connection.prepareStatement("update LB_BUILD set FK_SCHEDULE_ID = ? where ID = ?");
+            pstmt = connection.prepareStatement("update LB_BUILD set FK_SCHEDULE_ID = ? where ID = ?");
             it = builds.iterator();
             while (it.hasNext()) {
                 Build build = (Build) it.next();
@@ -847,6 +848,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         } catch (SQLException e) {
             logger.error("Error in moveBuilds: ", e);
             throw SessionFactoryUtils.convertHibernateAccessException(new HibernateException(e));
+        } finally {
+        	if (pstmt != null) try{pstmt.close();} catch (Exception e) {}
         }
     }
 
@@ -921,10 +924,10 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
      */
     public void processUnfinishedBuilds() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
+        PreparedStatement pstmt = null;
         try {
             Connection connection = session.connection();
-            PreparedStatement pstmt =
-                connection.prepareStatement("update LB_BUILD set STATUS = ?, END_DATE = ? " +
+            pstmt = connection.prepareStatement("update LB_BUILD set STATUS = ?, END_DATE = ? " +
                     "where STATUS  = ?");
             pstmt.setInt(1, Constants.BUILD_STATUS_FAILED);
             pstmt.setTimestamp(2, new Timestamp(new Date().getTime()));
@@ -936,6 +939,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         } catch (SQLException e) {
             logger.error("Error in processUnfinishedBuilds: ", e);
             throw SessionFactoryUtils.convertHibernateAccessException(new HibernateException(e));
+        } finally {
+        	if (pstmt != null) try{pstmt.close();} catch (Exception e) {}
         }
     }
 
@@ -944,10 +949,10 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
      */
     public void processUnfinishedSchedules() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
+        PreparedStatement pstmt = null;
         try {
             Connection connection = session.connection();
-            PreparedStatement pstmt =
-                connection.prepareStatement("update LB_SCHEDULE set STATUS = ?, STATUS_DATE = ? " +
+            pstmt = connection.prepareStatement("update LB_SCHEDULE set STATUS = ?, STATUS_DATE = ? " +
                     "where STATUS  = ?");
             pstmt.setInt(1, Constants.SCHEDULE_STATUS_FAILED);
             pstmt.setTimestamp(2, new Timestamp(new Date().getTime()));
@@ -959,6 +964,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         } catch (SQLException e) {
             logger.error("Error in processUnfinishedSchedules: ", e);
             throw SessionFactoryUtils.convertHibernateAccessException(new HibernateException(e));
+        } finally {
+        	if (pstmt != null) try{pstmt.close();} catch (Exception e) {}
         }
     }
 
@@ -972,6 +979,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         if (!SecurityHelper.isPrjAdministrable(loadSchedule(scheduleId).getProject().getId()))
             throw new AccessDeniedException("Access denied!");
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
+        PreparedStatement pstmt = null;
         try {
             // first move build's publish directory to destination schedule's publish directory
             Schedule schedule = loadSchedule(scheduleId);
@@ -981,8 +989,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                         File.separator + build.getVersion());
 
             Connection connection = session.connection();
-            PreparedStatement pstmt =
-                connection.prepareStatement("update LB_BUILD set FK_SCHEDULE_ID = ? where ID = ?");
+            pstmt = connection.prepareStatement("update LB_BUILD set FK_SCHEDULE_ID = ? where ID = ?");
             pstmt.setLong(1, scheduleId);
             pstmt.setLong(2, buildId);
             pstmt.executeUpdate();
@@ -992,6 +999,8 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         } catch (SQLException e) {
             logger.error("Error in moveBuild: ", e);
             throw SessionFactoryUtils.convertHibernateAccessException(new HibernateException(e));
+        } finally {
+        	if (pstmt != null) try{pstmt.close();} catch (Exception e) {}
         }
     }
 
@@ -1531,8 +1540,13 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     /**
      * Schedule comparator, compares schedules by their name and their project's name.
      */
-    class ScheduleComparator implements java.util.Comparator {
+    static class ScheduleComparator implements java.util.Comparator, Serializable {
     	/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6193017725796941429L;
+
+		/**
     	 * Compares two schedules by their name and their project's name.
     	 * 
     	 * @param o1 the first schedule

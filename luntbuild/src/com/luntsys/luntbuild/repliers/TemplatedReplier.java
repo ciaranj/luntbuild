@@ -5,7 +5,6 @@
 package com.luntsys.luntbuild.repliers;
 
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 
 import ognl.Ognl;
@@ -472,26 +471,6 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
         }
         
         return "[File not found.]";
-    }
-
-    /**
-     * Gets the contents of a URL.
-     * 
-     * @param url the URL
-     * @return the contents of the URL
-     * @throws Exception if the URL cannot be read
-     */
-    private static final String readUrl(String url) throws Exception {
-        URL source = new URL(url);
-        DataInputStream dis = new DataInputStream(source.openStream());
-
-        StringBuffer sbuf = new StringBuffer();
-        int readin = 0;
-        byte[] buf = new byte[1024];
-        while ((readin = dis.read(buf)) > 0) {
-            sbuf.append(new String(buf, 0, readin));
-        }
-        return sbuf.toString();
     }
 
     /**

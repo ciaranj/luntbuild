@@ -747,6 +747,7 @@ public class Build {
      * @see LuntbuildLogger
      */
     public void removeLogger() {
-        loggersById.remove(new Long(this.id));
+    	LuntbuildLogger logger = (LuntbuildLogger)loggersById.remove(new Long(this.id));
+    	if (logger != null) logger.close();
     }
 }

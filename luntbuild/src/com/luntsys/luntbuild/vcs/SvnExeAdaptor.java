@@ -772,8 +772,9 @@ public class SvnExeAdaptor extends Vcs {
                     }
                 }.execute();
                 SAXReader reader = new SAXReader();
+                StringReader rd = new StringReader(buffer.toString());
                 try {
-                    Document doc = reader.read(new StringReader(buffer.toString()));
+                    Document doc = reader.read(rd);
                     Iterator itElement = doc.getRootElement().elementIterator("logentry");
                     while (itElement.hasNext()) {
                         Element logEntry = (Element) itElement.next();
@@ -830,6 +831,8 @@ public class SvnExeAdaptor extends Vcs {
                     throw new RuntimeException(e);
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
+                } finally {
+                	if (rd != null) try {rd.close();} catch (Exception e) {}
                 }
             }
         }
@@ -1120,7 +1123,7 @@ public class SvnExeAdaptor extends Vcs {
     /**
      * Selection model used for user interface of <code>SvnAdaptor</code>.
      */
-    class SvnWebInterfaceSelectionModel implements IPropertySelectionModel {
+    static class SvnWebInterfaceSelectionModel implements IPropertySelectionModel {
         String[] values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
         String[] display_values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
 
@@ -1177,7 +1180,7 @@ public class SvnExeAdaptor extends Vcs {
     /**
      * Revision (or change log) manager for Subversion Executable.
      */
-    public class SvnRevisions extends Revisions {
+    public static class SvnRevisions extends Revisions {
         /**
          * Adds a copyfrom path to the last path of the last entry added.
          * 

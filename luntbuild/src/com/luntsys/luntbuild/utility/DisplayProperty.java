@@ -144,4 +144,10 @@ public abstract class DisplayProperty {
 		}
 		return false;
 	}
+
+	public int hashCode() {
+		int result = 17;
+		if (getValue() != null) result = 37 * result + getValue().hashCode();
+		return result;
+	}
 }

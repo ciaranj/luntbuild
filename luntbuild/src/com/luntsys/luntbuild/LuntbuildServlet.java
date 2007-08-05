@@ -38,5 +38,9 @@ import org.apache.tapestry.ApplicationServlet;
  * @author robin shine
  */
 public class LuntbuildServlet extends ApplicationServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 495878338245253193L;
 	private static Log logger = LogFactory.getLog(LuntbuildServlet.class);
 }

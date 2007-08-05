@@ -19,7 +19,7 @@ import java.net.URL;
  * @author Jason Archer
  */
 public abstract class Replier {
-	protected static Log logger = LogFactory.getLog(Replier.class);
+	protected static final Log logger = LogFactory.getLog(Replier.class);
 
 	/**
 	 * Constants for available methods
@@ -62,6 +62,7 @@ public abstract class Replier {
 	 * @param source the source path
 	 */
 	public void setSource(String source) {
+		if (source == null) return;
 		this.source = source;
 		this.sources = this.source.split("/");
 	}

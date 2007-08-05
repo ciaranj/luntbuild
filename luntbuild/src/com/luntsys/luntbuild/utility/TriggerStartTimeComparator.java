@@ -30,12 +30,18 @@ package com.luntsys.luntbuild.utility;
 
 import org.quartz.Trigger;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * This comparator compares triggers by their start time.
  */
-public class TriggerStartTimeComparator implements Comparator {
+public class TriggerStartTimeComparator implements Comparator, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2289600624016572358L;
 
 	/**
 	 * Compares two trigger by their start time.

@@ -509,6 +509,10 @@ public abstract class Vcs implements Serializable, Cloneable {
 			return false;
 		}
 
+		public int hashCode() {
+			return super.hashCode();
+		}
+
 		/**
 		 * Creates and returns a copy of this object.
 		 * 

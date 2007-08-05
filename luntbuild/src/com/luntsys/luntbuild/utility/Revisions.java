@@ -77,10 +77,6 @@ public class Revisions {
 	 */
 	private boolean fileModified = false;
 
-    /** Date format for entries */
-	private static final SimpleDateFormat ENTRY_DATE_FORMAT =
-			new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-
     /** DocumentBuilder to use when creating the document to start with. */
     private static DocumentBuilder builder = null;
     static {
@@ -208,8 +204,9 @@ public class Revisions {
 
             msg = Luntbuild.xmlEncodeEntities(msg);
             StringBuffer message = new StringBuffer();
+            BufferedReader r = null;
             try {
-                BufferedReader r = new BufferedReader(new StringReader(msg));
+                r = new BufferedReader(new StringReader(msg));
                 String line = r.readLine();
                 boolean first = true;
                 while (line != null) {
@@ -221,6 +218,8 @@ public class Revisions {
             } catch (IOException e) {
                 // shouldn't be possible
                 message.append(msg);
+            } finally {
+            	if (r != null) try {r.close();} catch (Exception e) {}
             }
 
             Text messageText = doc.createCDATASection(message.toString());
@@ -322,7 +321,7 @@ public class Revisions {
         lastEntry.appendChild(authorElement);
         Element dateElement = doc.createElement(DATE_TAG);
         if (date != null)
-            dateElement.appendChild(doc.createCDATASection(ENTRY_DATE_FORMAT.format(date)));
+            dateElement.appendChild(doc.createCDATASection(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(date)));
         lastEntry.appendChild(dateElement);
         lastEntry.appendChild(doc.createElement("tasks"));
         lastEntry.appendChild(doc.createElement("paths"));
@@ -330,8 +329,9 @@ public class Revisions {
         Element messageElement = doc.createElement(MSG_TAG);
         message = Luntbuild.xmlEncodeEntities(message);
         StringBuffer messageBuffer = new StringBuffer();
+        BufferedReader r = null;
         try {
-            BufferedReader r = new BufferedReader(new StringReader(message));
+            r = new BufferedReader(new StringReader(message));
             String line = r.readLine();
             boolean first = true;
             while (line != null) {
@@ -343,6 +343,8 @@ public class Revisions {
         } catch (IOException e) {
             // shouldn't be possible
             messageBuffer.append(message);
+        } finally {
+        	if (r != null) try {r.close();} catch (Exception e) {}
         }
         Text messageText = doc.createCDATASection(messageBuffer.toString());
         messageElement.appendChild(messageText);

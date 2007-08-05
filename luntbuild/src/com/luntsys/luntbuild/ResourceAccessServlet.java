@@ -50,6 +50,10 @@ import java.util.ArrayList;
  * @author robin shine
  */
 public class ResourceAccessServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -819260279056874433L;
 	private static Log logger = LogFactory.getLog(ResourceAccessServlet.class);
 
 	/**
