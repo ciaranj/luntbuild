@@ -1,7 +1,8 @@
 ==============================================
-luntbuild XXXXX Release Notes
+luntbuild 1.5 Release Notes
 ==============================================
 
+- Fix: Closing appropriate IO streams, code cleanup with Findbugs
 - Feature: Revision logs are now parsed into XML
 - Feature: Revision logs from some VCS adaptors (CVS, FileSystem, Perforce, SVN) can be view on the build viewer page
 - Feature: Revision logs for some VCS adaptors (CVS, FileSystem, Perforce, SVN) are now integrated with many kinds of web interfaces, set a web interface and URL in the settings for the VCS adaptor
