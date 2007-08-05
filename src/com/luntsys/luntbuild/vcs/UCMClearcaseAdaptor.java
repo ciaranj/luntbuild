@@ -550,6 +550,8 @@ public class UCMClearcaseAdaptor extends Vcs {
 				}
 			} catch (IOException e) {
 				// ignores
+			} finally {
+				if (reader != null) try {reader.close();} catch (Exception e) {}
 			}
 		}
 	}

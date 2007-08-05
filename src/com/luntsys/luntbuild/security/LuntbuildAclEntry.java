@@ -9,7 +9,11 @@ import org.acegisecurity.acl.basic.AclObjectIdentity;
  * @author alvin shen
  */
 public class LuntbuildAclEntry extends AbstractBasicAclEntry {
-    // Base permissions we permit
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7471186392459828622L;
+	// Base permissions we permit
 	/** Permission, none */
     public static final int NOTHING = 0;
 	/** Permission, project read access */

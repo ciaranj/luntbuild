@@ -9,8 +9,6 @@ import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tapestry.ApplicationRuntimeException;
-
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +23,10 @@ import java.io.IOException;
  * @see Replier
  */
 public class APIServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8592724920337836814L;
 	private static Log logger = LogFactory.getLog(APIServlet.class);
 
 	/**
@@ -38,8 +40,8 @@ public class APIServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 		if (isValid(httpServletRequest.getPathInfo())) {
 			Replier replier = null;
-			String source = null;
-			String method = null;
+			String source = "";
+			String method = "";
 			String notify = httpServletRequest.getParameter("notify");
 
 			if (httpServletRequest.getPathInfo().startsWith("/atom")) {
@@ -76,6 +78,10 @@ public class APIServlet extends HttpServlet {
 			if (hasMethod(source)) {
 				method = source.split("/")[0];
 				source = source.replaceFirst(method + "/?","");
+			}
+			if (replier == null) {
+				logger.error("Unable to get replier");
+				return;
 			}
 			replier.setSource(source);
 			replier.setMethod(method);

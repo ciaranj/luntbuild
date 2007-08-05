@@ -313,6 +313,8 @@ public class AntBuilder extends Builder {
                 }
             } catch (IOException e) {
                 // ignores
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
             }
         }
     }
@@ -340,6 +342,8 @@ public class AntBuilder extends Builder {
                 }
             } catch (IOException e) {
                 // ignores
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
             }
         }
 

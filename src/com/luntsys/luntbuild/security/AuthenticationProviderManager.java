@@ -183,13 +183,11 @@ public class AuthenticationProviderManager extends AbstractAuthenticationManager
             try
             {
                 currentObject = iter.next();
-
-                AuthenticationProvider attemptToCast = (AuthenticationProvider) currentObject;
             }
             catch (ClassCastException cce)
             {
-                throw new IllegalArgumentException("AuthenticationProvider " + currentObject.getClass().getName()
-                        + " must implement AuthenticationProvider");
+            	logger.error("AuthenticationProvider - must implement AuthenticationProvider", cce);
+                throw new IllegalArgumentException("AuthenticationProvider - must implement AuthenticationProvider" + cce.getMessage());
             }
         }
 

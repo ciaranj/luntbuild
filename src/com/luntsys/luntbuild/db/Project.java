@@ -58,6 +58,11 @@ import java.util.*;
  * @author robin shine
  */
 public class Project implements AclObjectIdentity, VariableHolder {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5880116718483855560L;
+
 	private static Log logger = LogFactory.getLog(Project.class);
 
 	private long id;
@@ -537,7 +542,7 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	 * @return <code>true</code> if the VCS contents of this project has changed
      */
     public boolean isVcsModifiedSince(String sinceDate) {
-        Date date = new Date();
+        Date date;
         for (Iterator iter = dateFormats.iterator(); iter.hasNext();) {
             DateFormat df = (DateFormat) iter.next();
 
@@ -868,7 +873,9 @@ public class Project implements AclObjectIdentity, VariableHolder {
 				}
 			} catch (IOException e) {
 				// ignores
-			}
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
+            }
 		}
 		return new Variable(this, name.trim(), "");
 	}
@@ -903,7 +910,9 @@ public class Project implements AclObjectIdentity, VariableHolder {
 				}
 			} catch (IOException e) {
 				// ignores
-			}
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
+            }
 		}
 		if (!varFound)
 			newVariables += name.trim() + "=" + var.getValue() + "\n";

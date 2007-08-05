@@ -315,6 +315,8 @@ public class MavenBuilder extends Builder {
                 }
             } catch (IOException e) {
                 // ignores
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
             }
         }
     }
@@ -342,6 +344,8 @@ public class MavenBuilder extends Builder {
                 }
             } catch (IOException e) {
                 // ignore
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
             }
         }
 

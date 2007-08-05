@@ -848,6 +848,9 @@ public class MksServiceProvider {
 		}
 		catch (IOException io) {
 			return "";
-		}
+        } finally {
+        	if (output != null) try {output.close();} catch (Exception e) {}
+        	if (print != null) try {print.close();} catch (Exception e) {}
+        }
 	}
 }

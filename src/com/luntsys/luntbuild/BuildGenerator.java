@@ -115,7 +115,7 @@ public class BuildGenerator implements StatefulJob {
     /**
      * The global lock used when evaluating version values
      */
-    public static Object versionLock = new Object();
+    public static final Object versionLock = new Object();
 
     /**
      * Triggered by Quartz to execute actual building process.
@@ -392,10 +392,11 @@ public class BuildGenerator implements StatefulJob {
         Element top = (Element) revisions.getLog();
 
         Writer output = null;
+        OutputStream stream = null;
         try {
             // specify output in UTF8 otherwise accented characters will blow
             // up everything
-            OutputStream stream = new FileOutputStream(revisionXmlLogPath);
+            stream = new FileOutputStream(revisionXmlLogPath);
             output = new OutputStreamWriter(stream, "UTF8");
             output.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             output.write("<?xml-stylesheet type=\"text/xsl\" href=\""
@@ -408,6 +409,13 @@ public class BuildGenerator implements StatefulJob {
             if (output != null) {
                 try {
                     output.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+            if (stream != null) {
+                try {
+                	stream.close();
                 } catch (IOException e) {
                     // ignore
                 }
@@ -451,6 +459,8 @@ public class BuildGenerator implements StatefulJob {
              if (pout != null) {
                  pout.close();
              }
+             if (xmlSource != null) try {((StreamSource)xmlSource).getReader().close();} catch (Exception e) {}
+             if (xsltSource != null) try {((StreamSource)xsltSource).getReader().close();} catch (Exception e) {}
         }
     }
 
@@ -816,7 +826,7 @@ public class BuildGenerator implements StatefulJob {
     /**
      * This class receives ant logs and re-directs to log4j loggers.
      */
-    private class Log4jBuildListener extends EmptyBuildListenerImpl {
+    private static class Log4jBuildListener extends EmptyBuildListenerImpl {
         /**
          * Logs a message for an event.
          * 
@@ -840,7 +850,7 @@ public class BuildGenerator implements StatefulJob {
     /**
      * 
      */
-    private class BuildDependencyWalker implements Runnable {
+    private static class BuildDependencyWalker implements Runnable {
         private BuildParams buildParams;
 
         /**

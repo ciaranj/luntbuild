@@ -20,8 +20,6 @@ import com.starbase.starteam.Label;
 import com.starbase.starteam.View;
 import com.starbase.util.OLEDate;
 
-import java.text.SimpleDateFormat;
-
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
@@ -73,10 +71,6 @@ public class StarTeamLabel extends StarTeamTask {
 	 * repository at this time. String should be formatted as "yyyyMMddHHmmss"
 	 */
 	private OLEDate lastBuild = null;
-
-	private static final SimpleDateFormat DATE_FORMAT =
-			new SimpleDateFormat("yyyyMMddHHmmss");
-
 
 	/**
 	 * The name to be given to the label; required.

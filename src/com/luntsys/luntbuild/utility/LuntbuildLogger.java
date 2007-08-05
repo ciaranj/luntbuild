@@ -407,9 +407,9 @@ public class LuntbuildLogger implements BuildLogger {
                     tmp.append(label);
                     label = tmp.toString();
 
+                    BufferedReader r = null;
                     try {
-                        BufferedReader r =
-                                new BufferedReader(new StringReader(event.getMessage()));
+                        r = new BufferedReader(new StringReader(event.getMessage()));
                         String line = r.readLine();
                         boolean first = true;
                         while (line != null) {
@@ -423,6 +423,8 @@ public class LuntbuildLogger implements BuildLogger {
                     } catch (IOException e) {
                         // shouldn't be possible
                         message.append(label).append(event.getMessage());
+                    } finally {
+                    	if (r != null) try {r.close();} catch (Exception e) {}
                     }
                     messageLoggedXml(event, name);
                 } else {
@@ -489,8 +491,9 @@ public class LuntbuildLogger implements BuildLogger {
 
         msg = Luntbuild.xmlEncodeEntities(msg);
         StringBuffer message = new StringBuffer();
+        BufferedReader r = null;
         try {
-            BufferedReader r = new BufferedReader(new StringReader(msg));
+            r = new BufferedReader(new StringReader(msg));
             String line = r.readLine();
             boolean first = true;
             while (line != null) {
@@ -502,6 +505,8 @@ public class LuntbuildLogger implements BuildLogger {
         } catch (IOException e) {
             // shouldn't be possible
             message.append(msg);
+        } finally {
+        	if (r != null) try {r.close();} catch (Exception e) {}
         }
 
         Text messageText = this.doc.createCDATASection(message.toString());
@@ -573,10 +578,11 @@ public class LuntbuildLogger implements BuildLogger {
         	xslUri = xslUri.replaceAll(installDir, Luntbuild.getServletRootUrl());
         }
         Writer output = null;
+        OutputStream stream = null;
         try {
             // specify output in UTF8 otherwise accented characters will blow
             // up everything
-            OutputStream stream = new FileOutputStream(outFilename);
+            stream = new FileOutputStream(outFilename);
             output = new OutputStreamWriter(stream, "UTF8");
             output.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             if (xslUri.length() > 0) {
@@ -595,6 +601,7 @@ public class LuntbuildLogger implements BuildLogger {
                     // ignore
                 }
             }
+            if(stream != null) try {stream.close();} catch (Exception e) {}
         }
     }
 
@@ -633,6 +640,8 @@ public class LuntbuildLogger implements BuildLogger {
             	if (pout != null) {
             		pout.close();
             	}
+            	if (xmlSource != null) ((StreamSource)xmlSource).getReader().close();
+            	if (xsltSource != null) ((StreamSource)xsltSource).getReader().close();
             }
         } catch (Throwable e) {
             logHtmlFromText(textFilename, outFilename);
@@ -648,12 +657,13 @@ public class LuntbuildLogger implements BuildLogger {
     public static void logHtmlFromText(String textFilename, String outFilename) {
 
         PrintStream pout = null;
+        FileReader in = null;
         try {
             pout = new PrintStream(new FileOutputStream(outFilename));
             pout.println("<html>");
             pout.println("<body bgcolor='#FFFFFF' topmargin='6' leftmargin='6'>");
             pout.println("<pre>");
-            FileReader in = new FileReader(textFilename);
+            in = new FileReader(textFilename);
             int ch;
             while ((ch = in.read()) != -1) pout.print((char)ch);
             pout.println("</pre>");
@@ -664,6 +674,7 @@ public class LuntbuildLogger implements BuildLogger {
             if (pout != null) {
                 pout.close();
             }
+            if (in != null) try {in.close();} catch (Exception e) {}
         }
     }
     

@@ -30,6 +30,7 @@ package com.luntsys.luntbuild.utility;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -37,7 +38,12 @@ import java.util.Comparator;
  *
  * @author robin shine
  */
-public class NameComparator implements Comparator{
+public class NameComparator implements Comparator, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2820195295791480935L;
 
 	/**
 	 * Compares two objects by their name property.

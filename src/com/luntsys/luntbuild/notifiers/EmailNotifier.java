@@ -316,7 +316,7 @@ public class EmailNotifier extends TemplatedNotifier {
     /**
      * Selection model used for user interface of <code>EmailNotifier</code>.
      */
-    class EmailYesNoSelectionModel implements IPropertySelectionModel {
+    static class EmailYesNoSelectionModel implements IPropertySelectionModel {
         String[] values = {"no", "yes"};
 
         /**

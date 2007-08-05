@@ -55,13 +55,13 @@ public class Home extends HierarchyPage {
 	public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
 		TabControl tabs = (TabControl) getComponent("tabs");
 		if (parameters == null) { // activated by first enter home page, or by restart session, or page refresh
-			TabPageComponent selectedTab = (TabPageComponent) tabs.getSelectedTab();
+			TabPageComponent selectedTab = tabs.getSelectedTab();
 			if (!(selectedTab instanceof BuildsTab))
 				selectedTab.tabSelected(); // notify selected tab
 		} else {
 			long actionCode = ((Long) parameters[0]).longValue();
 			if (actionCode == SERVICE_PARAMETER_HOME) { // activated by clicking the Home link in the navigation area
-				TabPageComponent selectedTab = (TabPageComponent) tabs.getSelectedTab();
+				TabPageComponent selectedTab = tabs.getSelectedTab();
 				selectedTab.tabSelected();
 			} else if (actionCode == SERVICE_PARAMETER_BUILD) { // try to show a specific build
 				tabs.setSelectedTabId("builds");

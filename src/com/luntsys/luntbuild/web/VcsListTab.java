@@ -184,7 +184,7 @@ public abstract class VcsListTab extends TabPageComponent {
 	 * @return
 	 */
 	public Vcs.Module getNewModule() {
-		Vcs.Module newModule = (Vcs.Module) getVcs().createNewModule();
+		Vcs.Module newModule = getVcs().createNewModule();
 		return newModule;
 	}
 

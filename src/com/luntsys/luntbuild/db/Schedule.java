@@ -1357,7 +1357,9 @@ public class Schedule implements DependentNode, VariableHolder {
     			}
     		} catch (IOException e) {
     			// ignores
-    		}
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
+            }
     	}
     	return new Variable(this, name.trim(), "");
     }
@@ -1392,8 +1394,10 @@ public class Schedule implements DependentNode, VariableHolder {
     			}
     		} catch (IOException e) {
     			// ignores
-    		}
-    	}
+            } finally {
+            	if (reader != null) try{reader.close();} catch (Exception e) {}
+            }
+   	}
     	if (!varFound)
     		newVariables += name.trim() + "=" + var.getValue() + "\n";
     	setVariables(newVariables);

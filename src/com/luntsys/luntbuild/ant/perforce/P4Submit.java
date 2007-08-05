@@ -85,7 +85,7 @@ public class P4Submit extends P4Base {
      */
     public void execute() throws BuildException {
         if (change != null) {
-            execP4Command("submit -c " + change, (P4HandlerAdapter) new P4SubmitAdapter(this));
+            execP4Command("submit -c " + change, new P4SubmitAdapter(this));
         } else {
             //here we'd parse the output from change -o into submit -i
             //in order to support default change.

@@ -79,7 +79,7 @@ public class MksAdaptor extends Vcs {
 	/**
 	 * Selection model used for user interface of <code>MksAdaptor</code>.
 	 */
-	private class MksYesNoSelectionModel implements IPropertySelectionModel {
+	private static class MksYesNoSelectionModel implements IPropertySelectionModel {
 		String[] values = {"no", "yes"};
 
 		/**

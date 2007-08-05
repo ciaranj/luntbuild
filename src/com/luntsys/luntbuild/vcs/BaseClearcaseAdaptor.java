@@ -221,7 +221,9 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 					loadElements.add(matcher.group(1).trim());
 			}
 		} catch (IOException e) {
-		}
+        } finally {
+        	if (reader != null) try {reader.close();} catch (Exception e) {}
+        }
 		return loadElements;
 	}
 

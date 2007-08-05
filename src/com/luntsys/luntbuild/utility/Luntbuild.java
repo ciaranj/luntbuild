@@ -131,11 +131,6 @@ public class Luntbuild {
 	private static final String JDBC_DRIVER_PROPERTY = "jdbc.driverClassName";
 	private static final String HSQLDB_DRIVER = "org.hsqldb.jdbcDriver";
 
-    private static final String VCS_PACKAGE_NAME = "com.luntsys.luntbuild.vcs";
-    private static final String NOTIFIER_PACKAGE_NAME = "com.luntsys.luntbuild.notifiers";
-    private static final String LISTENER_PACKAGE_NAME = "com.luntsys.luntbuild.listeners";
-    private static final String BUILDER_PACKAGE_NAME = "com.luntsys.luntbuild.builders";
-
     /** Location of Spring config file */
     public static final String SPRING_CONFIG_LOCATION = "/WEB-INF/applicationContext.xml";
 
@@ -965,7 +960,7 @@ public class Luntbuild {
         Commandline cmdLine = new Commandline();
         char inputChars[] = input.toCharArray();
         boolean quoted = false;
-        String field = new String("");
+        String field = "";
         for (int i = 0; i < inputChars.length; i++) {
             char inputChar = inputChars[i];
             switch (inputChar) {
@@ -989,7 +984,7 @@ public class Luntbuild {
                                 cmdLine.setExecutable(field);
                             else
                                 cmdLine.createArgument().setValue(field);
-                            field = new String("");
+                            field = "";
                         }
                     }
                     break;
@@ -1225,7 +1220,15 @@ public class Luntbuild {
 
                 // load build informations
                 buildInfos = new Properties();
-                buildInfos.load(new FileInputStream(installDir + "/buildInfo.properties"));
+                FileInputStream is = null;
+                try {
+                	is = new FileInputStream(installDir + "/buildInfo.properties");
+                	buildInfos.load(is);
+                } catch (Exception e) {
+					// TODO: handle exception
+	            } finally {
+	            	if (is != null) try{is.close();} catch (Exception e) {}
+	            }
 
                 // load and configure log4j properties to specify the HTML, TEXT log file
                 setLuntbuildLogs();
@@ -1334,28 +1337,6 @@ public class Luntbuild {
     }
 
     private static void loadBuilders(ServletContext context) {
-/*
-        ClassPackageExplorer pkgExplorer = new SimpleClassPackageExplorer(getPath(context));
-        String[] classNames = pkgExplorer.listPackage(BUILDER_PACKAGE_NAME);
-        Luntbuild.builders = new ArrayList();
-        for (int i = 0; i < classNames.length; i++) {
-            String aClassName = classNames[i];
-            try {
-                Class aClass = Class.forName(aClassName);
-                if (Builder.class.isAssignableFrom(aClass) && !Modifier.isAbstract(aClass.getModifiers())) {
-                    Luntbuild.builders.add(aClass);
-                    logger.info("Builder \"" + aClassName + "\" found");
-                }
-            } catch (Exception e) {
-                logger.fatal("Failed to load class: " + aClassName, e);
-                throw new ApplicationRuntimeException(e);
-            }
-        }
-        if (Luntbuild.vcsAdaptors.size() == 0) {
-            logger.fatal("No builders found in package: \"" + BUILDER_PACKAGE_NAME + "\"");
-            throw new ApplicationRuntimeException("No builders found!");
-        }
-*/
         builders = new ArrayList();
         builders.add(AntBuilder.class);
         builders.add(MavenBuilder.class);
@@ -1365,28 +1346,6 @@ public class Luntbuild {
     }
 
     private static void loadVcsAdaptors(ServletContext context) {
-/*
-        ClassPackageExplorer pkgExplorer = new SimpleClassPackageExplorer(getPath(context));
-        String[] classNames = pkgExplorer.listPackage(VCS_PACKAGE_NAME);
-        Luntbuild.vcsAdaptors = new ArrayList();
-        for (int i = 0; i < classNames.length; i++) {
-            String aClassName = classNames[i];
-            try {
-                Class aClass = Class.forName(aClassName);
-                if (Vcs.class.isAssignableFrom(aClass) && !Modifier.isAbstract(aClass.getModifiers())) {
-                    Luntbuild.vcsAdaptors.add(aClass);
-                    logger.info("Vcs adaptor \"" + aClassName + "\" found");
-                }
-            } catch (Exception e) {
-                logger.fatal("Failed to load class: " + aClassName, e);
-                throw new ApplicationRuntimeException(e);
-            }
-        }
-        if (Luntbuild.vcsAdaptors.size() == 0) {
-            logger.fatal("No Version Control System adaptor found in package: \"" + VCS_PACKAGE_NAME + "\"");
-            throw new ApplicationRuntimeException("No Version Control System adaptor found!");
-        }
-*/
         vcsAdaptors = new ArrayList();
         vcsAdaptors.add(AccurevAdaptor.class);
         vcsAdaptors.add(BaseClearcaseAdaptor.class);
@@ -1403,24 +1362,6 @@ public class Luntbuild {
     }
 
     private static void loadNotifiers(ServletContext context) {
-/*
-        ClassPackageExplorer pkgExplorer = new SimpleClassPackageExplorer(getPath(context));
-        String[] classNames = pkgExplorer.listPackage(NOTIFIER_PACKAGE_NAME);
-        Luntbuild.notifiers = new ArrayList();
-        for (int i = 0; i < classNames.length; i++) {
-            String aClassName = classNames[i];
-            try {
-                Class aClass = Class.forName(aClassName);
-                if (Notifier.class.isAssignableFrom(aClass) && !Modifier.isAbstract(aClass.getModifiers())) {
-                    Luntbuild.notifiers.add(aClass);
-                    logger.info("Notifier \"" + aClassName + "\" found");
-                }
-            } catch (Exception e) {
-                logger.fatal("Failed to load class: " + aClassName, e);
-                throw new ApplicationRuntimeException(e);
-            }
-        }
-*/
         notifiers = new ArrayList();
         notifiers.add(EmailNotifier.class);
         notifiers.add(MsnNotifier.class);
@@ -1437,24 +1378,6 @@ public class Luntbuild {
     }
 
     private static void loadListeners(ServletContext context) {
-/*
-        ClassPackageExplorer pkgExplorer = new SimpleClassPackageExplorer(getPath(context));
-        String[] classNames = pkgExplorer.listPackage(LISTENER_PACKAGE_NAME);
-        Luntbuild.listeners = new ArrayList();
-        for (int i = 0; i < classNames.length; i++) {
-            String aClassName = classNames[i];
-            try {
-                Class aClass = Class.forName(aClassName);
-                if (Listener.class.isAssignableFrom(aClass) && !Modifier.isAbstract(aClass.getModifiers())) {
-                    Luntbuild.listeners.add(aClass);
-                    logger.info("Listener \"" + aClassName + "\" found");
-                }
-            } catch (Exception e) {
-                logger.fatal("Failed to load class: " + aClassName, e);
-                throw new ApplicationRuntimeException(e);
-            }
-        }
-*/
         listeners = new ArrayList();
         listeners.add(ListenerSample.class);
     }
@@ -1482,16 +1405,19 @@ public class Luntbuild {
 				throw new RuntimeException("Failed to load /WEB-INF/jdbc.properties");
 			if (props.getProperty(JDBC_DRIVER_PROPERTY).equals(HSQLDB_DRIVER)) {
 				logger.info("Shutdown database.");
+				Statement stmt = null;
 				try {
 					Class.forName(HSQLDB_DRIVER).newInstance();
 					Connection connection = DriverManager.getConnection("jdbc:hsqldb:" +
 							new File(installDir + "/db/luntbuild").getAbsolutePath(),
 							props.getProperty("jdbc.username"), props.getProperty("jdbc.password"));
-					Statement stmt = connection.createStatement();
+					stmt = connection.createStatement();
 					stmt.executeUpdate("SHUTDOWN");
 					connection.close();
 				} catch (Exception e) {
 					e.printStackTrace();
+				} finally {
+					if (stmt != null) try {stmt.close();} catch (Exception e) {}
 				}
 			}
 		} catch (IOException e) {

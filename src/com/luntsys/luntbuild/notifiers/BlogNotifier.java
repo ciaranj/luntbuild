@@ -9,7 +9,6 @@ import com.luntsys.luntbuild.utility.NotifierProperty;
 import org.apache.tools.ant.Project;
 import org.apache.xmlrpc.XmlRpcClient;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -39,9 +38,6 @@ public class BlogNotifier extends TemplatedNotifier {
     private static final int BLOG_USER     = 3;
     private static final int BLOG_PASSWORD = 4;
     private static final int BLOG_CATEGORY = 5;
-
-    private static final SimpleDateFormat TIME_DISPLAY_FORMAT =
-        new SimpleDateFormat("HH:mm.ssss");
 
     private static HashMap blogTypes = new HashMap();
     static {
@@ -294,7 +290,7 @@ public class BlogNotifier extends TemplatedNotifier {
      * <li>metaweblog</li>
      * </ul></p>
      */
-    public class BlogConnection {
+    public static class BlogConnection {
         private String type;
         private String url;
         private String id;

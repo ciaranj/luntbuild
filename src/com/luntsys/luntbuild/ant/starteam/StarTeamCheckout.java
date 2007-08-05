@@ -557,7 +557,12 @@ public class StarTeamCheckout extends TreeBasedTask {
      * handles the deletion of uncontrolled items
      */
     private class CheckoutMap extends UnmatchedFileMap {
-        protected boolean isActive() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 2241433640452491241L;
+
+		protected boolean isActive() {
             return StarTeamCheckout.this.deleteUncontrolled;
         }
 
@@ -585,11 +590,7 @@ public class StarTeamCheckout extends TreeBasedTask {
                 log("adding " + localFile + " to UnmatchedFileMap",
                     Project.MSG_DEBUG);
 
-                if (localFile.isDirectory()) {
-                    this.put(localFile, "");
-                } else {
-                    this.put(localFile, "");
-                }
+                this.put(localFile, "");
             }
             return this;
         }

@@ -1004,7 +1004,7 @@ public class SvnAdaptor extends Vcs {
     /**
      * Selection model used for user interface of <code>SvnAdaptor</code>.
      */
-    class SvnWebInterfaceSelectionModel implements IPropertySelectionModel {
+    static class SvnWebInterfaceSelectionModel implements IPropertySelectionModel {
         String[] values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
         String[] display_values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
 
@@ -1061,7 +1061,7 @@ public class SvnAdaptor extends Vcs {
     /**
      * Revision (or change log) manager for Subversion.
      */
-    public class SvnRevisions extends Revisions {
+    public static class SvnRevisions extends Revisions {
         /**
          * Adds a copyfrom path to the last path of the last entry added.
          * 
