@@ -48,10 +48,7 @@ public class OPMLReplier extends Replier {
 		String body = "";
 		String footer = "";
 
-		String servletURL = (String) Luntbuild.getProperties().get(Constants.SERVLET_URL);
-		if (servletURL == null) {
-			return "";
-		}
+		String servletURL = (String) Luntbuild.getServletUrl();
 		apiURL = servletURL.replaceAll("app.do","api/rss");
 
 		// Construct feed
