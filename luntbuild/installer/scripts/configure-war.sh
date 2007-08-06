@@ -10,7 +10,9 @@ cd "$INSTALL_PATH/web"
 jar -cvf "$INSTALL_PATH/luntbuild.war" .
 cd "$INSTALL_PATH"
 if [ "$appServerWebapps" != "" ]; then
+if [ "$appServerWebapps" != "." ]; then
 rm -rf "$appServerWebapps/luntbuild"
 cp -f "$INSTALL_PATH/luntbuild.war" "$appServerWebapps/luntbuild.war"
+fi
 fi
 chmod a+x bin/*
