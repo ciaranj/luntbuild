@@ -46,6 +46,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.wc.*;
@@ -67,6 +68,7 @@ public class SvnAdaptor extends Vcs {
 
     static {
         DAVRepositoryFactory.setup();
+        FSRepositoryFactory.setup();
         SVNRepositoryFactoryImpl.setup();
     }
 
