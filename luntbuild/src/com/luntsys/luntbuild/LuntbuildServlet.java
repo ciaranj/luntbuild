@@ -28,9 +28,18 @@
 
 package com.luntsys.luntbuild;
 
+import java.io.IOException;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tapestry.ApplicationServlet;
+
+import com.luntsys.luntbuild.utility.Luntbuild;
 
 /**
  * Customized servlert to provide some extra behaviors during servlet initialization and destruction.
@@ -43,4 +52,11 @@ public class LuntbuildServlet extends ApplicationServlet {
 	 */
 	private static final long serialVersionUID = 495878338245253193L;
 	private static Log logger = LogFactory.getLog(LuntbuildServlet.class);
+	
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Luntbuild.serverName = req.getServerName();
+		Luntbuild.serverPort = req.getServerPort();
+		super.service(req, resp);
+	}
+	
 }

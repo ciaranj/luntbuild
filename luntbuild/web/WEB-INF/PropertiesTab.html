@@ -35,7 +35,7 @@
             <td jwcid="@Any" width="80%" align="left" valign="top" class="ognl:propertyValueCssClass"><p>
                 <input name="textfield3" type="text" class="inputBox" value="ognl:properties.servletUrl" size="75" jwcid="@TextField"/>
                 <br>
-      The servlet url should be specified correctly so Luntbuild can refer to this url in the notification messages. Normally this value should be http://&lt;server&gt;:&lt;port&gt;/luntbuild/app.do, where &lt;server&gt; is your build server name or ip address, and &lt;port&gt; is the port number you use to access Luntbuild. If this property is left empty, Luntbuild will default this value to be &quot;http://&lt;server_ip&gt;:8080/luntbuild/app.do&quot;, where &lt;server_ip&gt; is the ip address of the build server. </p></td>
+      The servlet url should be specified correctly so Luntbuild can refer to this url in the notification messages. Normally this value should be http://&lt;server&gt;:&lt;port&gt;/luntbuild/app.do, where &lt;server&gt; is your build server name or ip address, and &lt;port&gt; is the port number you use to access Luntbuild. If this property is left empty, Luntbuild will default this value to be &quot;http://&lt;server_ip&gt;:&lt;server_port&gt;/luntbuild/app.do&quot;, where &lt;server_ip&gt; is the ip address of the build server. </p></td>
           </tr>
 		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
           <tr>
