@@ -25,6 +25,8 @@ luntbuild 1.5 Release Notes
 - Fix: (Bug 5939) Fixed disabled schedules being triggered by dependency settings, disabled schedules should not run for any reason
 - Fix: (Bug 5873) Updated instructions for ZIP installation
 - Fix: (Bug 5986) Fixed some properties in ProjectFacade for the API that were not being set; projectAdmins, projectBuilders, projectViewers, and notifyUsers
+- Fix: (Bug 4005) Fixed support for the "file://" protocol in SvnAdaptor
+- Fix: (Bug 5967) Fixed orphaned objects being left in database for old versions of MySQL, all tables will be forced to InnoDB format
 - Other: Greatly improved JavaDoc comments throughout Luntbuild codebase
 
 ==============================================
