@@ -243,7 +243,7 @@
                     To disable anonymous login you will have to:
 				</para>
 				<para>
-                Edit &lt;server&gt;/webapps/luntbuild/luntbuild-login.jsp and remove line:
+                Edit &lt;server&gt;/webapps/luntbuild/luntbuild-login.html and remove line:
                 <programlisting>
                 &lt;a href=&quot;app.do?service=reset/Home&amp;relogin=no&quot;&gt;Anonymous&lt;/a&gt;
 				</programlisting>

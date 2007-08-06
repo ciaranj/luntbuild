@@ -17,6 +17,8 @@
         <field type="search" variable="appServerWebapps">
             <description align="left" txt="Application server web applications install directory." id="input.webapps"/>
             <spec txt="Path to war deploy dir:" type="directory" result="directory" size="30" set="">
+                <choice txt="None" value="." os="unix" />
+                <choice txt="None" value="." os="windows" />            	
                 <choice txt="/usr/local/tomcat/webapps"
                     value="/usr/local/tomcat/webapps" os="unix" />
                 <choice txt="/usr/local/jetty-4.2.23/webapps"

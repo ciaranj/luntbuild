@@ -48,8 +48,8 @@
 <para>
     You can login as anonymous user by using one of the following methods:
     <orderedlist numeration="arabic">
-     <listitem><para><emphasis>http://&lt;server&gt;:8080/luntbuild/luntbuild-login.jsp</emphasis> - click on "Login as Anonymous" link</para></listitem>
-     <listitem><para><emphasis>http://&lt;server&gt;:8080/luntbuild/luntbuild-login-anonymous.jsp</emphasis> - automatically redirects to anonymous login</para></listitem>
+     <listitem><para><emphasis>http://&lt;server&gt;:8080/luntbuild/luntbuild-login.html</emphasis> - click on "Login as Anonymous" link</para></listitem>
+     <listitem><para><emphasis>http://&lt;server&gt;:8080/luntbuild/luntbuild-login-anonymous.html</emphasis> - automatically redirects to anonymous login</para></listitem>
      <listitem><para><emphasis>http://&lt;server&gt;:8080/luntbuild/j_acegi_security_check.do?j_username=anonymous&amp;j_password=anonymous</emphasis> - does not need to be registered</para></listitem>
     </orderedlist>
 </para>

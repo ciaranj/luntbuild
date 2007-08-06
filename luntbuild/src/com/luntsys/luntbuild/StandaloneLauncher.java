@@ -4,6 +4,7 @@
 
 package com.luntsys.luntbuild;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.InetAddress;
@@ -14,8 +15,10 @@ import java.net.UnknownHostException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.BasicConfigurator;
+import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
-import org.mortbay.util.InetAddrPort;
+import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.mortbay.jetty.webapp.WebAppContext;
 
 import com.luntsys.luntbuild.utility.Luntbuild;
 
@@ -35,12 +38,22 @@ public class StandaloneLauncher {
      */
     public static void main(String[] args) {
         if (args == null || args.length < 2) {
-            System.err.println("Usage: StandaloneLauncher host port [stopport]");
+            System.err.println("Usage: StandaloneLauncher host port [stopport] [base]");
             System.exit(-1);
         }
 
         try {
-            Luntbuild.setLuntbuildLogs(".", "log4j.properties");
+        	File l = new File("log4j.properties");
+        	if (l.exists()) {
+        		Luntbuild.setLuntbuildLogs(".", "log4j.properties");
+        	} else {
+        		l = new File("src/log4j.properties");
+            	if (l.exists()) {
+            		Luntbuild.setLuntbuildLogs(".", "src/log4j.properties");
+            	} else {
+                    BasicConfigurator.configure();
+            	}        		
+        	}
         } catch (Exception e) {
             BasicConfigurator.configure();
         }
@@ -97,16 +110,29 @@ public class StandaloneLauncher {
             }
         }
 
+        String base = "web";
+        if (args.length >= 4) {
+        	base = args[3];
+        }
         // Start server
         try {
             ServerStopper stopper = new ServerStopper(server, stopPort, logger);
             stopper.setPriority(Thread.MAX_PRIORITY);
             stopper.start();
 
-            server.addListener(new InetAddrPort(hostInet, port));
-            server.addWebApplication("luntbuild", "web");
-            server.start();
+    		SelectChannelConnector connector = new SelectChannelConnector();
+    		connector.setPort(port);
+    		connector.setHost(hostInet.getHostName());
+    		server.setConnectors(new Connector[] { connector });
 
+    		WebAppContext web = new WebAppContext();
+    		web.setContextPath("/luntbuild");
+    		web.setWar(base);
+    		server.addHandler(web);
+
+			server.start();
+			server.join();
+			
         } catch (Throwable th) {
             logger.fatal("Failed to start servlet container: ");
             logger.debug("Failed to start servlet container: ", th);

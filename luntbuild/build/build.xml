@@ -6,8 +6,8 @@
       <format property="currentDate" pattern="MM-dd-yyyy" locale="en"/>
     </tstamp>
 
-    <property name="buildVersion" value="1.5"/>
-	<property name="fileVersion" value="1.5"/>
+    <property name="buildVersion" value="1.5.0"/>
+	<property name="fileVersion" value="1.5.0"/>
     <property name="buildId" value=""/>
     <property name="artifactsDir" value="${basedir}/distribute"/>
 	<property name="junitHtmlReportDir" value="test/junitHtmlReport"/>
@@ -98,6 +98,10 @@
 				<patternset refid="web.other_resources"/>
 			</fileset>
 		</copy>
+		<filter token="buildVersion" value="${buildVersion}"/>
+		<copy todir="stage/web" overwrite="true" filtering="true" >
+			<fileset dir="web" includes="*.html"/>
+		</copy>    	
 		<copy todir="stage/web/WEB-INF/lib">
 			<fileset dir="lib">
 				<exclude name="**/servlet*.jar"/>
@@ -117,11 +121,7 @@
         </copy>
     </target>
 
-    <!-- Used for development, please do not remove. lubosp.
-    The luntbuild.war deployment file is in stage/luntbuild.war.
-      -->
-    <target name="war" depends="webstage"
-        description="Builds Luntbuild webapp deployment package">
+	<target name="web-config">
         <delete file="stage/web/WEB-INF/web.xml"/>
         <delete file="stage/web/WEB-INF/applicationContext.xml"/>
         <filter token="installDir" value="${luntbuild-install-dir}"/>
@@ -143,8 +143,19 @@
         <filter token="ldapEmailAttrName" value="mail"/>
         <copy file="web/WEB-INF/applicationContext.xml"
             tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
-        <copy file="web/WEB-INF/web.xml" tofile="stage/web.xml"
+        <copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
             overwrite="true" filtering="true" />
+		<copy file="stage/web/WEB-INF/jdbc.hsqldb.properties" tofile="stage/web/WEB-INF/jdbc.properties"
+        	overwrite="true" filtering="true" />
+	</target>
+	
+    <!-- Used for development, please do not remove. lubosp.
+    The luntbuild.war deployment file is in stage/luntbuild.war.
+      -->
+    <target name="war" depends="webstage,web-config"
+        description="Builds Luntbuild webapp deployment package">
+        <copy file="web/WEB-INF/web.xml" tofile="stage/web.xml" overwrite="true" />
+        <delete file="stage/web/WEB-INF/web.xml"/>
         <war basedir="stage/web" destfile="stage/luntbuild.war" webxml="stage/web.xml"/>
         <delete file="stage/web.xml"/>
     </target>

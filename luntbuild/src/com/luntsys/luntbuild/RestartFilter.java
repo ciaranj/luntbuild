@@ -84,7 +84,7 @@ public class RestartFilter implements Filter {
     		// Tapestry restart service have no effect on Orion. Invalidate session here again.
     		if (service != null && service.equals("restart")) {
                 if (relogin == null || !relogin.equalsIgnoreCase("no")) {
-                    String url = httpServletResponse.encodeRedirectURL("luntbuild-login.jsp");
+                    String url = httpServletResponse.encodeRedirectURL("luntbuild-login.html");
                     httpServletResponse.sendRedirect(url);
                 } else {
                     filterChain.doFilter(servletRequest, servletResponse);
@@ -100,7 +100,7 @@ public class RestartFilter implements Filter {
                 terminate.setMaxAge(0);
                 httpServletResponse.addCookie(terminate);
                 if (relogin == null || !relogin.equalsIgnoreCase("no")) {
-                    String url = httpServletResponse.encodeRedirectURL("luntbuild-login.jsp");
+                    String url = httpServletResponse.encodeRedirectURL("luntbuild-login.html");
                     httpServletResponse.sendRedirect(url);
                 } else {
                     filterChain.doFilter(servletRequest, servletResponse);
