@@ -369,7 +369,7 @@
 
 	<bean id="authenticationProcessingFilterEntryPoint"
          class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilterEntryPoint">
-		<property name="loginFormUrl"><value>/luntbuild-login.jsp</value></property>
+		<property name="loginFormUrl"><value>/luntbuild-login.html</value></property>
 		<property name="forceHttps"><value>false</value></property>
 	</bean>
 
@@ -380,7 +380,7 @@
          class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
 		<property name="authenticationManager"><ref local="authenticationManager"/></property>
 	    <property name="rememberMeServices"><ref local="rememberMeServices"/></property>
-		<property name="authenticationFailureUrl"><value>/login-error.jsp</value></property>
+		<property name="authenticationFailureUrl"><value>/login-error.html</value></property>
 		<property name="defaultTargetUrl"><value>/app.do</value></property>
 		<property name="filterProcessesUrl"><value>/j_acegi_security_check.do</value></property>
 	</bean>
