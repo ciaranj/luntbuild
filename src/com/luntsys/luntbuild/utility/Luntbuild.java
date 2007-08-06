@@ -199,6 +199,11 @@ public class Luntbuild {
     /** Page referesh interval, in seconds */
     public static int pageRefreshInterval;
 
+    /** Server name */
+    public static String serverName = "localhost";
+    /** Server port */
+    public static int serverPort = 8080;
+    
     /**
      * Gets the data access object.
      *
@@ -789,7 +794,7 @@ public class Luntbuild {
     public static String getServletUrl() {
         String servletUrl = (String) properties.get("servletUrl");
         if (isEmpty(servletUrl))
-            return "http://" + getIpAddress() + ":8080/luntbuild/app.do";
+            return "http://" + serverName + ":" + serverPort + "/luntbuild/app.do";
         else
             return servletUrl;
     }
@@ -802,7 +807,7 @@ public class Luntbuild {
     public static String getServletRootUrl() {
         String servletUrl = (String) properties.get("servletUrl");
         if (isEmpty(servletUrl))
-            return "http://" + getIpAddress() + ":8080/luntbuild";
+            return "http://" + serverName + ":" + serverPort + "/luntbuild";
         else
             return servletUrl.replaceAll("/app\\.do","");
     }
@@ -1250,7 +1255,14 @@ public class Luntbuild {
                         hsqlUrl.trim().startsWith("${")) {
                     String dataset = new File(installDir + "/db/luntbuild").getAbsolutePath();
                     props.setProperty("hsqlUrl", "jdbc:hsqldb:" + dataset);
+                    String hsqlUsername = props.getProperty("jdbcUsername");
+                    if (hsqlUsername == null || hsqlUsername.trim().length() == 0 || hsqlUsername.trim().startsWith("${"))
+                    	props.setProperty("jdbcUsername", "sa");                    
+                    String hsqlPassword = props.getProperty("jdbcPassword");
+                    if (hsqlPassword == null || hsqlPassword.trim().length() == 0 || hsqlPassword.trim().startsWith("${"))
+                    	props.setProperty("jdbcPassword", "");                    
                 }
+                
                 // Set dataset DB for Derby in process DB
                 String derbyUrl = props.getProperty("derbyUrl");
                 if (derbyUrl == null || derbyUrl.trim().length() == 0 ||

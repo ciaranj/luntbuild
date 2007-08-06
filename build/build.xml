@@ -121,7 +121,7 @@
         </copy>
     </target>
 
-	<target name="web-config">
+	<target name="web-config" depends="webstage">
         <delete file="stage/web/WEB-INF/web.xml"/>
         <delete file="stage/web/WEB-INF/applicationContext.xml"/>
         <filter token="installDir" value="${luntbuild-install-dir}"/>
@@ -152,7 +152,7 @@
     <!-- Used for development, please do not remove. lubosp.
     The luntbuild.war deployment file is in stage/luntbuild.war.
       -->
-    <target name="war" depends="webstage,web-config"
+    <target name="war" depends="web-config"
         description="Builds Luntbuild webapp deployment package">
         <copy file="web/WEB-INF/web.xml" tofile="stage/web.xml" overwrite="true" />
         <delete file="stage/web/WEB-INF/web.xml"/>

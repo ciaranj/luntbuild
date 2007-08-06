@@ -14,7 +14,7 @@
         </p>
         <p>
           Note:  Build notification feeds will follow their schedule's notify strategy by default.  A different notify strategy
-          can be passed in the <a href="/luntbuild/docs/api/index.html#rssnotify">notify</a> parameter:  <a href="/luntbuild/api/rss/builds?notify=failed">http://&lt;hostname&gt;:8080/luntbuild/api/rss/builds?notify=failed</a>
+          can be passed in the <a href="/luntbuild/docs/api/index.html#rssnotify">notify</a> parameter:  <a href="/luntbuild/api/rss/builds?notify=failed">http://&lt;hostname&gt;:&lt;serverport&gt;/luntbuild/api/rss/builds?notify=failed</a>
         </p>
         <ul>
           <xsl:apply-templates select='body/outline' />
