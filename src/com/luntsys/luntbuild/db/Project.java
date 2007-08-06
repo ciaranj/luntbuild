@@ -431,16 +431,16 @@ public class Project implements AclObjectIdentity, VariableHolder {
                 projectViewers.add(role.getUser().getName());
             }
         }
-        facade.setProjectAdmins((String[]) projectAdmins.toArray());
-        facade.setProjectBuilders((String[]) projectBuilders.toArray());
-        facade.setProjectViewers((String[]) projectViewers.toArray());
+        facade.setProjectAdmins((String[])projectAdmins.toArray(new String[projectAdmins.size()]));
+        facade.setProjectBuilders((String[])projectBuilders.toArray(new String[projectBuilders.size()]));
+        facade.setProjectViewers((String[])projectViewers.toArray(new String[projectViewers.size()]));
         List notifyUsers = new ArrayList();
         it = getNotifyMappings().iterator();
         while (it.hasNext()) {
             NotifyMapping notify = (NotifyMapping) it.next();
             notifyUsers.add(notify.getUser().getName());
         }
-        facade.setNotifyUsers((String[]) notifyUsers.toArray());
+        facade.setNotifyUsers((String[])notifyUsers.toArray(new String[notifyUsers.size()]));
 		return facade;
 	}
 
