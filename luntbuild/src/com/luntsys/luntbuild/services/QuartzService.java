@@ -34,6 +34,7 @@ import com.luntsys.luntbuild.maintenance.SystemBackup;
 import com.luntsys.luntbuild.maintenance.SystemCare;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.TriggerStartTimeComparator;
 import com.luntsys.luntbuild.utility.ValidationException;
@@ -101,6 +102,9 @@ public class QuartzService implements IScheduler {
 						jobDetail.setGroup(Scheduler.DEFAULT_GROUP);
 						jobDetail.setName(jobName);
 						jobDetail.setJobClass(BuildGenerator.class);
+						JobDataMap dMap = new JobDataMap();
+						dMap.put("USER", SecurityHelper.getPrincipalAsString());
+						jobDetail.setJobDataMap(dMap);
 						sched.addJob(jobDetail, false);
 					}
 
@@ -166,6 +170,9 @@ public class QuartzService implements IScheduler {
 					jobDetail.setGroup(Scheduler.DEFAULT_GROUP);
 					jobDetail.setName(jobName);
 					jobDetail.setJobClass(BuildGenerator.class);
+					JobDataMap dMap = new JobDataMap();
+					dMap.put("USER", SecurityHelper.getPrincipalAsString());
+					jobDetail.setJobDataMap(dMap);
 					sched.addJob(jobDetail, false);
 				}
 

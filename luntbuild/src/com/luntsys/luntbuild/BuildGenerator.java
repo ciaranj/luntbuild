@@ -50,6 +50,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.util.DOMElementWriter;
 import org.apache.tools.ant.util.DateUtils;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
@@ -192,6 +193,8 @@ public class BuildGenerator implements StatefulJob {
                     currentBuild.setStatus(Constants.BUILD_STATUS_RUNNING);
                     currentBuild.setRebuild(false);
                     currentBuild.setBuildType(buildParams.getBuildType());
+                    JobDataMap dMap = context.getJobDetail().getJobDataMap();
+                    currentBuild.setUser((dMap != null)?dMap.getString("USER"):null);
 
                     synchronized (versionLock) {
                         OgnlHelper.setAntProject(antProject);
@@ -666,10 +669,10 @@ public class BuildGenerator implements StatefulJob {
                 }
             }
 
-            String name = SecurityHelper.getPrincipalAsString();
-            if (name != null) {
-                logger.info("User \"" + name + "\" started the build: " + theSchedule.getName());
-                antProject.log("User \"" + name + "\" started the build", Project.MSG_INFO);
+            String user = build.geUser();
+            if (user != null) {
+                logger.info("User \"" + user + "\" started the build: " + theSchedule.getName());
+                antProject.log("User \"" + user + "\" started the build", Project.MSG_INFO);
             }
 
             if (build.isCleanBuild() || build.isRebuild()) {
