@@ -118,6 +118,8 @@ public class Build {
 
     private static transient Map loggersById = new HashMap();
 
+    private String user = null;
+    
 	/**
 	 * Checks if this build has a corresponding label in the VCS repository.
 	 * 
@@ -750,4 +752,18 @@ public class Build {
     	LuntbuildLogger logger = (LuntbuildLogger)loggersById.remove(new Long(this.id));
     	if (logger != null) logger.close();
     }
+
+	/**
+	 * @return build user
+	 */
+	public String geUser() {
+		return user;
+	}
+
+	/**
+	 * @param buildUser build user
+	 */
+	public void setUser(String buildUser) {
+		this.user = buildUser;
+	}
 }
