@@ -54,14 +54,15 @@ public class EmailNotifier extends TemplatedNotifier {
      * Keep tracks of version of this class, used when do serialization-deserialization
      */
     static final long serialVersionUID = 1L;
-	/**
-	 * Constants denotes system level property index
-	 */
+    /**
+     * Constants denotes system level property index
+     */
     private static final int SMTP_HOST = 0;
-    private static final int SMTP_USER = 1;
-    private static final int SMTP_PASSWD = 2;
-    private static final int SMTP_SSL = 3;
-    private static final int SENDER_EMAIL  = 4;
+    private static final int SMTP_PORT = 1;
+    private static final int SMTP_USER = 2;
+    private static final int SMTP_PASSWD = 3;
+    private static final int SMTP_SSL = 4;
+    private static final int SENDER_EMAIL  = 5;
 
     private static final int USER_EMAIL = 0;
 
@@ -75,46 +76,58 @@ public class EmailNotifier extends TemplatedNotifier {
     /**
      * @inheritDoc
      */
-	public String getDisplayName() {
-		return "Email";
-	}
+    public String getDisplayName() {
+        return "Email";
+    }
 
-	/**
-	 * Sends the notification E-mail.
-	 * 
-	 * @param email the E-mail address
-	 * @param antProject the ant project used for logging purposes
-	 * @param subject the E-mail's subject
-	 * @param body the E-mail's body
-	 */
-	public void sendMail(String email, Project antProject, String subject, String body) {
-		SendEmail mail = new SendEmail();
-		mail.setProject(antProject);
-		mail.setTaskName("mail");
-		mail.setTaskType("mail");
-		NotifierProperty property = (NotifierProperty) getSystemLevelProperties().get(SENDER_EMAIL);
-		String senderEmail = property.getValue(Luntbuild.getProperties());
-		if (Luntbuild.isEmpty(senderEmail))
-			senderEmail = "luntbuild@" + Luntbuild.getHostName();
-		mail.setFrom(senderEmail);
-		mail.setReplyTo(senderEmail);
-		mail.setToList(email);
+    /**
+     * Sends the notification E-mail.
+     * 
+     * @param email the E-mail address
+     * @param antProject the ant project used for logging purposes
+     * @param subject the E-mail's subject
+     * @param body the E-mail's body
+     */
+    public void sendMail(String email, Project antProject, String subject, String body) {
+        SendEmail mail = new SendEmail();
+        mail.setProject(antProject);
+        mail.setTaskName("mail");
+        mail.setTaskType("mail");
+        NotifierProperty property = (NotifierProperty) getSystemLevelProperties().get(SENDER_EMAIL);
+        String senderEmail = property.getValue(Luntbuild.getProperties());
+        if (Luntbuild.isEmpty(senderEmail))
+            senderEmail = "luntbuild@" + Luntbuild.getHostName();
+        mail.setFrom(senderEmail);
+        mail.setReplyTo(senderEmail);
+        mail.setToList(email);
 
-		property = (NotifierProperty) getSystemLevelProperties().get(SMTP_HOST);
-		String smtpHost = property.getValue(Luntbuild.getProperties());
-		if (Luntbuild.isEmpty(smtpHost))
-			smtpHost = "localhost";
-		mail.setMailhost(smtpHost);
+        property = (NotifierProperty) getSystemLevelProperties().get(SMTP_HOST);
+        String smtpHost = property.getValue(Luntbuild.getProperties());
+        if (Luntbuild.isEmpty(smtpHost))
+            smtpHost = "localhost";
+        mail.setMailhost(smtpHost);
 
-		property = (NotifierProperty) getSystemLevelProperties().get(SMTP_USER);
-		String smtpUser = property.getValue(Luntbuild.getProperties());
-		if (!Luntbuild.isEmpty(smtpUser)) {
-			mail.setUser(smtpUser);
-			property = (NotifierProperty) getSystemLevelProperties().get(SMTP_PASSWD);
-			String smtpPassword = property.getValue(Luntbuild.getProperties());
-			if (!Luntbuild.isEmpty(smtpPassword))
-				mail.setPassword(smtpPassword);
-		}
+        try {
+            property = (NotifierProperty) getSystemLevelProperties().get(SMTP_PORT);
+            String smtpPort = property.getValue(Luntbuild.getProperties());
+            int port = 25;
+            if (!Luntbuild.isEmpty(smtpPort))
+                port = Integer.parseInt(property.getValue(Luntbuild.getProperties()));
+            mail.setMailport(port);
+        } catch (Exception e) {
+            antProject.log("Invalid SMTP port set.", Project.MSG_ERR);
+            logger.error("Invalid SMTP port set.", e);
+        }
+
+        property = (NotifierProperty) getSystemLevelProperties().get(SMTP_USER);
+        String smtpUser = property.getValue(Luntbuild.getProperties());
+        if (!Luntbuild.isEmpty(smtpUser)) {
+            mail.setUser(smtpUser);
+            property = (NotifierProperty) getSystemLevelProperties().get(SMTP_PASSWD);
+            String smtpPassword = property.getValue(Luntbuild.getProperties());
+            if (!Luntbuild.isEmpty(smtpPassword))
+                mail.setPassword(smtpPassword);
+        }
 
         property = (NotifierProperty) getSystemLevelProperties().get(SMTP_SSL);
         String smtpSSL = property.getValue(Luntbuild.getProperties());
@@ -124,68 +137,68 @@ public class EmailNotifier extends TemplatedNotifier {
             else
                 mail.setSSL(false);
         }
-		mail.setMessageMimeType("text/html");
-		mail.setCharset("utf-8");
-		mail.setFailOnError(true);
-		mail.setSubject(subject);
-		mail.setMessage(body);
+        mail.setMessageMimeType("text/html");
+        mail.setCharset("utf-8");
+        mail.setFailOnError(true);
+        mail.setSubject(subject);
+        mail.setMessage(body);
 
-		antProject.log("Send build notification via email to: " + email, Project.MSG_INFO);
-		try {
-			mail.execute();
-		} catch (Exception e) {
-			antProject.log(Luntbuild.getExceptionMessage(e), Project.MSG_ERR);
-			logger.error("", e);
-		}
-	}
-
-    /**
-     * @inheritDoc
-     */
-	public void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject) {
-		Iterator it = checkinUsers.iterator();
-		while (it.hasNext()) {
-			User user = (User) it.next();
-			String email =
-                ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getValue(user.getContacts());
-			if (Luntbuild.isEmpty(email))
-				antProject.log("Cannot send email to user \"" +
-						user.getName() + "\": email is empty!", Project.MSG_WARN);
-			else
-				sendMail(email, antProject, constructNotificationTitle(build),
-						constructNotificationBody4CheckinUsers(build));
-		}
-		it = subscribeUsers.iterator();
-		while (it.hasNext()) {
-			User user = (User) it.next();
-            String email =
-                ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getValue(user.getContacts());
-			if (Luntbuild.isEmpty(email))
-				antProject.log("Cannot send email to user \"" +
-						user.getName() + "\": email is empty!", Project.MSG_WARN);
-			else
-				sendMail(email, antProject, constructNotificationTitle(build),
-						constructNotificationBody(build));
-		}
-	}
+        antProject.log("Send build notification via email to: " + email, Project.MSG_INFO);
+        try {
+            mail.execute();
+        } catch (Exception e) {
+            antProject.log(Luntbuild.getExceptionMessage(e), Project.MSG_ERR);
+            logger.error("", e);
+        }
+    }
 
     /**
      * @inheritDoc
      */
-	public void sendScheduleNotification(Set subscribeUsers, Schedule schedule, Project antProject) {
-		Iterator it = subscribeUsers.iterator();
-		while (it.hasNext()) {
-			User user = (User) it.next();
+    public void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject) {
+        Iterator it = checkinUsers.iterator();
+        while (it.hasNext()) {
+            User user = (User) it.next();
             String email =
                 ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getValue(user.getContacts());
-			if (Luntbuild.isEmpty(email))
-				antProject.log("Cannot send email to user \"" +
-						user.getName() + "\": email is empty!", Project.MSG_WARN);
-			else
-				sendMail(email, antProject, constructNotificationTitle(schedule),
-						constructNotificationBody(schedule));
-		}
-	}
+            if (Luntbuild.isEmpty(email))
+                antProject.log("Cannot send email to user \"" +
+                        user.getName() + "\": email is empty!", Project.MSG_WARN);
+            else
+                sendMail(email, antProject, constructNotificationTitle(build),
+                        constructNotificationBody4CheckinUsers(build));
+        }
+        it = subscribeUsers.iterator();
+        while (it.hasNext()) {
+            User user = (User) it.next();
+            String email =
+                ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getValue(user.getContacts());
+            if (Luntbuild.isEmpty(email))
+                antProject.log("Cannot send email to user \"" +
+                        user.getName() + "\": email is empty!", Project.MSG_WARN);
+            else
+                sendMail(email, antProject, constructNotificationTitle(build),
+                        constructNotificationBody(build));
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void sendScheduleNotification(Set subscribeUsers, Schedule schedule, Project antProject) {
+        Iterator it = subscribeUsers.iterator();
+        while (it.hasNext()) {
+            User user = (User) it.next();
+            String email =
+                ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getValue(user.getContacts());
+            if (Luntbuild.isEmpty(email))
+                antProject.log("Cannot send email to user \"" +
+                        user.getName() + "\": email is empty!", Project.MSG_WARN);
+            else
+                sendMail(email, antProject, constructNotificationTitle(schedule),
+                        constructNotificationBody(schedule));
+        }
+    }
 
     /**
      * Gets the key to access the E-mail address property in the user's contacts list.
@@ -199,55 +212,70 @@ public class EmailNotifier extends TemplatedNotifier {
     /**
      * @inheritDoc
      */
-	public List getSystemLevelProperties() {
-		List properties = new ArrayList();
-		properties.add(new NotifierProperty() {
-			public Class getNotifierClass() {
-				return EmailNotifier.class;
-			}
+    public List getSystemLevelProperties() {
+        List properties = new ArrayList();
+        properties.add(new NotifierProperty() {
+            public Class getNotifierClass() {
+                return EmailNotifier.class;
+            }
 
-			public String getDisplayName() {
-				return "SMTP host";
-			}
+            public String getDisplayName() {
+                return "SMTP host";
+            }
 
-			public String getDescription() {
-				return "You can optionally specify the SMTP mail host used by " +
-						"Luntbuild to send email. If this property is not specified, " +
-						"Luntbuild will use localhost as the default value.";
-			}
-		});
-		properties.add(new NotifierProperty() {
-			public Class getNotifierClass() {
-				return EmailNotifier.class;
-			}
+            public String getDescription() {
+                return "You can optionally specify the SMTP mail host used by " +
+                        "Luntbuild to send email. If this property is not specified, " +
+                        "Luntbuild will use localhost as the default value.";
+            }
+        });
+        properties.add(new NotifierProperty() {
+            public Class getNotifierClass() {
+                return EmailNotifier.class;
+            }
 
-			public String getDisplayName() {
-				return "SMTP user";
-			}
+            public String getDisplayName() {
+                return "SMTP port";
+            }
 
-			public String getDescription() {
-				return "This property is optional. If the SMTP host needs authentication, " +
-						"you should provide the user name here.";
-			}
-		});
-		properties.add(new NotifierProperty() {
-			public Class getNotifierClass() {
-				return EmailNotifier.class;
-			}
+            public String getDescription() {
+                return "You can optionally specify the SMTP port used by " +
+                        "Luntbuild to send email. If this property is not specified, " +
+                        "Luntbuild will use 25 as the default value.";
+            }
+        });
+        properties.add(new NotifierProperty() {
+            public Class getNotifierClass() {
+                return EmailNotifier.class;
+            }
 
-			public boolean isSecret() {
-				return true;
-			}
+            public String getDisplayName() {
+                return "SMTP user";
+            }
 
-			public String getDisplayName() {
-				return "SMTP password";
-			}
+            public String getDescription() {
+                return "This property is optional. If the SMTP host needs authentication, " +
+                        "you should provide the user name here.";
+            }
+        });
+        properties.add(new NotifierProperty() {
+            public Class getNotifierClass() {
+                return EmailNotifier.class;
+            }
 
-			public String getDescription() {
-				return "This property is optional. If the SMTP host needs authentication, " +
-						"you should provide the password here.";
-			}
-		});
+            public boolean isSecret() {
+                return true;
+            }
+
+            public String getDisplayName() {
+                return "SMTP password";
+            }
+
+            public String getDescription() {
+                return "This property is optional. If the SMTP host needs authentication, " +
+                        "you should provide the password here.";
+            }
+        });
 
         NotifierProperty p = new NotifierProperty() {
             public Class getNotifierClass()
@@ -272,46 +300,46 @@ public class EmailNotifier extends TemplatedNotifier {
         // Add property to properties list
         properties.add(p);
 
-		properties.add(new NotifierProperty() {
-			public Class getNotifierClass() {
-				return EmailNotifier.class;
-			}
+        properties.add(new NotifierProperty() {
+            public Class getNotifierClass() {
+                return EmailNotifier.class;
+            }
 
-			public String getDisplayName() {
-				return "Email address of the sender";
-			}
+            public String getDisplayName() {
+                return "Email address of the sender";
+            }
 
-			public String getDescription() {
-				return "This property is optional. If specified, Luntbuild will use this " +
-						"email as the sender address when sending out email notifications. " +
-						"Otherwise, the sender address will be \"luntbuild@<hostname>\", where " +
-						"<hostname> is the host name of the build machine.";
-			}
-		});
+            public String getDescription() {
+                return "This property is optional. If specified, Luntbuild will use this " +
+                        "email as the sender address when sending out email notifications. " +
+                        "Otherwise, the sender address will be \"luntbuild@<hostname>\", where " +
+                        "<hostname> is the host name of the build machine.";
+            }
+        });
 
-		return properties;
-	}
+        return properties;
+    }
 
     /**
      * @inheritDoc
      */
-	public List getUserLevelProperties() {
+    public List getUserLevelProperties() {
         List properties = new ArrayList();
         properties.add(new NotifierProperty() {
-			public Class getNotifierClass() {
-				return EmailNotifier.class;
-			}
+            public Class getNotifierClass() {
+                return EmailNotifier.class;
+            }
 
-			public String getDisplayName() {
-				return "Email";
-			}
+            public String getDisplayName() {
+                return "Email";
+            }
 
-			public String getDescription() {
-				return "Email address for this user.";
-			}
-		});
+            public String getDescription() {
+                return "Email address for this user.";
+            }
+        });
         return properties;
-	}
+    }
 
     /**
      * Selection model used for user interface of <code>EmailNotifier</code>.
