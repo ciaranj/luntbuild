@@ -4,6 +4,8 @@ luntbuild 1.5 Release Notes
 
 !NOTE! - luntbuild-login.jsp changed to luntbuild-login.html. PLEASE change your bookmarks!
 
+- Fix: (# 5875) ZIP Installation: old DB for H2 being distributed (sf 1737845)
+- Fix: (# 5980) User who launched build not tracked properly
 - Fix: Installer - possibility to select "." webapp if user doesn't want to deploy luntbuild war. 
 - Feature: Updated Quartz to version 1.6.
 - Feature: Standalone Luntbuild updated to use jetty 6.0.1. Changed login jsp to html.
