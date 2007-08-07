@@ -190,21 +190,21 @@ public class LDAPAuthenticator {
             ctx.close();
         } catch (AuthenticationException ae){
             if (logger.isDebugEnabled())
-                logger.warn("Cannot authenticate user!", ae);
+                logger.warn("Cannot access directory when retrieving email!", ae);
             else
-                logger.warn("Cannot authenticate user!");
+                logger.warn("Cannot access directory when retrieving email!");
             return null;
         } catch (NamingException nm){
             if (logger.isDebugEnabled())
-                logger.warn("Cannot authenticate user!", nm);
+                logger.warn("Cannot access directory when retrieving email!", nm);
             else
-                logger.warn("Cannot authenticate user!");
+                logger.warn("Cannot access directory when retrieving email!");
             return null;
         } catch (Exception ce){
             if (logger.isDebugEnabled())
-                logger.warn("Cannot connect!", ce);
+                logger.warn("Cannot access directory!", ce);
             else
-                logger.warn("Cannot connect!");
+                logger.warn("Cannot access directory!");
             return null;
         }
         return email;
