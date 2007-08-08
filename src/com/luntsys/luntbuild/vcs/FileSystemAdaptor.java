@@ -58,6 +58,7 @@ public class FileSystemAdaptor extends Vcs {
 	static final long serialVersionUID = 1;
 
 	private String sourceDir;
+    private String destDir;
 
     /**
      * @inheritDoc
@@ -101,6 +102,33 @@ public class FileSystemAdaptor extends Vcs {
 	}
 
     /**
+     * Gets the destination directory.
+     * 
+     * @return the destination directory
+     */
+    public String getDestDir() {
+        return destDir;
+    }
+
+    /**
+     * Gets the destination directory. This method will parse OGNL variables.
+     * 
+     * @return the destination directory
+     */
+    public String getActualDestDir() {
+        return OgnlHelper.evaluateScheduleValue(getDestDir());
+    }
+
+    /**
+     * Sets the destination directory.
+     * 
+     * @param destDir the destination directory
+     */
+    public void setDestDir(String destDir) {
+        this.destDir = destDir;
+    }
+
+    /**
      * Validates the properties of this VCS.
      *
      * @throws ValidationException if a property has an invalid value
@@ -118,7 +146,10 @@ public class FileSystemAdaptor extends Vcs {
 		if (!Luntbuild.isEmpty(getSourceDir())) {
 			String workingDir = build.getSchedule().getWorkDirRaw();
 			Copy copy = new Copy();
-			copy.setTodir(new File(workingDir));
+            if (Luntbuild.isEmpty(getActualDestDir()))
+                copy.setTodir(new File(workingDir));
+            else
+                copy.setTodir(new File(workingDir, getActualDestDir()));
 			FileSet fileSet = new FileSet();
 			fileSet.setProject(antProject);
 			fileSet.setDir(new File(getActualSourceDir()));
@@ -234,6 +265,33 @@ public class FileSystemAdaptor extends Vcs {
 				setSourceDir(value);
 			}
 		});
+        properties.add(new DisplayProperty(){
+            public String getDisplayName() {
+                return "Destination directory";
+            }
+
+            public String getDescription() {
+                return "This property is optional. If specified, the contents from the source directory " +
+                    "will be retrieved to the destination directory relative to the project work directory. " +
+                    "Otherwise the contents will be retrieved to the project work directory.";
+            }
+
+            public boolean isRequired() {
+                return false;
+            }
+
+            public String getValue() {
+                return getDestDir();
+            }
+
+            public String getActualValue() {
+                return getActualDestDir();
+            }
+
+            public void setValue(String value) {
+                setDestDir(value);
+            }
+        });
 		return properties;
 	}
 
@@ -262,6 +320,7 @@ public class FileSystemAdaptor extends Vcs {
     	// TODO throw RuntimeException if the facade is not the right class
 		FileSystemAdaptorFacade fileSystemFacade = (FileSystemAdaptorFacade) facade;
 		fileSystemFacade.setSourceDir(getSourceDir());
+        fileSystemFacade.setDestDir(getDestDir());
 	}
 
     /**
@@ -274,6 +333,7 @@ public class FileSystemAdaptor extends Vcs {
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
 		FileSystemAdaptorFacade fileSystemFacade = (FileSystemAdaptorFacade) facade;
 		setSourceDir(fileSystemFacade.getSourceDir());
+        setDestDir(fileSystemFacade.getDestDir());
 	}
 
     /**

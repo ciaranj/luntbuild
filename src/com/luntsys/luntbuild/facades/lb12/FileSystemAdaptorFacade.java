@@ -36,6 +36,7 @@ package com.luntsys.luntbuild.facades.lb12;
  */
 public class FileSystemAdaptorFacade extends VcsFacade {
 	private String sourceDir;
+    private String destDir;
 
     /**
      * Gets the corresponding VCS adaptor class name.
@@ -63,4 +64,22 @@ public class FileSystemAdaptorFacade extends VcsFacade {
 	public void setSourceDir(String sourceDir) {
 		this.sourceDir = sourceDir;
 	}
+
+    /**
+     * Gets the destination directory.
+     * 
+     * @return the destination directory
+     */
+    public String getDestDir() {
+        return destDir;
+    }
+
+    /**
+     * Sets the destination directory.
+     * 
+     * @param destDir the destination directory
+     */
+    public void setDestDir(String destDir) {
+        this.destDir = destDir;
+    }
 }
