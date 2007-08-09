@@ -16,6 +16,7 @@ luntbuild 1.5 Release Notes
 - Feature: (Task 5976) SMTP port can now be configured for Email notification in the Luntbuild system properties
 - Feature: (Task 5978) Added destination directory as an optional property for FileSystem VCS adaptor
 - Feature: (Bug 5983) SvnAdaptor and SvnExeAdaptor now support single (trunk/project) or multiple (project/trunk) repository layouts
+- Feature: (Bug 6004) Expanded support for builder success conditions, two new functions logContainsLine(level, linePattern) and builderLogContainsLine(level, pattern) will search for messages of a specific log level (priority)
 - Fix: (Bug 5869) Fixed some cases where builds would finish but stay in the "running" state, this was be caused by ginormous build logs (seriously 68,000+ lines)
 - Fix: Installer will now make sure that a JDK exists on the path (not just a JRE) so that the install will not fail
 - Fix: Installer will now propertly fail if one of the install scripts fails
@@ -32,6 +33,7 @@ luntbuild 1.5 Release Notes
 - Fix: (Bug 5875) ZIP Installation: old DB for H2 being distributed
 - Fix: (Bug 5980) User who launched build not tracked properly
 - Fix: Installer - possibility to select "." webapp if user doesn't want to deploy luntbuild war
+- Fix: (Bug 6004) Updated the default build success condition for the Maven2 builder to use logContainsLine(level, linePattern)
 - Other: Greatly improved JavaDoc comments throughout Luntbuild codebase
 
 ==============================================

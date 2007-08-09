@@ -84,7 +84,7 @@ public class Maven2Builder extends Builder {
         } else {
             this.command = "/usr/local/bin/mvn";
         }
-        setBuildSuccessCondition("result==0 and builderLogContainsLine(\"\\\\[INFO\\\\].*BUILD SUCCESSFUL.*\")");
+        setBuildSuccessCondition("result==0 and builderLogContainsLine(\"INFO\",\"BUILD SUCCESSFUL\")");
     }
 
 	/**
