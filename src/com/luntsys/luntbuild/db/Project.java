@@ -336,7 +336,8 @@ public class Project implements AclObjectIdentity, VariableHolder {
 		Iterator it = users.iterator();
 		while (it.hasNext()) {
 			User user = (User) it.next();
-			if (user.getName().equals(User.CHECKIN_USER_NAME))
+            if (user.getName().equals(User.CHECKIN_USER_NAME_RECENT)
+                    || user.getName().equals(User.CHECKIN_USER_NAME_ALL))
 				continue;
 			if (login.equalsIgnoreCase(user.getName()))
 				return user;

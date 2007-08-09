@@ -688,13 +688,16 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         if (build == null)
             return null;
         Schedule schedule = build.getSchedule();
-        if (schedule.getBuilds() == null)
-            return null;
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
             session.lock(schedule, LockMode.NONE);
-            Query query = session.createFilter(schedule.getBuilds(), "where this.id < " + build.getId()
-            	+ " order by this.id desc");
+            Query query = null;
+            if (build.getId() != 0) {
+                query = session.createFilter(schedule.getBuilds(), "where this.id < " + build.getId()
+                        + " order by this.endDate desc");
+            } else {
+                query = session.createFilter(schedule.getBuilds(), "order by this.endDate desc");
+            }
             query.setMaxResults(1);
             List results = query.list();
             if (results.size() != 0)
@@ -1112,7 +1115,10 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
             User checkinUser = new User();
-            checkinUser.setName(User.CHECKIN_USER_NAME);
+            checkinUser.setName(User.CHECKIN_USER_NAME_RECENT);
+            session.saveOrUpdate(checkinUser);
+            checkinUser = new User();
+            checkinUser.setName(User.CHECKIN_USER_NAME_ALL);
             session.saveOrUpdate(checkinUser);
             Role role = new Role();
             role.setName(Role.ROLE_AUTHENTICATED);
@@ -1362,6 +1368,13 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                 User user = (User) it.next();
                 logger.info("Saving user: " + user.getName());
                 session.save(user);
+            }
+
+            User checkin_user = new User();
+            checkin_user.setName(User.CHECKIN_USER_NAME_ALL);
+            if (!isUserNameUsed(checkin_user)) {
+                logger.info("Saving user: " + checkin_user.getName());
+                session.save(checkin_user);
             }
 
             it = data.getProjects().iterator();

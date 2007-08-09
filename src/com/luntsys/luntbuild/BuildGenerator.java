@@ -574,7 +574,8 @@ public class BuildGenerator implements StatefulJob {
      */
     private void sendScheduleNotification(Schedule schedule, Project antProject) {
         Set subscribeUsers = new HashSet(schedule.getProject().getUsersToNotify());
-        subscribeUsers.remove(Luntbuild.getDao().loadUser(User.CHECKIN_USER_NAME));
+        subscribeUsers.remove(Luntbuild.getDao().loadUser(User.CHECKIN_USER_NAME_RECENT));
+        subscribeUsers.remove(Luntbuild.getDao().loadUser(User.CHECKIN_USER_NAME_ALL));
 
         if (schedule.getProject().getNotifiers() != null) {
             Iterator it = Luntbuild.getNotifierInstances(Luntbuild.getNotifierClasses(schedule.getProject().
@@ -596,10 +597,27 @@ public class BuildGenerator implements StatefulJob {
     private void sendBuildNotification(Build build, Set checkinLogins,
                                        Project antProject) {
         com.luntsys.luntbuild.db.Project project = build.getSchedule().getProject();
-        User virtualCheckinUser = Luntbuild.getDao().loadUser(User.CHECKIN_USER_NAME);
+        User virtualRecentCheckinUser = Luntbuild.getDao().loadUser(User.CHECKIN_USER_NAME_RECENT);
+        User virtualCheckinUser = Luntbuild.getDao().loadUser(User.CHECKIN_USER_NAME_ALL);
 
         Set checkinUsers = new HashSet();
         if (project.getUsersToNotify().contains(virtualCheckinUser)) {
+            Build prevBuild = build;
+            do {
+                List allUsers = Luntbuild.getDao().loadUsers();
+                Set allCheckinLogins = Revisions.readChangeLogins(prevBuild);
+                Iterator it = allCheckinLogins.iterator();
+                while (it.hasNext()) {
+                    String checkinLogin = (String) it.next();
+                    User checkinUser = project.getUserByVcsLogin(checkinLogin, allUsers);
+                    if (checkinUser == null)
+                        throw new BuildException("ERROR: Failed to find Luntbuild user for VCS login \"" +
+                                checkinLogin + "\" of the project \"" + project.getName() + "\"!");
+                    checkinUsers.add(checkinUser);
+                }
+                prevBuild = prevBuild.getPrevBuild();
+            } while ( prevBuild != null && prevBuild.getStatus() != Constants.BUILD_STATUS_SUCCESS);
+        } else if (project.getUsersToNotify().contains(virtualRecentCheckinUser)) {
             List allUsers = Luntbuild.getDao().loadUsers();
             Iterator it = checkinLogins.iterator();
             while (it.hasNext()) {
@@ -616,7 +634,9 @@ public class BuildGenerator implements StatefulJob {
         Iterator it = project.getUsersToNotify().iterator();
         while (it.hasNext()) {
             User user = (User) it.next();
-            if (!user.getName().equals(User.CHECKIN_USER_NAME) && !checkinUsers.contains(user))
+            if (!user.getName().equals(User.CHECKIN_USER_NAME_RECENT)
+                    && !user.getName().equals(User.CHECKIN_USER_NAME_ALL)
+                    && !checkinUsers.contains(user))
                 subscribeUsers.add(user);
         }
 

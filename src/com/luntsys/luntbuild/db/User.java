@@ -42,10 +42,10 @@ import java.util.*;
  * @author robin shine
  */
 public class User {
-	/**
-	 * Name of the user object representing users who recently check in code.
-	 */
-	public static final String CHECKIN_USER_NAME = "<users who checked in code recently>";
+    /** Name of the user object representing users who recently check in code */
+    public static final String CHECKIN_USER_NAME_RECENT = "<users who checked in code recently>";
+    /** Name of the user object representing users who checked in code since the last successful build */
+    public static final String CHECKIN_USER_NAME_ALL = "<users who checked in since last successful build>";
 
 	private long id;
 	private String name;

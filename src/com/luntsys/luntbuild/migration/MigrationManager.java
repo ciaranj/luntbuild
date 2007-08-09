@@ -206,7 +206,7 @@ public class MigrationManager {
 			userFacade12.setPassword(userFacade111.getName());
 			userFacade12.setId(userFacade111.getId());
 			if (userFacade111.getName().equals("<users who check in codes recently>"))
-				userFacade12.setName(User.CHECKIN_USER_NAME);
+                userFacade12.setName(User.CHECKIN_USER_NAME_RECENT);
 			else
 				userFacade12.setName(userFacade111.getName());
 			Iterator itContact = userFacade111.getContacts().keySet().iterator();
@@ -477,7 +477,7 @@ public class MigrationManager {
 			while (itUser.hasNext()) {
 				com.luntsys.luntbuild.facades.lb12.UserFacade userFacade12 =
 						(com.luntsys.luntbuild.facades.lb12.UserFacade) itUser.next();
-				if (userFacade12.getName().equals(User.CHECKIN_USER_NAME))
+                if (userFacade12.getName().equals(User.CHECKIN_USER_NAME_RECENT))
 					continue;
 				com.luntsys.luntbuild.facades.lb12.RolesMappingFacade rolesMappingFacade12 =
 						new com.luntsys.luntbuild.facades.lb12.RolesMappingFacade();
