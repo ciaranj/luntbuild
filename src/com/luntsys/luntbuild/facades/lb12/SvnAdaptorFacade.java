@@ -36,6 +36,7 @@ package com.luntsys.luntbuild.facades.lb12;
  */
 public class SvnAdaptorFacade extends VcsFacade {
 	private String urlBase;
+    private String layout;
 	private String trunk;
 	private String branches;
 	private String tags;
@@ -72,6 +73,24 @@ public class SvnAdaptorFacade extends VcsFacade {
 	public void setUrlBase(String urlBase) {
 		this.urlBase = urlBase;
 	}
+
+    /**
+     * Gets the repository layout.
+     * 
+     * @return the repository layout
+     */
+    public String getLayout() {
+        return layout;
+    }
+
+    /**
+     * Sets the repository layout.
+     * 
+     * @param layout the repository layout
+     */
+    public void setLayout(String layout) {
+        this.layout = layout;
+    }
 
 	/**
 	 * Gets the directory for the trunk.

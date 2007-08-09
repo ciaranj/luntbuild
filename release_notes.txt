@@ -15,6 +15,7 @@ luntbuild 1.5 Release Notes
 - Feature: The administration tab now allows individual projects to be exported or imported, this function will export the project, its schedules and builds, and any users related to the project (importing will not overwrite an existing project)
 - Feature: (Task 5976) SMTP port can now be configured for Email notification in the Luntbuild system properties
 - Feature: (Task 5978) Added destination directory as an optional property for FileSystem VCS adaptor
+- Feature: (Bug 5983) SvnAdaptor and SvnExeAdaptor now support single (trunk/project) or multiple (project/trunk) repository layouts
 - Fix: (Bug 5869) Fixed some cases where builds would finish but stay in the "running" state, this was be caused by ginormous build logs (seriously 68,000+ lines)
 - Fix: Installer will now make sure that a JDK exists on the path (not just a JRE) so that the install will not fail
 - Fix: Installer will now propertly fail if one of the install scripts fails

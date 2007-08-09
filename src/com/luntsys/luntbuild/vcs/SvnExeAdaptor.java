@@ -65,7 +65,11 @@ public class SvnExeAdaptor extends Vcs {
 
     private static final String SVN_COMMAND_INPUT = null;
 
+    private static final String REPO_LAYOUT_SINGLE = "single";
+    private static final String REPO_LAYOUT_MULTIPLE = "multiple";
+
     private String urlBase;
+    private String layout;
     private String trunk;
     private String branches;
     private String tags;
@@ -156,15 +160,46 @@ public class SvnExeAdaptor extends Vcs {
                 setUrlBase(value);
             }
         });
+        DisplayProperty p = new DisplayProperty() {
+            public String getDisplayName() {
+                return "Repository layout";
+            }
+
+            public String getDescription() {
+                return "Subversion repositories are typically layed out as either a single repositories (with many projects) " +
+                        "or multiple repositories (with one project each).  Specify which layout is used.";
+            }
+
+            public boolean isRequired() {
+                return false;
+            }
+
+            public boolean isSelect() {
+                return true;
+            }
+
+            public String getValue() {
+                return getLayout();
+            }
+
+            public void setValue(String value) {
+                setLayout(value);
+            }
+        };
+        // Create selection model
+        IPropertySelectionModel model = new SvnRepoLayoutSelectionModel();
+        // Set selection model
+        p.setSelectionModel(model);
+        // Add property to properties list
+        properties.add(p);
         properties.add(new DisplayProperty() {
             public String getDisplayName() {
                 return "Directory for trunk";
             }
 
             public String getDescription() {
-                return "Directory used to hold trunk for this url base. " +
-                        "This directory is relative to the url base. Leave it blank, if you didn't " +
-                        "define any trunk directory in the above url base.";
+                return "Directory used to hold the trunk in the repositories. " +
+                        "Leave it blank, if you didn't define any trunk directory.";
             }
 
             public boolean isRequired() {
@@ -189,9 +224,8 @@ public class SvnExeAdaptor extends Vcs {
             }
 
             public String getDescription() {
-                return "Directory used to hold branches for this url base. " +
-                        "This directory is relative to the url base. If left blank, " +
-                        "\"branches\" will be used as the default value.";
+                return "Directory used to hold branches in the repositories. " +
+                        "If left blank, \"branches\" will be used as the default value.";
             }
 
             public boolean isRequired() {
@@ -216,9 +250,8 @@ public class SvnExeAdaptor extends Vcs {
             }
 
             public String getDescription() {
-                return "Directory used to hold tags for this url base. " +
-                        "This directory is relative to the url base. If left blank, " +
-                        "\"tags\" will be used as the default value.";
+                return "Directory used to hold tags in the repositories. " +
+                        "If left blank, \"tags\" will be used as the default value.";
             }
 
             public boolean isRequired() {
@@ -305,13 +338,14 @@ public class SvnExeAdaptor extends Vcs {
                 setSvnDir(value);
             }
         });
-        DisplayProperty p = new DisplayProperty() {
+        p = new DisplayProperty() {
             public String getDisplayName() {
                 return "Web interface";
             }
 
             public String getDescription() {
-                return "Set the web interface to integrate with.";
+                return "Set the web interface to integrate with. " +
+                        "NOTE: If using \"FishEye\", set the interface to \"ViewVC\".";
             }
 
             public boolean isRequired() {
@@ -331,7 +365,7 @@ public class SvnExeAdaptor extends Vcs {
             }
         };
         // Create selection model
-        IPropertySelectionModel model = new SvnWebInterfaceSelectionModel();
+        model = new SvnWebInterfaceSelectionModel();
         // Set selection model
         p.setSelectionModel(model);
         // Add property to properties list
@@ -343,7 +377,7 @@ public class SvnExeAdaptor extends Vcs {
 
             public String getDescription() {
                 return "The URL to access the repository in your chosen web interface. " +
-                "NOTE: If using \"JavaForge\" enter the ID of your poject only.";
+                        "NOTE: If using \"JavaForge\" enter the ID of your poject only.";
             }
 
             public boolean isRequired() {
@@ -583,6 +617,27 @@ public class SvnExeAdaptor extends Vcs {
 	 */
     public void setUrlBase(String urlBase) {
         this.urlBase = urlBase;
+    }
+
+    /**
+     * Gets the repository layout.
+     * 
+     * @return the repository layout
+     */
+    public String getLayout() {
+        return layout;
+    }
+
+    /**
+     * Sets the repository layout.
+     * 
+     * @param layout the repository layout
+     */
+    public void setLayout(String layout) {
+        this.layout = layout;
+        if (Luntbuild.isEmpty(this.layout)) {
+            this.layout = REPO_LAYOUT_SINGLE;
+        }
     }
 
 	/**
@@ -864,7 +919,11 @@ public class SvnExeAdaptor extends Vcs {
 	 */
     private String mapPathByLabel(String path, String label) {
         String mapped = Luntbuild.concatPath(getTagsDir(), label);
-        return Luntbuild.concatPath(mapped, path);
+        if (getLayout().equals(REPO_LAYOUT_MULTIPLE)) {
+            return Luntbuild.concatPath(path, mapped);
+        } else {
+            return Luntbuild.concatPath(mapped, path);
+        }
     }
 
 	/**
@@ -881,7 +940,11 @@ public class SvnExeAdaptor extends Vcs {
             mapped = Luntbuild.concatPath(getBranchesDir(), branch);
         else
             mapped = getTrunkDir();
-        return Luntbuild.concatPath(mapped, path);
+        if (getLayout().equals(REPO_LAYOUT_MULTIPLE)) {
+            return Luntbuild.concatPath(path, mapped);
+        } else {
+            return Luntbuild.concatPath(mapped, path);
+        }
     }
 
 	/**
@@ -1197,6 +1260,63 @@ public class SvnExeAdaptor extends Vcs {
         }
     }
 
+    /**
+     * Selection model used for user interface of <code>SvnAdaptor</code>.
+     */
+    static class SvnRepoLayoutSelectionModel implements IPropertySelectionModel {
+        String[] values = {REPO_LAYOUT_SINGLE, REPO_LAYOUT_MULTIPLE};
+        String[] display_values = {"single repository (trunk/project)", "multiple repositories (project/trunk)"};
+
+        /**
+         * Gets the number of options.
+         * 
+         * @return the number of options
+         */
+        public int getOptionCount() {
+            return this.values.length;
+        }
+
+        /**
+         * Gets an option.
+         * 
+         * @param index the index of the opiton
+         * @return the option
+         */
+        public Object getOption(int index) {
+            return this.values[index];
+        }
+
+        /**
+         * Gets the display label of an option.
+         * 
+         * @param index the index of the opiton
+         * @return the label
+         */
+        public String getLabel(int index) {
+            return this.display_values[index];
+        }
+
+        /**
+         * Gets the value of an option.
+         * 
+         * @param index the index of the opiton
+         * @return the value
+         */
+        public String getValue(int index) {
+            return this.values[index];
+        }
+
+        /**
+         * Gets the option that corresponds to a value.
+         * 
+         * @param value the value
+         * @return the option
+         */
+        public Object translateValue(String value) {
+            return value;
+        }
+    }
+
 	/**
 	 * A Subversion Executable module definition.
 	 *
@@ -1500,6 +1620,7 @@ public class SvnExeAdaptor extends Vcs {
     public void saveToFacade(VcsFacade facade) {
     	// TODO throw RuntimeException if the facade is not the right class
         SvnExeAdaptorFacade svnFacade = (SvnExeAdaptorFacade) facade;
+        svnFacade.setLayout(getLayout());
         svnFacade.setTrunk(getTrunk());
         svnFacade.setBranches(getBranches());
         svnFacade.setPassword(getPassword());
@@ -1520,6 +1641,7 @@ public class SvnExeAdaptor extends Vcs {
         if (!(facade instanceof SvnExeAdaptorFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
         SvnExeAdaptorFacade svnFacade = (SvnExeAdaptorFacade) facade;
+        setLayout(svnFacade.getLayout());
         setTrunk(svnFacade.getTrunk());
         setBranches(svnFacade.getBranches());
         setPassword(svnFacade.getPassword());
