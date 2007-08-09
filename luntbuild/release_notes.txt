@@ -17,6 +17,7 @@ luntbuild 1.5 Release Notes
 - Feature: (Task 5978) Added destination directory as an optional property for FileSystem VCS adaptor
 - Feature: (Bug 5983) SvnAdaptor and SvnExeAdaptor now support single (trunk/project) or multiple (project/trunk) repository layouts
 - Feature: (Bug 6004) Expanded support for builder success conditions, two new functions logContainsLine(level, linePattern) and builderLogContainsLine(level, pattern) will search for messages of a specific log level (priority)
+- Feature: (Change 4017) Added new special notification user "<users who checked in since last successful build>", this will only work on failed builds built with this version of luntbuild or later
 - Fix: (Bug 5869) Fixed some cases where builds would finish but stay in the "running" state, this was be caused by ginormous build logs (seriously 68,000+ lines)
 - Fix: Installer will now make sure that a JDK exists on the path (not just a JRE) so that the install will not fail
 - Fix: Installer will now propertly fail if one of the install scripts fails

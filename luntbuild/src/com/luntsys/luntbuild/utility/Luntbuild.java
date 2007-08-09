@@ -1307,7 +1307,8 @@ public class Luntbuild {
                 SecurityHelper.runAsSiteAdmin();
 
                 // check pre-defined users
-                if (!getDao().isUserExist(User.CHECKIN_USER_NAME))
+                if (!getDao().isUserExist(User.CHECKIN_USER_NAME_RECENT)
+                        || !getDao().isUserExist(User.CHECKIN_USER_NAME_ALL))
                     getDao().initialize();
 
                 // mark unfinished builds as failed
@@ -1468,9 +1469,9 @@ public class Luntbuild {
         Iterator it = users.iterator();
         while (it.hasNext()) {
             User user = (User) it.next();
-            if (user.getName().equals(User.CHECKIN_USER_NAME)) {
+            if (user.getName().equals(User.CHECKIN_USER_NAME_RECENT)
+                    || user.getName().equals(User.CHECKIN_USER_NAME_ALL)) {
                 it.remove();
-                break;
             }
         }
         return users;

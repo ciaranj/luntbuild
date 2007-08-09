@@ -78,8 +78,9 @@
                     <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">
 					<span jwcid="@Foreach" source="ognl:usersToNotify" value="ognl:user" index="ognl:userIndex">
 					<span jwcid="@Conditional" condition="ognl:userIndex != 0">, </span>
-					<span jwcid="@Conditional" condition="ognl:user.name != @com.luntsys.luntbuild.db.User@CHECKIN_USER_NAME"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.gotoUser" parameters="ognl:user.id"><span jwcid="@Insert" value="ognl:user.name">alvin</span></a></span>
-					<span jwcid="@Conditional" condition="ognl:user.name == @com.luntsys.luntbuild.db.User@CHECKIN_USER_NAME"><span jwcid="@Insert" value="ognl:user.name">users who checked in recently</span></span>
+					<span jwcid="@Conditional" condition="ognl:user.name != @com.luntsys.luntbuild.db.User@CHECKIN_USER_NAME_RECENT && user.name != @com.luntsys.luntbuild.db.User@CHECKIN_USER_NAME_ALL"><a href="#" jwcid="@DirectLink" listener="ognl:listeners.gotoUser" parameters="ognl:user.id"><span jwcid="@Insert" value="ognl:user.name">alvin</span></a></span>
+					<span jwcid="@Conditional" condition="ognl:user.name == @com.luntsys.luntbuild.db.User@CHECKIN_USER_NAME_RECENT"><span jwcid="@Insert" value="ognl:user.name">users who checked in recently</span></span>
+					<span jwcid="@Conditional" condition="ognl:user.name == @com.luntsys.luntbuild.db.User@CHECKIN_USER_NAME_ALL"><span jwcid="@Insert" value="ognl:user.name">users who checked in since last successful build</span></span>
 					</span>
 					</td>
 			      </tr>

@@ -25,6 +25,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 package com.luntsys.luntbuild.db;
 
 import com.luntsys.luntbuild.BuildGenerator;
@@ -766,4 +767,13 @@ public class Build {
 	public void setUser(String buildUser) {
 		this.user = buildUser;
 	}
+
+    /**
+     * Get the most recent previous build compared to this build.
+     * 
+     * @return the most recent previous build
+     */
+    public Build getPrevBuild() {
+        return Luntbuild.getDao().loadPreviousBuild(this);
+    }
 }

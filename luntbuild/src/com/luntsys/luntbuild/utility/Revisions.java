@@ -251,6 +251,30 @@ public class Revisions {
     }
 
     /**
+     * Reads the change logins from the specified build.
+     * 
+     * @param build the build
+     * @return the change logins
+     */
+    public static Set readChangeLogins(com.luntsys.luntbuild.db.Build build) {
+        File revisionLog = new File(build.getPublishDir() + File.separatorChar + BuildGenerator.REVISION_XML_LOG);
+        try {
+            DOMParser parser = new DOMParser();
+            parser.parse(revisionLog.getAbsolutePath());
+            NodeList authors = parser.getDocument().getElementsByTagName(AUTHOR_TAG);
+            Set logins = new HashSet();
+            for (int i = 0; i < authors.getLength(); i++) {
+                logins.add(Luntbuild.getTextContent(authors.item(i)));
+            }
+            return logins;
+        } catch (Exception e) {
+            logger.error("Unable to read revision log for " + build.getSchedule().getProject().getName()
+                    + "/" + build.getSchedule().getName() + "/" + build.getVersion(), e);
+            return new HashSet();
+        }
+    }
+
+    /**
      * Merges the specified set of revisions with this object.
      * 
      * @param revisions the revisions to merge
