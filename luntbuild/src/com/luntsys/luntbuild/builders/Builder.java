@@ -457,7 +457,7 @@ public abstract class Builder implements Serializable {
     /**
      * Checks if the builder log contains specified line pattern.
      * 
-     * @param linePattern the linePattern to look for
+     * @param linePattern the line pattern to look for
      * @return <code>true</code> if the builder log contains specified line pattern
      * @throws RuntimeException if an error occurs while reading the log file
      */
@@ -476,9 +476,33 @@ public abstract class Builder implements Serializable {
     }
 
     /**
+     * Checks if the builder log contains specified line pattern with the specified log level.
+     * 
+     * @param level the log level
+     * @param linePattern the line pattern to look for
+     * @return <code>true</code> if the builder log contains specified line pattern
+     * @throws RuntimeException if an error occurs while reading the log file
+     */
+    public boolean logContainsLine(String level, String linePattern) {
+        try {
+            NodeList messages = build_log.getChildNodes();
+            for (int i = 0; i < messages.getLength(); i++) {
+                Node message = messages.item(i);
+                if (Luntbuild.getTextContent(message).matches(linePattern) &&
+                        (message.getAttributes().getNamedItem("priority") != null &&
+                        message.getAttributes().getNamedItem("priority").getNodeValue().equalsIgnoreCase(level)))
+                    return true;
+            }
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Checks if the builder log contains specified line pattern from this builder.
      * 
-     * @param linePattern the linePattern to look for
+     * @param linePattern the line pattern to look for
      * @return <code>true</code> if the builder log contains specified line pattern from this builder
      * @throws RuntimeException if an error occurs while reading the log file
      */
@@ -499,6 +523,35 @@ public abstract class Builder implements Serializable {
     	} catch (Exception e) {
             throw new RuntimeException(e);
     	}
+    }
+
+    /**
+     * Checks if the builder log contains specified line pattern from this builder.
+     * 
+     * @param level the log level
+     * @param linePattern the line pattern to look for
+     * @return <code>true</code> if the builder log contains specified line pattern from this builder
+     * @throws RuntimeException if an error occurs while reading the log file
+     */
+    public boolean builderLogContainsLine(String level, String linePattern) {
+        try {
+            NodeList messages = build_log.getChildNodes();
+            for (int i = 0; i < messages.getLength(); i++) {
+                Node message = messages.item(i);
+                Node builder = message.getAttributes().getNamedItem("builder");
+                if (builder != null) {
+                    if (Luntbuild.getTextContent(builder).equals(getName())) {
+                        if (Luntbuild.getTextContent(message).matches(linePattern) &&
+                                (message.getAttributes().getNamedItem("priority") != null &&
+                                message.getAttributes().getNamedItem("priority").getNodeValue().equalsIgnoreCase(level)))
+                            return true;
+                    }
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
