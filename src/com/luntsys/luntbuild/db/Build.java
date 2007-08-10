@@ -757,7 +757,7 @@ public class Build {
 	/**
 	 * @return build user
 	 */
-	public String geUser() {
+	public String getUser() {
 		return user;
 	}
 
