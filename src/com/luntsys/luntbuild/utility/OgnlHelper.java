@@ -246,7 +246,7 @@ public class OgnlHelper {
 	}
 
 	/**
-	 * Gets the numeric day of week, possible values are 1 to 7.
+	 * Gets the numeric day of week, possible values are 0 to 6.
 	 * 
 	 * @return the numeric day of week
 	 */
