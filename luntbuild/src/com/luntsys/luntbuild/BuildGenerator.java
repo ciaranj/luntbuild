@@ -689,7 +689,7 @@ public class BuildGenerator implements StatefulJob {
                 }
             }
 
-            String user = build.geUser();
+            String user = build.getUser();
             if (user != null) {
                 logger.info("User \"" + user + "\" started the build: " + theSchedule.getName());
                 antProject.log("User \"" + user + "\" started the build", Project.MSG_INFO);
