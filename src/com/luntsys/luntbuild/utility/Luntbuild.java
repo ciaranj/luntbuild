@@ -1249,46 +1249,8 @@ public class Luntbuild {
                 if (jdbcIs != null) {
                     props.load(jdbcIs);
                 }
-                // Set dataset DB for HSQLDB in process DB
-                String hsqlUrl = props.getProperty("hsqlUrl");
-                if (hsqlUrl == null || hsqlUrl.trim().length() == 0 ||
-                        hsqlUrl.trim().startsWith("${")) {
-                    String dataset = new File(installDir + "/db/luntbuild").getAbsolutePath();
-                    props.setProperty("hsqlUrl", "jdbc:hsqldb:" + dataset);
-                    String hsqlUsername = props.getProperty("jdbcUsername");
-                    if (hsqlUsername == null || hsqlUsername.trim().length() == 0 || hsqlUsername.trim().startsWith("${"))
-                    	props.setProperty("jdbcUsername", "sa");                    
-                    String hsqlPassword = props.getProperty("jdbcPassword");
-                    if (hsqlPassword == null || hsqlPassword.trim().length() == 0 || hsqlPassword.trim().startsWith("${"))
-                    	props.setProperty("jdbcPassword", "");                    
-                }
                 
-                // Set dataset DB for Derby in process DB
-                String derbyUrl = props.getProperty("derbyUrl");
-                if (derbyUrl == null || derbyUrl.trim().length() == 0 ||
-                        derbyUrl.trim().startsWith("${")) {
-                    String dataset = new File(installDir + "/db/luntbuild-derby-data").getAbsolutePath();
-                    props.setProperty("derbyUrl", "jdbc:derby:" + dataset);
-                    String derbyUsername = props.getProperty("jdbcUsername");
-                    if (derbyUsername == null || derbyUsername.trim().length() == 0 || derbyUsername.trim().startsWith("${"))
-                    	props.setProperty("jdbcUsername", "sa");                    
-                    String derbyPassword = props.getProperty("jdbcPassword");
-                    if (derbyPassword == null || derbyPassword.trim().length() == 0 || derbyPassword.trim().startsWith("${"))
-                    	props.setProperty("jdbcPassword", "");                    
-                }
-                // Set dataset DB for H2 in process DB
-                String h2Url = props.getProperty("h2Url");
-                if (h2Url == null || h2Url.trim().length() == 0 ||
-                        h2Url.trim().startsWith("${")) {
-                    String dataset = new File(installDir + "/db/luntbuild-h2-data").getAbsolutePath();
-                    props.setProperty("h2Url", "jdbc:h2:file:" + dataset);
-                    String h2Username = props.getProperty("jdbcUsername");
-                    if (h2Username == null || h2Username.trim().length() == 0 || h2Username.trim().startsWith("${"))
-                    	props.setProperty("jdbcUsername", "sa");                    
-                    String h2Password = props.getProperty("jdbcPassword");
-                    if (h2Password == null || h2Password.trim().length() == 0 || h2Password.trim().startsWith("${"))
-                    	props.setProperty("jdbcPassword", "");                    
-                }
+                setEmbeddedDbUrls(props);
 
                 PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
                 cfg.setProperties(props);
@@ -1339,6 +1301,56 @@ public class Luntbuild {
         }
     }
 
+    public static String resolveProperty(Properties props, String propName) {
+    	if (!propName.startsWith("${")) return "";
+    	propName = propName.substring(2);
+    	if (propName.endsWith("}")) propName = propName.substring(0, propName.length() - 1);
+    	return props.getProperty(propName, "");
+    }
+    
+    public static void setEmbeddedDbUrls(Properties props) {
+        // Set dataset DB for HSQLDB in process DB
+        String hsqlUrl = props.getProperty("hsqlUrl");
+        if (hsqlUrl == null || hsqlUrl.trim().length() == 0 ||
+                hsqlUrl.trim().startsWith("${")) {
+            String dataset = new File(installDir + "/db/luntbuild").getAbsolutePath();
+            props.setProperty("hsqlUrl", "jdbc:hsqldb:" + dataset);
+            String hsqlUsername = props.getProperty("jdbcUsername");
+            if (hsqlUsername == null || hsqlUsername.trim().length() == 0 || hsqlUsername.trim().startsWith("${"))
+            	props.setProperty("jdbcUsername", "sa");                    
+            String hsqlPassword = props.getProperty("jdbcPassword");
+            if (hsqlPassword == null || hsqlPassword.trim().length() == 0 || hsqlPassword.trim().startsWith("${"))
+            	props.setProperty("jdbcPassword", "");                    
+        }
+        
+        // Set dataset DB for Derby in process DB
+        String derbyUrl = props.getProperty("derbyUrl");
+        if (derbyUrl == null || derbyUrl.trim().length() == 0 ||
+                derbyUrl.trim().startsWith("${")) {
+            String dataset = new File(installDir + "/db/luntbuild-derby-data").getAbsolutePath();
+            props.setProperty("derbyUrl", "jdbc:derby:" + dataset);
+            String derbyUsername = props.getProperty("jdbcUsername");
+            if (derbyUsername == null || derbyUsername.trim().length() == 0 || derbyUsername.trim().startsWith("${"))
+            	props.setProperty("jdbcUsername", "sa");                    
+            String derbyPassword = props.getProperty("jdbcPassword");
+            if (derbyPassword == null || derbyPassword.trim().length() == 0 || derbyPassword.trim().startsWith("${"))
+            	props.setProperty("jdbcPassword", "");                    
+        }
+        // Set dataset DB for H2 in process DB
+        String h2Url = props.getProperty("h2Url");
+        if (h2Url == null || h2Url.trim().length() == 0 ||
+                h2Url.trim().startsWith("${")) {
+            String dataset = new File(installDir + "/db/luntbuild-h2-data").getAbsolutePath();
+            props.setProperty("h2Url", "jdbc:h2:file:" + dataset);
+            String h2Username = props.getProperty("jdbcUsername");
+            if (h2Username == null || h2Username.trim().length() == 0 || h2Username.trim().startsWith("${"))
+            	props.setProperty("jdbcUsername", "sa");                    
+            String h2Password = props.getProperty("jdbcPassword");
+            if (h2Password == null || h2Password.trim().length() == 0 || h2Password.trim().startsWith("${"))
+            	props.setProperty("jdbcPassword", "");                    
+        }
+    }
+    
     /**
      * Gets the path to the servlet classes.
      * 
