@@ -45,6 +45,8 @@ import org.w3c.dom.NodeList;
 import java.io.*;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Base class for all builders.
@@ -455,6 +457,23 @@ public abstract class Builder implements Serializable {
     }
 
     /**
+     * Utility method to read and XML attribute as a string
+     * 
+     * @param element the XML element to read the attribute from
+     * @param attrName the name of the attribute to read
+     * @return the value of the attribute or null if the attribute does not
+     *         exist
+     */
+    private String getAttribute(Node element, String attrName) {
+        Node attrNode = element.getAttributes().getNamedItem(attrName);
+        if (attrNode == null) {
+            return null;
+        } else {
+            return attrNode.getNodeValue();
+        }
+    }
+
+    /**
      * Checks if the builder log contains specified line pattern.
      * 
      * @param linePattern the line pattern to look for
@@ -463,11 +482,13 @@ public abstract class Builder implements Serializable {
      */
     public boolean logContainsLine(String linePattern) {
     	try {
+            Pattern regexp = Pattern.compile(linePattern);
         	NodeList messages = build_log.getChildNodes();
         	for (int i = 0; i < messages.getLength(); i++) {
         		Node message = messages.item(i);
-                if (Luntbuild.getTextContent(message).matches(linePattern))
+                if (regexp.matcher(Luntbuild.getTextContent(message)).matches()) {
 					return true;
+                }
         	}
             return false;
     	} catch (Exception e) {
@@ -485,13 +506,16 @@ public abstract class Builder implements Serializable {
      */
     public boolean logContainsLine(String level, String linePattern) {
         try {
+            Pattern regexp = Pattern.compile(linePattern);
             NodeList messages = build_log.getChildNodes();
             for (int i = 0; i < messages.getLength(); i++) {
                 Node message = messages.item(i);
-                if (Luntbuild.getTextContent(message).matches(linePattern) &&
-                        (message.getAttributes().getNamedItem("priority") != null &&
-                        message.getAttributes().getNamedItem("priority").getNodeValue().equalsIgnoreCase(level)))
-                    return true;
+                String priority = getAttribute(message, "priority");
+                if (level.equalsIgnoreCase(priority)) {
+                    if (regexp.matcher(Luntbuild.getTextContent(message)).matches()) {
+                        return true;
+                    }
+                }
             }
             return false;
         } catch (Exception e) {
@@ -508,16 +532,16 @@ public abstract class Builder implements Serializable {
      */
     public boolean builderLogContainsLine(String linePattern) {
     	try {
+            Pattern regexp = Pattern.compile(linePattern);
         	NodeList messages = build_log.getChildNodes();
         	for (int i = 0; i < messages.getLength(); i++) {
-        		Node message = messages.item(i);
-        		Node builder = message.getAttributes().getNamedItem("builder");
-        		if (builder != null) {
-                    if (Luntbuild.getTextContent(builder).equals(getName())) {
-                        if (Luntbuild.getTextContent(message).matches(linePattern))
-        					return true;
-        			}
-        		}
+                Node message = messages.item(i);
+                String builder = getAttribute(message, "builder");
+                if (getName().equals(builder)) {
+                    if (regexp.matcher(Luntbuild.getTextContent(message)).matches()) {
+                        return true;
+                    }
+                }
         	}
             return false;
     	} catch (Exception e) {
@@ -535,15 +559,14 @@ public abstract class Builder implements Serializable {
      */
     public boolean builderLogContainsLine(String level, String linePattern) {
         try {
+            Pattern regexp = Pattern.compile(linePattern);
             NodeList messages = build_log.getChildNodes();
             for (int i = 0; i < messages.getLength(); i++) {
                 Node message = messages.item(i);
-                Node builder = message.getAttributes().getNamedItem("builder");
-                if (builder != null) {
-                    if (Luntbuild.getTextContent(builder).equals(getName())) {
-                        if (Luntbuild.getTextContent(message).matches(linePattern) &&
-                                (message.getAttributes().getNamedItem("priority") != null &&
-                                message.getAttributes().getNamedItem("priority").getNodeValue().equalsIgnoreCase(level)))
+                String priority = getAttribute(message, "priority");
+                String builder = getAttribute(message, "builder");
+                if (getName().equals(builder) && level.equalsIgnoreCase(priority)) {
+                    if (regexp.matcher(Luntbuild.getTextContent(message)).matches()) {
                             return true;
                     }
                 }
