@@ -38,11 +38,14 @@ import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.TriggerStartTimeComparator;
 import com.luntsys.luntbuild.utility.ValidationException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -313,15 +316,21 @@ public class QuartzService implements IScheduler {
 		try {
 			StdSchedulerFactory schedFact = new org.quartz.impl.StdSchedulerFactory();
 			Properties props = new Properties();
-			props.setProperty("org.quartz.scheduler.instanceName", "DefaultQuartzScheduler");
-			props.setProperty("org.quartz.scheduler.rmi.export", "false");
-			props.setProperty("org.quartz.scheduler.rmi.proxy", "false");
-			props.setProperty("org.quartz.scheduler.wrapJobExecutionInUserTransaction", "false");
-			props.setProperty("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
-			props.setProperty("org.quartz.threadPool.threadPriority", "5");
-			props.setProperty("org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread", "true");
-			props.setProperty("org.quartz.jobStore.misfireThreshold", "60000");
-			props.setProperty("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
+            InputStream quartzIs = Luntbuild.appContext.getServletContext().getResourceAsStream("/WEB-INF/quartz.properties");
+            if (quartzIs != null) {
+            	try {
+            		props.load(quartzIs);
+            	} catch (Exception e) {
+    				logger.error("Failed to load quartz properties");
+    			}
+            } else {
+            	logger.error("Unable to initialize /WEB-INF/quartz.properties");
+            	throw new Exception("Unable to initialize /WEB-INF/quartz.properties");
+            }
+            String quartzStore = props.getProperty("org.quartz.jobStore.class", "");
+            if (!StringUtils.isEmpty(quartzStore) && quartzStore.equals("org.quartz.impl.jdbcjobstore.JobStoreTX"))
+            	resolveJdbcVars(props);
+            
 			String buildThreadCountText = (String) Luntbuild.getProperties().get(Constants.BUILD_THREAD_COUNT);
 			if (!Luntbuild.isEmpty(buildThreadCountText))
 				props.setProperty("org.quartz.threadPool.threadCount", buildThreadCountText);
@@ -337,6 +346,41 @@ public class QuartzService implements IScheduler {
 		}
 	}
 
+	private void resolveJdbcVars(Properties props) {
+		Properties jdbcProps = new Properties();
+        InputStream jdbcIs = Luntbuild.appContext.getServletContext().getResourceAsStream("/WEB-INF/jdbc.properties");
+        if (jdbcIs != null) {
+        	try {
+        		jdbcProps.load(jdbcIs);
+        	} catch (Exception e) {
+        		logger.error("Unable to initialize /WEB-INF/jdbc.properties");
+			}
+        } else {
+        	logger.error("Unable to initialize /WEB-INF/jdbc.properties");
+        }
+        
+		String propStr = jdbcProps.getProperty("quartz.delegateClassName");
+		if (!StringUtils.isEmpty(propStr)) {
+			props.setProperty("org.quartz.jobStore.driverDelegateClass", propStr);
+		} else {
+			logger.error("Unable to set property org.quartz.dataSource.LuntbuildDS.driver");
+		}
+		propStr = jdbcProps.getProperty("jdbc.driverClassName");
+		if (!StringUtils.isEmpty(propStr)) {
+			props.setProperty("org.quartz.dataSource.LuntbuildDS.driver", propStr);
+		} else {
+			logger.error("Unable to set property org.quartz.dataSource.LuntbuildDS.driver");
+		}
+		propStr = jdbcProps.getProperty("jdbc.url");
+		if (!StringUtils.isEmpty(propStr)) {
+	        Luntbuild.setEmbeddedDbUrls(jdbcProps);
+			String propVal = Luntbuild.resolveProperty(jdbcProps, propStr);
+			props.setProperty("org.quartz.dataSource.LuntbuildDS.URL", propVal);
+		} else {
+			logger.error("Unable to set property org.quartz.dataSource.LuntbuildDS.URL");
+		}
+	}
+	
 	/**
 	 * Shutdown the scheduler. The scheduler can not be re-started after a shutdown.
 	 */
