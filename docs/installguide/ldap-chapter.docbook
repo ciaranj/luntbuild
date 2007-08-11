@@ -29,7 +29,7 @@
 <para>
     Following table expains the meaning of the LDAP configuration properties:
 </para>
-<table>
+<table id="ldapconfigprops">
 <title>LDAP configuration properties</title>
 <tgroup cols="2">
 <thead>

@@ -1,4 +1,5 @@
-<section><title>Setting Cvs connection information.</title>
+<section id="settingcvsconninfo">
+<title>Setting Cvs connection information.</title>
 <para>
 	In order to use this adaptor, install appropriate Cvs client based on your platform from
 	<ulink url="http://www.cvshome.org">http://www.cvshome.org</ulink> or

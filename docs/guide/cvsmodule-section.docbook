@@ -1,4 +1,5 @@
-<section><title>Setting Cvs module information.</title>
+<section id="settingcvsmodinfo">
+<title>Setting Cvs module information.</title>
 <para>
     <variablelist>
         <varlistentry>

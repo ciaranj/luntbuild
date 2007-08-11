@@ -1,4 +1,5 @@
-<section><title>Configuring Ant Builder.</title>
+<section id="configantbuilder">
+<title>Configuring Ant Builder.</title>
 <para>
     <variablelist>
         <varlistentry>

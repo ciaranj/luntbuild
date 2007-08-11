@@ -19,7 +19,7 @@
    <para>
       The tables below list the variables that are made available by Luntbuild in the templates.
    </para>
-   <table>
+   <table id="varsforbuildnotification">
       <title>Variables available for Build Notifications</title>
       <tgroup cols="2">
          <thead>
@@ -60,7 +60,7 @@
          </tbody>
       </tgroup>
    </table>
-   <table>
+   <table id="varsforschedulenotification">
       <title>Variables available for Schedule Notifications</title>
       <tgroup cols="2">
          <thead>
