@@ -60,7 +60,8 @@ testcvs cmd /c d:/lunt/cvs/lunt/luntbuild/remoting/samples/trigger_build.bat
       Any other Version Control System that can trigger an external command on checkin can use this method
       to implement real-time Continuous Integration.
    </para></note>
-   <section><title>JavaDoc</title>
+   <section id="javadoc">
+      <title>JavaDoc</title>
       <para>
          The JavaDoc for the external API is available <ulink url="../api/javadoc/index.html"><emphasis>here</emphasis></ulink>.
       </para>

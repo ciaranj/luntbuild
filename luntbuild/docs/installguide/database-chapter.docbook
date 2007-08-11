@@ -60,7 +60,7 @@ then you'll able to run SQL commands to examine contents of the DB.</member>
 <para>
 If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
 <ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and the set the connection:
-<table>
+<table id="hsqldbconfig">
 <title>QuantumDB HSQL DB Eclipse Configuration</title>
 <tgroup cols="2">
 <thead>
@@ -110,7 +110,7 @@ mysql> source db/mysql/luntbuild.sql;
 To manage MySql consider using free version of <ulink url="http://www.webyog.com/sqlyog/download_sqlyogfree.html">SQLyog</ulink>.
 If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
 <ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
-<table>
+<table id="mysqldbconfig">
 <title>QuantumDB MySql Eclipse Configuration</title>
 <tgroup cols="2">
 <thead>
@@ -154,7 +154,7 @@ postgres=# source luntbuild/db/postgresql/luntbuild.sql;
 I use free pgAdminIII that comes with Postgres installation to manage Postgres database.
 If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
 <ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
-<table>
+<table id="postgresdbconfig">
 <title>QuantumDB PostgreSQL Eclipse Configuration</title>
 <tgroup cols="2">
 <thead>
@@ -192,7 +192,7 @@ password=your password
 </programlisting>
 If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
 <ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
-<table>
+<table id="sqlserverdbconfig">
 <title>QuantumDB SqlServer Eclipse Configuration</title>
 <tgroup cols="2">
 <thead>
@@ -230,7 +230,7 @@ jdbc.password=your password
 </programlisting>
 If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
 <ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
-<table>
+<table id="oracledbconfig">
 <title>QuantumDB Oracle Eclipse Configuration</title>
 <tgroup cols="2">
 <thead>
@@ -276,7 +276,7 @@ jdbc.password=luntbuild
 <para>
 If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
 <ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
-<table>
+<table id="derbydbconfig">
 <title>QuantumDB Derby Eclipse Configuration</title>
 <tgroup cols="2">
 <thead>
@@ -316,7 +316,7 @@ jdbc.password=
 </programlisting>
 If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
 <ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
-<table>
+<table id="h2dbconfig">
 <title>QuantumDB H2 Eclipse Configuration</title>
 <tgroup cols="2">
 <thead>

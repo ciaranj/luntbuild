@@ -1,4 +1,4 @@
-<section>
+<section id="setbaseclearcaseconninfo">
   <title>Setting Base Clearcase connection information.</title>
   <para>
     Using base Clearcase (i.e., non-UCM) is supported in two different
@@ -7,7 +7,7 @@
     will detail the configuration options available to you in either
     case.
   </para>
-  <section>
+  <section id="baseclearcaesconninfo">
     <title>Base Clearcase connection information.</title>
     <para>
       The information presented in this section applies to either
@@ -150,7 +150,7 @@
       </variablelist>
     </para>
   </section>
-  <section>
+  <section id="dynamicclearcaseconninfo">
     <title>Dynamic Clearcase connection information</title>
     <para>
       In addition to the basic Clearcase connection information, the

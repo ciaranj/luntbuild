@@ -22,7 +22,7 @@
 <book>
 <bookinfo>
   <title>Luntbuild - Build Automation and Management User's Guide</title>
-  <copyright><year>2005-2006</year><holder>Luntbuild</holder></copyright>
+  <copyright><year>2005-2007</year><holder>Luntbuild</holder></copyright>
 </bookinfo>
 <chapter id="introduction">
 <title>Introduction</title>
@@ -519,7 +519,8 @@ Fill the following information:
 <listitem><para>Select Version Control System.</para></listitem>
 </itemizedlist>
 </para>
-<section><title>Setting AccuRev connection information.</title>
+<section id="settingaccurevconnectioninfo">
+<title>Setting AccuRev connection information.</title>
 <para>
 	To download AccuRev go to <ulink url="http://www.accurev.com/download/index.htm">
 	http://www.accurev.com/download/index.htm</ulink>.
@@ -557,7 +558,8 @@ Fill the following information:
 &clearcaseadaptor-section;
 &cvsadaptor-section;
 
-<section><title>Setting File system connection information.</title>
+<section id="settingfilesystemconninfo">
+<title>Setting File system connection information.</title>
 <para>
     <variablelist>
         <varlistentry>
@@ -580,7 +582,8 @@ Fill the following information:
     </variablelist>
 </para>
 </section>
-<section><title>Setting Perforce connection information.</title>
+<section id="settingperforceconninfo">
+<title>Setting Perforce connection information.</title>
 <para>
 	You should have Perforce client installed on the build machine.
 	Contact <ulink url="http://www.perforce.com">http://www.perforce.com</ulink> for licensing information.
@@ -716,7 +719,8 @@ Fill the following information:
     </variablelist>
 </para>
 </section>
-<section><title>Setting Clearcase UCM connection information.</title>
+<section id="settingclearcaseucmconninfo">
+<title>Setting Clearcase UCM connection information.</title>
 <para>
 	You should have Clearcase client installed on the build machine.
 	Also you should make sure that the account running your application server or
@@ -826,7 +830,8 @@ Fill the following information:
     The Clearcase UCM adaptor currently does not support labeling operation.
 </para></note>
 </section>
-<section><title>Setting Visual Sourcesafe connection information.</title>
+<section id="settingvssconninfo">
+<title>Setting Visual Sourcesafe connection information.</title>
 <para>
 	In order to use this VCS adaptor, visual sourcesafe need to be installed in your build machine.
 	Download Visual Sourcesafe from <ulink url="http://download.microsoft.com">http://download.microsoft.com</ulink>.
@@ -887,7 +892,7 @@ Fill the following information:
             <para>
 			The following is a list of format character meanings copied from JDK document:
 			</para>
-			<table>
+			<table id="datetimeformatchars">
 			<title>Date/Time format characters</title>
 			<tgroup cols="3">
 			<thead>
@@ -943,7 +948,8 @@ Fill the following information:
 	You need to change the author pattern according to the HISTORY command output of your Sourcesafe installation.
  	</para></note>
 </section>
-<section><title>Setting StarTeam connection information.</title>
+<section id="settingstarteamconninfo">
+<title>Setting StarTeam connection information.</title>
 <para>
 	For Windows platform, you will need to have a full installation of StarTeam SDK runtime
  	(which will install some runtime dlls	and put them in the Windows system path). Normally
@@ -996,7 +1002,8 @@ Fill the following information:
     </variablelist>
 </para>
 </section>
-<section><title>Using multiple Version Control Adaptors.</title>
+<section id="multiplevcsadaptors">
+<title>Using multiple Version Control Adaptors.</title>
 <para>
 For each project, you can define one or more of the above Version Control Systems.
 When a build is performed for such a project, contents of all repositories is checked out to the build's work directory.
@@ -1021,7 +1028,8 @@ But if module1 is defined with destination path "/foo",
 and module2 is defined with destination path "/foo/bar", only contents under directory "/foo/bar"
 will be overridden by module2.
 </para>
-<section><title>Setting AccuRev module information.</title>
+<section id="settingaccurevmodinfo">
+<title>Setting AccuRev module information.</title>
 <para>
     <variablelist>
         <varlistentry>
@@ -1056,7 +1064,8 @@ will be overridden by module2.
 
 &cvsmodule-section;
 
-<section><title>Setting Perforce module information.</title>
+<section id="settingperforcemodinfo">
+<title>Setting Perforce module information.</title>
     <variablelist>
         <varlistentry>
         <term>Depot path</term>
@@ -1102,7 +1111,8 @@ will be overridden by module2.
 	have enough access rights to create and edit Perforce client specification.
     </para>
 </section>
-<section><title>Setting Subversion module information.</title>
+<section id="settingssvnmodinfo">
+<title>Setting Subversion module information.</title>
     <variablelist>
         <varlistentry>
         <term>Source path</term>
@@ -1234,7 +1244,8 @@ will be overridden by module2.
 	(in this case, source path will only be prefixed with "repository url base" property defined at the project level).
 	</para>
 </section>
-<section><title>Setting Visual Sourcesafe module information.</title>
+<section id="settingvssmodinfo">
+<title>Setting Visual Sourcesafe module information.</title>
 <para>
     <variablelist>
         <varlistentry>
@@ -1274,7 +1285,8 @@ will be overridden by module2.
 	Otherwise the contents will be put to "Source path" relative to project work directory.
 </para>
 </section>
-<section><title>Setting StarTeam module information.</title>
+<section id="settingstarteammodinfo">
+<title>Setting StarTeam module information.</title>
 <para>
     <variablelist>
         <varlistentry>
@@ -1354,7 +1366,8 @@ the set of builders defined here.
 
 &antbuilder-section;
 
-<section><title>Configuring Command Builder.</title>
+<section id="configcommandbuilder">
+<title>Configuring Command Builder.</title>
 <para>
     <variablelist>
         <varlistentry>
@@ -1409,7 +1422,8 @@ the set of builders defined here.
     </variablelist>
 </para>
 </section>
-<section><title>Configuring Maven Builder.</title>
+<section id="configmavenbuilder">
+<title>Configuring Maven Builder.</title>
 <para>
     <variablelist>
         <varlistentry>
@@ -1500,7 +1514,8 @@ the set of builders defined here.
     </variablelist>
 </para>
 </section>
-<section><title>Configuring Maven2 Builder.</title>
+<section id="configmaven2builder">
+<title>Configuring Maven2 Builder.</title>
 <para>
     <variablelist>
         <varlistentry>
@@ -1591,7 +1606,8 @@ the set of builders defined here.
     </variablelist>
 </para>
 </section>
-<section><title>Configuring Rake Builder.</title>
+<section id="configrakebuilder">
+    <title>Configuring Rake Builder.</title>
     <para>
         <ulink url="http://rake.rubyforge.org/">Rake</ulink> builder a simple Ruby build program with capabilities similar to make.
     </para>

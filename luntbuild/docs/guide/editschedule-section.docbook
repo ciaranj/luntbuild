@@ -1,4 +1,5 @@
-<section><title>Edit Schedule.</title>
+<section id="editschedule">
+<title>Edit Schedule.</title>
 <para>
 	Schedules are used to initiate/trigger builds either non-interactively or manually.
 </para>
