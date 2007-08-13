@@ -20,7 +20,7 @@ xsltproc --nonet luntbuild.xsl faqs.docbook > index.html
 Installation guide is generated using command:
 
 cd docs/installguide
-xsltproc --nonet luntbuild.xsl installguide.docbook > installguide.html
+xsltproc --nonet luntbuild.xsl installguide.xml > installguide.html
 
 Quick Start guide is generated using command:
 
@@ -42,6 +42,18 @@ The XSLT C library, DocBook XML DTD 4.2, XSL stylesheets for the DocBook XML DTD
 On Linux you will need The XSLT C library package:
 
 See: http://linux.about.com/library/cmd/blcmdl1_xsltproc.htm
+
+Building with Apache Velocity DocBook Framework
+===============================================
+
+Download the latest stable DocBook Framework (DBF) release from http://velocity.apache.org/docbook/
+
+Extract it from to somewhere on you local disk.  Then use the following commands:
+
+cd luntbuild/docs
+ant -Ddbf.basedir=<you DBF install location>
+
+That's it! Now look in the luntbuild/docs/target folder for the html and pdf docs.
 
 
 DocBook reference
