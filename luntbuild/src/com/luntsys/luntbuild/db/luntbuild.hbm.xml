@@ -21,7 +21,7 @@
 
 		<property name="notifiers" column="NOTIFIERS" type="serializable" length="4096" />
 
-		<set name="notifyMappings" table="LB_NOTIFY_MAPPING" cascade="all,delete-orphan"
+		<set name="notifyMappings" table="LB_NOTIFY_MAPPING" cascade="all-delete-orphan"
 			inverse="true" >
 			<key column="FK_PROJECT_ID"/>
 			<one-to-many class="NotifyMapping"/>
@@ -33,17 +33,17 @@
 		<!-- serialized form of builders configured for this project-->
 		<property name="builderList" type="serializable" column="BUILDER_LIST" length="65535" />
 
-		<set name="schedules" table="LB_SCHEDULE" cascade="all,delete-orphan" inverse="true" >
+		<set name="schedules" table="LB_SCHEDULE" cascade="delete" inverse="true" >
 			<key column="FK_PROJECT_ID"/>
 			<one-to-many class="Schedule"/>
 		</set>
-		<set name="vcsLogins" table="LB_VCS_LOGIN" cascade="all,delete-orphan" inverse="true" >
+		<set name="vcsLogins" table="LB_VCS_LOGIN" cascade="delete" inverse="true" >
 			<key column="FK_PROJECT_ID"/>
 			<one-to-many class="VcsLogin"/>
 		</set>
 
 		<!-- bi-directional one-to-many association to RolesMapping -->
-		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="all,delete-orphan" inverse="true" lazy="false">
+		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="all-delete-orphan" inverse="true" lazy="false">
 			<key column="FK_PROJECT_ID"/>
 			<one-to-many class="RolesMapping"/>
 		</set>
@@ -51,6 +51,7 @@
 		<property name="logLevel" column="LOG_LEVEL"/>
 	</class>
 
+	<!-- Schedules -->
 	<class name="Schedule" table="LB_SCHEDULE">
 		<cache usage="read-write"/>
 		<id name="id" type="long" unsaved-value="0">
@@ -89,7 +90,8 @@
 		<property name="buildCleanupStrategy" column="BUILD_CLEANUP_STRATEGY"/>
 		<property name="buildCleanupStrategyData" column="BUILD_CLEANUP_STRATEGY_DATA" length="255" />
 		<property name="workingPath" column="WORKING_PATH" length="255" />
-		<set name="builds" table="LB_BUILD" inverse="true" cascade="all,delete-orphan">
+		<set name="builds" table="LB_BUILD" inverse="true" cascade="delete"
+			>
 			<key column="FK_SCHEDULE_ID"/>
 			<one-to-many class="Build"/>
 		</set>
@@ -163,16 +165,16 @@
 		<property name="contacts" column="CONTACTS" type="serializable" length="65535" />
 		<property name="fullname" column="FULLNAME" length="255" />
 
-		<set name="vcsLogins" table="LB_VCS_LOGIN" cascade="all,delete-orphan" inverse="true" >
+		<set name="vcsLogins" table="LB_VCS_LOGIN" cascade="delete" inverse="true" >
 			<key column="FK_USER_ID"/>
 			<one-to-many class="VcsLogin"/>
 		</set>
-		<set name="notifyMappings" table="LB_NOTIFY_MAPPING" cascade="all,delete-orphan" inverse="true" >
+		<set name="notifyMappings" table="LB_NOTIFY_MAPPING" cascade="delete" inverse="true" >
 			<key column="FK_USER_ID"/>
 			<one-to-many class="NotifyMapping"/>
 		</set>
 		<!-- bi-directional one-to-many association to RolesMapping -->
-		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="all,delete-orphan" inverse="true" lazy="false">
+		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="delete" inverse="true" lazy="false">
 			<key column="FK_USER_ID"/>
 			<one-to-many class="RolesMapping"/>
 		</set>
@@ -188,7 +190,7 @@
 		<property name="name" column="NAME" not-null="true" unique="true" length="255" />
 
 		<!-- bi-directional one-to-many association to RolesMapping -->
-		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="all,delete-orphan" inverse="true"  lazy="false">
+		<set name="rolesMappings" table="LB_ROLES_MAPPING" cascade="delete" inverse="true"  lazy="false">
 			<key column="FK_ROLE_ID"/>
 			<one-to-many class="RolesMapping"/>
 		</set>
