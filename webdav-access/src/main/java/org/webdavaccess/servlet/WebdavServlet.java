@@ -44,6 +44,8 @@ import org.apache.catalina.util.MD5Encoder;
 import org.apache.catalina.util.RequestUtil;
 import org.apache.catalina.util.URLEncoder;
 import org.apache.catalina.util.XMLWriter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.util.WebdavStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,16 +53,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+
 import org.webdavaccess.IWebdavAuthorization;
 import org.webdavaccess.IWebdavStorage;
 import org.webdavaccess.ResourceLocks;
 import org.webdavaccess.WebdavAuthorizationFactory;
 import org.webdavaccess.WebdavStoreFactory;
-import org.webdavaccess.exceptions.WebdavException;
 import org.webdavaccess.exceptions.AccessDeniedException;
 import org.webdavaccess.exceptions.ObjectAlreadyExistsException;
 import org.webdavaccess.exceptions.ObjectNotFoundException;
 import org.webdavaccess.exceptions.UnauthenticatedException;
+import org.webdavaccess.exceptions.WebdavException;
 
 
 /**
@@ -74,6 +77,8 @@ import org.webdavaccess.exceptions.UnauthenticatedException;
 
 public class WebdavServlet extends HttpServlet {
 
+	private static Log log = LogFactory.getLog(WebdavServlet.class);
+    
 	// -------------------------------------------------------------- Constants
 
 	private static final String METHOD_HEAD = "HEAD";
@@ -255,26 +260,24 @@ public class WebdavServlet extends HttpServlet {
 		String method = req.getMethod();
 
 		if (fdebug == 1) {
-			System.out.println("-----------");
-			System.out.println("WebdavServlet\n request: method = " + method);
-			System.out.println("Time: " + System.currentTimeMillis());
-			System.out.println("path: " + getRelativePath(req));
-			System.out.println("-----------");
+			log.debug("WebdavServlet\n request: method = " + method);
+			log.debug("Time: " + System.currentTimeMillis());
+			log.debug("path: " + getRelativePath(req));
 			Enumeration e = req.getHeaderNames();
 			while (e.hasMoreElements()) {
 				String s = (String) e.nextElement();
-				System.out.println("header: " + s + " " + req.getHeader(s));
+				log.debug("header: " + s + " " + req.getHeader(s));
 			}
 			e = req.getAttributeNames();
 			while (e.hasMoreElements()) {
 				String s = (String) e.nextElement();
-				System.out.println("attribute: " + s + " "
+				log.debug("attribute: " + s + " "
 						+ req.getAttribute(s));
 			}
 			e = req.getParameterNames();
 			while (e.hasMoreElements()) {
 				String s = (String) e.nextElement();
-				System.out.println("parameter: " + s + " "
+				log.debug("parameter: " + s + " "
 						+ req.getParameter(s));
 			}
 		}
@@ -748,8 +751,7 @@ public class WebdavServlet extends HttpServlet {
 					}
 				} else {
 					if (includeBody && fStore.isFolder(path)) {
-						renderHtml(path, resp.getOutputStream(),
-								((req.getPathInfo() == null) ? req.getServletPath().substring(1) + "/" : null));
+						renderHtml(path, resp.getOutputStream(), req.getContextPath());
 					} else {
 						if (!fStore.objectExists(path)) {
 							resp.sendError(HttpServletResponse.SC_NOT_FOUND,
@@ -818,7 +820,9 @@ public class WebdavServlet extends HttpServlet {
             String parent = path.substring(0, slash);
             if (parent.trim().length() > 0) {
 	            sb.append(" - <a href=\"");
-	            sb.append(rewrittenContextPath);
+                if (prefix != null) {
+                	sb.append(prefix);
+                }
 	            sb.append(rewriteUrl(parent));
 	            if (!parent.endsWith("/"))
 	                sb.append("/");
@@ -863,7 +867,9 @@ public class WebdavServlet extends HttpServlet {
                     continue;
 
                 String resourcePath = rewrittenContextPath;
-                if (!resourcePath.endsWith("/")) resourcePath += "/";
+                if (!resourcePath.endsWith("/")) {
+                	resourcePath += "/";
+                }
                 resourcePath += resourceName;
                 boolean exists = fStore.objectExists(resourcePath);
                if (!exists) {
@@ -879,16 +885,12 @@ public class WebdavServlet extends HttpServlet {
                 
                 sb.append("<td align=\"left\">&nbsp;&nbsp;\r\n");
                 sb.append("<a href=\"");
-                if (prefix != null) {
-                	sb.append(prefix);
-                }
-                sb.append(resourceName);
-                if (isDir)
-                    sb.append("/");
+                if (prefix != null) sb.append(prefix);
+                sb.append(resourcePath);
+                if (isDir) sb.append("/");
                 sb.append("\"><tt>");
                 sb.append(RequestUtil.filter(trimmed));
-                if (isDir)
-                    sb.append("/");
+                if (isDir) sb.append("/");
                 sb.append("</tt></a></td>\r\n");
 
                 sb.append("<td align=\"right\"><tt>");
@@ -2010,4 +2012,3 @@ public class WebdavServlet extends HttpServlet {
 	}
 
 }
-

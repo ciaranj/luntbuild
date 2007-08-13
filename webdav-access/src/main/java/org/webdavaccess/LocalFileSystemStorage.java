@@ -24,8 +24,6 @@ import java.io.FileOutputStream;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
-import java.security.Principal;
-
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -50,18 +48,14 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	private static Log log = LogFactory.getLog(LocalFileSystemStorage.class);
     
 	private static final String ROOTPATH_PARAMETER = "rootpath";
-	private static final String WEBDAV_STORAGE_ROOTPATH = "webdav.storage.rootpath";
-
 	private static final String DEBUG_PARAMETER = "storeDebug";
 
 	private static int BUF_SIZE = 50000;
-
 	private static File root = null;
-
 	private static int debug = -1;
 	
 	private IWebdavAuthorization fAuthorize = null;
-	
+	private String servletName;
 
 	public void begin(HttpServletRequest req, Hashtable parameters, String defaultStorageLocation, IWebdavAuthorization authorize)
 			throws WebdavException {
@@ -82,7 +76,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 				try {
 					InitialContext context = new InitialContext();
 					Context environment = (Context) context.lookup("java:comp/env");
-					rootPath = (String) environment.lookup(WEBDAV_STORAGE_ROOTPATH);
+					rootPath = (String) environment.lookup(rootPath);
 				} catch (Exception ex) {
 					// Not an context env. use the original as root
 				}
@@ -96,20 +90,16 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 						+ ROOTPATH_PARAMETER);
 			}
 			
-			String servletPath = req.getServletPath();
-			if (!(rootPath.endsWith("/") || rootPath.endsWith("\\")))
-				rootPath += "/";
-			String path = rootPath + servletPath;
 			root = new File(rootPath);
-			File servletRoot = new File(path);
-			if (!servletRoot.exists()) {
-				if (!servletRoot.mkdirs()) {
-					throw new WebdavException(ROOTPATH_PARAMETER + ": " + servletRoot
+			if (!root.exists()) {
+				if (!root.mkdirs()) {
+					throw new WebdavException(ROOTPATH_PARAMETER + ": " + root
 							+ " does not exist and could not be created");
 				} 
 			}
 			
 			fAuthorize = authorize;
+			servletName = req.getServletPath();
 		}
 	}
 
@@ -137,6 +127,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	}
 
 	public boolean objectExists(String uri) throws WebdavException {
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.objectExists(" + uri + ")=" + file.exists());
@@ -144,6 +135,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	}
 
 	public boolean isFolder(String uri) throws WebdavException {
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.isFolder(" + uri + ")=" + file.isDirectory());
@@ -151,6 +143,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	}
 
 	public boolean isResource(String uri) throws WebdavException {
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.isResource(" + uri + ") " + file.isFile());
@@ -164,6 +157,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	public void createFolder(String uri) throws WebdavException {
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.createFolder(" + uri + ")");
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		if (!file.mkdir())
 			throw new WebdavException("cannot create folder: " + uri);
@@ -176,6 +170,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	public void createResource(String uri) throws WebdavException {
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.createResource(" + uri + ")");
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		try {
 			if (!file.createNewFile())
@@ -195,6 +190,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.setResourceContent(" + uri + ")");
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		try {
 			OutputStream os = new BufferedOutputStream(new FileOutputStream(
@@ -224,6 +220,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	public Date getLastModified(String uri) throws WebdavException {
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.getLastModified(" + uri + ")");
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		return new Date(file.lastModified());
 	}
@@ -236,6 +233,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.getCreationDate(" + uri + ")");
 		// TODO return creation date instead of last modified
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		return new Date(file.lastModified());
 	}
@@ -247,6 +245,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	public String[] getChildrenNames(String uri) throws WebdavException {
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.getChildrenNames(" + uri + ")");
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		if (file.isDirectory()) {
 
@@ -272,6 +271,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	public InputStream getResourceContent(String uri) throws WebdavException {
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.getResourceContent(" + uri + ")");
+		uri = normalize(uri);
 		File file = new File(root, uri);
 
 		InputStream in = null;
@@ -289,6 +289,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	public long getResourceLength(String uri) throws WebdavException {
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.getResourceLength(" + uri + ")");
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		return file.length();
 	}
@@ -299,6 +300,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	 * 
 	 */
 	public void removeObject(String uri) throws WebdavException {
+		uri = normalize(uri);
 		File file = new File(root, uri);
 		boolean success = file.delete();
 		if (debug == 1)
@@ -309,4 +311,10 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 
 	}
 
+	private String normalize(String uri) {
+		if (uri.startsWith(servletName))
+			return uri.substring(servletName.length());
+		else
+			return uri;
+	}
 }
