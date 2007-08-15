@@ -1,0 +1,252 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Schedule Parameters.</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch13.html" title="Chapter 13. Creating Build Schedule(s) for the Project"><link rel="prev" href="ch13.html" title="Chapter 13. Creating Build Schedule(s) for the Project"><link rel="next" href="ch14.html" title="Chapter 14. Using Notification Templates"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Schedule Parameters.</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch13.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 13. Creating Build Schedule(s) for the Project</th><td width="20%" align="right"> <a accesskey="n" href="ch14.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id751836"></a>Schedule Parameters.</h2></div></div></div><p><b>Name. </b>
+Provide a name for this schedule. This name will be used to identify this schedule, and cannot be changed later.
+Keep in mind that schedule name is used as subdirectory of the project publish directory.
+</p><p><b>Description. </b>
+Provide a description for this schedule.
+</p><a name="nextBuildVersion"></a><p><b>Next build version. </b>
+    Specify the string for the next build version, keep in mind the name will be used
+    as a subdirectory in the schedule's publish directory.
+    The version string is incremented by Luntbuild as follows:
+    </p><table class="simplelist" border="0" summary="Simple list"><tr><td>luntbuild-1.0 will be increased to luntbuild-1.1</td></tr><tr><td>luntbuild-1.2.9 will be increased to luntbuild-1.2.10</td></tr><tr><td>luntbuild-1.5(1000) will be increased to luntbuild-1.5(1001)</td></tr><tr><td></td></tr></table><p>
+    In general, the last number in the "Next build version" will be incremented with every build.
+    For example "luntbuild-1.2.0" will increase to "luntbuild-1.2.3" after three builds. However,
+    if there are OGNL expressions (encapsulated within ${...}) embedded in, the last number will not be
+    increased automatically. Luntbuild will evaluate every embedded OGNL expression to get the
+    actual version string for the specific build. When performing the evaluation,
+    current <a href="../javadoc/com/luntsys/luntbuild/db/Schedule.html" target="_top">Schedule</a> object will
+    be used as the OGNL root object. Here are some examples of using OGNL expression to achieve
+    various versioning strategy:
+    </p><div class="variablelist"><dl><dt><span class="term">Scenario 1:</span></dt><dd><p>
+        <span class="emphasis"><em>Put current date and iteration of this date as the part of the build version.</em></span>
+        </p><p>
+        Define "next build version" of every schedule to be:
+</p><pre class="programlisting">
+    foo-${#currentDay=system.(year+"-"+month+"-"+dayOfMonth), \
+    #lastDay=project.var["day"].setValue(#currentDay), \
+    #dayIterator=project.var["dayIterator"].intValue, \
+    project.var["dayIterator"]. setIntValue(#currentDay==#lastDay?#dayIterator+1:1), \
+    #currentDay}.${project.var["dayIterator"]}
+</pre><p>
+ 				The actual version string for a build will include the build date and iterations for that date.
+				</p></dd></dl></div><p>
+			</p><div class="variablelist"><dl><dt><span class="term">Scenario 2:</span></dt><dd><p>
+                <span class="emphasis"><em>
+                    "test" and "release" schedule shares and increases the same version string,
+                     while "continuous integration" schedule uses another independent version.</em></span>
+                </p><p>
+				Both "test" and "release" schedule set "next build version" to be:
+</p><pre class="programlisting">
+    foo-${project.var["majorVersionPart"]}.\
+    ${project.var["minorVersionPart"].increaseAsInt()}
+</pre><p>
+ 				For "continuous integration" schedule, set "next build version" to be:
+</p><pre class="programlisting">
+    foo-1
+</pre><p>
+				</p></dd></dl></div><p>
+			</p><div class="variablelist"><dl><dt><span class="term">Scenario3:</span></dt><dd><p>
+            <span class="emphasis"><em>"release" schedule increases release part of the version, while "nightly" schedule
+			increases iteration part of the version. When release part of the version changes, iteration
+			part should be reset to 1.
+            </em></span>
+            </p><p>
+				Define the following variables for the project:
+				</p><table class="simplelist" border="0" summary="Simple list"><tr><td>fixPart=foo-1.1</td></tr><tr><td>releasePart=1</td></tr><tr><td>iterationPart=0</td></tr></table><p>
+                </p><p>
+				Define "next build version" of "nightly" schedule as:
+</p><pre class="programlisting">
+${project.var["fixPart"]}.${project.var["releasePart"]}-build-${project.var["iterationPart"].increaseAsInt()}
+</pre><p>
+				Define "next build version" of "release" schedule as:
+</p><pre class="programlisting">
+${project.var["fixPart"]}.${project.var["iterationPart"].setValue(1), project.var["releasePart"].(increaseAsInt(), value)}
+</pre><p>
+				This way, builds in "release" schedule will get versions like: foo-1.1.1, foo-1.1.2, foo-1.1.3, ..., and builds in "nightly" schedule
+				will get versions like: foo-1.1.1 build 1, foo-1.1.1 build 2, foo-1.1.1 build3, ...., foo-1.1.2 build 1, foo-1.1.2 build2, ...
+				</p></dd></dl></div><p>
+			</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+                After the evaluation of an OGNL expression, Luntbuild will substitute all "."
+                characters in the version string with "_", and all blank characters with "-".
+                This string is then used as the label which will be applied
+                to source code in the Version Control System for the particular build.
+                For example, if the build's version is "v1.0 build256",
+                source code for this build will be labeled as "v1_0-build256".
+            </p></td></tr></table></div><p>
+            </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+                Luntbuild labels the source code based on the version number. If there are multiple projects,
+                and/or multiple builds configured in Luntbuild, you should make sure there are no duplicate version
+                strings in Luntbuild. For example, if you configure build1 with next build version as "v1.0",
+                and configure build2 with next build version as "v1.5" and both of these builds contain
+                the same module and they are using the same Version Control System, then after five builds or more,
+                version number of build1 will have duplicate version number(s) with the early builds of build2.
+                The best practice is to name the version number for each build with project/build prefix,
+                such as "luntbuild-dev-0.9.2".
+            </p></td></tr></table></div><p>
+        </p><p><b>Work directory. </b>
+		Work directory for the schedule. Non-absolute path will be assumed to be relative to Luntbuild's top level work directory.
+ 		If left empty, &lt;global_work_dir&gt;/&lt;project_name&gt; will be assumed, where &lt;global_work_dir&gt; stands for
+ 		Luntbuild's top level work directory, and &lt;project_name&gt; stands for project name of this schedule. It is possible to use
+ 		the same work directory for multiple schedules of the same project.
+        <a href="ch13.html#buildworkdir">See build work directory</a>.
+        </p><p><b>Trigger type. </b>
+        Select the trigger type for this schedule. Value "manual" means build of this schedule can only be triggered manually.
+        Value "simple" can be used to configure a periodic trigger (repeated every N minutes). Value "cron" can be used
+        to configure a cron-like trigger. Refer to
+        <a href="http://www.opensymphony.com/quartz/" target="_top"><em class="citetitle">http://www.opensymphony.com/quartz/</em></a>
+        for details about how to configure cron trigger.
+        </p><p><b>Cron expression. </b>
+        Set the cron expression for this schedule, the format is
+        &lt;seconds&gt; &lt;minutes&gt; &lt;hours&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt;.
+        For example <span class="emphasis"><em>0 1 * * ?</em></span> means 1:00am every day. For details of the format,
+        refer to <a href="http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html" target="_top"><em class="citetitle">Cron triggers tutorial</em></a>.
+        </p><p><b>Repeat interval (minutes). </b>
+        Set the repeat interval for this schedule in minutes.
+        </p><a name="buildNecessaryCondition"></a><p><b>Build necessary condition. </b>
+        The "Build necessary condition" is optional.
+        If left empty, the "vcsModified or dependencyNewer" value is assumed.
+        This property is used by Luntbuild to determine,
+        if the current build is necessary when the build strategy of the build schedule is set to
+        "build when necessary". The "Build necessary condition" is an OGNL expression.
+        When this expression evaluates to true, the build is considered necessary.
+        Root object used for OGNL expression evaluation here is current <a href="../javadoc/com/luntsys/luntbuild/db/Schedule.html" target="_top">
+        Schedule</a> object.
+        Here are some examples to show the format of this OGNL expression:
+        </p><div class="orderedlist"><ol type="1"><li><p>
+                <span class="emphasis"><em>vcsModified</em></span> - this expression will evaluate to true if the repository
+                content of the current build changes
+            </p></li><li><p>
+                <span class="emphasis"><em>dependencyNewer</em></span> - this expression will evaluate to true if new builds are generated in one of
+                the dependent schedule
+            </p></li><li><p>
+                <span class="emphasis"><em>dependencySuccessful</em></span> - this expression will evaluate to true if latest builds in all dependent
+                schedules are successful
+            </p></li><li><p>
+                <span class="emphasis"><em>always</em></span> - this expression will always evaluate to true to force the build
+            </p></li><li><p>
+                <span class="emphasis"><em>never</em></span> - this expression will always evaluate to false to pause the build
+            </p></li><li><p>
+                <span class="emphasis"><em>alwaysIfFailed</em></span> - this expression will always evaluate to true if last build has failed, and will have the
+                value of "vcsModified or dependencyNewer" if last build is successful.
+            </p></li><li><p>
+                <span class="emphasis"><em>project["testcvs"].vcsModified</em></span> - this expression
+                will evaluate to true if the repository content of the "testcvs" project
+                changes.
+            </p></li><li><p>
+                <span class="emphasis"><em>system.execute("/path/to/command.sh") == 0</em></span> - this expression will evaluate
+                to true if the return code of the execution of the specified command is 0.
+                </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+                    Special characters such as '\', '"', should be escaped with '\', just like in Java strings.
+                </p></td></tr></table></div></li></ol></div><p>
+            The above expressions can be prefixed with '!' to inverse the value,
+            for example <span class="emphasis"><em>!modified</em></span> will be true when there are no modifications
+            in the repository of the current project.
+        </p><p>
+            The above expressions can be joined with "and", and "or". For example, the expression:
+            <span class="emphasis"><em>modified or execute("/path/to/command.sh")==0</em></span> will be true,
+            if repository content of the current project changes, or execution of the specified command returns 0.
+        </p><p>
+            The above expressions can be prefixed with '!' to negate the value,
+            for example "!modified" will evaluate to true when there are no modifications
+            in the repository of current view.  The above expressions can also be joined with "and", "or".
+            For example, the expression
+            <span class="emphasis"><em>modified or execute("/path/to/command.sh")==0</em></span> will evaluate to true
+            if the repository content of the current view changes, or execution of the specified command returns 0.
+        </p><p>
+        Please go to
+        <a href="http://www.ognl.org" target="_top"><em class="citetitle">http://www.ognl.org</em></a>
+        to learn more about general grammar of an OGNL expression.
+        </p><p><b>Associated builders. </b>
+        Select builders associated with the current schedule. They will be executed one by one in the selected order.
+        </p><p><b>Associated post-builders. </b>
+        Select post-builders associated with the current schedule.
+        Associated post-builders will be executed after all associated builders, if the condition indicated by "post-build strategy" is met.
+        </p><p><b>Build type. </b>
+        Select the build type for this schedule, clean build can be more reliable, but can be slower.
+        Incremental build can be quicker, but less reliable. We suggest that all important build schedules
+        such as nightly or release should use clean build, and very frequent build schedules such as hourly development build,
+        can be incremental.
+		</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value, when the schedule is being manually build.</p></td></tr></table></div><p>
+        </p><p><b>Post-build strategy. </b>
+        Select the post-build strategy for this schedule. There are following strategies:
+        </p><div class="variablelist"><dl><dt><span class="term">do not post-build</span></dt><dd><p>
+	        Do not execute post-build script after the build.
+	        </p></dd><dt><span class="term">post-build when success</span></dt><dd><p>
+	        Execute post-build script only when the build was successful.
+	        </p></dd><dt><span class="term">post-build when failed</span></dt><dd><p>
+	        Execute post-build script only when the build has failed.
+	        </p></dd><dt><span class="term">post-build always</span></dt><dd><p>
+	        Always execute post-build script after the build.
+	        </p></dd></dl></div><p>
+		</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value when the schedule is being build manually.
+		</p></td></tr></table></div><p>
+        </p><p><b>Label strategy. </b>
+        Choose the label strategy for this schedule. There are following strategies:
+        </p><div class="variablelist"><dl><dt><span class="term">label successful builds</span></dt><dd><p>
+	        Label the repository only for the successful builds.
+	        </p></dd><dt><span class="term">do not label</span></dt><dd><p>
+	        Do not label the repository after the build.
+	        </p></dd><dt><span class="term">label always</span></dt><dd><p>
+	        Always label the repository after the build.
+	        </p></dd></dl></div><p>
+		</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>If the build is not labeled when it is initially built, it will not be rebuildable later.</p></td></tr></table></div><p>
+		</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value when the schedule is being build manually.
+		</p></td></tr></table></div><p>
+        </p><p><b>Notify strategy. </b>
+        Choose the notify strategy for this schedule. There are following strategies:
+        </p><div class="variablelist"><dl><dt><span class="term">notify when status changed</span></dt><dd><p>
+	        Send notification when status of the current build changes against the last build.
+	        That is, notification will be sent when the current build succeeds and the last build failed,
+	        or the current build fails and the last build succeeded.
+	        </p></dd><dt><span class="term">notify when failed</span></dt><dd><p>
+	        Send notification only when the build failed.
+	        </p></dd><dt><span class="term">notify when success</span></dt><dd><p>
+	        Send notification only when the build succeeded.
+	        </p></dd><dt><span class="term">do not notify</span></dt><dd><p>
+	        Do not send notification after the build.
+	        </p></dd><dt><span class="term">notify always</span></dt><dd><p>
+	        Always send notification after the build.
+	        </p></dd></dl></div><p>
+		</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value when the schedule is being build manually.
+		</p></td></tr></table></div><p>
+        </p><a name="dependentschedule"></a><p><b>Dependent schedules. </b>
+        Select the schedules dependent on the current schedule.
+        If scheduleA depends on scheduleB, Luntbuild will trigger the build of scheduleB
+        before triggering the build in scheduleA. Schedule dependency might be used to define
+        project dependencies.
+        </p><p><b>Dependency triggering strategy. </b>
+        Choose the dependency triggering strategy defining when the current schedule is triggered.
+        Following trigger strategies are available:
+        </p><div class="variablelist"><dl><dt><span class="term">schedules this schedule depends on</span></dt><dd><p>
+	        Trigger schedules the current schedule depends on.
+	        Triggering of these schedules will happen before the current schedule is triggered.
+	        For example, if the current schedule uses several components built in other schedules,
+	        you can use this strategy to make sure that all components used by this schedule are up to date.
+	        </p></dd><dt><span class="term">schedules that depends on this schedule</span></dt><dd><p>
+	        Trigger schedules that depends on the current schedule. Triggering of these schedules will happen
+	        after the current schedule is triggered. For example, if the current schedule builds a component
+	        that is used by other schedules, you can use this strategy to make sure that
+	        all components are up to date before starting the schedules that use this component.
+	        </p></dd><dt><span class="term">all dependent schedules</span></dt><dd><p>
+	        This is the combination of the above two strategies, that is,
+	        it triggers the schedules current schedule depends on before actually triggering current schedule,
+	        and then it triggers the schedules that depends on the current schedule after triggering the current schedule.
+	        </p></dd><dt><span class="term">do not trigger any dependent schedules</span></dt><dd><p>
+	        Do not trigger neither the schedules the current schedule depends on, nor the schedules that depends on the current schedule.
+	        </p></dd></dl></div><p>
+		</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+		This setting will only take effect when the build is not triggered manually.
+		For manual builds, this value will be shown as the default value when the schedule is being build manually.
+		</p></td></tr></table></div><p>
+        </p><p><b>Build cleanup strategy. </b>
+        Select the build cleanup strategy for this schedule.
+        </p><table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>do not cleanup builds automatically</em></span>: Builds can be deleted only manually.</td></tr><tr><td><span class="emphasis"><em>keep builds by day</em></span>: Keep builds for specified number of days.</td></tr><tr><td><span class="emphasis"><em>keep builds by count</em></span>: Keep specified number of builds.</td></tr></table><p>
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+    If a build for the given project is currently running and a new build for the
+    same project starts (either automatically or manually), the build is placed into
+    the pending builds queue for the given schedule. A queue of pending builds is displayed on the
+    project's Schedule tab page.
+    </p></td></tr></table></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch13.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="ch13.html"><img src="../images/up.gif" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="ch14.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 13. Creating Build Schedule(s) for the Project </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Chapter 14. Using Notification Templates</td></tr></table></div></body></html>

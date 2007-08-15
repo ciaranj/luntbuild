@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+        "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- ========================= GENERAL DEFINITIONS ========================= -->
+
+	<!-- ========================= PERSISTENCE DEFINITIONS ========================= -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName"><value>${jdbc.driverClassName}</value></property>
+		<property name="url"><value>${jdbc.url}</value></property>
+		<property name="username"><value>${jdbc.username}</value></property>
+		<property name="password"><value>${jdbc.password}</value></property>
+		<property name="maxWait"><value>30000</value></property>
+		<property name="maxIdle"><value>1</value></property>
+		<property name="maxActive"><value>1</value></property>
+	</bean>
+
+	<bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="mappingResources">
+			<list>
+				<value>com/luntsys/luntbuild/db/luntbuild.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<!-- Connection pool -->
+				<prop key="hibernate.c3p0.min_size">5</prop>
+				<prop key="hibernate.c3p0.max_size">20</prop>
+				<prop key="hibernate.c3p0.timeout">1800</prop>
+				<prop key="hibernate.c3p0.max_statements">50</prop>
+			</props>
+		</property>
+		<property name="dataSource"><ref bean="dataSource"/></property>
+		<property name="schemaUpdate"><value>false</value></property>
+	</bean>
+
+	<bean id="hibernateInterceptor" class="org.springframework.orm.hibernate3.HibernateInterceptor">
+		<property name="sessionFactory"><ref bean="hibernateSessionFactory"/></property>
+	</bean>
+
+	<bean id="hibernateTransactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory"><ref bean="hibernateSessionFactory"/></property>
+	</bean>
+
+	<bean id="hibernateTransactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager"><ref bean="hibernateTransactionManager"/></property>
+		<property name="transactionAttributeSource">
+			<value>
+				com.luntsys.luntbuild.dao.Dao.load*=PROPAGATION_SUPPORTS,readOnly
+				com.luntsys.luntbuild.dao.Dao.search*=PROPAGATION_SUPPORTS,readOnly
+				com.luntsys.luntbuild.dao.Dao.*=PROPAGATION_REQUIRED
+			</value>
+		</property>
+	</bean>
+
+	<bean id="daoTarget" class="com.luntsys.luntbuild.dao.HibernateDao">
+		<property name="sessionFactory"><ref bean="hibernateSessionFactory"/></property>
+	</bean>
+
+	<bean id="dao" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces"><value>com.luntsys.luntbuild.dao.Dao</value></property>
+		<property name="target"><ref local="daoTarget"/></property>
+		<property name="interceptorNames">
+			<list>
+				<value>hibernateInterceptor</value>
+				<value>hibernateTransactionInterceptor</value>
+				<value>methodSecurityInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- ========================= BUSINESS DEFINITIONS ========================= -->
+	<!-- the quartz scheduler service used to get builds scheduling information, and schedule builds -->
+	<bean id="schedServiceTarget" class="com.luntsys.luntbuild.services.QuartzService"/>
+
+	<bean id="scheduler" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces"><value>com.luntsys.luntbuild.services.IScheduler</value></property>
+		<property name="target"><ref local="schedServiceTarget"/></property>
+		<property name="interceptorNames">
+			<list>
+				<value>methodSecurityInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- the general service provided by luntbuild system, it can be used to provide web services
+	for remote systems who wants to interact with this sytem -->
+	<bean id="luntbuildService" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="proxyInterfaces"><value>com.luntsys.luntbuild.facades.ILuntbuild</value></property>
+		<property name="target"><ref local="luntbuildServiceTarget"/></property>
+		<property name="interceptorNames">
+			<list>
+				<value>exceptionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="luntbuildServiceTarget" class="com.luntsys.luntbuild.services.LuntbuildService"/>
+
+	<bean id="exceptionInterceptor" class="com.luntsys.luntbuild.interceptors.ExceptionInterceptor"/>
+
+	<bean id="customNotifiers" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+		<list>
+			<!-- Custom Notifiers -->
+		</list>
+		</property>
+	</bean>
+
+	<!-- =============== ACEGI Authentication Configuration =============== -->
+
+	<!-- If you replace this bean with say JdbcDaoImpl, just ensure your replacement
+		 has the same bean id (authenticationDao) -->
+	<bean id="inMemoryAuthenticationDAO" class="org.acegisecurity.userdetails.memory.InMemoryDaoImpl">
+		<property name="userMap">
+			<value>
+				<!-- this is the build-in site admin user - please change the password for security reasons.
+                     However, name of the user, and its
+				     role should not be changed! -->
+					luntbuild=@luntbuildPassword@,ROLE_SITE_ADMIN,ROLE_AUTHENTICATED
+			</value>
+		</property>
+	</bean>
+
+	<!--
+		Security intercetor for method invocation of database operations
+	-->
+	<bean id="methodSecurityInterceptor"
+         class="org.acegisecurity.intercept.method.aopalliance.MethodSecurityInterceptor">
+		<property name="authenticationManager"><ref local="authenticationManager"/></property>
+		<property name="accessDecisionManager"><ref local="methodAccessDecisionManager"/></property>
+		<property name="afterInvocationManager"><ref local="afterInvocationManager"/></property>
+		<property name="objectDefinitionSource">
+			<value>
+				com.luntsys.luntbuild.dao.Dao.initialize=ROLE_SITE_ADMIN
+            	com.luntsys.luntbuild.dao.Dao.saveProperties=ROLE_SITE_ADMIN
+				com.luntsys.luntbuild.dao.Dao.saveProject=ACL_PROJECT_ADMIN
+				com.luntsys.luntbuild.dao.Dao.loadProjects=AFTER_ACL_COLLECTION_READ
+				com.luntsys.luntbuild.dao.Dao.loadProject=AFTER_ACL_READ
+				com.luntsys.luntbuild.dao.Dao.deleteProject=ACL_PROJECT_ADMIN
+				com.luntsys.luntbuild.dao.Dao.saveSchedule=ACL_PROJECT_ADMIN
+				com.luntsys.luntbuild.dao.Dao.loadSchedules=AFTER_ACL_COLLECTION_READ
+				com.luntsys.luntbuild.dao.Dao.loadSchedule=AFTER_ACL_READ
+				com.luntsys.luntbuild.dao.Dao.deleteSchedule=ACL_PROJECT_ADMIN
+				com.luntsys.luntbuild.dao.Dao.loadVcsLogin=AFTER_ACL_READ
+				com.luntsys.luntbuild.dao.Dao.saveVcsLogin=ACL_PROJECT_ADMIN
+				com.luntsys.luntbuild.dao.Dao.deleteVcsLogin=ACL_PROJECT_ADMIN
+                com.luntsys.luntbuild.dao.Dao.saveBuild=ACL_PROJECT_ADMIN
+				com.luntsys.luntbuild.dao.Dao.loadBuild=AFTER_ACL_READ
+				com.luntsys.luntbuild.dao.Dao.deleteBuild=ACL_PROJECT_ADMIN
+                com.luntsys.luntbuild.dao.Dao.loadLastBuild=AFTER_ACL_READ
+				com.luntsys.luntbuild.dao.Dao.loadLastSuccessBuild=AFTER_ACL_READ
+                com.luntsys.luntbuild.dao.Dao.loadPreviousBuild=AFTER_ACL_READ
+				com.luntsys.luntbuild.dao.Dao.loadRunningBuild=AFTER_ACL_READ
+				com.luntsys.luntbuild.dao.Dao.reserveBuildsByCount=ACL_PROJECT_ADMIN
+				com.luntsys.luntbuild.dao.Dao.removeBuildsBefore=ACL_PROJECT_ADMIN
+				com.luntsys.luntbuild.dao.Dao.loadDataCollection12=ROLE_SITE_ADMIN
+				com.luntsys.luntbuild.dao.Dao.saveDataCollection12=ROLE_SITE_ADMIN
+				com.luntsys.luntbuild.services.IScheduler.scheduleBuild=ACL_PROJECT_BUILD
+			</value>
+		</property>
+	</bean>
+
+	<bean id="filterInvocationInterceptor" class="org.acegisecurity.intercept.web.FilterSecurityInterceptor">
+		<property name="authenticationManager"><ref local="authenticationManager"/></property>
+		<property name="accessDecisionManager"><ref local="urlAccessDecisionManager"/></property>
+		<property name="objectDefinitionSource">
+			<value>
+					CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+					\A.*\Z=ROLE_AUTHENTICATED, ROLE_ANONYMOUS
+			</value>
+		</property>
+	</bean>
+
+	<!-- luntbuild internal RDBMS, LDAP based authentication DAO -->
+	<bean id="luntbuildAuthenticationDAO" class="com.luntsys.luntbuild.security.ApplicationInternalDAO">
+        <property name="ldapHost" value="@ldapHost@"/>
+        <property name="ldapPort" value="@ldapPort@"/>
+        <property name="ldapUserDn" value="@ldapUserDn@"/>
+        <property name="ldapAuthentication" value="@ldapAuthentication@"/>
+        <property name="ldapUserId" value="@ldapUserId@"/>
+        <property name="ldapUseLuntbuildOnFail" value="@ldapUseLuntbuildOnFail@"/>
+        <property name="ldapCreateLuntbuildUser" value="@ldapCreateLuntbuildUser@"/>
+        <property name="ldapCanCreateProject" value="@ldapCanCreateProject@"/>
+        <property name="ldapCanViewProject" value="@ldapCanViewProject@"/>
+        <property name="ldapCanBuildProject" value="@ldapCanBuildProject@"/>
+        <property name="ldapEmailAttrName" value="@ldapEmailAttrName@"/>
+        <property name="ldapUrl" value="@ldapUrl@"/>
+        <property name="ldapPrefix" value="@ldapPrefix@"/>
+        <property name="ldapSuffix" value="@ldapSuffix@"/>
+	</bean>
+
+	<!-- provider for declared user-roles -->
+    <bean id="inMemoryAuthenticationProvider" class="com.luntsys.luntbuild.security.AuthenticationProvider">
+        <property name="authenticationDao"><ref local="inMemoryAuthenticationDAO"/></property>
+    </bean>
+
+	<!-- luntbuild internal provider for RDBMD based user-roles -->
+    <bean id="luntbuildAuthenticationProvider" class="com.luntsys.luntbuild.security.AuthenticationProvider">
+        <property name="authenticationDao"><ref local="luntbuildAuthenticationDAO"/></property>
+        <property name="userCache"><ref local="userCache"/></property>
+    </bean>
+
+	<bean id="userCache" class="org.acegisecurity.providers.dao.cache.EhCacheBasedUserCache">
+		<property name="cache"><ref local="userCacheBackend"/></property>
+	</bean>
+
+	<bean id="userCacheBackend" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager"><ref local="cacheManager"/></property>
+		<property name="cacheName"><value>userCache</value></property>
+	</bean>
+
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+
+	<!-- luntbuild internal provider manager which asks ALL providers instead of just the first -->
+	<bean id="authenticationManager" class="com.luntsys.luntbuild.security.AuthenticationProviderManager">
+		<property name="providers">
+			<list>
+				<!-- authentication provider which uses declarative security -->
+				<ref local="inMemoryAuthenticationProvider"/>
+
+				<!-- authentication provider for remember me -->
+				<ref local="rememberMeAuthenticationProvider"/>
+
+				<!-- authentication provider which validates users again internal db -->
+				<ref local="luntbuildAuthenticationProvider"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="roleVoter" class="org.acegisecurity.vote.RoleVoter"/>
+
+	<bean id="methodAccessDecisionManager" class="org.acegisecurity.vote.AffirmativeBased">
+		<property name="allowIfAllAbstainDecisions"><value>true</value></property>
+		<property name="decisionVoters">
+			<list>
+				<ref local="roleVoter"/>
+				<ref local="aclProjectReadVoter"/>
+				<ref local="aclProjectBuildVoter"/>
+				<ref local="aclProjectAdminVoter"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="urlAccessDecisionManager" class="org.acegisecurity.vote.AffirmativeBased">
+		<property name="allowIfAllAbstainDecisions"><value>false</value></property>
+		<property name="decisionVoters">
+			<list>
+				<ref local="roleVoter"/>
+			</list>
+		</property>
+	</bean>
+
+	<!--
+		ACL related beans
+	-->
+	<!-- ACL permission masks used by this application -->
+	<bean id="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_READ"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField">
+			<value>com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_READ</value>
+		</property>
+	</bean>
+	<bean id="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_BUILD"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField">
+			<value>com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_BUILD</value>
+		</property>
+	</bean>
+	<bean id="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_ADMIN"
+        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+		<property name="staticField">
+			<value>com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_ADMIN</value>
+		</property>
+	</bean>
+
+	<bean id="aclProjectReadVoter" class="org.acegisecurity.vote.BasicAclEntryVoter">
+		<property name="processConfigAttribute"><value>ACL_PROJECT_READ</value></property>
+		<property name="processDomainObjectClass"><value>java.lang.Object</value></property>
+		<property name="aclManager"><ref local="aclManager"/></property>
+		<property name="requirePermission">
+			<list>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_READ"/>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_BUILD"/>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_ADMIN"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="aclProjectBuildVoter" class="org.acegisecurity.vote.BasicAclEntryVoter">
+		<property name="processConfigAttribute"><value>ACL_PROJECT_BUILD</value></property>
+		<property name="processDomainObjectClass"><value>java.lang.Object</value></property>
+		<property name="aclManager"><ref local="aclManager"/></property>
+		<property name="requirePermission">
+			<list>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_BUILD"/>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_ADMIN"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="aclProjectAdminVoter" class="org.acegisecurity.vote.BasicAclEntryVoter">
+		<property name="processConfigAttribute"><value>ACL_PROJECT_ADMIN</value></property>
+		<property name="processDomainObjectClass"><value>java.lang.Object</value></property>
+		<property name="aclManager"><ref local="aclManager"/></property>
+		<property name="requirePermission">
+			<list>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_ADMIN"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="afterInvocationManager"
+        class="org.acegisecurity.afterinvocation.AfterInvocationProviderManager">
+		<property name="providers">
+			<list>
+				<ref local="afterAclRead"/>
+				<ref local="afterAclCollectionRead"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Processes AFTER_ACL_COLLECTION_READ configuration settings -->
+	<bean id="afterAclCollectionRead"
+        class="org.acegisecurity.afterinvocation.BasicAclEntryAfterInvocationCollectionFilteringProvider">
+		<property name="aclManager"><ref local="aclManager"/></property>
+		<property name="requirePermission">
+			<list>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_READ"/>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_BUILD"/>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_ADMIN"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Processes AFTER_ACL_READ configuration settings -->
+	<bean id="afterAclRead" class="org.acegisecurity.afterinvocation.BasicAclEntryAfterInvocationProvider">
+		<property name="aclManager"><ref local="aclManager"/></property>
+		<property name="requirePermission">
+			<list>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_READ"/>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_BUILD"/>
+				<ref local="com.luntsys.luntbuild.security.LuntbuildAclEntry.PROJECT_ADMIN"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="aclManager" class="org.acegisecurity.acl.AclProviderManager">
+		<property name="providers">
+			<list>
+				<ref local="luntbuildAclProvider"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="luntbuildAclProvider" class="com.luntsys.luntbuild.security.LuntbuildAclProvider"/>
+
+    <!-- Authentication Filters -->
+	<bean id="basicProcessingFilter" class="org.acegisecurity.ui.basicauth.BasicProcessingFilter">
+		<property name="authenticationManager"><ref local="authenticationManager"/></property>
+		<property name="authenticationEntryPoint"><ref local="basicProcessingFilterEntryPoint"/></property>
+	</bean>
+
+	<bean id="authenticationProcessingFilterEntryPoint"
+         class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+		<property name="loginFormUrl"><value>/luntbuild-login.html</value></property>
+		<property name="forceHttps"><value>false</value></property>
+	</bean>
+
+	<bean id="basicProcessingFilterEntryPoint"
+         class="com.luntsys.luntbuild.security.BasicProcessingFilterEntryPoint"/>
+
+	<bean id="authenticationProcessingFilter"
+         class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
+		<property name="authenticationManager"><ref local="authenticationManager"/></property>
+	    <property name="rememberMeServices"><ref local="rememberMeServices"/></property>
+		<property name="authenticationFailureUrl"><value>/login-error.html</value></property>
+		<property name="defaultTargetUrl"><value>/app.do</value></property>
+		<property name="filterProcessesUrl"><value>/j_acegi_security_check.do</value></property>
+	</bean>
+
+	<bean id="exceptionTranslationFilter" class="org.acegisecurity.ui.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint"><ref local="authenticationProcessingFilterEntryPoint"/></property>
+	</bean>
+
+	<bean id="httpSessionContextIntegrationFilter"
+        class="org.acegisecurity.context.HttpSessionContextIntegrationFilter">
+	   <property name="context"><value>org.acegisecurity.context.SecurityContextImpl</value></property>
+	   <property name="allowSessionCreation"><value>false</value></property>
+	</bean>
+
+	<bean id="anonymousProcessingFilter"
+        class="org.acegisecurity.providers.anonymous.AnonymousProcessingFilter">
+		<property name="key"><value>anonymous</value></property>
+		<property name="userAttribute"><value>anonymous,ROLE_ANONYMOUS</value></property>
+	</bean>
+
+	<bean id="anonymousAuthenticationProvider"
+        class="org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider">
+		<property name="key"><value>anonymous</value></property>
+	</bean>
+
+	<bean id="rememberMeProcessingFilter" class="org.acegisecurity.ui.rememberme.RememberMeProcessingFilter">
+	    <property name="rememberMeServices"><ref local="rememberMeServices"/></property>
+		<property name="authenticationManager"><ref local="authenticationManager"/></property>
+	</bean>
+
+	<bean id="rememberMeServices" class="org.acegisecurity.ui.rememberme.TokenBasedRememberMeServices">
+	    <property name="userDetailsService"><ref local="inMemoryAuthenticationDAO"/></property>
+	    <property name="key"><value>rememberMe</value></property>
+	</bean>
+
+	<bean id="rememberMeAuthenticationProvider"
+        class="org.acegisecurity.providers.rememberme.RememberMeAuthenticationProvider">
+	    <property name="key"><value>rememberMe</value></property>
+	</bean>
+
+	<!--  Acegi FilterChainProxy, note: ORDER is very important, consulte Acegi docs! -->
+	<bean id="filterChainProxy" class="org.acegisecurity.util.FilterChainProxy">
+	    <property name="filterInvocationDefinitionSource">
+	        <value>
+        	   CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+    	       \A.*.do.*=httpSessionContextIntegrationFilter,authenticationProcessingFilter,basicProcessingFilter,rememberMeProcessingFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+    	       \A/publish/.*=httpSessionContextIntegrationFilter,authenticationProcessingFilter,basicProcessingFilter,rememberMeProcessingFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+    	       \A/logs/.*=httpSessionContextIntegrationFilter,authenticationProcessingFilter,basicProcessingFilter,rememberMeProcessingFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+    	    </value>
+	    </property>
+	</bean>
+
+</beans>

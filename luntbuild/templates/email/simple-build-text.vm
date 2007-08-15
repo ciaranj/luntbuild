@@ -1,0 +1,18 @@
+[luntbuild] build of "${build_project}/${build_schedule}/${build_version}" ${build_status}
+
+Build of ${build_project}/${build_schedule}/${build_version} finished with status: ${build_status}.
+
+This build has started at ${build_start}, and has finished at ${build_end}.
+
+You have received this email because you've made checkins in the source repository recently
+or you asked to be notified.
+
+See the build log and the revision log for details.
+
+Build Artifacts:
+
+	  	Build Log:     ${build_buildlog_url}
+	  	Revision Log:  ${build_revisionlog_url}
+	  	Login Page: ${luntbuild_servlet_url}
+
+-- luntbuild

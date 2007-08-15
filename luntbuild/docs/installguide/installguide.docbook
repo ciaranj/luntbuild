@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+  "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
+[
+  <!ENTITY installation-chapter SYSTEM "install-chapter.docbook">
+  <!ENTITY database-chapter SYSTEM "database-chapter.docbook">
+  <!ENTITY ldap-chapter SYSTEM "ldap-chapter.docbook">
+]>
+
+<book>
+<bookinfo>
+  <title>Luntbuild - Installation Guide</title>
+  <copyright><year>2005-2007</year><holder>Luntbuild</holder></copyright>
+</bookinfo>
+
+&installation-chapter;
+
+&database-chapter;
+
+&ldap-chapter;
+
+</book>
