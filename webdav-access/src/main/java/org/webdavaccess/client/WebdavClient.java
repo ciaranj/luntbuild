@@ -10,9 +10,9 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Vector;
 
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnection;
@@ -21,6 +21,8 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.HttpURL;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.webdav.lib.WebdavResource;
 import org.apache.webdav.lib.methods.CopyMethod;
 import org.apache.webdav.lib.methods.DepthSupport;
@@ -35,6 +37,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.webdavaccess.exceptions.WebdavException;
+
 
 /** 
  * Provides Webdav client.
@@ -56,6 +59,9 @@ public class WebdavClient {
 	
 	private final HttpClient httpClient;
 
+	private String userName;
+	private String password;
+	
 	// Setup logging
 	private static final String logging = "org.apache.commons.logging";
 	
@@ -67,10 +73,47 @@ public class WebdavClient {
 		System.setProperty(logging + ".simplelog.log.org.apache.commons.httpclient", "error");
 	}
 
+	
 	private int currentStatusCode = HttpStatus.SC_OK;
 	
+	/**
+	 * Default constructor, no credentials are set
+	 */
 	public WebdavClient() {
-		httpClient = new HttpClient();			
+		httpClient = new HttpClient();
+	}
+	
+	/**
+	 * Constuctor with user credentials
+	 * @param user
+	 * @param passwd
+	 */
+	public WebdavClient(String user, String passwd) {
+		httpClient = new HttpClient();
+		setCredentials(user, passwd);
+	}
+	
+	/**
+	 * Set user credentials
+	 * @param user
+	 * @param passwd
+	 */
+	public void setCredentials(String user, String passwd) {
+		userName = user;
+		password = passwd;
+		if (userName != null && password != null) {
+			httpClient.getParams().setAuthenticationPreemptive(true);
+			HttpState state = httpClient.getState();
+			Credentials credentials = new UsernamePasswordCredentials(userName, password);
+			state.setCredentials(AuthScope.ANY, credentials);
+		}
+	}
+	
+	private Credentials setCredentials() {
+		if (userName != null && password != null) {
+			return new UsernamePasswordCredentials(userName, password);
+		}
+		return null;
 	}
 	
 	/**
@@ -98,7 +141,7 @@ public class WebdavClient {
 	public boolean doDownloadFile(String url, File file) throws WebdavException {
 		try {
 			HttpURL hrl = new HttpURL(url);
-			WebdavResource wdr = new WebdavResource(hrl);
+			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.getMethod(file);
 			currentStatusCode = wdr.getStatusCode();
 			return status;
@@ -124,7 +167,7 @@ public class WebdavClient {
 			String filename = url.substring(idx + 1);
 			url = url.substring(0, idx);
 			HttpURL hrl = new HttpURL(url);
-			WebdavResource wdr = new WebdavResource(hrl);
+			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.putMethod(wdr.getPath() + "/" + filename, new FileInputStream(file));
 			currentStatusCode = wdr.getStatusCode();
 			return status;
@@ -138,30 +181,19 @@ public class WebdavClient {
 	 * List the resources in the current collection (folder).
 	 * 
 	 * @param url of the collection (folder)
-	 * @return vector of StoreInfo resources in the collection (folder)
+	 * @return vector of WebdavInfo resources in the collection (folder)
 	 * @throws StorageException
 	 */
 	public Vector getList(String url) throws WebdavException {
 		try {
 			HttpURL hrl = new HttpURL(url);
-			WebdavResource wdr = new WebdavResource(hrl);
+			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			Vector results = new Vector();
 	        if(!wdr.isCollection()) return results;
 	        WebdavResource[] flist = wdr.listWebdavResources();
 	        for (int i = 0; i < flist.length; i++) {
 	        	WebdavResource fwdr = flist[i];
-	        	WebdavInfo info = new WebdavInfo();
-	        	info.setName(fwdr.getName());
-	        	info.setDisplayName(fwdr.getDisplayName());
-				long time = fwdr.getCreationDate();
-				info.setCreationDate(new Date(time));
-				time = fwdr.getGetLastModified();
-				info.setLastModifiedDate(new Date(time));
-				info.setLength(fwdr.getGetContentLength());
-				info.setType(fwdr.getGetContentType());
-				info.setPath(fwdr.toString());
-				info.setOwner(fwdr.getOwner());
-				info.setFolder(fwdr.isCollection());
+	        	WebdavInfo info = createWebdavInfo(fwdr);
 				results.add(info);
 			}
 			currentStatusCode = HttpStatus.SC_OK;
@@ -170,6 +202,42 @@ public class WebdavClient {
 			currentStatusCode = HttpStatus.SC_METHOD_FAILURE;
 			throw new WebdavException(e);
 		}
+	}
+	
+	/**
+	 * Return a WebdavInfo resource for the specified url.
+	 * 
+	 * @param url
+	 * @return WebdavInfo resource for the url
+	 * @throws StorageException
+	 */
+	public WebdavInfo getInfo(String url) throws WebdavException {
+		try {
+			HttpURL hrl = new HttpURL(url);
+			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
+			WebdavInfo info = createWebdavInfo(wdr);
+			currentStatusCode = HttpStatus.SC_OK;
+	        return info;
+		} catch (Exception e) {
+			currentStatusCode = HttpStatus.SC_METHOD_FAILURE;
+			throw new WebdavException(e);
+		}
+	}
+	
+	private WebdavInfo createWebdavInfo(WebdavResource fwdr) {
+		WebdavInfo info = new WebdavInfo();
+		info.setName(fwdr.getName());
+		info.setDisplayName(fwdr.getDisplayName());
+		long time = fwdr.getCreationDate();
+		info.setCreationDate(new Date(time));
+		time = fwdr.getGetLastModified();
+		info.setLastModifiedDate(new Date(time));
+		info.setLength(fwdr.getGetContentLength());
+		info.setType(fwdr.getGetContentType());
+		info.setPath(fwdr.toString());
+		info.setOwner(fwdr.getOwner());
+		info.setFolder(fwdr.isCollection());
+		return info;
 	}
 	
 	/** 
@@ -221,7 +289,7 @@ public class WebdavClient {
 	public boolean doLock(String url, String user, int duration) throws WebdavException {
 		try {
 			HttpURL hrl = new HttpURL(url);
-			WebdavResource wdr = new WebdavResource(hrl);
+			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.lockMethod(user, duration);
 			currentStatusCode = wdr.getStatusCode();
 			return status;
@@ -241,7 +309,7 @@ public class WebdavClient {
 	public boolean doUnock(String url) throws WebdavException {
 		try {
 			HttpURL hrl = new HttpURL(url);
-			WebdavResource wdr = new WebdavResource(hrl);
+			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.unlockMethod();
 			currentStatusCode = wdr.getStatusCode();
 			return status;
@@ -334,7 +402,7 @@ public class WebdavClient {
 	public boolean doDelete(String url) throws WebdavException {
 		try {
 			HttpURL hrl = new HttpURL(url);
-			WebdavResource wdr = new WebdavResource(hrl);
+			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.deleteMethod();
 			currentStatusCode = wdr.getStatusCode();
 			return status;
@@ -355,9 +423,36 @@ public class WebdavClient {
 		WebdavResource wdr = null;
 		try {
 			HttpURL hrl = new HttpURL(url);
-			wdr = new WebdavResource(hrl);
+			wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			wdr.setProperties(DepthSupport.DEPTH_0);
 			boolean status = wdr.exists();
+			currentStatusCode = wdr.getStatusCode();
+			return status;
+		} catch (Exception e) {
+			if (wdr != null)
+				currentStatusCode = wdr.getStatusCode();
+			else
+				currentStatusCode = HttpStatus.SC_METHOD_FAILURE;
+			if (currentStatusCode == HttpStatus.SC_NOT_FOUND)
+				return false;
+			throw new WebdavException(e);
+		}
+	}
+
+	/**
+	 * Check if given resource exists
+	 * 
+	 * @param url resource to check
+	 * @return true if exists
+	 * @throws WebdavException
+	 */
+	public boolean doIsCollection(String url) throws WebdavException {
+		WebdavResource wdr = null;
+		try {
+			HttpURL hrl = new HttpURL(url);
+			wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
+			wdr.setProperties(DepthSupport.DEPTH_0);
+			boolean status = wdr.isCollection();
 			currentStatusCode = wdr.getStatusCode();
 			return status;
 		} catch (Exception e) {
@@ -663,6 +758,7 @@ public class WebdavClient {
 		// Add request headers if specified
 		setRequestHeaders(methodObj, requestHeaderNames, requestHeaderValues);
 
+		if (userName != null && password != null) methodObj.setDoAuthentication(true);
 		try {
 			// Execute the method
 			httpClient.executeMethod(methodObj);
