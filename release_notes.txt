@@ -2,6 +2,13 @@
 luntbuild 1.5 Release Notes
 ==============================================
 
+- Fix: Rolled back Hibernate 3.2.5 to Hibernate 3.1. 3.2.5 causes problems with persisting Quartz triggers.
+- Fix: Fixed lazy initialization problem in Hibernate.
+
+==============================================
+luntbuild 1.5 Release Notes
+==============================================
+
 !NOTE! - luntbuild-login.jsp changed to luntbuild-login.html. PLEASE change your bookmarks!
 
 - Feature: Updated Quartz to version 1.6.
