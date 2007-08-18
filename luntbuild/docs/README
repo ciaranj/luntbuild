@@ -1,0 +1,96 @@
+
+Documentation is created in DocBook format, see http://docbook.org/
+
+NOTE. Before you generate documentation, unzip xsl.zip in your docs directory.
+
+Html divided into chapters is generated using command:
+
+cd docs/guide
+xsltproc --nonet luntbuild-html.xsl luntbuild.docbook
+
+Single Html is generated using command:
+
+cd docs/guide
+xsltproc --nonet luntbuild-html-single.xsl luntbuild.docbook > manual.html
+
+FAQ html is generated using command:
+cd docs/faq
+xsltproc --nonet luntbuild.xsl faqs.docbook > index.html
+
+Installation guide is generated using command:
+
+cd docs/installguide
+xsltproc --nonet luntbuild.xsl installguide.xml > installguide.html
+
+Quick Start guide is generated using command:
+
+cd docs/quickstart
+xsltproc --nonet luntbuild.xsl quickstart.docbook > quickstart.html
+
+
+Pdf are generated using command:
+
+I cannot get pdf generated using xsltproc and fop. I use XMLMind FO Converter from http://xmlmind.com.
+
+
+XSLT processor, where to get it.
+
+On cygwin (http://www.cygwin.com) it is part of the cygwin docbook package:
+
+The XSLT C library, DocBook XML DTD 4.2, XSL stylesheets for the DocBook XML DTD
+
+On Linux you will need The XSLT C library package:
+
+See: http://linux.about.com/library/cmd/blcmdl1_xsltproc.htm
+
+Building with Apache Velocity DocBook Framework
+===============================================
+
+Download the latest stable DocBook Framework (DBF) release from http://velocity.apache.org/docbook/
+
+Extract it from to somewhere on you local disk.  Then use the following commands:
+
+cd luntbuild/docs
+ant -Ddbf.basedir=<you DBF install location>
+
+That's it! Now look in the luntbuild/docs/target folder for the html and pdf docs.
+
+
+DocBook reference
+=================
+
+Start with crash course is in: http://opensource.bureau-cornavin.com/crash-course/index.html
+
+Quick reference: http://www.oreilly.com/catalog/docbook/chapter/book/quickref.html
+
+Other links:
+http://docbook.org/tdg/en/html/docbook.html
+http://www.scottnesbitt.net/techdocs/docbook_tools.html
+http://www.sagehill.net/docbookxsl/index.html
+http://wiki.docbook.org/topic/DocBookTools
+http://wiki.docbook.org/topic/FrontPage
+http://openjade.sourceforge.net/
+http://www.codeproject.com/winhelp/docbook_howto.asp
+http://www.scottnesbitt.net/techdocs/DocBook_with_xfc.html
+http://www.xmlmind.com/foconverter/what_is_xfc.html
+
+Writing FAQ in DocBook format
+=============================
+
+FAQ is divided into several <qandaset>...</qandaset>
+
+To add an entry past following into appropriate <qandaset>:
+
+    <qandaentry>
+      <question>
+        <para></para>
+      </question>
+      <answer>
+        <para>
+        </para>
+      </answer>
+    </qandaentry>
+
+Put question into <para></para> in <question>.
+Put answer into <para>...</para> in <answer>.
+

@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Setting Clearcase UCM connection information.</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch10.html" title="Chapter 10. Creating Version Control System (VCS) Adaptor for the Project"><link rel="prev" href="ch10s06.html" title="Setting Subversion connection information."><link rel="next" href="ch10s08.html" title="Setting Visual Sourcesafe connection information."></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting Clearcase UCM connection information.</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s06.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 10. Creating Version Control System (VCS) Adaptor for the Project</th><td width="20%" align="right"> <a accesskey="n" href="ch10s08.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="settingclearcaseucmconninfo"></a>Setting Clearcase UCM connection information.</h2></div></div></div><p>
+	You should have Clearcase client installed on the build machine.
+	Also you should make sure that the account running your application server or
+ 	servlet container is able to access your Clearcase server and that it can make snapshot views.
+	Here is the list of properties for this adaptor:
+    </p><div class="variablelist"><dl><dt><span class="term">View stgloc name</span></dt><dd><p>
+        Name of the Clearcase view storage location, which will be used as -stgloc option when creating Clearcase
+		view for this project.
+        </p></dd><dt><span class="term">Project VOB tag</span></dt><dd><p>
+        Tag for the project vob, for example: \pvob1.
+        </p></dd><dt><span class="term">View storage path</span></dt><dd><p>
+        Explicit path for view storage.
+        This property is required only when the "Clearcase view stgloc name" property is empty. If specified, it will be used
+        as -vws option instead of -stgloc option when creating Clearcase view.
+        This view will be created automatically by the luntbuild system.
+        Just make sure there is no other view with this name.
+        Example: \\mycomputer\cc_vws1\luntbuild-mymodule.vws
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>This value should be a writable UNC path on Windows platform.</p></td></tr></table></div></dd><dt><span class="term">UCM stream name</span></dt><dd><p>
+        Name of the UCM stream.
+        </p></dd><dt><span class="term">What to build</span></dt><dd><p>
+        Specifies baselines you want to build inside the stream. Multiple baselines are separated by space.
+        The following values have particular meaning:
+        </p><table class="simplelist" border="0" summary="Simple list"><tr><td>&lt;latest&gt;: means build with all the latest code from every component</td></tr><tr><td>&lt;latest baselines&gt;: means build with all the latest baselines from every component</td></tr><tr><td>&lt;recommended baselines&gt;: means build with all the recommended baselines</td></tr><tr><td>&lt;foundation baselines&gt;: means build with all the foundation baselines</td></tr></table><p>
+        </p></dd><dt><span class="term">Config Spec</span></dt><dd><p>
+          Put your config spec in here. Add a load line after the config spec you use in your dynamic views
+          for each directory you need, like this:
+        </p><table class="simplelist" border="0" summary="Simple list"><tr><td>include \\server\ClearCase\configspecs\myconfigspec.txt</td></tr><tr><td>load \myvob\modules\build</td></tr><tr><td>load \myvob\modules\mymodule</td></tr></table><p>
+        </p></dd><dt><span class="term">Modification detection config</span></dt><dd><p>
+        This property will only take effect when the "What to build" property equals to "latest". It is used by Luntbuild
+        to lookup if there are any changes in the repository since the last build. This property comprises of multiple entries
+        with each entry in the format "&lt;path&gt;:&lt;branch&gt;". &lt;path&gt; is a path inside a VOB,
+        (but starting from the vob name, for example: \myvob\modules\mymodule:mymodule_dev_branch),
+        which should be visible using the above config spec. Luntbuild will lookup any changes at any branch inside
+        this path recursively, or it will lookup changes in the specified branch, if &lt;branch&gt; is specified.
+        Multiple entries are separated by ";" or line terminator. Refer to the Clearcase User's Guide for details.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>If the branch is a subbranch, you don't need to specify the names of any
+             "super"-branches, just the name of the actual branch is enough.
+        </p></td></tr></table></div></dd><dt><span class="term">Options for snapshot view</span></dt><dd><p>
+        You may optionally specify extra options for the cleartool mkview sub command used by Luntbuild to create
+        related clearcase snapshot view for the current project. Options that can be specified here are restricted
+        to -tmode, -ptime, and -cachesize. For example you can specify "-tmode insert_cr" to use Windows end of line text mode.
+        </p></dd><dt><span class="term">Cleartool executable path</span></dt><dd><p>
+		The directory path, where your cleartool executable file resides in.
+		It should be specified here, if it does not exist in the system path.
+		</p></dd><dt><span class="term">Quiet period</span></dt><dd><p>
+        Number of seconds the current VCS should be quiet (without checkins) before Luntbuild decides
+        to check out the code of this VCS for a build. This is used to avoid checking out code
+        in the middle of some other checkins. This property is optional.
+        When left empty, quiet period will not be used before checking out code to build.
+        </p></dd></dl></div><p>
+</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+    The Clearcase UCM adaptor currently does not support labeling operation.
+</p></td></tr></table></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s06.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html"><img src="../images/up.gif" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s08.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Setting Subversion connection information. </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Setting Visual Sourcesafe connection information.</td></tr></table></div></body></html>

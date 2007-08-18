@@ -1,0 +1,53 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Configuring Maven2 Builder.</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="ch12.html" title="Chapter 12. Creating the Project Builder(s)"><link rel="prev" href="ch12s03.html" title="Configuring Maven Builder."><link rel="next" href="ch12s05.html" title="Configuring Rake Builder."></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring Maven2 Builder.</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch12s03.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center">Chapter 12. Creating the Project Builder(s)</th><td width="20%" align="right"> <a accesskey="n" href="ch12s05.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configmaven2builder"></a>Configuring Maven2 Builder.</h2></div></div></div><p>
+    </p><div class="variablelist"><dl><dt><span class="term">Name</span></dt><dd><p>
+        Provide a name to identify this builder, this name can be changed later.
+        </p></dd><dt><span class="term">Command to run Maven2</span></dt><dd><p>
+        Specify command to run Maven (normally path to maven.bat or maven shell script).
+        For example: /path/to/maven.
+        String enclosed by ${...} will be interpreted as OGNL expression, and it will be evaluated before execution.
+        Root object used for OGNL expression evaluation here is current <a href="../javadoc/com/luntsys/luntbuild/builders/Builder.html" target="_top">Builder</a> object.
+		</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>In order to use Luntbuild provided build version number in Maven2, write your pom.xml like the following:
+</p><pre class="programlisting">
+    
+    &lt;project&gt;
+    ...
+    &lt;!--Use value of variable "buildVersion" as current version,
+    this variable is defined in Luntbuild's Maven
+    builder configuration page--&gt;
+    &lt;currentVersion&gt;${buildVersion}&lt;/currentVersion&gt;
+    ...
+    &lt;/project&gt;
+    
+</pre><p>
+        </p></td></tr></table></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>Single argument containing spaces should be quoted in order not be interpreted as multiple arguments.</p></td></tr></table></div></dd><dt><span class="term">Directory to run Maven2 in</span></dt><dd><p>
+        Specify the directory to run Maven2 in. If this path is not an absolute path,
+        it is assumed to be relative to the project work directory.
+        </p></dd><dt><span class="term">Goals to build</span></dt><dd><p>
+        Specify the goals to build. Use space to separate different goals (goal name containing spaces should be quoted
+        in order not to be interpreted as multiple goals). You can also use ${...} to pass OGNL variables as the goal name.
+        For example you can use ${build.schedule.name} to use different goals for different schedules.
+        Root object used for OGNL expression evaluation here is current <a href="../javadoc/com/luntsys/luntbuild/builders/Builder.html" target="_top">Builder</a> object.
+        </p></dd><dt><span class="term">Build properties</span></dt><dd><p>
+		Define build properties here to pass into the ant build script. For example:
+        </p><table class="simplelist" border="0" summary="Simple list"><tr><td>buildVersion=${build.version}</td></tr><tr><td>scheduleName=${build.schedule.name}</td></tr></table><p>
+        </p><p>
+		You should set one variable per line. OGNL expression can be used to form the value provided
+		it is enclosed by ${...}.
+        Root object used for OGNL expression evaluation here is current <a href="../javadoc/com/luntsys/luntbuild/builders/Builder.html" target="_top">Builder</a> object.
+        </p></dd><dt><span class="term">Environment variables</span></dt><dd><p>
+        Environment variables to set before running this builder. For example:
+		<code class="code">MYAPP_HOME=${build.schedule.workingDir}</code>
+		<code class="code">SCHEDULE_NAME=${build.schedule.name}</code>
+		You should specify one variable per line. OGNL expression can be inserted to form the value,
+		provided they are enclosed by ${...}.
+        Root object used for OGNL expression evaluation here is current <a href="../javadoc/com/luntsys/luntbuild/builders/Builder.html" target="_top">Builder</a> object.
+        </p></dd><dt><span class="term">Build success condition</span></dt><dd><p>
+        The build success condition is an OGNL expression used to determine, if the build of the current project
+        was successful (root object used for OGNL expression evaluation here is current <a href="../javadoc/com/luntsys/luntbuild/builders/Builder.html" target="_top">Builder</a> object).
+ 		If left empty, the <span class="emphasis"><em>result==0 and logContainsLine("\\[INFO\\].*BUILD SUCCESSFUL.*")</em></span>
+		value is assumed. When this expression evaluates to true, the build is considered successful.
+        The logContainsLine() method uses <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/String.html#matches(java.lang.String)" target="_top">String.matches() method</a>
+        to match the each (whole line) of the build log. If the expression matches only substring of the log file line
+        the method logContainsLine() returns false!
+        </p></dd></dl></div><p>
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch12s03.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"><a accesskey="u" href="ch12.html"><img src="../images/up.gif" alt="Up"></a></td><td width="40%" align="right"> <a accesskey="n" href="ch12s05.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Configuring Maven Builder. </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Configuring Rake Builder.</td></tr></table></div></body></html>

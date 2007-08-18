@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application
+      PUBLIC "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+      "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<application name="luntbuild" engine-class="com.luntsys.luntbuild.LuntbuildEngine">
+	<description>software building system</description>
+	<page name="Home" specification-path="Home.page"/>
+	<service name="hessian" class="com.luntsys.luntbuild.services.HessianService"/>
+	<service name="asset" class="com.luntsys.luntbuild.services.AssetService"/>
+	<library id="contrib" specification-path="/org/apache/tapestry/contrib/Contrib.library"/>
+	<library id="luntbuild" specification-path="/com/luntsys/luntbuild/web/luntbuild.library"/>
+
+</application>

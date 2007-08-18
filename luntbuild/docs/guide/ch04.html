@@ -1,0 +1,31 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Chapter 4. Configuring Luntbuild to use LDAP</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"><link rel="start" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="up" href="index.html" title="Luntbuild - Build Automation and Management User's Guide"><link rel="prev" href="ch03s08.html" title="Updating database during Luntbuild upgrade"><link rel="next" href="ch05.html" title="Chapter 5. Login to Luntbuild"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 4. Configuring Luntbuild to use LDAP</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch03s08.html"><img src="../images/prev.gif" alt="Prev"></a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch05.html"><img src="../images/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="ldap"></a>Chapter 4. Configuring Luntbuild to use LDAP</h2></div></div></div><p>
+    Luntbuild offers basic LDAP support for users authentication. LDAP can be configured in the installer,
+    or, if you do not use installer to install Luntbuild, LDAP can be configured in the file
+    &lt;servlet-webapps&gt;/luntbuild/WEB-INF/applicationContext.xml. The bean
+    <span class="emphasis"><em>luntbuildAuthenticationDAO</em></span> needs to be edited, for example:
+    </p><pre class="programlisting">
+&lt;!-- luntbuild internal RDBMS based authentication DAO --&gt;
+&lt;bean id="luntbuildAuthenticationDAO"
+    class="com.luntsys.luntbuild.security.ApplicationInternalDAO"&gt;
+       &lt;property name="ldapHost" value="dis-corp.com"/&gt;
+       &lt;property name="ldapPort" value="389"/&gt;
+       &lt;property name="ldapUserDn" value="OU=All DIS Domain Users,DC=dis-corp,DC=com"/&gt;
+       &lt;property name="ldapAuthentication" value="simple"/&gt;
+       &lt;property name="ldapUserId" value="sAMAccountName"/&gt;
+       &lt;property name="ldapUseLuntbuildOnFail" value="true"/&gt;
+       &lt;property name="ldapCreateLuntbuildUser" value="true"/&gt;
+       &lt;property name="ldapCanCreateProject" value="true"/&gt;
+       &lt;property name="ldapCanViewProject" value="true"/&gt;
+       &lt;property name="ldapCanBuildProject" value="true"/&gt;
+       &lt;property name="ldapEmailAttrName" value="mail"/&gt;
+       &lt;property name="ldapUrl" value="ldap://dis-corp.com"/&gt;
+       &lt;property name="ldapPrefix" value=""/&gt;
+       &lt;property name="ldapSuffix" value="@dis-corp.com"/&gt;
+&lt;/bean&gt;
+    </pre><p>
+</p><p>
+    Following table expains the meaning of the LDAP configuration properties:
+</p><div class="table"><a name="ldapconfigprops"></a><p class="title"><b>Table 4.1. LDAP configuration properties</b></p><table summary="LDAP configuration properties" border="1"><colgroup><col><col></colgroup><thead><tr><th>Property</th><th>Meaning</th></tr></thead><tbody><tr><td>ldapHost</td><td>LDAP server host</td></tr><tr><td>ldapPort</td><td>LDAP port (default is <span class="emphasis"><em>389</em></span>)</td></tr><tr><td>ldapUrl</td><td>LDAP Url (defaults to "ldap://[host]:[port]") - this is used as the URL
+for making the connection, you can use LDAPS by setting the ldapUrl to "ldaps://my.ldap.server"</td></tr><tr><td>ldapPrefix</td><td>LDAP Prefix (defaults to "[userId]=") - this is prepended to the username
+for making the connection</td></tr><tr><td>ldapSuffix</td><td>LDAP Suffix (defaults to ",[userDn]") - this is appended to the username
+for making the connection</td></tr><tr><td>ldapUserDn</td><td>User DN address to access users database</td></tr><tr><td>ldapAuthentication</td><td>Authentication type (default is <span class="emphasis"><em>simple</em></span>)</td></tr><tr><td>ldapUserId</td><td>User id LDAP identifier (default is <span class="emphasis"><em>uid</em></span>)</td></tr><tr><td>ldapUseLuntbuildOnFail</td><td><span class="emphasis"><em>boolean</em></span>; if true uses Luntbuild authentication if LDAP fails</td></tr><tr><td>ldapCreateLuntbuildUser</td><td><span class="emphasis"><em>boolean</em></span>; if LDAP user is not a Luntbuild user, create Luntbuild user with the same name and password</td></tr><tr><td>ldapCanCreateProject</td><td><span class="emphasis"><em>boolean</em></span>; if true and if Luntbuild user is created, the user can create project and can administer existing projects</td></tr><tr><td>ldapCanBuildProject</td><td><span class="emphasis"><em>boolean</em></span>; if true and if Luntbuild user is created, the user can build existing projects</td></tr><tr><td>ldapCanViewProject</td><td><span class="emphasis"><em>boolean</em></span>; if true and if Luntbuild user is created, the user can view existing projects</td></tr><tr><td>ldapEmailAttrName</td><td>User email LDAP identifier (default is <span class="emphasis"><em>mail</em></span>)</td></tr></tbody></table></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch03s08.html"><img src="../images/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ch05.html"><img src="../images/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Updating database during Luntbuild upgrade </td><td width="20%" align="center"><a accesskey="h" href="index.html"><img src="../images/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Chapter 5. Login to Luntbuild</td></tr></table></div></body></html>

@@ -1,0 +1,262 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Luntbuild - API User's Guide</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a name="id317402"></a>Luntbuild - API User's Guide</h1></div><div><p class="copyright">Copyright © 2005-2006 Luntbuild</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="#introduction">1. Introduction</a></span></dt><dt><span class="chapter"><a href="#atom">2. Atom Feed</a></span></dt><dt><span class="chapter"><a href="#json">3. JSON Object</a></span></dt><dt><span class="chapter"><a href="#rss">4. RSS Feed</a></span></dt><dt><span class="chapter"><a href="#xml">5. XML</a></span></dt><dt><span class="chapter"><a href="#remote">6. Using Luntbuild External API</a></span></dt><dd><dl><dt><span class="section"><a href="#id322277">JavaDoc</a></span></dt></dl></dd></dl></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="introduction"></a>Chapter 1. Introduction</h2></div></div></div><p>
+      
+   </p></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="atom"></a>Chapter 2. Atom Feed</h2></div></div></div><p>
+      <a href="http://atomenabled.org/developers/syndication/" target="_top">
+         Atom 1.0
+      </a>
+      is a type of <a href="http://en.wikipedia.org/wiki/Web_feed" target="_top">web feed</a> format used to syndicate lists or
+      collections of information. In Luntbuild, you can obtain notification messages for schedules and builds in Atom 1.0
+      format.
+   </p><p>
+      To use the feed, point a feed reader (almost all modern browsers include a reader) to the following URL or one of the
+      other URLs described in this chapter.
+   </p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/atom
+   </pre><p><a name="atomnotify"></a><span class="bold"><strong>Notify Strategy</strong></span></p><p>
+      By default, the web feeds for build notifications will follow the notify strategy set for each schedule.
+      Only builds matching the notify strategy will be included in the feed.
+      This behavior can be overridden by setting a notify strategy for the feed using the <span class="emphasis"><em>notify</em></span>
+      parameter (aliases can be used instead of the full text):
+   </p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/builds?notify=&lt;strategy&gt;
+   </pre><p>Notify Strategies:</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><thead><tr><th>Strategy</th><th>Alias</th><th>Description</th></tr></thead><tbody><tr><td>notify always</td><td>always</td><td>Includes all builds.</td></tr><tr><td>notify when success</td><td>success</td><td>Includes all builds that succeeded.</td></tr><tr><td>notify when failed</td><td>failed</td><td>Includes all builds that failed.</td></tr><tr><td>notify when status changed</td><td>changed</td><td>Includes all builds that changed status from the last build.</td></tr><tr><td>notify when failed or status changed</td><td>failedorchanged</td><td>Includes all builds that failed or changed status from the last build.</td></tr></tbody></table></div><p><a name="atomschedules"></a><span class="bold"><strong>Schedules</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/schedules/&lt;source&gt;
+   </pre><p>
+      This feed will include notifications for the specified schedules.
+      Possible values for <span class="emphasis"><em>&lt;source&gt;</em></span> are:
+   </p><div class="itemizedlist"><ul type="disc"><li><p>blank - show all builds on this server</p></li><li><p><span class="emphasis"><em>project</em></span> - show only schedules from this project</p></li></ul></div><p>
+      No other options will work.
+   </p><p><a name="atombuilds"></a><span class="bold"><strong>Builds</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/builds/&lt;source&gt;
+   </pre><p>
+      This feed will include notifications for the specified schedules.
+      Possible values for <span class="emphasis"><em>&lt;source&gt;</em></span> are:
+   </p><div class="itemizedlist"><ul type="disc"><li><p>blank - show all builds on this server</p></li><li><p><span class="emphasis"><em>project</em></span> - show only schedules from this project</p></li><li><p><span class="emphasis"><em>project</em></span>/<span class="emphasis"><em>schedule</em></span> - show only builds from this schedule</p></li></ul></div><p>
+      No other options will work.
+   </p><p><a name="atombuild"></a><span class="bold"><strong>Build</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/build/&lt;project&gt;/&lt;schedule&gt;/&lt;version&gt;
+   </pre><p>
+      This feed will only include the notification for the specified build.
+      The project name, schedule name, and build version are all required.
+   </p><p><a name="atomusers"></a><span class="bold"><strong>Users</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/users
+   </pre><p>
+      This feed will include all users on the server.
+   </p><p><a name="atomuser"></a><span class="bold"><strong>User</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/atom/user/&lt;user&gt;
+   </pre><p>
+      This feed will only include the user specified.  No other options will work.
+   </p></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="json"></a>Chapter 3. JSON Object</h2></div></div></div><p>
+      <a href="http://www.json.org/" target="_top">
+         JavaScript Object Notation
+      </a> (JSON)
+      is a type of data-interchange language:
+   </p><div class="blockquote"><blockquote class="blockquote"><p>
+         JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write.
+         It is easy for machines to parse and generate. It is based on a subset of the JavaScript Programming Language, Standard ECMA-262 3rd Edition - December 1999.
+         JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages,
+         including C, C++, C#, Java, JavaScript, Perl, Python, and many others. These properties make JSON an ideal data-interchange language.
+      </p><p>--<a href="http://www.json.org/" target="_top"><span class="emphasis"><em>http://www.json.org/</em></span></a></p></blockquote></div><p>
+      You can obtain almost all information stored in Luntbuild in JSON format.
+      JSON format is particularly useful in JavaScript because it is automatically recognized and parsed.
+      Once parsed, the information will be available as any normal object structure with basic data types.
+   </p><p>
+      To see the object structure generated by Luntbuild, see the <a href="json.html" target="_top"><span class="emphasis"><em>JSON object page</em></span></a>.
+      This structure is almost exactly the same as the <a href="#xml" target="_top">XML</a> output.
+   </p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/json
+   </pre><p>
+      The default request includes all information available (system information, all projects, schedules and builds).
+      The results in the root object can be limited by using certain functions described below.  
+      Any errors that are encountered will be included in the <span class="emphasis"><em>error</em></span> member of the root object.
+   </p><p><a name="jsoncallbacks"></a><span class="bold"><strong>Callbacks</strong></span></p><p>
+      To ease use with JavaScript, any JSON response can be wraped in a call back function by providing a value for the
+      <span class="emphasis"><em>callback</em></span> paremeter in the request.
+   </p><p>
+      Here some JavaScript that shows the basics of using JSON:
+   </p><pre class="programlisting">
+&lt;script type="text/javascript"&gt;
+function test(luntbuild)
+{
+   alert(luntbuild.system.servletUrl);
+}
+&lt;/script&gt;
+&lt;script type="text/javascript" src="http://&lt;hostname&gt;:8080/luntbuild/api/json?callback=test"&gt;&lt;/script&gt;
+   </pre><p>
+      The JSON response is included as an external script.
+      Luntbuild will return the responce wraped in a call to the function <span class="emphasis"><em>test</em></span>.
+      The JavaScript parser will automatically parse the JSON text and provide the root object to the fuction.
+   </p><p><a name="jsonprojects"></a><span class="bold"><strong>Projects</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/json/projects
+   </pre><p>
+      This request will include a list of <a href="json.html#project" target="_top"><span class="emphasis"><em>project</em></span></a>s on the server,
+      but not their <a href="json.html#schedule" target="_top"><span class="emphasis"><em>schedule</em></span></a>s or
+      <a href="json.html#build" target="_top"><span class="emphasis"><em>build</em></span></a>s.
+   </p><p><a name="jsonschedules"></a><span class="bold"><strong>Schedules</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/json/schedules/&lt;source&gt;
+   </pre><p>
+      This request will include a list of <a href="json.html#schedule" target="_top"><span class="emphasis"><em>schedule</em></span></a>s according
+      to <span class="emphasis"><em>&lt;source&gt;</em></span>, but not their <a href="json.html#build" target="_top"><span class="emphasis"><em>build</em></span></a>s.
+      Possible values for <span class="emphasis"><em>&lt;source&gt;</em></span> are:
+   </p><div class="itemizedlist"><ul type="disc"><li><p>blank - show all schedules on this server</p></li><li><p><span class="emphasis"><em>project</em></span> - show only schedules from this project</p></li></ul></div><p>
+      No other options will work.
+   </p><p><a name="jsonbuilds"></a><span class="bold"><strong>Builds</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/json/builds/&lt;source&gt;
+   </pre><p>
+      This request will include a list of <a href="json.html#build" target="_top"><span class="emphasis"><em>build</em></span></a>s according
+      to <span class="emphasis"><em>&lt;source&gt;</em></span>.
+      Possible values for <span class="emphasis"><em>&lt;source&gt;</em></span> are:
+   </p><div class="itemizedlist"><ul type="disc"><li><p>blank - show all builds on this server</p></li><li><p><span class="emphasis"><em>project</em></span> - show only builds from this project</p></li><li><p><span class="emphasis"><em>project</em></span>/<span class="emphasis"><em>schedule</em></span> - show only builds from this schedule</p></li></ul></div><p>
+      No other options will work.
+   </p><p><a name="jsonbuild"></a><span class="bold"><strong>Build</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/json/build/&lt;project&gt;/&lt;schedule&gt;/&lt;version&gt;
+   </pre><p>
+      This request will only include the specified <a href="json.html#build" target="_top"><span class="emphasis"><em>build</em></span></a> as the result.
+      The project name, schedule name, and build version are all required.
+   </p><p><a name="jsonusers"></a><span class="bold"><strong>Users</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/json/users
+   </pre><p>
+      This request will include a list of all <a href="json.html#user" target="_top"><span class="emphasis"><em>user</em></span></a>s on the server in the results.
+   </p><p><a name="jsonuser"></a><span class="bold"><strong>User</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/json/user/&lt;user&gt;
+   </pre><p>
+      This request will only include the <a href="json.html#user" target="_top"><span class="emphasis"><em>user</em></span></a> specified in the results.
+      No other options will work.
+   </p></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="rss"></a>Chapter 4. RSS Feed</h2></div></div></div><p>
+      <a href="http://blogs.law.harvard.edu/tech/rss" target="_top">
+         Really Simple Syndication
+      </a> (RSS 2.0)
+      is a type of <a href="http://en.wikipedia.org/wiki/Web_feed" target="_top">web feed</a> format used to syndicate lists or
+      collections of information. In Luntbuild, you can obtain notification messages for schedules and builds in RSS 2.0
+      format.
+   </p><p>
+      To use the feed, point a feed reader (almost all modern browsers include a reader) to the following URL or one of the
+      other URLs described in this chapter.
+   </p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/rss
+   </pre><p><a name="rssnotify"></a><span class="bold"><strong>Notify Strategy</strong></span></p><p>
+      By default, the web feeds for build notifications will follow the notify strategy set for each schedule.
+      Only builds matching the notify strategy will be included in the feed.
+      This behavior can be overridden by setting a notify strategy for the feed using the <span class="emphasis"><em>notify</em></span>
+      parameter (aliases can be used instead of the full text):
+   </p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/builds?notify=&lt;strategy&gt;
+   </pre><p>Notify Strategies:</p><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><thead><tr><th>Strategy</th><th>Alias</th><th>Description</th></tr></thead><tbody><tr><td>notify always</td><td>always</td><td>Includes all builds.</td></tr><tr><td>notify when success</td><td>success</td><td>Includes all builds that succeeded.</td></tr><tr><td>notify when failed</td><td>failed</td><td>Includes all builds that failed.</td></tr><tr><td>notify when status changed</td><td>changed</td><td>Includes all builds that changed status from the last build.</td></tr><tr><td>notify when failed or status changed</td><td>failedorchanged</td><td>Includes all builds that failed or changed status from the last build.</td></tr></tbody></table></div><p><a name="rssschedules"></a><span class="bold"><strong>Schedules</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/schedules/&lt;source&gt;
+   </pre><p>
+      This feed will include notifications for the specified schedules.
+      Possible values for <span class="emphasis"><em>&lt;source&gt;</em></span> are:
+   </p><div class="itemizedlist"><ul type="disc"><li><p>blank - show all builds on this server</p></li><li><p><span class="emphasis"><em>project</em></span> - show only schedules from this project</p></li></ul></div><p>
+      No other options will work.
+   </p><p><a name="rssbuilds"></a><span class="bold"><strong>Builds</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/builds/&lt;source&gt;
+   </pre><p>
+      This feed will include notifications for the specified schedules.
+      Possible values for <span class="emphasis"><em>&lt;source&gt;</em></span> are:
+   </p><div class="itemizedlist"><ul type="disc"><li><p>blank - show all builds on this server</p></li><li><p><span class="emphasis"><em>project</em></span> - show only schedules from this project</p></li><li><p><span class="emphasis"><em>project</em></span>/<span class="emphasis"><em>schedule</em></span> - show only builds from this schedule</p></li></ul></div><p>
+      No other options will work.
+   </p><p><a name="rssbuild"></a><span class="bold"><strong>Build</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/build/&lt;project&gt;/&lt;schedule&gt;/&lt;version&gt;
+   </pre><p>
+      This feed will only include the notification for the specified build.
+      The project name, schedule name, and build version are all required.
+   </p><p><a name="rssusers"></a><span class="bold"><strong>Users</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/users
+   </pre><p>
+      This feed will include all users on the server.
+   </p><p><a name="rssuser"></a><span class="bold"><strong>User</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/rss/user/&lt;user&gt;
+   </pre><p>
+      This feed will only include the user specified.  No other options will work.
+   </p></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="xml"></a>Chapter 5. XML</h2></div></div></div><p>
+      You can obtain almost all information stored in Luntbuild in <a href="http://www.w3.org/XML/" target="_top">XML</a> format.
+      To see the XML schema used by Luntbuild, see the <a href="xml.html" target="_top"><span class="emphasis"><em>XML schema page</em></span></a>.
+      This structure is almost exactly the same as the <a href="#json" target="_top">JSON</a> output.
+   </p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/xml
+   </pre><p>
+      The default request includes all information available (system information, all projects, schedules and builds).
+      The results in the root object can be limited by using certain functions described below.
+      Any errors that are encountered will be included in the <span class="emphasis"><em>&lt;error&gt;</em></span> child element of the
+      <span class="emphasis"><em>&lt;luntbuild&gt;</em></span> (document) element.
+   </p><p><a name="xmlprojects"></a><span class="bold"><strong>Projects</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/projects
+   </pre><p>
+      This request will include a list of <a href="xml.html#project" target="_top"><span class="emphasis"><em>project</em></span></a>s on the server,
+      but not their <a href="xml.html#schedule" target="_top"><span class="emphasis"><em>schedule</em></span></a>s or
+      <a href="xml.html#build" target="_top"><span class="emphasis"><em>build</em></span></a>s.
+   </p><p><a name="xmlschedules"></a><span class="bold"><strong>Schedules</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/schedules/&lt;source&gt;
+   </pre><p>
+      This request will include a list of <a href="xml.html#schedule" target="_top"><span class="emphasis"><em>schedule</em></span></a>s according
+      to <span class="emphasis"><em>&lt;source&gt;</em></span>, but not their <a href="xml.html#build" target="_top"><span class="emphasis"><em>build</em></span></a>s.
+      Possible values for <span class="emphasis"><em>&lt;source&gt;</em></span> are:
+   </p><div class="itemizedlist"><ul type="disc"><li><p>blank - show all schedules on this server</p></li><li><p><span class="emphasis"><em>project</em></span> - show only schedules from this project</p></li></ul></div><p>
+      No other options will work.
+   </p><p><a name="xmlbuilds"></a><span class="bold"><strong>Builds</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/builds/&lt;source&gt;
+   </pre><p>
+      This request will include a list of <a href="xml.html#build" target="_top"><span class="emphasis"><em>build</em></span></a>s according
+      to <span class="emphasis"><em>&lt;source&gt;</em></span>.
+      Possible values for <span class="emphasis"><em>&lt;source&gt;</em></span> are:
+   </p><div class="itemizedlist"><ul type="disc"><li><p>blank - show all builds on this server</p></li><li><p><span class="emphasis"><em>project</em></span> - show only builds from this project</p></li><li><p><span class="emphasis"><em>project</em></span>/<span class="emphasis"><em>schedule</em></span> - show only builds from this schedule</p></li></ul></div><p>
+      No other options will work.
+   </p><p><a name="xmlbuild"></a><span class="bold"><strong>Build</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/build/&lt;project&gt;/&lt;schedule&gt;/&lt;version&gt;
+   </pre><p>
+      This request will only include the specified <a href="xml.html#build" target="_top"><span class="emphasis"><em>build</em></span></a> as the result.
+      The project name, schedule name, and build version are all required.
+   </p><p><a name="xmlusers"></a><span class="bold"><strong>Users</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/users
+   </pre><p>
+      This request will include a list of all <a href="xml.html#user" target="_top"><span class="emphasis"><em>user</em></span></a>s on the server in the results.
+   </p><p><a name="xmluser"></a><span class="bold"><strong>User</strong></span></p><pre class="programlisting">
+http://&lt;hostname&gt;:8080/luntbuild/api/xml/user/&lt;user&gt;
+   </pre><p>
+      This request will only include the <a href="xml.html#user" target="_top"><span class="emphasis"><em>user</em></span></a> specified in the results.
+      No other options will work.
+   </p></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="remote"></a>Chapter 6. Using Luntbuild External API</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#id322277">JavaDoc</a></span></dt></dl></div><p>
+      Luntbuild provides a suite of remoting API with the following abilities:
+      </p><div class="orderedlist"><ol type="1"><li><p>Create or edit a project.</p></li><li><p>Trigger a build in any build schedule.</p></li><li><p>Configure properties of projects, as well as global properties.</p></li><li><p>Search builds and get a build information such as its artifacts url, etc.</p></li></ol></div><p>
+      By utilizing the Hessian web service protocol, this API is very easy to use.
+      Basically two jar files needs to be included in the classpath,
+      <span class="emphasis"><em>hessian-3.0.8.jar</em></span> and <span class="emphasis"><em>luntbuild-api.jar</em></span>.
+      They can be found in the "remoting" directory. There are also some examples to demonstrate usage of the API.
+      The remoting API Javadoc is available <a href="http://luntbuild.javaforge.com/remote-api/javadoc/index.html" target="_top">here.</a>
+      Following examples are available:
+      </p><div class="orderedlist"><ol type="1"><li><p><a href="http://luntbuild.javaforge.com/remote-api/samples/EditProperties.java.html" target="_top">Edit Properties</a> - This class gives an example of using luntbuild web service API to edit propertie of a project</p></li><li><p><a href="http://luntbuild.javaforge.com/remote-api/samples/SearchBuilds.java.html" target="_top">Search Builds</a> - This class demonstrates search builds in the system, and how to access build information</p></li><li><p><a href="http://luntbuild.javaforge.com/remote-api/samples/TriggerBuild.java.html" target="_top">Trigger Build</a> - This class gives an example of using luntbuild web service API to trigger a build</p></li><li><p><a href="http://luntbuild.javaforge.com/remote-api/samples/LuntbuildConnection.java.html" target="_top">LuntbuildConnection</a>- This class demonstrates access to project, schedule and build data. It shows how to create, edit and delete a project (supported since Luntbuild 1.3).
+            This class is part of the Luntclipse, Eclipse plugin for Luntbuild.</p></li></ol></div><p>
+      The provided TriggerBuild example can be used to implement a real-time Continuous Integration,
+      that is, whenever a checkin is made into the repository, Luntbuild can trigger immediate build.
+      We create a sample Cvs repository to show how to do this:
+      </p><div class="orderedlist"><ol type="1"><li><p>
+            Create a manually triggered schedule in a project you will use to implement real-time continuous integration.
+            To get the build fast, you can configure the build to build incrementally.
+         </p></li><li><p>
+            Checkout "loginfo" file under CVSROOT directory of your cvs repository, and append a line like this:
+            </p><pre class="programlisting">
+testcvs cmd /c d:/lunt/cvs/lunt/luntbuild/remoting/samples/trigger_build.bat
+            </pre><p>
+            </p><p>
+            </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>Before editing, this file should be checked out first using your cvs client, just like you edit
+               other files in your cvs repository.</p></td></tr></table></div><p>
+            </p><p>
+               where <span class="emphasis"><em>testcvs</em></span> should be replaced with the directory path of your Cvs repository.
+               All checkins under this path will trigger the trigger_build.bat command.
+               The file trigger_build.bat resides in the "remoting/samples" directory.
+               Of course, you can copy the related files (the remoting API jar files, the TriggerBuild.class file,
+               and the trigger_build.bat file) to any other machine as long as JDK1.4 or higher are installed.
+               The path to trigger_build.bat need to be changed to fit your environment.
+               Contents of trigger_build.bat should be changed to reflect proper classpaths, your Luntbuild server url,
+               your desired project, and build schedule. On Unix platform, you can create the trigger_build.sh script
+               easily based on the contents of the file trigger_build.bat.
+            </p></li><li><p>
+               Check in the "loginfo" file. From now on, the checkins under your configured path will trigger
+               the trigger_build command, which will result in a build you have configured above.
+            </p></li></ol></div><p>
+   </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+      Any other Version Control System that can trigger an external command on checkin can use this method
+      to implement real-time Continuous Integration.
+   </p></td></tr></table></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id322277"></a>JavaDoc</h2></div></div></div><p>
+         The JavaDoc for the external API is available <a href="../api/javadoc/index.html" target="_top"><span class="emphasis"><em>here</em></span></a>.
+      </p></div></div></div></body></html>

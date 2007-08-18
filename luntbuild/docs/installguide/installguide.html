@@ -1,0 +1,399 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Luntbuild - Installation Guide</title><link rel="stylesheet" href="luntbuild.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.67.2"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a name="id317409"></a>Luntbuild - Installation Guide</h1></div><div><p class="copyright">Copyright © 2005-2006 Luntbuild</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="#installation">1. Installing Luntbuild</a></span></dt><dd><dl><dt><span class="section"><a href="#installer">Using Luntbuild installer (with GUI)</a></span></dt><dt><span class="section"><a href="#zip">Installation using zip distribution (without GUI)</a></span></dt><dt><span class="section"><a href="#source">Building Luntbuild from source distribution</a></span></dt><dt><span class="section"><a href="#upgrade">Upgrading from previous versions of Luntbuild</a></span></dt><dt><span class="section"><a href="#standalone">Running Luntbuild in standalone mode</a></span></dt><dt><span class="section"><a href="#backup">Backing up Luntbuild data</a></span></dt></dl></dd><dt><span class="chapter"><a href="#database">2. Configuring Luntbuild to use database</a></span></dt><dd><dl><dt><span class="section"><a href="#hsqldb">HSQL database</a></span></dt><dt><span class="section"><a href="#mysql">MySql database</a></span></dt><dt><span class="section"><a href="#progres">PostgreSQL database</a></span></dt><dt><span class="section"><a href="#sqlserver">SqlServer</a></span></dt><dt><span class="section"><a href="#oracle">Oracle</a></span></dt><dt><span class="section"><a href="#derby">Derby</a></span></dt><dt><span class="section"><a href="#h2">H2</a></span></dt><dt><span class="section"><a href="#upgradedb">Updating database during Luntbuild upgrade</a></span></dt></dl></dd><dt><span class="chapter"><a href="#ldap">3. Configuring Luntbuild to use LDAP</a></span></dt></dl></div><div class="list-of-tables"><p><b>List of Tables</b></p><dl><dt>2.1. <a href="#id322575">QuantumDB HSQL DB Eclipse Configuration</a></dt><dt>2.2. <a href="#id322751">QuantumDB MySql Eclipse Configuration</a></dt><dt>2.3. <a href="#id322905">QuantumDB PostgreSQL Eclipse Configuration</a></dt><dt>2.4. <a href="#id323038">QuantumDB SqlServer Eclipse Configuration</a></dt><dt>2.5. <a href="#id323169">QuantumDB Oracle Eclipse Configuration</a></dt><dt>2.6. <a href="#id323335">QuantumDB Derby Eclipse Configuration</a></dt><dt>2.7. <a href="#id323486">QuantumDB H2 Eclipse Configuration</a></dt><dt>3.1. <a href="#id324188">LDAP configuration properties</a></dt></dl></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="installation"></a>Chapter 1. Installing Luntbuild</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#installer">Using Luntbuild installer (with GUI)</a></span></dt><dt><span class="section"><a href="#zip">Installation using zip distribution (without GUI)</a></span></dt><dt><span class="section"><a href="#source">Building Luntbuild from source distribution</a></span></dt><dt><span class="section"><a href="#upgrade">Upgrading from previous versions of Luntbuild</a></span></dt><dt><span class="section"><a href="#standalone">Running Luntbuild in standalone mode</a></span></dt><dt><span class="section"><a href="#backup">Backing up Luntbuild data</a></span></dt></dl></div><p>
+  Installation using Luntbuild installer is the easiest way to install Luntbuild.
+  We recommend to use the installer for all Luntbuild standard installations including
+  upgrades. See <a href="#installer" title="Using Luntbuild installer (with GUI)">installer section</a> and <a href="#upgrade" title="Upgrading from previous versions of Luntbuild">upgrade section</a> for details.
+</p><p>
+  In case you need to modify for some reason Luntbuild configuration files (web.xml,
+  applicationContext.xml) with attributes/values beyond the attributes/values modified
+  by Luntbuild installer, you might choose installation using Luntbuild distribution
+  zip file. See <a href="#zip" title="Installation using zip distribution (without GUI)">zip section</a> for details.
+</p><p>
+  In case you need to modify and/or extend the source code implementation of Luntbuild,
+  you might to choose to build Luntbuild distribution from the source code. See <a href="#source" title="Building Luntbuild from source distribution">source section</a>
+  for details.
+</p><p>
+  If you are upgrading from previous releases,  please refer to <a href="#upgrade" title="Upgrading from previous versions of Luntbuild">upgrade section</a>.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="installer"></a>Using Luntbuild installer (with GUI)</h2></div></div></div><p>
+    </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>This is clean installation of Luntbuild. For upgrades from previous versions of Luntbuild
+    please refer to <a href="#upgrade" title="Upgrading from previous versions of Luntbuild">upgrade section</a>.
+    </p></td></tr></table></div><p>
+</p><div class="orderedlist"><ol type="1"><li><p>
+  Make sure you have jdk1.4 or jdk1.5 installed, and add the directory which
+     contains the java and jar executable into your system path <span class="bold"><strong> - IMPORTANT!</strong></span>.
+     Go to <a href="http://java.sun.com/" target="_top">http://java.sun.com</a> for JDK download,
+     if you didn't install it yet.
+</p></li><li><p>
+  Make sure you get one of Luntbuild supported servlet containers or application
+     servers installed (Servlet2.3 and JSP1.2 support are required), and make sure
+     it has been stopped. Alternatively you can run Luntbuild in <a href="#standalone" title="Running Luntbuild in standalone mode">standalone</a> mode.
+</p></li><li><p>
+  Download Luntbuild installer from <a href="http://sourceforge.net/projects/luntbuild/" target="_top">Luntbuild Sourceforge site</a>.
+      This file is normally named as <span class="emphasis"><em>luntbuild-xxx-installer.jar</em></span>, where xxx denotes
+      current version.
+</p></li><li><p>
+  Run command <span class="emphasis"><em>java -jar luntbuild-xxx-installer.jar</em></span>. A GUI will display to
+      guide you through the installation, and Luntbuild will install into the selected
+      directory, let's say <span class="emphasis"><em>/opt/luntbuild</em></span>.
+</p></li><li><p>
+  Deploy <span class="emphasis"><em>luntbuild.war</em></span> (located in <span class="emphasis"><em>/opt/luntbuild</em></span> directory) into your servlet
+     container or application server. Note, that if you selected the deployment
+     directory of your servlet container or application server during installation,
+     the installer will deploy <span class="emphasis"><em>luntbuild.war</em></span> for you.
+     If you plan to run Luntbuild in standalone mode (without servlet container),
+     just start Luntbuild as described in <a href="#standalone" title="Running Luntbuild in standalone mode">standalone section</a>.
+</p></li><li><p>
+  Access the Luntbuild web application and you should be able to start your
+     Luntbuild adventure, :D
+</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="zip"></a>Installation using zip distribution (without GUI)</h2></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+  This is clean installation of Luntbuild. For upgrades from previous versions,
+  please refer to <a href="#upgrade" title="Upgrading from previous versions of Luntbuild">upgrade section</a>.
+</p></td></tr></table></div><div class="orderedlist"><ol type="1"><li><p>
+  Download the Luntbuild zip distribution from <a href="http://sourceforge.net/projects/luntbuild/" target="_top">Luntbuild Sourceforge site</a>.
+      This file is normally named <span class="emphasis"><em>luntbuild-xxx.zip</em></span>, where xxx denotes the current version.
+</p></li><li><p>
+  Extract the zip file into the directory where you want to install Luntbuild, say
+     <span class="emphasis"><em>/opt/luntbuild</em></span>. Edit the following files with your text editor:
+     </p><table class="simplelist" border="0" summary="Simple list"><tr><td>Edit file <span class="emphasis"><em>/opt/luntbuild/web/WEB-INF/web.xml</em></span>:</td></tr><tr><td>Replace <span class="emphasis"><em>$INSTALL_PATH</em></span> with your Luntbuild installation path (/opt/luntbuild here).</td></tr><tr><td>Replace <span class="emphasis"><em>${sessionTimeout}</em></span> with your desired session timeout value (normally 30).</td></tr><tr><td>Edit file <span class="emphasis"><em>/opt/luntbuild/web/WEB-INF/applicationContext.xml</em></span>:</td></tr><tr><td>Replace <span class="emphasis"><em>${luntbuildPassword}</em></span> with your desired site administrator password.</td></tr></table><p>
+</p></li><li><p>
+  If you plan to run Luntbuild in standalone mode (without servlet container),
+  just start Luntbuild as described in <a href="#standalone" title="Running Luntbuild in standalone mode">standalone section</a>.
+  Else copy all the contents under <span class="emphasis"><em>/opt/luntbuild/web</em></span> directory, and deploy it as a web application to
+      your application server, or servlet container. For example, if you are using
+      Tomcat servlet container:
+     </p><table class="simplelist" border="0" summary="Simple list"><tr><td>Make sure Tomcat has been stopped</td></tr><tr><td>Change to Tomcat install dir:
+             <span class="emphasis"><em>&gt; cd &lt;tomcat install dir&gt;/webapps</em></span></td></tr><tr><td>Make luntbuild directory:
+             <span class="emphasis"><em>&gt; mkdir luntbuild</em></span></td></tr><tr><td>Copy luntbuild/web to webapps:
+             <span class="emphasis"><em>&gt; cp -r /opt/luntbuild/web/* &lt;tomcat install dir&gt;/webapps/luntbuild</em></span></td></tr><tr><td>Start Tomcat</td></tr></table><p>
+        </p><p>
+        Note. Do not create <span class="emphasis"><em>luntbuild.war</em></span> file, just copy the contents under <span class="emphasis"><em>/opt/luntbuild/web</em></span> directory
+        to the <span class="emphasis"><em>luntbuild</em></span> directory in the appropriate web application directory of your
+        application server, or servlet container.
+</p></li><li><p>
+  Access the Luntbuild web application and you should be able to start your
+     Luntbuild adventure, :D
+</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="source"></a>Building Luntbuild from source distribution</h2></div></div></div><div class="orderedlist"><ol type="1"><li><p>
+  Make sure you have jdk1.4 or jdk1.5 installed, and add the directory which
+     contains the java and jar executable into your system path <span class="bold"><strong> - IMPORTANT!</strong></span>.
+     Go to <a href="http://java.sun.com/" target="_top">http://java.sun.com</a> for JDK download,
+     if you didn't install it yet.
+</p></li><li><p>
+  Make sure you have Apache ant 1.6.1 (or higher) installed.
+     Goto <a href="http://ant.apache.org" target="_top">http://ant.apache.org</a> for Ant download.
+</p></li><li><p>
+  Download the source distribution from <a href="http://sourceforge.net/projects/luntbuild/" target="_top">Luntbuild Sourceforge site</a>.
+      This file is normally named <span class="emphasis"><em>luntbuild-xxx-src.zip</em></span>, where xxx denotes
+      the current version.
+</p></li><li><p>
+  Extract the source distribution into a directory, let's say
+     <span class="emphasis"><em>/yourhome/luntbuild-src</em></span>. Change to the directory
+     <span class="emphasis"><em>/yourhome/luntbuild-src/build</em></span>, and run command <span class="emphasis"><em>ant clean installer zip</em></span>.
+     Then Luntbuild installer and zip distribution will both be generated into directory
+     <span class="emphasis"><em>/yourhome/luntbuild-src/distribute</em></span>.
+</p></li><li><p>
+  Follow the installation procedures in sections <a href="#installer" title="Using Luntbuild installer (with GUI)">installer section</a>,
+  <a href="#zip" title="Installation using zip distribution (without GUI)">zip section</a>, or <a href="#upgrade" title="Upgrading from previous versions of Luntbuild">upgrade section</a> to install Luntbuild.
+</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="upgrade"></a>Upgrading from previous versions of Luntbuild</h2></div></div></div><div class="orderedlist"><ol type="1"><li><p>
+  Assuming you've installed Luntbuild under <span class="emphasis"><em>/opt/luntbuild</em></span>. Backup
+     the directory <span class="emphasis"><em>/opt/luntbuild/db</em></span> which contains your db files to another location.
+     Alternatively, if you used external database to store Luntbuild data, backup the database.
+     Backup all important build artifacts.
+</p></li><li><p>
+  If you are upgrading from Luntbuild version 1.1.1, upgrade 1.1.1 web application
+     with war file from
+     <a href="http://sourceforge.net/project/showfiles.php?group_id=113344&amp;package_id=122604&amp;release_id=319662" target="_top">here</a>.
+  If you are upgrading from version 1.2 or higher just follow next steps.
+  </p><p>
+     Note. This only upgrades web application, and should not change anything
+     under <span class="emphasis"><em>/opt/luntbuild</em></span>.
+</p></li><li><p>
+  Access Luntbuild web application again, Select <span class="emphasis"><em>Administration</em></span> tab, and export
+     data into your specified file, let's say <span class="emphasis"><em>/yourhome/luntbuild-data.xml</em></span>. This file
+     will be stored on the machine that runs your servlet container or application server
+     hosting your Luntbuild application.
+</p></li><li><p>
+  Follow the instructions in <a href="#installer" title="Using Luntbuild installer (with GUI)">installer section</a>,
+  <a href="#zip" title="Installation using zip distribution (without GUI)">zip section</a>, or <a href="#source" title="Building Luntbuild from source distribution">source section</a>
+  of this file to install new release of Luntbuild
+     into your previous Luntbuild installation directory, that is <span class="emphasis"><em>/opt/luntbuild</em></span>
+     in this case.
+</p></li><li><p>
+  Access the Luntbuild web application, click on <span class="emphasis"><em>Administration</em></span> tab, and
+     import from previously exported data file <span class="emphasis"><em>/yourhome/luntbuild-data.xml</em></span>.
+     That will migrate data of previous Luntbuild installation to latest version.
+     </p><p>
+     However, if your previous version is 1.1.1, some settings needs to be re-configured:
+     </p><table class="simplelist" border="0" summary="Simple list"><tr><td>
+     The property <span class="emphasis"><em>environment file</em></span> has been removed in 1.2. If you are using
+       this property in 1.1.1, you need to extract contents of the environment
+       file, and enter them as <span class="emphasis"><em>Environment variables</em></span> property.
+       </td></tr><tr><td>
+     All build success condition has been reset for 1.2 format and above.
+       </td></tr><tr><td>
+     All build necessary condition has been reset for 1.2 format and above.
+       </td></tr><tr><td>
+     Format of property "Next build version" has been changed, please verify
+       your version string.
+       </td></tr><tr><td>
+     Build properties passed to Ant build script has been changed, thus your
+       Ant build script need to be changed to use new build properties.
+       </td></tr><tr><td>
+     Ant builder command has been reset to default value. You may need to change
+       it based on your Ant installation directory.
+       </td></tr></table><p>
+</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="standalone"></a>Running Luntbuild in standalone mode</h2></div></div></div><p>
+You do not need servlet container or application server to run Luntbuild.
+Luntbuild comes with <span class="emphasis"><em>build-in</em></span> servlet conatainer based on
+<a href="http://jetty.mortbay.org/jetty/" target="_top">Jetty</a>, a 100% Java HTTP Server and Servlet Container.
+Standalone Luntbuild launcher accepts three arguments:
+     </p><table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>hostname</em></span> - name of the Luntbuild host machine</td></tr><tr><td><span class="emphasis"><em>port</em></span> - port number for servlet container</td></tr><tr><td><span class="emphasis"><em>stop port</em></span> - port number to use to stop launcher (optional, defaults to port+1)</td></tr></table><p>
+    </p><p>
+Standalone Luntbuild stopper  accepts two arguments:
+     </p><table class="simplelist" border="0" summary="Simple list"><tr><td><span class="emphasis"><em>hostname</em></span> - name of the Luntbuild host machine</td></tr><tr><td><span class="emphasis"><em>stop port</em></span> - port number to use to stop launcher (optional, defaults to port+1)</td></tr></table><p>
+</p><p>
+You can run standalone Luntbuild launcher from the command line:
+</p><pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; bin/luntbuild.sh localhost 8888
+</pre><p>
+or alternatively
+</p><pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; java -jar luntbuild-standalone.jar localhost 8888
+</pre><p>
+</p><p>
+To stop the standalone Luntbuild, you can use:
+</p><pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; bin/stop-luntbuild.sh localhost 8889
+</pre><p>
+or alternatively
+</p><pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; java -cp luntbuild-standalone.jar com.luntsys.luntbuild.StandaloneStopper localhost 8889
+</pre><p>
+</p><p>
+While we sure you have several options, we suggest the excellent
+<a href="http://wrapper.tanukisoftware.org/doc/english/introduction.html" target="_top">Java Service Wrapper</a>
+to run standalone Luntbuild.
+You'll get a clean, cross-platform way to start/stop/restart your services. On Unix,
+you'll get an init-style script, and on Windows you'll be able to
+integrate your app as a system service if you like.
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="backup"></a>Backing up Luntbuild data</h2></div></div></div><p>
+    It is very good idea to backup Luntbuild data so they can be restored in case they get corrupted.
+    The backup strategy might depend on the type of the database you are using.
+</p><p>
+    The database independent way to backup Luntbuild data is to use Export function in Administation tab.
+    Unfortunatelly there is currently not an automated way to create a backup, it has to be created
+    by login as Luntbuild administrator and perform Export.
+</p><p>
+    In case your Luntbuild installation uses HSQLDB database (default) the database data is stored
+    in &lt;luntbuild install&gt;/db directory. It is highly recommended to backup this directory on
+    regular basis, if you do not want to use Export method mentioned above.
+</p><p>
+    If you are using an external database (MySql, PostgreSql), please use the database backup/restore
+    procedure, if you do not want to use Export method above.
+</p></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="database"></a>Chapter 2. Configuring Luntbuild to use database</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#hsqldb">HSQL database</a></span></dt><dt><span class="section"><a href="#mysql">MySql database</a></span></dt><dt><span class="section"><a href="#progres">PostgreSQL database</a></span></dt><dt><span class="section"><a href="#sqlserver">SqlServer</a></span></dt><dt><span class="section"><a href="#oracle">Oracle</a></span></dt><dt><span class="section"><a href="#derby">Derby</a></span></dt><dt><span class="section"><a href="#h2">H2</a></span></dt><dt><span class="section"><a href="#upgradedb">Updating database during Luntbuild upgrade</a></span></dt></dl></div><p>
+    Luntbuild uses a database to make important Luntbuild data persistent. It uses ORM package
+    <a href="http://hibernate.org" target="_top">Hibernate</a> to access the persistent data and as
+    a framework to access a database.
+</p><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="hsqldb"></a>HSQL database</h2></div></div></div><p>
+Luntbuild uses <a href="http://hsqldb.org/" target="_top">HSQL DB</a> as default database running inside Luntbuild (in process mode).
+Additional in process (embedded) database supported by Luntbuild is <a href="http://www.h2database.com/html/frame.html" target="_top">H2</a>.
+Luntbuild also supports following external (client/server mode) databases:
+</p><table class="simplelist" border="0" summary="Simple list"><tr><td><a href="#mysql" title="MySql database">MySql</a></td></tr><tr><td><a href="#progres" title="PostgreSQL database">ProgreSql</a></td></tr><tr><td><a href="#sqlserver" title="SqlServer">SqlServer</a></td></tr><tr><td><a href="#oracle" title="Oracle">Oracle</a></td></tr><tr><td><a href="#derby" title="Derby">Derby</a></td></tr><tr><td><a href="#h2" title="H2">H2</a></td></tr></table><p>
+For external (client/server mode) databases, you will have create initial Luntbuild database by
+executing SQL scripts in appropriate db/... subdirectories.
+</p><p>
+Database definitions and data are located in the db directory of the Luntbuild installation.
+</p><p>
+<a href="http://hsqldb.org/" target="_top">HSQL DB</a> uses db/luntbuild.script to define DB layout.
+Following files are also used, see <a href="http://hsqldb.org/web/hsqlDocsFrame.html" target="_top">HSQL DB documentation</a>:
+</p><table class="simplelist" border="0" summary="Simple list"><tr><td>db/luntbuild.data</td></tr><tr><td>db/luntbuild.bakup</td></tr></table><p>
+</p><p>
+    <a href="http://www.h2database.com/html/frame.html" target="_top">H2</a> embedded database uses luntbuild-h2-data* files
+    located in db directory.
+</p><p>
+Sometimes, it is useful to look at the data in the DB to find out issues.
+Following are the steps to run a SQL client to examine data in the HSQL DB:
+</p><table class="simplelist" border="0" summary="Simple list"><tr><td>Download HSQLDB 1.7.3.3 from <a href="http://hsqldb.org/" target="_top">www.hsqldb.org</a>. (Latest version 1.8.0 should also work)</td></tr><tr><td>Extract the downloaded package.</td></tr><tr><td>Change into the demo folder, edit the file "runServer.bat", replace the original contents with this line:</td></tr></table><p>
+</p><pre class="programlisting">
+@java -classpath ../lib/hsqldb.jar org.hsqldb.Server -database &lt;db path&gt;
+</pre><p>
+&lt;db path&gt; should be  replaced with your path to Luntbuild DB.
+For example, if you are installing Luntbuild in D:\luntbuild, you should specify
+&lt;db path&gt; as D:\luntbuild\db\luntbuild.
+</p><table class="simplelist" border="0" summary="Simple list"><tr><td>Run "runserver.bat" to start up the database server.</td></tr><tr><td>Run "runManager.bat", from the popup dialog, select  "HSQL Database Engine Server" as "Type" option,
+then you'll able to run SQL commands to examine contents of the DB.</td></tr></table><p>
+</p><p>
+If you are using <a href="http://eclipse.org" target="_top">Eclipse</a> you can use DB plugin
+<a href="http://quantum.sourceforge.net/" target="_top">Quantum DB</a> and the set the connection:
+</p><div class="table"><a name="id322575"></a><p class="title"><b>Table 2.1. QuantumDB HSQL DB Eclipse Configuration</b></p><table summary="QuantumDB HSQL DB Eclipse Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Jdbc Url</td><td>jdbc:hsqldb:file:D:\luntbuild-13alpha\db\luntbuild</td></tr><tr><td>User</td><td>sa</td></tr><tr><td>Password</td><td> </td></tr><tr><td>Driver Path</td><td>&lt;app-server&gt;/webapps/luntbuild/WEB-INF/lib/hsqldb.jar</td></tr><tr><td>Driver Class</td><td>org.hsqldb.jdbcDriver</td></tr><tr><td>Driver Type</td><td>HSQL (Hypersonic)</td></tr></tbody></table></div><p>
+</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr><tr><td colspan="2" align="left" valign="top"><p>
+Many Luntbuild tables contain binary data which can not be displayed through the client, for example,
+if you run command "select * from LB_BUILD", nothing will be displayed. You should only specify non-binary
+columns here, for example, "select LB_ID, LB_NAME from LB_BUILD", etc.
+</p></td></tr></table></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql"></a>MySql database</h2></div></div></div><p>
+<a href="http://www.mysql.com/" target="_top">MySql</a> database can be used as persistent storage for Luntbuild.
+The best way to configure Luntbuild to use MySql is to use Luntbuild installer, select MySql from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for MySql
+(see jdbc.mysql.properties in the same directory):
+</p><pre class="programlisting">
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/luntbuild
+jdbc.username=luntbuild
+jdbc.password=luntbuild
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+</pre><p>
+Then you have to create Luntbuild database as follows:
+</p><pre class="programlisting">
+&gt; cd &lt;luntbuild-install&gt;
+mysql&gt; grant all on luntbuild.* to sa@localhost.localdomain identified by 'mypassword';
+mysql&gt; drop database luntbuild;
+mysql&gt; create database luntbuild;
+mysql&gt; use luntbuild;
+mysql&gt; source db/mysql/luntbuild.sql;
+</pre><p>
+To manage MySql consider using free version of <a href="http://www.webyog.com/sqlyog/download_sqlyogfree.html" target="_top">SQLyog</a>.
+If you are using <a href="http://eclipse.org" target="_top">Eclipse</a> you can use DB plugin
+<a href="http://quantum.sourceforge.net/" target="_top">Quantum DB</a> and set the connection:
+</p><div class="table"><a name="id322751"></a><p class="title"><b>Table 2.2. QuantumDB MySql Eclipse Configuration</b></p><table summary="QuantumDB MySql Eclipse Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Jdbc Url</td><td>jdbc:mysql://localhost:3306/luntbuild</td></tr><tr><td>User</td><td> </td></tr><tr><td>Password</td><td> </td></tr><tr><td>Driver Path</td><td>&lt;app-server&gt;/webapps/luntbuild/WEB-INF/lib/mysql-connector-java-3.1.7-bin.jar</td></tr><tr><td>Driver Class</td><td>com.mysql.jdbc.Driver</td></tr><tr><td>Driver Type</td><td>MySQL</td></tr></tbody></table></div><p>
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="progres"></a>PostgreSQL database</h2></div></div></div><p>
+<a href="http://www.postgresql.org/" target="_top">PostgreSQL</a> database can be used as persistent storage for Luntbuild.
+The best way to configure Luntbuild to use PostgreSQL is to use Luntbuild installer, select PostgreSQL from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for PostgreSQL
+(see jdbc.postgresql.properties in the same directory):
+</p><pre class="programlisting">
+jdbc.driverClassName=org.postgresql.Driver
+jdbc.url=jdbc:postgresql://localhost:5432/luntbuild
+jdbc.username=luntbuild
+jdbc.password=luntbuild
+hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+</pre><p>
+Then you have to create Luntbuild database as follows:
+</p><pre class="programlisting">
+&gt; psql  -h localhost -p 5432 postgres "admin"
+postgres=# CREATE USER luntbuild;
+postgres=# ALTER USER luntbuild PASSWORD 'luntbuild';
+postgres=# CREATE DATABASE luntbuild WITH OWNER luntbuild;
+postgres=# source luntbuild/db/postgresql/luntbuild.sql;
+</pre><p>
+I use free pgAdminIII that comes with Postgres installation to manage Postgres database.
+If you are using <a href="http://eclipse.org" target="_top">Eclipse</a> you can use DB plugin
+<a href="http://quantum.sourceforge.net/" target="_top">Quantum DB</a> and set the connection:
+</p><div class="table"><a name="id322905"></a><p class="title"><b>Table 2.3. QuantumDB PostgreSQL Eclipse Configuration</b></p><table summary="QuantumDB PostgreSQL Eclipse Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Jdbc Url</td><td>jdbc:postgresql://localhost:5432/luntbuild</td></tr><tr><td>User</td><td> </td></tr><tr><td>Password</td><td> </td></tr><tr><td>Driver Path</td><td>&lt;app-server&gt;/webapps/luntbuild/WEB-INF/lib/postgresql-8.1-404.jdbc3.jar</td></tr><tr><td>Driver Class</td><td>org.postgresql.Driver</td></tr><tr><td>Driver Type</td><td>Postgres</td></tr></tbody></table></div><p>
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="sqlserver"></a>SqlServer</h2></div></div></div><p>
+SqlServer including <a href="http://msdn.microsoft.com/vstudio/express/sql/" target="_top">Express</a> (free) edition is now supported.
+I use free SQL Server Management Studio Express for database management.
+</p><p>
+The best way to configure Luntbuild to use SqlServer is to use Luntbuild installer, select SqlServer from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for SqlServer
+(see jdbc.sqlserver.properties in the same directory):
+</p><pre class="programlisting">
+jdbc.driverClassName=net.sourceforge.jtds.jdbc.Driver
+jdbc.url=jdbc:jtds:sqlserver://localhost:1525/luntbuild
+hibernate.dialect=org.hibernate.dialect.SQLServerDialect
+jdbc.username=sa
+password=your password
+</pre><p>
+If you are using <a href="http://eclipse.org" target="_top">Eclipse</a> you can use DB plugin
+<a href="http://quantum.sourceforge.net/" target="_top">Quantum DB</a> and set the connection:
+</p><div class="table"><a name="id323038"></a><p class="title"><b>Table 2.4. QuantumDB SqlServer Eclipse Configuration</b></p><table summary="QuantumDB SqlServer Eclipse Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Jdbc Url</td><td>jdbc:jtds:sqlserver://localhost:1525/luntbuild</td></tr><tr><td>User</td><td>sa</td></tr><tr><td>Password</td><td>your password</td></tr><tr><td>Driver Path</td><td>D:\luntbuild\lib\jtds-1.2.jar</td></tr><tr><td>Driver Class</td><td>net.sourceforge.jtds.jdbc.Driver</td></tr><tr><td>Driver Type</td><td>Microsoft SQL Server</td></tr></tbody></table></div><p>
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="oracle"></a>Oracle</h2></div></div></div><p>
+Luntbuild has been tested with <a href="http://www.oracle.com/technology/products/database/oracle10g/index.html" target="_top">Oracle 10g</a>.
+You can use Oracle Enterprise Manager to manage the database. Enterprise manager is available http://&lt;oracle-machine&gt;:1158/em/console/logon/logon.
+</p><p>
+The best way to configure Luntbuild to use Oracle is to use Luntbuild installer, select Oracle from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for Oracle
+(see jdbc.oracle.properties in the same directory):
+</p><pre class="programlisting">
+jdbc.driverClassName=oracle.jdbc.driver.OracleDriver
+jdbc.url=jdbc:oracle:thin:@localhost:1521:luntbuild
+hibernate.dialect=org.hibernate.dialect.OracleDialect
+jdbc.username=sa
+jdbc.password=your password
+</pre><p>
+If you are using <a href="http://eclipse.org" target="_top">Eclipse</a> you can use DB plugin
+<a href="http://quantum.sourceforge.net/" target="_top">Quantum DB</a> and set the connection:
+</p><div class="table"><a name="id323169"></a><p class="title"><b>Table 2.5. QuantumDB Oracle Eclipse Configuration</b></p><table summary="QuantumDB Oracle Eclipse Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Jdbc Url</td><td>jdbc:oracle:thin:@localhost:1521:orcl</td></tr><tr><td>User</td><td>luntbuild</td></tr><tr><td>Password</td><td>luntbuild</td></tr><tr><td>Driver Path</td><td>D:\luntbuild\lib\ojdbc14.jar</td></tr><tr><td>Driver Class</td><td>oracle.jdbc.driver.OracleDriver</td></tr><tr><td>Driver Type</td><td>Oracle</td></tr></tbody></table></div><p>
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="derby"></a>Derby</h2></div></div></div><p>
+    Hibernate does not officially supports Derby. Embedded version of <a href="http://db.apache.org/derby/" target="_top">Derby</a>
+    fails to work with Hibernate and Luntbuild (caused by incompatibilities with BLOB data type).
+    Client/Server version of <a href="http://db.apache.org/derby/" target="_top">Derby</a> was tested with Hibernate/Luntbuild and it is working
+    as expected.
+</p><p>
+    If you are using <a href="http://eclipse.org" target="_top">Eclipse</a> you can download and install
+    <a href="http://db.apache.org/derby/integrate/plugin_howto.html" target="_top">Apache Derby plugin</a>.
+</p><p>
+The best way to configure Luntbuild to use Derby is to use Luntbuild installer, select Derby Client from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for Derby
+(see jdbc.derby-cs.properties in the same directory):
+</p><pre class="programlisting">
+jdbc.driverClassName=org.apache.derby.jdbc.ClientDriver
+jdbc.url=jdbc:derby://localhost:1527/luntbuild
+hibernate.dialect=org.hibernate.dialect.DerbyDialect
+jdbc.username=luntbuild
+jdbc.password=luntbuild
+</pre><p>
+</p><p>
+If you are using <a href="http://eclipse.org" target="_top">Eclipse</a> you can use DB plugin
+<a href="http://quantum.sourceforge.net/" target="_top">Quantum DB</a> and set the connection:
+</p><div class="table"><a name="id323335"></a><p class="title"><b>Table 2.6. QuantumDB Derby Eclipse Configuration</b></p><table summary="QuantumDB Derby Eclipse Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Jdbc Url</td><td>jdbc:derby://localhost:1527/luntbuild</td></tr><tr><td>User</td><td>luntbuild</td></tr><tr><td>Password</td><td>luntbuild</td></tr><tr><td>Driver Path</td><td>D:\luntbuild\lib\derbyclient.jar</td></tr><tr><td>Driver Class</td><td>org.apache.derby.jdbc.ClientDriver</td></tr><tr><td>Driver Type</td><td>Apache Derby</td></tr></tbody></table></div><p>
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="h2"></a>H2</h2></div></div></div><p>
+<a href="http://www.h2database.com/html/frame.html" target="_top">H2</a> is database written in Java, available
+in both embedded and client/server mode. Based on <a href="http://www.h2database.com/html/performance.html" target="_top">performance comparison</a>
+H2 is very fast and performs well with Luntbuild in both embedded and client/server mode. H2 comes with
+web client <a href="http://www.h2database.com/html/quickstartText.html" target="_top">management console</a>.
+</p><p>
+The best way to configure Luntbuild to use H2 is to use Luntbuild installer, select H2 Embedded or H2 Client from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for H2
+(see jdbc.h2-embedded.properties or jdbc.h2-cs.properties in the same directory):
+</p><pre class="programlisting">
+jdbc.driverClassName=org.h2.Driver
+jdbc.url=jdbc:h2:tcp://localhost:9092/luntbuild or ${h2Url}
+hibernate.dialect=org.hibernate.dialect.HSQLDialect
+jdbc.username=sa
+jdbc.password=
+</pre><p>
+If you are using <a href="http://eclipse.org" target="_top">Eclipse</a> you can use DB plugin
+<a href="http://quantum.sourceforge.net/" target="_top">Quantum DB</a> and set the connection:
+</p><div class="table"><a name="id323486"></a><p class="title"><b>Table 2.7. QuantumDB H2 Eclipse Configuration</b></p><table summary="QuantumDB H2 Eclipse Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody><tr><td>Jdbc Url</td><td>jdbc:h2:tcp://localhost:9092/luntbuild or jdbc:h2:file:D:/luntbuild/db/luntbuild-h2-data</td></tr><tr><td>User</td><td>sa</td></tr><tr><td>Password</td><td> </td></tr><tr><td>Driver Path</td><td>D:\luntbuild\lib\h2.jar</td></tr><tr><td>Driver Class</td><td>org.h2.Driver</td></tr><tr><td>Driver Type</td><td>HSQL</td></tr></tbody></table></div><p>
+</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="upgradedb"></a>Updating database during Luntbuild upgrade</h2></div></div></div><p>
+    The only supported way of updating Luntbuild database is to:
+    </p><div class="orderedlist"><ol type="1"><li><p>Export Luntbuild data from currently installed Luntuild.</p></li><li><p>Backup the Luntbuild database.</p></li><li><p>Delete the Luntbuild database.</p></li><li><p>Follow appropriate database installation to create database.</p></li><li><p>Follow appropriate Luntbuild installation.</p></li><li><p>Import previously exported data.</p></li></ol></div><p>
+</p></div></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="ldap"></a>Chapter 3. Configuring Luntbuild to use LDAP</h2></div></div></div><p>
+    Luntbuild offers basic LDAP support for users authentication. LDAP can be configured in the installer,
+    or, if you do not use installer to install Luntbuild, LDAP can be configured in the file
+    &lt;servlet-webapps&gt;/luntbuild/WEB-INF/applicationContext.xml. The bean
+    <span class="emphasis"><em>luntbuildAuthenticationDAO</em></span> needs to be edited, for example:
+    </p><pre class="programlisting">
+&lt;!-- luntbuild internal RDBMS based authentication DAO --&gt;
+&lt;bean id="luntbuildAuthenticationDAO"
+    class="com.luntsys.luntbuild.security.ApplicationInternalDAO"&gt;
+       &lt;property name="ldapHost" value="dis-corp.com"/&gt;
+       &lt;property name="ldapPort" value="389"/&gt;
+       &lt;property name="ldapUserDn" value="OU=All DIS Domain Users,DC=dis-corp,DC=com"/&gt;
+       &lt;property name="ldapAuthentication" value="simple"/&gt;
+       &lt;property name="ldapUserId" value="sAMAccountName"/&gt;
+       &lt;property name="ldapUseLuntbuildOnFail" value="true"/&gt;
+       &lt;property name="ldapCreateLuntbuildUser" value="true"/&gt;
+       &lt;property name="ldapCanCreateProject" value="true"/&gt;
+       &lt;property name="ldapCanViewProject" value="true"/&gt;
+       &lt;property name="ldapCanBuildProject" value="true"/&gt;
+       &lt;property name="ldapEmailAttrName" value="mail"/&gt;
+       &lt;property name="ldapUrl" value="ldap://dis-corp.com"/&gt;
+       &lt;property name="ldapPrefix" value=""/&gt;
+       &lt;property name="ldapSuffix" value="@dis-corp.com"/&gt;
+&lt;/bean&gt;
+    </pre><p>
+</p><p>
+    Following table expains the meaning of the LDAP configuration properties:
+</p><div class="table"><a name="id324188"></a><p class="title"><b>Table 3.1. LDAP configuration properties</b></p><table summary="LDAP configuration properties" border="1"><colgroup><col><col></colgroup><thead><tr><th>Property</th><th>Meaning</th></tr></thead><tbody><tr><td>ldapHost</td><td>LDAP server host</td></tr><tr><td>ldapPort</td><td>LDAP port (default is <span class="emphasis"><em>389</em></span>)</td></tr><tr><td>ldapUrl</td><td>LDAP Url (defaults to "ldap://[host]:[port]") - this is used as the URL
+for making the connection, you can use LDAPS by setting the ldapUrl to "ldaps://my.ldap.server"</td></tr><tr><td>ldapPrefix</td><td>LDAP Prefix (defaults to "[userId]=") - this is prepended to the username
+for making the connection</td></tr><tr><td>ldapSuffix</td><td>LDAP Suffix (defaults to ",[userDn]") - this is appended to the username
+for making the connection</td></tr><tr><td>ldapUserDn</td><td>User DN address to access users database</td></tr><tr><td>ldapAuthentication</td><td>Authentication type (default is <span class="emphasis"><em>simple</em></span>)</td></tr><tr><td>ldapUserId</td><td>User id LDAP identifier (default is <span class="emphasis"><em>uid</em></span>)</td></tr><tr><td>ldapUseLuntbuildOnFail</td><td><span class="emphasis"><em>boolean</em></span>; if true uses Luntbuild authentication if LDAP fails</td></tr><tr><td>ldapCreateLuntbuildUser</td><td><span class="emphasis"><em>boolean</em></span>; if LDAP user is not a Luntbuild user, create Luntbuild user with the same name and password</td></tr><tr><td>ldapCanCreateProject</td><td><span class="emphasis"><em>boolean</em></span>; if true and if Luntbuild user is created, the user can create project and can administer existing projects</td></tr><tr><td>ldapCanBuildProject</td><td><span class="emphasis"><em>boolean</em></span>; if true and if Luntbuild user is created, the user can build existing projects</td></tr><tr><td>ldapCanViewProject</td><td><span class="emphasis"><em>boolean</em></span>; if true and if Luntbuild user is created, the user can view existing projects</td></tr><tr><td>ldapEmailAttrName</td><td>User email LDAP identifier (default is <span class="emphasis"><em>mail</em></span>)</td></tr></tbody></table></div></div></div></body></html>
