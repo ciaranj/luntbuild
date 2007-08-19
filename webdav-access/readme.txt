@@ -93,13 +93,13 @@ INSTALLATION & CONFIGURATION
   
   	<servlet>
 		<servlet-name>webdav</servlet-name>
-		<servlet-class>net.sf.webdav.WebdavServlet</servlet-class>
+		<servlet-class>org.webdavaccess.servlet.WebdavServlet</servlet-class>
 		<init-param>
-			<param-name>ResourceHandlerImplementation</param-name>
-			<param-value>net.sf.webdav.LocalFileSystemStorage</param-value>
+			<param-name>webdavStoreImplementation</param-name>
+			<param-value>org.webdavaccess.LocalFileSystemStorage</param-value>
 			<description>
 				name of the class that implements
-				net.sf.webdav.IWebdavStorage
+				org.webdavaccess.IWebdavStorage
 			</description>
 		</init-param>
 		<init-param>
@@ -111,11 +111,34 @@ INSTALLATION & CONFIGURATION
 			</description>
 		</init-param>
 		<init-param>
-			<param-name>storeDebug</param-name>
+			<param-name>webdavAuthorizationImplementation</param-name>
+			<param-value>your.authorization.implementation.class</param-value>
+			<description>
+				name of the class that implements
+				org.webdavaccess.IWebdavAuthorization (optional)
+			</description>
+		</init-param>
+		<init-param>
+			<param-name>webdavAliasManagerImplementation</param-name>
+			<param-value>your.alias.manager.implementation.class</param-value>
+			<description>
+				name of the class that implements
+				org.webdavaccess.IWebdavAlias (optional)
+			</description>
+		</init-param>
+		<init-param>
+			<param-name>servletDebug</param-name>
 			<param-value>0</param-value>
 			<description>
 				triggers debug output of the
-				ResourceHandlerImplementation (0 = off , 1 = on) off by default
+				webdavStoreImplementation (0 = off , 1 = on) off by default
+			</description>
+		</init-param>
+		<init-param>
+			<param-name>readonly</param-name>
+			<param-value>false</param-value>
+			<description>
+				Makes the Webdav read only
 			</description>
 		</init-param>
 	</servlet>
@@ -125,14 +148,18 @@ INSTALLATION & CONFIGURATION
 	</servlet-mapping>
   
   -if you want to use the reference implementation, set the parameter "rootpath"
-   to where you want to store your files. !!Create "webdav" directory folder in your rootpath directory.
-   The "webdav" folder is the root folder of your webdav storage.
+   to where you want to store your files.
    
   -if you have implemented your own store, insert the class name
-   to the parameter  "ResourceHandlerImplementation"
-   and copy your .jar to /WEB-INF/lib/
+   to the parameter  "webdavStoreImplementation" and copy your .jar to /WEB-INF/lib/
 
-  -with the "storeDebug" parameter you can trigger the reference store implementation
+  -if you have implemented your own authorization, insert the class name
+   to the parameter  "webdavAuthorizationImplementation" and copy your .jar to /WEB-INF/lib/
+
+  -if you have implemented your own alias manager, insert the class name
+   to the parameter  "webdavAliasManagerImplementation" and copy your .jar to /WEB-INF/lib/
+
+  -with the "servletDebug" parameter you can trigger the reference store implementation
    to spam at every method call. this parameter is optional and can be omitted
 
   -authentication is done by the servlet-container. If you need it, you have to
@@ -144,7 +171,4 @@ ACCESSING THE FILESTORE
   the webdav-filestore can be reached at:
   "http://<ip/name + port of the server>/<name of the webapp>/webdav"
   e.g.:   http://localhost:8080/webdav or http://localhost:8080/mywebapp/webdav/
-
-weta-dfs-webdav has been tested on tomcat 5.0.28 and 5.5.12
-so far, we accessed it from windows(2000 and XP) and MAC
 

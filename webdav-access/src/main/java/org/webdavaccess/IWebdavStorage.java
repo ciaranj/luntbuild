@@ -26,7 +26,6 @@ package org.webdavaccess;
 import org.webdavaccess.exceptions.WebdavException;
 
 import java.io.InputStream;
-import java.security.Principal;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -40,11 +39,6 @@ import javax.servlet.http.HttpServletRequest;
  * 
  */
 public interface IWebdavStorage {
-
-	public static final String WEBDAV_STORAGE_AUTHENTICATION_IMPLEMENTATION = "webdavAuthorizationImplementation";
-	public static final String WEBDAV_RESOURCE_IMPLEMENTATION = "webdavStoreImplementation";
-	public static final String DEBUG_PARAMETER = "servletDebug";
-
 	
     /**
      * Indicates that a new request or transaction with this store involved has
@@ -61,22 +55,11 @@ public interface IWebdavStorage {
      *            values configured in the <init-param> from web.xml
      * @param defaultStorageLocation
      *            Default storage location, can be null.
-     * @param authorize
-     *            Authorization implementation, can be null.
      * @throws WebdavException
      */
-    void begin(HttpServletRequest req,  Hashtable parameters, String defaultStorageLocation, IWebdavAuthorization authorize)
+    void begin(HttpServletRequest req,  Hashtable parameters, String defaultStorageLocation)
             throws WebdavException;
 
-    /**
-     * Checks if authentication information passed in {@link #begin}
-     * is valid. If not throws an exception.
-     * 
-     * @param req request to check authentication for
-     * @throws UnauthenticatedException if authentication is not valid
-     */
-    void checkAuthentication(HttpServletRequest req) throws WebdavException;
-    
     /**
      * Indicates that all changes done inside this request shall be made
      * permanent and any transactions, connections and other temporary resources

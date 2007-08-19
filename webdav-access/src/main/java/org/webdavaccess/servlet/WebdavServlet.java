@@ -44,6 +44,7 @@ import org.apache.catalina.util.MD5Encoder;
 import org.apache.catalina.util.RequestUtil;
 import org.apache.catalina.util.URLEncoder;
 import org.apache.catalina.util.XMLWriter;
+import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.webdav.lib.util.WebdavStatus;
@@ -54,9 +55,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 
+import org.webdavaccess.IWebdavAlias;
 import org.webdavaccess.IWebdavAuthorization;
 import org.webdavaccess.IWebdavStorage;
 import org.webdavaccess.ResourceLocks;
+import org.webdavaccess.WebdavAliasFactory;
 import org.webdavaccess.WebdavAuthorizationFactory;
 import org.webdavaccess.WebdavStoreFactory;
 import org.webdavaccess.exceptions.AccessDeniedException;
@@ -77,9 +80,15 @@ import org.webdavaccess.exceptions.WebdavException;
 
 public class WebdavServlet extends HttpServlet {
 
+	private static final long serialVersionUID = -3879804749319022302L;
+
 	private static Log log = LogFactory.getLog(WebdavServlet.class);
     
 	// -------------------------------------------------------------- Constants
+
+	public static final String WEBDAV_AUTHENTICATION_IMPLEMENTATION = "webdavAuthorizationImplementation";
+	public static final String WEBDAV_ALIAS_IMPLEMENTATION =  "webdavAliasManagerImplementation";
+	public static final String WEBDAV_RESOURCE_IMPLEMENTATION = "webdavStoreImplementation";
 
 	private static final String METHOD_HEAD = "HEAD";
 
@@ -166,6 +175,8 @@ public class WebdavServlet extends HttpServlet {
 	private static final String READONLY_PARAMETER = "readonly";
 	private boolean readOnly;
 
+	public static final String DEBUG_PARAMETER = "servletDebug";
+
 	static {
 		creationDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 	}
@@ -193,6 +204,7 @@ public class WebdavServlet extends HttpServlet {
 	private IWebdavStorage fStore = null;
 
 	private IWebdavAuthorization fAuthorize = null;
+	private IWebdavAlias fAliasManager = null;
 	
 	private static int fdebug = -1;
 
@@ -212,7 +224,7 @@ public class WebdavServlet extends HttpServlet {
 		}
 
 		// Parameters from web.xml
-		String clazz = getServletConfig().getInitParameter(IWebdavStorage.WEBDAV_RESOURCE_IMPLEMENTATION);
+		String clazz = getServletConfig().getInitParameter(WEBDAV_RESOURCE_IMPLEMENTATION);
 		try {
 			fFactory = new WebdavStoreFactory(WebdavServlet.class
 					.getClassLoader().loadClass(clazz));
@@ -232,18 +244,25 @@ public class WebdavServlet extends HttpServlet {
 			
 			fStore = fFactory.getStore();
 			fResLocks = new ResourceLocks();
-			String debugString = (String) fParameter.get(IWebdavStorage.DEBUG_PARAMETER);
+			String debugString = (String) fParameter.get(DEBUG_PARAMETER);
 			if (debugString == null) {
 				fdebug = 0;
 			} else {
 				fdebug = Integer.parseInt(debugString);
 			}
 
-			String authImpl = getServletConfig().getInitParameter(IWebdavStorage.WEBDAV_STORAGE_AUTHENTICATION_IMPLEMENTATION);
+			String authImpl = getServletConfig().getInitParameter(WEBDAV_AUTHENTICATION_IMPLEMENTATION);
 			if (authImpl != null && authImpl.trim().length() > 0) {
 				WebdavAuthorizationFactory factory = new WebdavAuthorizationFactory(WebdavServlet.class
 						.getClassLoader().loadClass(authImpl));
 				fAuthorize = factory.getAuthorization();
+			}
+
+			String aliasImpl = getServletConfig().getInitParameter(WEBDAV_ALIAS_IMPLEMENTATION);
+			if (aliasImpl != null && aliasImpl.trim().length() > 0) {
+				WebdavAliasFactory factory = new WebdavAliasFactory(WebdavServlet.class
+						.getClassLoader().loadClass(aliasImpl));
+				fAliasManager = factory.getAliasManager();
 			}
 
 		} catch (Exception e) {
@@ -255,7 +274,7 @@ public class WebdavServlet extends HttpServlet {
 	 * Handles the special WebDAV methods.
 	 */
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+			throws ServletException, IOException, AuthenticationException {
 
 		String method = req.getMethod();
 
@@ -283,8 +302,8 @@ public class WebdavServlet extends HttpServlet {
 		}
 
 		try {
-			fStore.begin(req, fParameter, getServletContext().getRealPath("/"), fAuthorize);
-			fStore.checkAuthentication(req);
+			fStore.begin(req, fParameter, getServletContext().getRealPath("/"));
+			if (fAuthorize != null) fAuthorize.authorize(req);
 			resp.setStatus(WebdavStatus.SC_OK);
 
 			try {
@@ -462,7 +481,7 @@ public class WebdavServlet extends HttpServlet {
 						.getAttribute("javax.servlet.include.servlet_path");
 			if ((result == null) || (result.equals("")))
 				result = "/";
-			return (result);
+			return (fAliasManager != null) ? fAliasManager.getResourceDestination(result) : result;
 		}
 
 		// No, extract the desired path directly from the request
@@ -470,7 +489,7 @@ public class WebdavServlet extends HttpServlet {
 		String result = request.getPathInfo();
 		if (result == null) {
 			result = servletPath  + "/";
-			return result;
+			return  (fAliasManager != null) ? fAliasManager.getResourceDestination(result) : result;
 		}
 		if (!result.startsWith(servletPath + "/")) {
 			result = servletPath + result;
@@ -478,7 +497,7 @@ public class WebdavServlet extends HttpServlet {
 		if ((result == null) || (result.equals(""))) {
 			result = servletPath;
 		}
-		return (result);
+		return  (fAliasManager != null) ? fAliasManager.getResourceDestination(result) : result;
 
 	}
 
@@ -1191,14 +1210,14 @@ public class WebdavServlet extends HttpServlet {
 					+ req.toString();
 			if (fResLocks.lock(path, lockOwner, false, -1)) {
 				try {
-					if (copyResource(req, resp)) {
-
+					String destinationPath = copyResource(req, resp);
+					if (destinationPath != null) {
 						Hashtable errorList = new Hashtable();
 						deleteResource(path, errorList, req, resp);
 						if (!errorList.isEmpty()) {
 							sendReport(req, resp, errorList);
 						}
-
+						if (fAliasManager != null) fAliasManager.resourceMovedNotification(path, destinationPath);
 					} else {
 						resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 					}
@@ -1244,7 +1263,7 @@ public class WebdavServlet extends HttpServlet {
 	 * @throws IOException
 	 *             when an error occurs while sending the response
 	 */
-	private boolean copyResource(HttpServletRequest req,
+	private String copyResource(HttpServletRequest req,
 			HttpServletResponse resp) throws WebdavException, IOException {
 
 		// Parsing destination header
@@ -1253,7 +1272,7 @@ public class WebdavServlet extends HttpServlet {
 
 		if (destinationPath == null) {
 			resp.sendError(WebdavStatus.SC_BAD_REQUEST);
-			return false;
+			return null;
 		}
 
 		// Remove url encoding from destination
@@ -1335,7 +1354,7 @@ public class WebdavServlet extends HttpServlet {
 				if (!fStore.objectExists(path)) {
 					resp
 							.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					return false;
+					return null;
 				}
 
 				boolean exists = fStore.objectExists(destinationPath);
@@ -1355,7 +1374,7 @@ public class WebdavServlet extends HttpServlet {
 					// If the destination exists, then it's a conflict
 					if (exists) {
 						resp.sendError(WebdavStatus.SC_PRECONDITION_FAILED);
-						return false;
+						return null;
 					} else {
 						resp.setStatus(WebdavStatus.SC_CREATED);
 					}
@@ -1371,9 +1390,9 @@ public class WebdavServlet extends HttpServlet {
 			}
 		} else {
 			resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
-			return false;
+			return null;
 		}
-		return true;
+		return destinationPath;
 
 	}
 

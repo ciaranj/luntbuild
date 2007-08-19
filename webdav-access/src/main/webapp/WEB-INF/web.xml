@@ -26,7 +26,15 @@
 			<param-value></param-value>
 			<description>
 				name of the class that implements
-				org.webdavaccess.IWebdavAuthorization
+				org.webdavaccess.IWebdavAuthorization (optional)
+			</description>
+		</init-param>
+		<init-param>
+			<param-name>webdavAliasManagerImplementation</param-name>
+			<param-value></param-value>
+			<description>
+				name of the class that implements
+				org.webdavaccess.IWebdavAlias (optional)
 			</description>
 		</init-param>
 		<init-param>
@@ -37,22 +45,13 @@
 			</description>
 		</init-param>
 		<init-param>
-			<param-name>storeDebug</param-name>
-			<param-value>1</param-value>
+			<param-name>servletDebug</param-name>
+			<param-value>0</param-value>
 			<description>
 				triggers debug output of the
-				ResourceHandlerImplementation
+				webdavStoreImplementation
 			</description>
 		</init-param>
-	    <init-param>
-	      <param-name>debug</param-name>
-	      <param-value>1</param-value>
-	    </init-param>
-	    <init-param>
-	      <param-name>listings</param-name>
-	      <param-value>true</param-value>
-	    </init-param>
-		<!-- Comment this out to disable read/write access -->
 	    <init-param>
 	      <param-name>readonly</param-name>
 	      <param-value>false</param-value>

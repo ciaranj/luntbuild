@@ -33,6 +33,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.webdavaccess.exceptions.WebdavException;
@@ -54,10 +55,9 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	private static File root = null;
 	private static int debug = -1;
 	
-	private IWebdavAuthorization fAuthorize = null;
 	private String servletName;
 
-	public void begin(HttpServletRequest req, Hashtable parameters, String defaultStorageLocation, IWebdavAuthorization authorize)
+	public void begin(HttpServletRequest req, Hashtable parameters, String defaultStorageLocation)
 			throws WebdavException {
 		if (debug == -1) {
 			String debugString = (String) parameters.get(DEBUG_PARAMETER);
@@ -98,18 +98,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 				} 
 			}
 			
-			fAuthorize = authorize;
 			servletName = req.getServletPath();
-		}
-	}
-
-	public void checkAuthentication(HttpServletRequest req) throws SecurityException {
-		if (debug == 1)
-			log.debug("LocalFileSystemStore.checkAuthentication()");
-		if (fAuthorize != null) {
-			if (!fAuthorize.authorize(req))
-				throw new SecurityException("User " + req.getUserPrincipal() + " not authorized for " +
-						req.getMethod());
 		}
 	}
 
@@ -317,4 +306,5 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		else
 			return uri;
 	}
+
 }
