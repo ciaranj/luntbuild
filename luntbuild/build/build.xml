@@ -499,9 +499,11 @@
         <copy todir="stage/db">
             <fileset dir="db"/>
         </copy>
+    	<!--
         <exec executable="dos2unix" dir="${basedir}/stage/scripts" failifexecutionfails="false">
     		<arg line="-U *.sh"/>
     	</exec>
+    	-->
 		<mkdir dir="${artifactsDir}"/>
 		<filter token="appVersion" value="${buildVersion}" />
 		<copy file="installer/install.xml" tofile="installer/install.xml.temp"
@@ -525,14 +527,14 @@
 
     <target name="weekly.installer" depends="installer">
         <CBRelease file="${artifactsDir}/luntbuild-${fileVersion}-installer.jar"
-            todir="/Downloads/Weekly" tofile="luntbuild-${fileVersion}-${buildDate}-installer.jar"
+            todir="Downloads/Weekly" tofile="luntbuild-${fileVersion}-${buildDate}-installer.jar"
             description="Development snapshot of Luntbuild version: ${fileVersion}"
         />
     </target>
 
     <target name="weekly.source" depends="zip-source">
         <CBRelease file="${artifactsDir}/luntbuild-${fileVersion}-source.zip"
-            todir="/Downloads/Weekly" tofile="luntbuild-${fileVersion}-source.zip"
+            todir="Downloads/Weekly" tofile="luntbuild-${fileVersion}-source.zip"
             description="Development source snapshot of Luntbuild version: ${fileVersion}"
         />
     </target>

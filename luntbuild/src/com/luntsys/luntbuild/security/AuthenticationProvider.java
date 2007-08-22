@@ -338,7 +338,7 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
             authorities[ix++] = new GrantedAuthorityImpl("LUNTBUILD_PRJ_BUILDER");
 
         userdetails =
-            new org.acegisecurity.userdetails.User(name, password, true, true, true, authorities);
+            new org.acegisecurity.userdetails.User(name, password, true, true, true, true, authorities);
 
         return userdetails;
     }
