@@ -418,6 +418,11 @@ public class Project implements AclObjectIdentity, VariableHolder {
 			Builder builder = (Builder) it.next();
 			facade.getBuilderList().add(builder.getFacade());
 		}
+		it = getSchedules().iterator();
+		while (it.hasNext()) {
+			Schedule schedule = (Schedule) it.next();
+			facade.getScheduleList().add(schedule.getFacade());
+		}
         List projectAdmins = new ArrayList();
         List projectBuilders = new ArrayList();
         List projectViewers = new ArrayList();
