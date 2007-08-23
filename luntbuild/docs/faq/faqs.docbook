@@ -698,13 +698,19 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 			</question>
 			<answer>
 				<para>
-                    You can increase connection pool only for external database, not for internal HSQLDB.
+                    Luntbuild/Hibernate doesn't close connections, it pools them. You can increase connection pool only for external database, not for internal HSQLDB.
                     To increase size of the connection pool, do the following:
 					<orderedlist numeration="arabic">
 					  <listitem><para>Make sure you are connecting to some serial database instead embedded HSQLDB.</para></listitem>
 					  <listitem><para>
                         Open &lt;Luntbuild dir&gt;/web/WEB-INF/applicationContext.xml file, edit "dataSource" element,
                         and change "maxIdle" and "maxActive" child element to some proper value (5 is normally OK).
+                      </para></listitem>
+					  <listitem><para>
+					    Increase the allowed connections to your database.
+                      </para></listitem>
+					  <listitem><para>
+						Lower the number of allowed build threads in Luntbuild until you stop getting the error.
                       </para></listitem>
 					</orderedlist>
 				</para>
