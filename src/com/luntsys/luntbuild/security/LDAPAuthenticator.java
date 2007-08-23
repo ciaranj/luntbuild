@@ -114,6 +114,11 @@ public class LDAPAuthenticator {
      * @return <code>true<code> if authenticated
      */
     public boolean authenticate (String user, String password) {
+    	if(password == null || password.trim().length() == 0) {
+    		logger.warn("Error: Attempt to login with blank password for user " + user);
+    		return false;
+    	}
+
         Hashtable env = createContextEnv(user, password);
 
         if (logger.isDebugEnabled()) {
