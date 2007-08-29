@@ -62,9 +62,6 @@ public abstract class Builder implements Serializable {
     /** Name of the directory to store build artifacts in. */
     public static final String ARTIFACTS_DIR = "artifacts";
 
-    /** Name of the directory to store HTML JUnit reports in. */
-    public static final String JUNIT_HTML_REPORT_DIR = "junit_html_report";
-
     /**
      * Name of the builder
      */

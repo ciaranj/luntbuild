@@ -849,7 +849,6 @@ public class XMLReplier extends Replier {
         XMLText += "<postbuildStrategy>" + escape(Constants.getPostbuildStrategyText(build.getPostbuildStrategy())) + "</postbuildStrategy>";
         XMLText += "<publishDir>" + escape(build.getPublishDir()) + "</publishDir>";
         XMLText += "<artifactsDir>" + escape(build.getArtifactsDir()) + "</artifactsDir>";
-        XMLText += "<junitHtmlReportDir>" + escape(build.getJunitHtmlReportDir()) + "</junitHtmlReportDir>";
 
         // Lists
         XMLText += "<vcss>";

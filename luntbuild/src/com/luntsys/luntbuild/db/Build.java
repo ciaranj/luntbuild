@@ -33,6 +33,7 @@ import com.luntsys.luntbuild.builders.Builder;
 import com.luntsys.luntbuild.facades.lb12.BuildFacade;
 import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.reports.Report;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.LuntbuildLogger;
 import com.luntsys.luntbuild.utility.OgnlHelper;
@@ -327,13 +328,8 @@ public class Build {
      * @return the build log URL of this build
      */
     public String getBuildLogUrl() {
-        String servletUrl = Luntbuild.getServletUrl();
-        if (!servletUrl.endsWith("app.do"))
-            throw new RuntimeException("Invalid servlet url: " + servletUrl);
         if (ensureBuildLog())
-            return servletUrl.substring(0, servletUrl.length() - 6) + "publish/" +
-                getSchedule().getProject().getName() +
-                "/" + getSchedule().getName() + "/" + getVersionNoSpace() + "/" + BuildGenerator.BUILD_HTML_LOG;
+            return getPublishUrl() + "/" + BuildGenerator.BUILD_HTML_LOG;
         else
             return null;
     }
@@ -369,13 +365,8 @@ public class Build {
      * @return the revision log URL of this build
      */
     public String getRevisionLogUrl() {
-        String servletUrl = Luntbuild.getServletUrl();
-        if (!servletUrl.endsWith("app.do"))
-            throw new RuntimeException("Invalid servlet url: " + servletUrl);
         if (ensureRevisionLog())
-            return servletUrl.substring(0, servletUrl.length() - 6) + "publish/" +
-                getSchedule().getProject().getName() + "/" + getSchedule().getName() + "/" +
-                getVersionNoSpace() + "/" + BuildGenerator.REVISION_HTML_LOG;
+            return getPublishUrl() + "/" + BuildGenerator.REVISION_HTML_LOG;
         else
             return null;
     }
@@ -489,6 +480,21 @@ public class Build {
     }
 
     /**
+     * Gets the publish URL for current build. Publish URL is used to access
+     * output of this build, including build log and build artifacts, etc.
+     * 
+     * @return the publish URL for current build
+     */
+    public String getPublishUrl() {
+        String servletUrl = Luntbuild.getServletUrl();
+        if (!servletUrl.endsWith("app.do"))
+            throw new RuntimeException("Invalid servlet url: " + servletUrl);
+        return servletUrl.substring(0, servletUrl.length() - 6) + "publish/" +
+            getSchedule().getProject().getName() + "/" + getSchedule().getName() + "/" +
+            getVersionNoSpace();
+    }
+
+    /**
      * Gets the artifacts directory where hold artifacts for this build.
      * 
      * @return the artifacts directory where hold artifacts for this build
@@ -506,16 +512,82 @@ public class Build {
     /**
      * Gets the directory where to hold Junit html report stuff.
      * 
+     * @deprecated Replaced with <code>getReportDir("JUnit")</code>.
+     * 
      * @return the directory where to hold Junit html report stuff
      */
     public String getJunitHtmlReportDir() {
+        return getReportDir("JUnit");
+    }
+
+    /**
+     * Gets the description of the specified report.
+     * 
+     * @param report_name the name of the report
+     * @return the report description
+     * @throws RuntimeException if no report with that name was found
+     */
+    public String getReportDescription(String report_name) {
+        Report report = (Report) Luntbuild.reports.get(report_name);
+        if (report == null)
+            throw new RuntimeException("Report named \"" + report_name + "\" not found.");
+
+        return report.getReportDescription();
+    }
+
+    /**
+     * Gets the directory of the specified report.
+     * 
+     * @param report_name the name of the report
+     * @return the report directory
+     * @throws RuntimeException if no report with that name was found
+     */
+    public String getReportDir(String report_name) {
         try {
-            String artifactsDir =  new File(getPublishDir() + File.separator +
-                    Builder.JUNIT_HTML_REPORT_DIR).getCanonicalPath();
-            return artifactsDir.replaceAll("\\\\", "\\\\\\\\"); // in order to keep back slash for ognl expression evaluation
+            Report report = (Report) Luntbuild.reports.get(report_name);
+            if (report == null)
+                throw new RuntimeException("Report named \"" + report_name + "\" not found.");
+
+            String reportDir =  new File(getPublishDir() + File.separator +
+                    report.getReportDir()).getCanonicalPath();
+            return reportDir.replaceAll("\\\\", "\\\\\\\\"); // in order to keep back slash for ognl expression evaluation
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Gets the URL of the specified report.
+     * 
+     * @param report_name the name of the report
+     * @return the report URL
+     * @throws RuntimeException if no report with that name was found
+     */
+    public String getReportUrl(String report_name) {
+        Report report = (Report) Luntbuild.reports.get(report_name);
+        if (report == null)
+            throw new RuntimeException("Report named \"" + report_name + "\" not found.");
+
+        String report_url = report.getReportUrl(getReportDir(report_name));
+        if (report_url != null)
+            return getPublishUrl() + "/" + report_url;
+        else
+            return null;
+    }
+
+    /**
+     * Gets the icon of the specified report.
+     * 
+     * @param report_name the name of the report
+     * @return the icon
+     * @throws RuntimeException if no report with that name was found
+     */
+    public String getReportIcon(String report_name) {
+        Report report = (Report) Luntbuild.reports.get(report_name);
+        if (report == null)
+            throw new RuntimeException("Report named \"" + report_name + "\" not found.");
+
+        return report.getIcon();
     }
 
     /**

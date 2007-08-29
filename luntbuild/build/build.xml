@@ -117,6 +117,7 @@
         <copy todir="stage">
             <fileset dir="config">
                 <include name="*.xsl"/>
+                <include name="*.xml"/>
             </fileset>
         </copy>
     </target>

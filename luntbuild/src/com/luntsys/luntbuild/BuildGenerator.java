@@ -37,6 +37,7 @@ import com.luntsys.luntbuild.listeners.Listener;
 import com.luntsys.luntbuild.notifiers.Notifier;
 import com.luntsys.luntbuild.facades.BuildParams;
 import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.reports.Report;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.services.QuartzService;
 import com.luntsys.luntbuild.utility.*;
@@ -266,8 +267,7 @@ public class BuildGenerator implements StatefulJob {
                 // save build to database
                 Luntbuild.getDao().saveBuild(currentBuild);
                 writeRevisionLog(currentBuild, revisions);
-                List listenerInstances = Luntbuild.getListenerInstances(Luntbuild.listeners);
-                Iterator it = listenerInstances.iterator();
+                Iterator it = Luntbuild.listeners.values().iterator();
                 while (it.hasNext()) {
                     Listener listener = (Listener) it.next();
                     try {
@@ -280,7 +280,7 @@ public class BuildGenerator implements StatefulJob {
                 checkoutAndBuild(currentBuild);
 
                 Luntbuild.getDao().saveBuild(currentBuild);
-                it = listenerInstances.iterator();
+                it = Luntbuild.listeners.values().iterator();
                 while (it.hasNext()) {
                     Listener listener = (Listener) it.next();
                     try {
@@ -722,7 +722,11 @@ public class BuildGenerator implements StatefulJob {
             currentTime = System.currentTimeMillis();
 
             Luntbuild.createDir(publishDirPathSep + Builder.ARTIFACTS_DIR);
-            Luntbuild.createDir(publishDirPathSep + Builder.JUNIT_HTML_REPORT_DIR);
+            Iterator reportsiter = Luntbuild.reports.values().iterator();
+            while (reportsiter.hasNext()) {
+                Report report = (Report) reportsiter.next();
+                Luntbuild.createDir(publishDirPathSep + File.separator + report.getReportDir());
+            }
 
             logger.info("Build with defined builders...");
             it = build.getBuilderList().iterator();
