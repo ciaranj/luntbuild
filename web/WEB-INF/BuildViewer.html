@@ -7,13 +7,8 @@
   <tr>
     <td height="26" colspan="4" align="center" bgcolor="#AEDFFF"> <table width="100%" height="24"  border="0" cellpadding="0" cellspacing="0">
         <tr>
-          <td width="60%" align="center" class="buildTitleLeft"><strong><span jwcid="@Insert" value="ognl:build.version">luntbuild1.0</span></strong></td>
+          <td width="70%" align="center" class="buildTitleLeft"><strong><span jwcid="@Insert" value="ognl:build.version">luntbuild1.0</span></strong></td>
 
-          <td width="10%" align="center" class="buildTitleRight">
-		  	<span jwcid="@Conditional" condition="ognl:junitHtmlReport!=null">
-          	<span jwcid="@GenericLink" href="ognl:'publish/'+build.schedule.project.name+'/'+build.schedule.name+'/'+build.version+ '/'+junitHtmlReport" title="junit report">junit report</span>
-			</span>
-          </td>
           <td width="10%" align="center" class="buildTitleRight">
           	<a jwcid="@GenericLink" href="ognl:build.getBuildLogUrl()" title="build log">build log</a>
           </td>
@@ -49,6 +44,23 @@
     <td class="propertyListName propertyListName1"><img jwcid="@Any" src="ognl:buildStatusGif" width="20" height="20" align="absmiddle"/> <span jwcid="@Insert" value="ognl:@com.luntsys.luntbuild.facades.Constants@getBuildStatusText(build.status)">success</span> </td>
     <td class="propertyListName propertyListName1"><strong><img src="images/interval.gif" width="16" height="14" align="absmiddle"> build duration</strong></td>
     <td class="propertyListValue propertyListValue1"><span jwcid="@Insert" value="ognl:buildCostTime">10</span> minutes</td>
+  </tr>
+  <tr>
+    <td class="propertyListName propertyListName2" colspan="4">
+      <div style="float:left;width:200px;">
+        <strong>Reports:</strong>
+      </div>
+      <span jwcid="@Foreach" source="ognl:reportNames" value="ognl:report" index="ognl:reportIndex">
+        <span jwcid="@Conditional" condition="ognl:build.getReportUrl(report.toString()) != null">
+          <div style="float:left;width:200px;">
+            <strong>
+            <span jwcid="@Insert" raw="true" value="ognl:'<img src=images/' + build.getReportIcon(report.toString()) + ' width=16 height=16 align=absmiddle>'"/>
+            <a jwcid="@GenericLink" href="ognl:build.getReportUrl(report.toString())" title="ognl:build.getReportDescription(report.toString())"><span jwcid="@Insert" value="ognl:report.toString()">JUnit</span></a>
+            </strong>
+          </div>
+        </span>
+      </span>
+    </td>
   </tr>
   <tr>
     <td colspan="4" valign="top">

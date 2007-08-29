@@ -33,12 +33,7 @@ import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.ant.Commandline;
 
 import java.util.Calendar;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Locale;
-import java.util.Properties;
-import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormatSymbols;
 
 import org.apache.commons.logging.Log;
@@ -54,10 +49,6 @@ import ognl.OgnlException;
 public class OgnlHelper {
 
     private static Log logger = LogFactory.getLog(OgnlHelper.class);
-	/**
-	 * Contains instances of extension classes keyed with extension names.
-	 */
-	private static Hashtable extensions = null;
 
 	/**
 	 * The schedule this build necessary condition evaluation trigged on behalf of
@@ -345,86 +336,18 @@ public class OgnlHelper {
 		return String.valueOf(Calendar.getInstance().get(Calendar.YEAR)).substring(2);
 	}
 
-	/**
-	 * Gets the extension class instance with the specified name.
-	 * 
-	 * @param name the name
-	 * @return the extension class instance
-	 * @throws RuntimeException if no extension with that name exists
-	 */
-	public Object getExtension(String name) {
+    /**
+     * Gets the extension class instance with the specified name.
+     * 
+     * @param name the name
+     * @return the extension class instance
+     * @throws RuntimeException if no extension with that name was found
+     */
+    public Object getExtension(String name) {
+        Object result = Luntbuild.extensions.get(name);
+        if (result == null)
+            throw new RuntimeException("Extension named \"" + name + "\" not found.");
 
-		Object result = null;
-
-		loadExtensions();
-
-		result = extensions.get(name);
-		if (result == null) throw new RuntimeException("Extension " + name + " doesn't exist");
-
-		return result;
-	}
-
-	/**
-	 * Loads extensions.
-	 * 
-	 * <p>First time this method is run:</p>
-	 * <ol>
-	 * <li>it searches classpath for files named luntbuild_extension.properties</li>
-	 * <li>it instantiates the classes and stores the instances to Hashtable extensions</li>
-	 * </ol>
-	 *
-	 * <p>After the first time the method does nothing.</p>
-	 * 
-	 * @throws RuntimeException if an extension fails to load
-	 */
-	private synchronized void loadExtensions() {
-
-		if (extensions == null) {
-
-			extensions = new Hashtable();
-
-			Enumeration resourceEnum = null;
-			try {
-				 resourceEnum = getClass().getClassLoader().getResources("luntbuild_extension.properties");
-			} catch (IOException e) {
-				throw new RuntimeException("Exception occured while searching for Luntbuild extensions", e);
-			}
-
-			while (resourceEnum.hasMoreElements()) {
-
-				URL resourceURL = (URL) resourceEnum.nextElement();
-				logger.info("Loading extensions from " + resourceURL);
-
-				Properties extensionProperties = new Properties();
-
-				try {
-					extensionProperties.load(resourceURL.openStream());
-				} catch (IOException e) {
-					throw new RuntimeException("Loading of extension properties from " + resourceURL.toExternalForm() + " failed", e);
-				}
-
-				String extensionName = (String) extensionProperties.get("luntbuild.extension.name");
-				String className = (String) extensionProperties.get("luntbuild.extension.class");
-
-				if (extensionName == null || extensionName.trim().equals("")) throw new RuntimeException("Property luntbuild.extension.name is missing or empty in property file " + resourceURL.toExternalForm());
-				if (className == null || className.trim().equals("")) throw new RuntimeException("Property luntbuild.extension.class is missing or empty in property file " + resourceURL.toExternalForm());
-
-				Object extension = null;
-
-				try {
-					Class extensionClass = Class.forName(className);
-					extension = extensionClass.newInstance();
-				} catch (ClassNotFoundException e) {
-					throw new RuntimeException("Extension class " + className + " for luntbuild extension " + extensionName + " not found", e);
-				} catch (InstantiationException e) {
-					throw new RuntimeException("Exception occured while instantiating extension class " + className  + " for luntbuild extension " + extensionName, e);
-				} catch (IllegalAccessException e) {
-					throw new RuntimeException("Extension class for " + className + " luntbuild extension " + extensionName + " doesn't have a public constructor", e);
-				}
-
-				logger.info("Adding extension, name: \"" + extensionName + "\" class: " + className);
-				extensions.put(extensionName, extension);
-			}
-		}
-	}
+        return result;
+    }
 }

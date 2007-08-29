@@ -18,6 +18,8 @@
 	<property-specification name="buildId" type="long" persistent="yes"/> 
 	<property-specification name="vcsIndex" type="int"/>
 	<property-specification name="vcs" type="com.luntsys.luntbuild.vcs.Vcs"/>
+	<property-specification name="reportIndex" type="int"/>
+	<property-specification name="report" type="java.lang.Object"/>
 	<property-specification name="module" type="java.lang.Object"/>
 	<property-specification name="log" type="org.w3c.dom.Node"/>
 

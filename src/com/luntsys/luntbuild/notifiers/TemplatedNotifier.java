@@ -21,18 +21,20 @@ import com.luntsys.luntbuild.BuildGenerator;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.reports.Report;
 import com.luntsys.luntbuild.scrapers.MSVSScraper;
+import com.luntsys.luntbuild.utility.Luntbuild;
 
 /**
  * Encapsulates the logic for processing templates within Luntbuild.
  *
  * @author Dustin Hunter
+ * @author Jason Archer
  */
 public abstract class TemplatedNotifier extends Notifier implements ReferenceInsertionEventHandler {
     /** Logger */
     protected Log logger = null;
-    /** template dir */
+    /** Template dir */
     public String templateDir = null;
     /** Build template file */
     public String templateBuildFile = null;
@@ -235,7 +237,10 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     private VelocityContext createContext(Build build, VelocityContext ctx) throws Exception {
         VelocityContext context = new VelocityContext(ctx);
 
+        // System info
         context.put("luntbuild_webroot", extractRootUrl(build.getUrl()));
+        context.put("luntbuild_servlet_url", Luntbuild.getServletUrl());
+        context.put("luntbuild_systemlog_url", Luntbuild.getSystemLogUrl());
 
         // Project Info
         context.put("build_project", build.getSchedule().getProject().getName());
@@ -255,42 +260,40 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         context.put("build_status", Constants.getBuildStatusText(build.getStatus()));
         context.put("build_isSuccess", new Boolean(build.getStatus() == Constants.BUILD_STATUS_SUCCESS));
         context.put("build_isFailure", new Boolean(build.getStatus() == Constants.BUILD_STATUS_FAILED));
+        context.put("build_artifactsdir", build.getArtifactsDir());
+        context.put("build_publishdir", build.getPublishDir());
+        context.put("build_type", Constants.getBuildTypeText(build.getBuildType()));
+        context.put("build_labelstrategy", Constants.getLabelStrategyText(build.getLabelStrategy()));
         context.put("build_changelist", build.getChangelist());
 
         // Time Info
         context.put("build_start", Luntbuild.DATE_DISPLAY_FORMAT.format(build.getStartDate()));
         context.put("build_end", Luntbuild.DATE_DISPLAY_FORMAT.format(build.getEndDate()));
         long diffSec = (build.getEndDate().getTime()-build.getStartDate().getTime())/1000;
-
-
         context.put("build_duration", "" + diffSec + " seconds");
-
-        context.put("build_artifactsdir", build.getArtifactsDir());
-        context.put("build_publishdir", build.getPublishDir());
 
         // Log info
         context.put("build_revisionlog_url", build.getRevisionLogUrl());
         context.put("build_revisionlog_text", readFile(build.getPublishDir()
-                + File.separator + BuildGenerator.REVISION_LOG));
+            + File.separator + BuildGenerator.REVISION_LOG));
         context.put("build_buildlog_url", build.getBuildLogUrl());
-        String buildText = readFile(build.getPublishDir()+ File.separator + BuildGenerator.BUILD_LOG);
+        String buildText = readFile(build.getPublishDir() + File.separator + BuildGenerator.BUILD_LOG);
         context.put("build_buildlog_text", buildText);
-        context.put("luntbuild_systemlog_url", Luntbuild.getSystemLogUrl());
 
-        context.put("build_junit_reportdir", build.getJunitHtmlReportDir());
-        context.put("build_type",
-                com.luntsys.luntbuild.facades.Constants.getBuildTypeText(build.getBuildType()));
-        context.put("build_labelstrategy",
-                com.luntsys.luntbuild.facades.Constants.getLabelStrategyText(build.getLabelStrategy()));
-        context.put("luntbuild_servlet_url", Luntbuild.getServletUrl());
+        // Reports
+        Enumeration reports = Luntbuild.reports.keys();
+        while (reports.hasMoreElements()) {
+            String report_name = (String) reports.nextElement();
+            context.put("build_" + report_name + "_reporturl", build.getPublishDir()
+                + File.separator + ((Report)Luntbuild.reports.get(report_name)).getReportUrl(build.getPublishDir()));
+        }
 
-        this.visualStudioScraper.scrape(buildText, build, context);
+        visualStudioScraper.scrape(buildText, build, context);
 
         // Just for fun
         try {
         	context.put("build_randomquote", getRandomQuote(this.templateDir));
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             // If we fail, this should not affect the rest of the message
         }
         return context;
@@ -306,7 +309,10 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     private VelocityContext createContext(Schedule schedule, VelocityContext ctx) throws Exception {
         VelocityContext context = new VelocityContext(ctx);
 
+        // System info
         context.put("luntbuild_webroot", extractRootUrl(schedule.getUrl()));
+        context.put("luntbuild_servlet_url", Luntbuild.getServletUrl());
+        context.put("luntbuild_systemlog_url", Luntbuild.getSystemLogUrl());
 
         // Project Info
         context.put("schedule_project", schedule.getProject().getName());
@@ -318,18 +324,10 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         context.put("schedule_url", schedule.getUrl());
         context.put("schedule_status", Constants.getScheduleStatusText(schedule.getStatus()));
         context.put("schedule_status_date",
-                Luntbuild.DATE_DISPLAY_FORMAT.format(schedule.getStatusDate()));
-
+            Luntbuild.DATE_DISPLAY_FORMAT.format(schedule.getStatusDate()));
         context.put("schedule_publishdir", schedule.getPublishDir());
-
-        // Log info
-        context.put("luntbuild_systemlog_url", Luntbuild.getSystemLogUrl());
-
-        context.put("schedule_type",
-                com.luntsys.luntbuild.facades.Constants.getBuildTypeText(schedule.getBuildType()));
-        context.put("schedule_labelstrategy",
-                com.luntsys.luntbuild.facades.Constants.getLabelStrategyText(schedule.getLabelStrategy()));
-        context.put("luntbuild_servlet_url", Luntbuild.getServletUrl());
+        context.put("schedule_type", Constants.getBuildTypeText(schedule.getBuildType()));
+        context.put("schedule_labelstrategy", Constants.getLabelStrategyText(schedule.getLabelStrategy()));
 
         return context;
     }

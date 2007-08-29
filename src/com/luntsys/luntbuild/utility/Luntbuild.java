@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -84,9 +85,11 @@ import org.apache.tools.ant.taskdefs.Mkdir;
 import org.apache.tools.ant.taskdefs.Move;
 import org.apache.tools.ant.taskdefs.Touch;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.xerces.parsers.DOMParser;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.xml.sax.SAXException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -100,12 +103,13 @@ import com.luntsys.luntbuild.dao.Dao;
 import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.ILuntbuild;
-import com.luntsys.luntbuild.listeners.ListenerSample;
+import com.luntsys.luntbuild.listeners.Listener;
 import com.luntsys.luntbuild.notifiers.BlogNotifier;
 import com.luntsys.luntbuild.notifiers.EmailNotifier;
 import com.luntsys.luntbuild.notifiers.JabberNotifier;
 import com.luntsys.luntbuild.notifiers.MsnNotifier;
 import com.luntsys.luntbuild.notifiers.SametimeNotifier;
+import com.luntsys.luntbuild.reports.Report;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.services.IScheduler;
 import com.luntsys.luntbuild.vcs.AccurevAdaptor;
@@ -175,6 +179,9 @@ public class Luntbuild {
     /** Log4j system log - Text */
     public static final String log4jFileNameTxt = "luntbuild_log.txt";
 
+    /** Extensions configuration file */
+    public static final String extensionsConfigFile = "luntbuild_config.xml";
+
     /** Application wide context for use in Spring framework */
     public static XmlWebApplicationContext appContext;
 
@@ -190,11 +197,17 @@ public class Luntbuild {
     /** List of notifier classes found in the system */
     public static List notifiers;
 
-    /** List of listener classes found in the system */
-    public static List listeners;
-
     /** List of builder classes found in the system */
     public static List builders;
+
+    /** List of listener classes found in the system */
+    public static Hashtable listeners;
+
+    /** List of report classes found in the system */
+    public static Hashtable reports;
+
+    /** List of extension classes found in the system */
+    public static Hashtable extensions;
 
     /** Page referesh interval, in seconds */
     public static int pageRefreshInterval;
@@ -918,27 +931,6 @@ public class Luntbuild {
     }
 
     /**
-     * Converts a list of listener classes to a list of listener instances.
-     *
-     * @param listenerClasses the list of listener classes, should not be <code>null</code>
-     * @return the list of listener instances
-     * @throws RuntimeException if unable to create an instance of a listener
-     */
-    public static List getListenerInstances(List listenerClasses) {
-        List listenerInstances = new ArrayList();
-        Iterator it = listenerClasses.iterator();
-        while (it.hasNext()) {
-            Class listenerClass = (Class) it.next();
-            try {
-                listenerInstances.add(listenerClass.newInstance());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return listenerInstances;
-    }
-
-    /**
      * Gets the URL to access the Luntbuild system log.
      * 
      * @return the Luntbuild system log URL
@@ -1263,8 +1255,8 @@ public class Luntbuild {
 
                 loadVcsAdaptors(context);
                 loadNotifiers(context);
-                loadListeners(context);
                 loadBuilders(context);
+                loadExtensions();
 
                 SecurityHelper.runAsSiteAdmin();
 
@@ -1414,9 +1406,175 @@ public class Luntbuild {
 
     }
 
-    private static void loadListeners(ServletContext context) {
-        listeners = new ArrayList();
-        listeners.add(ListenerSample.class);
+    /**
+     * Loads extensions, listeners and reports.  Reads from the XML configuration file "luntbuild_extensions.xml".
+     * 
+     * @see #extensions
+     * @see #listeners
+     * @see #reports
+     */
+    private static void loadExtensions() {
+        File config = new File(installDir + File.separatorChar + extensionsConfigFile);
+        DOMParser parser = null;
+        extensions = new Hashtable();
+        listeners = new Hashtable();
+        reports = new Hashtable();
+
+        // Parse config file
+        try {
+            parser = new DOMParser();
+            parser.parse(config.getAbsolutePath());
+        } catch (IOException e) {
+            logger.error("Loading of \"" + extensionsConfigFile + "\" failed", e);
+        } catch (SAXException  e) {
+            logger.error("\"" + extensionsConfigFile + "\" is not properly formatted", e);
+        } catch (Exception e) {
+            logger.error("Exception occured while reading \"" + extensionsConfigFile + "\"", e);
+        }
+
+        // Load extensions
+        try {
+            NodeList extension_elements = parser.getDocument().getElementsByTagName("extensions").item(0).getChildNodes();
+            for (int ex = 0; ex < extension_elements.getLength(); ex++) {
+                Node extension_element = extension_elements.item(ex);
+
+                if (extension_element.getNodeName().equals("extension")) {
+                    String extensionName = extension_element.getAttributes().getNamedItem("name").getNodeValue();
+                    String className = extension_element.getAttributes().getNamedItem("class").getNodeValue();
+
+                    if (extensionName == null || extensionName.trim().equals("")) {
+                        logger.error("Extension name is missing or empty in \"" + extensionsConfigFile + "\"");
+                        continue;
+                    }
+                    if (className == null || className.trim().equals("")) {
+                        logger.error("Extension class name is missing or empty in \"" + extensionsConfigFile + "\"");
+                        continue;
+                    }
+
+                    Object extension = null;
+
+                    try {
+                        Class extensionClass = Class.forName(className);
+                        extension = extensionClass.newInstance();
+                    } catch (ClassNotFoundException e) {
+                        logger.error("Extension class " + className + " for luntbuild extension \"" + extensionName + "\" not found", e);
+                        continue;
+                    } catch (InstantiationException e) {
+                        logger.error("Extension occured while instantiating extension class " + className  + " for luntbuild extension \"" + extensionName + "\"", e);
+                        continue;
+                    } catch (IllegalAccessException e) {
+                        logger.error("Extension class for " + className + " luntbuild extension \"" + extensionName + "\" doesn't have a public constructor", e);
+                        continue;
+                    }
+
+                    extensions.put(extensionName, extension);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Exception occured while loading Luntbuild extensions", e);
+        }
+
+        // Load listeners
+        try {
+            NodeList listener_elements = parser.getDocument().getElementsByTagName("listeners").item(0).getChildNodes();
+            for (int l = 0; l < listener_elements.getLength(); l++) {
+                Node listener_element = listener_elements.item(l);
+
+                if (listener_element.getNodeName().equals("listener")) {
+                    String listenerName = listener_element.getAttributes().getNamedItem("name").getNodeValue();
+                    String className = listener_element.getAttributes().getNamedItem("class").getNodeValue();
+
+                    if (listenerName == null || listenerName.trim().equals("")) {
+                        logger.error("Listener name is missing or empty in \"" + extensionsConfigFile + "\"");
+                        continue;
+                    }
+                    if (className == null || className.trim().equals("")) {
+                        logger.error("Listener class name is missing or empty in \"" + extensionsConfigFile + "\"");
+                        continue;
+                    }
+
+                    Object listener = null;
+
+                    try {
+                        Class extensionClass = Class.forName(className);
+                        listener = extensionClass.newInstance();
+                    } catch (ClassNotFoundException e) {
+                        logger.error("Listener class " + className + " for luntbuild listener \"" + listenerName + "\" not found", e);
+                        continue;
+                    } catch (InstantiationException e) {
+                        logger.error("Listener occured while instantiating listener class " + className  + " for luntbuild listener \"" + listenerName + "\"", e);
+                        continue;
+                    } catch (IllegalAccessException e) {
+                        logger.error("Listener class for " + className + " luntbuild listener \"" + listenerName + "\" doesn't have a public constructor", e);
+                        continue;
+                    }
+
+                    // Make sure that the class implements the correct interface
+                    try {
+                        Listener test = (Listener) listener;
+                        test.equals(test);
+                    } catch (Exception e) {
+                        logger.error("Listener class " + className + " does not implement " + Listener.class.toString());
+                        continue;
+                    }
+
+                    listeners.put(listenerName, listener);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Exception occured while loading Luntbuild listeners", e);
+        }
+
+        // Load reports
+        try {
+            NodeList report_elements = parser.getDocument().getElementsByTagName("reports").item(0).getChildNodes();
+            for (int r = 0; r < report_elements.getLength(); r++) {
+                Node report_element = report_elements.item(r);
+
+                if (report_element.getNodeName().equals("report")) {
+                    String reportName = report_element.getAttributes().getNamedItem("name").getNodeValue();
+                    String className = report_element.getAttributes().getNamedItem("class").getNodeValue();
+
+                    if (reportName == null || reportName.trim().equals("")) {
+                        logger.error("Report name is missing or empty in \"" + extensionsConfigFile + "\"");
+                        continue;
+                    }
+                    if (className == null || className.trim().equals("")) {
+                        logger.error("Report class name is missing or empty in \"" + extensionsConfigFile + "\"");
+                        continue;
+                    }
+
+                    Object report = null;
+
+                    try {
+                        Class extensionClass = Class.forName(className);
+                        report = extensionClass.newInstance();
+                    } catch (ClassNotFoundException e) {
+                        logger.error("Report class " + className + " for luntbuild report \"" + reportName + "\" not found", e);
+                        continue;
+                    } catch (InstantiationException e) {
+                        logger.error("Report occured while instantiating report class " + className  + " for luntbuild report \"" + reportName + "\"", e);
+                        continue;
+                    } catch (IllegalAccessException e) {
+                        logger.error("Report class for " + className + " luntbuild report \"" + reportName + "\" doesn't have a public constructor", e);
+                        continue;
+                    }
+
+                    // Make sure that the class implements the correct interface
+                    try {
+                        Report test = (Report) report;
+                        test.equals(test);
+                    } catch (Exception e) {
+                        logger.error("Report class " + className + " does not implement " + Report.class.toString());
+                        continue;
+                    }
+
+                    reports.put(reportName, report);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Exception occured while loading Luntbuild reports", e);
+        }
     }
 
     /**

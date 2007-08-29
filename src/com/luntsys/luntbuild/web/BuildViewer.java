@@ -28,7 +28,6 @@
 package com.luntsys.luntbuild.web;
 
 import com.luntsys.luntbuild.BuildGenerator;
-import com.luntsys.luntbuild.builders.Builder;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
@@ -55,9 +54,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * This component renders build viewer page
@@ -124,6 +125,12 @@ public abstract class BuildViewer extends SecuritySupportComponent implements Pa
                 Luntbuild.sendFile(cycle, revisionLogFile);
         } else
             Luntbuild.sendFile(cycle, revisionLogFile);
+    }
+
+    public Collection getReportNames() {
+        Collection report_names = new TreeSet();
+        report_names.addAll(Luntbuild.reports.keySet());
+        return report_names;
     }
 
     public abstract void setBuildId(long buildId);
@@ -407,15 +414,6 @@ public abstract class BuildViewer extends SecuritySupportComponent implements Pa
             return "artifactsTail2";
         else
             return "artifactsTail1";
-    }
-
-    public String getJunitHtmlReport() {
-        String junitHtmlReportsDir = getBuild().getJunitHtmlReportDir();
-        if (new File(junitHtmlReportsDir + File.separator + "index.html").exists())
-            return Builder.JUNIT_HTML_REPORT_DIR + "/index.html";
-        if (new File(junitHtmlReportsDir + File.separator + "junit-noframes.html").exists())
-            return Builder.JUNIT_HTML_REPORT_DIR + "/junit-noframes.html";
-        return null;
     }
 
     public abstract int getVcsIndex();

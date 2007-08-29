@@ -1,5 +1,13 @@
 ==============================================
-luntbuild 1.5 Release Notes
+luntbuild 1.5.1 Release Notes
+==============================================
+
+!NOTE! - ${build.junitHtmlReportDir} has been depricated, please use ${build.getReportDir("JUnit")} instead
+
+- Feature: (Change 5972) Implemented build listener and report extension system, please see <install_dir>/luntbuild_config.xml for details
+
+==============================================
+luntbuild 1.5.1 Release Notes
 ==============================================
 
 - Fix: Rolled back Hibernate 3.2.5 to Hibernate 3.1. 3.2.5 causes problems with persisting Quartz triggers.

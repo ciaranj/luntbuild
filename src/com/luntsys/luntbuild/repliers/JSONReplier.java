@@ -894,7 +894,6 @@ public class JSONReplier extends Replier {
         JSONText += "\"postbuildStrategy\":\"" + escape(Constants.getPostbuildStrategyText(build.getPostbuildStrategy())) + "\",";
         JSONText += "\"publishDir\":\"" + escape(build.getPublishDir()) + "\",";
         JSONText += "\"artifactsDir\":\"" + escape(build.getArtifactsDir()) + "\",";
-        JSONText += "\"junitHtmlReportDir\":\"" + escape(build.getJunitHtmlReportDir()) + "\",";
 
         // Lists
         JSONText += "\"vcss\":[";

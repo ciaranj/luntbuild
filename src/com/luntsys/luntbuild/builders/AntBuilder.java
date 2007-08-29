@@ -75,7 +75,7 @@ public class AntBuilder extends Builder {
             "buildVersion=\"${build.version}\"\n" +
             "artifactsDir=\"${build.artifactsDir}\"\n" +
             "buildDate=\"${build.startDate}\"\n" +
-            "junitHtmlReportDir=\"${build.junitHtmlReportDir}\"";
+            "junitHtmlReportDir=\"${build.getReportUrl(\"JUnit\")}\"";
 
 	/**
 	 * Constructor, creates a new ant builder with default settings.

@@ -414,9 +414,9 @@ Fill the following information:
         <member><emphasis>build_buildlog_url</emphasis> - build log url (Html)</member>
         <member><emphasis>build_buildlog_text</emphasis> - build log text (contents)</member>
         <member><emphasis>luntbuild_systemlog_url</emphasis> - system log url (Html)</member>
-        <member><emphasis>build_junit_reportdir</emphasis> - JUnit report directory</member>
         <member><emphasis>build_type</emphasis> - build type (clean, increment)</member>
         <member><emphasis>build_labelstrategy</emphasis> - build label strategy</member>
+        <member><emphasis>build_&lt;report&gt;_reporturl</emphasis> - For every report, points to the report if it exists</member>
         <member><emphasis>build_randomquote</emphasis> - random quote from quotes.txt file</member>
     </simplelist>
     </para>
@@ -2507,7 +2507,7 @@ in OGNL expression evaluation.
     Build publish directory.
     </para></listitem>
     </varlistentry>
-    <varlistentry><term>build.junitHtmlReportDir</term>
+    <varlistentry><term>build.getReportUrl("JUnit")</term>
     <listitem><para>
     JUnit tests Html reports directory
     </para></listitem>
