@@ -377,7 +377,9 @@ public class SvnExeAdaptor extends Vcs {
 
             public String getDescription() {
                 return "The URL to access the repository in your chosen web interface. " +
-                        "NOTE: If using \"JavaForge\" enter the ID of your poject only.";
+                        "NOTE: If using \"JavaForge\" enter the ID of your poject only. " +
+                        "NOTE: If using \"sventon\" enter the URL as \"http://myserver/svn/action.svn?name=\" " +
+                        "followed by the name given to the repository.";
             }
 
             public boolean isRequired() {
@@ -1047,6 +1049,8 @@ public class SvnExeAdaptor extends Vcs {
             return "&nbsp;";
         if (getWebInterface().equals("JavaForge"))
             return "<a href=\"http://www.javaforge.com/proj/sources/sccBrowse.do?proj_id=" + getWebUrl() + "\">browse</a>";
+        else if (getWebInterface().equals("sventon"))
+            return "<a href=\"" + getWebUrl().replaceFirst("action\\.svn","repobrowser.svn") + "\">browse</a>";
         else
             return "<a href=\"" + getWebUrl() + "\">browse</a>";
     }
@@ -1069,6 +1073,8 @@ public class SvnExeAdaptor extends Vcs {
             return revision;
         else if (getWebInterface().equals("perl_svn"))
             return "<a href=\"" + getWebUrl() + "&a=lr&r=" + revision + "\">" + revision + "</a>";
+        else if (getWebInterface().equals("sventon"))
+            return "<a href=\"" + getWebUrl().replaceFirst("action\\.svn","revinfo.svn") + "&revision=" + revision + "\">" + revision + "</a>";
         else if (getWebInterface().equals("SVN::Web"))
             return "<a href=\"" + getWebUrl() + "/revision?rev=" + revision + "\">" + revision + "</a>";
         else if (getWebInterface().equals("Trac"))
@@ -1101,6 +1107,8 @@ public class SvnExeAdaptor extends Vcs {
             return "<a href=\"http://www.javaforge.com/sccShowFileRevision/?proj_id=" + getWebUrl() + "&date=&tag=" + revision + "&filename=" + clean_path + "\">" + path + "</a>";
         else if (getWebInterface().equals("perl_svn"))
             return "<a href=\"" + getWebUrl() + "/" + clean_path + "&a=d&r=" + revision + "\">" + path + "</a>";
+        else if (getWebInterface().equals("sventon"))
+            return "<a href=\"" + getWebUrl().replaceFirst("action\\.svn","showfile.svn") + "&path=" + path + "&revision=" + revision + "\">" + path + "</a>";
         else if (getWebInterface().equals("SVN::Web"))
             return "<a href=\"" + getWebUrl() + "/view/" + clean_path + "?rev=" + revision + "\">" + path + "</a>";
         else if (getWebInterface().equals("Trac"))
@@ -1133,6 +1141,8 @@ public class SvnExeAdaptor extends Vcs {
             return "";
         else if (getWebInterface().equals("perl_svn"))
             return "(<a href=\"" + getWebUrl() + "/" + clean_path + "&a=c&r=" + revision + "\">diff</a>)";
+        else if (getWebInterface().equals("sventon"))
+            return "(<a href=\"" + getWebUrl().replaceFirst("action\\.svn","diffprev.svn") + "&path=" + path + "&commitrev=" + revision + "\">diff</a>)";
         else if (getWebInterface().equals("SVN::Web"))
             return "(<a href=\"" + getWebUrl() + "/revision?rev=" + revision + "#diff__" + clean_path.replaceAll("/","_") + "\">diff</a>)";
         else if (getWebInterface().equals("Trac"))
@@ -1166,6 +1176,8 @@ public class SvnExeAdaptor extends Vcs {
             return "(<a href=\"http://www.javaforge.com/sccFileDiff?proj_id=" + getWebUrl() + "date=&revision1=" + revision + "&revision2=" + prev_rev + "&filename=" + clean_path + "\">diff</a>)";
         else if (getWebInterface().equals("perl_svn"))
             return "(<a href=\"" + getWebUrl() + "/" + clean_path + "&a=c&r=" + revision + "\">diff</a>)";
+        else if (getWebInterface().equals("sventon"))
+            return "(<a href=\"" + getWebUrl().replaceFirst("action\\.svn","diff.svn") + "&entry=" + path + ";;" + revision + "&entry=" + path + ";;" + prev_rev + "\">diff</a>)";
         else if (getWebInterface().equals("SVN::Web"))
             return "(<a href=\"" + getWebUrl() + "/revision?rev=" + revision + "#diff__" + clean_path.replaceAll("/","_") + "\">diff</a>)";
         else if (getWebInterface().equals("Trac"))
@@ -1187,8 +1199,8 @@ public class SvnExeAdaptor extends Vcs {
      * Selection model used for user interface of <code>SvnAdaptor</code>.
      */
     static class SvnWebInterfaceSelectionModel implements IPropertySelectionModel {
-        String[] values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
-        String[] display_values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
+        String[] values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "sventon", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
+        String[] display_values = {"", "Chora", "Insurrection", "JavaForge", "perl_svn", "sventon", "SVN::Web", "Trac", "ViewVC", "WebSVN"};
 
         /**
          * Gets the number of options.

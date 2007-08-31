@@ -1,10 +1,12 @@
 ==============================================
-luntbuild 1.5.1 Release Notes
+luntbuild 1.5.2 Release Notes
 ==============================================
 
 !NOTE! - ${build.junitHtmlReportDir} has been depricated, please use ${build.getReportDir("JUnit")} instead
 
 - Feature: (Change 5972) Implemented build listener and report extension system, please see <install_dir>/luntbuild_config.xml for details
+- Feature: (Change 6075) Added support for sventon, SVN web interface
+- Fix: Diff links for SVN revision logs will now only show where appropriate
 
 ==============================================
 luntbuild 1.5.1 Release Notes
