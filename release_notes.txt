@@ -8,6 +8,7 @@ luntbuild 1.5.2 Release Notes
 - Feature: (Change 6075) Added support for sventon, SVN web interface
 - Fix: (Bug 5995) Temporary fix for LDAP, do not authenticate if password is blank
 - Fix: Diff links for SVN revision logs will now only show where appropriate
+- Fix: (Bug 6066)Fixed support for WebSVN and multiple repositories, SVN web interface
 
 ==============================================
 luntbuild 1.5.1 Release Notes

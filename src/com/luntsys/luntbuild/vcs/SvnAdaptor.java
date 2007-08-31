@@ -334,6 +334,8 @@ public class SvnAdaptor extends Vcs {
                 return "The URL to access the repository in your chosen web interface. " +
                         "NOTE: If using \"JavaForge\" enter the ID of your poject only. " +
                         "NOTE: If using \"sventon\" enter the URL as \"http://myserver/svn/action.svn?name=\" " +
+                        "followed by the name given to the repository. " +
+                        "NOTE: If using \"WebSVN\" enter the URL as \"http://myserver/websvn/action.php?repname=\" " +
                         "followed by the name given to the repository.";
             }
 
@@ -927,6 +929,8 @@ public class SvnAdaptor extends Vcs {
             return "<a href=\"http://www.javaforge.com/proj/sources/sccBrowse.do?proj_id=" + getWebUrl() + "\">browse</a>";
         else if (getWebInterface().equals("sventon"))
             return "<a href=\"" + getWebUrl().replaceFirst("action\\.svn","repobrowser.svn") + "\">browse</a>";
+        else if (getWebInterface().equals("WebSVN"))
+            return "<a href=\"" + getWebUrl().replaceFirst("action\\.php","listing.php") + "\">browse</a>";
         else
             return "<a href=\"" + getWebUrl() + "\">browse</a>";
     }
@@ -958,7 +962,7 @@ public class SvnAdaptor extends Vcs {
         else if (getWebInterface().equals("ViewVC"))
             return "<a href=\"" + getWebUrl() + "?view=rev&revision=" + revision + "\">" + revision + "</a>";
         else if (getWebInterface().equals("WebSVN"))
-            return "<a href=\"" + getWebUrl() + "/listing.php?rev=" + revision + "&sc=1\">" + revision + "</a>";
+            return "<a href=\"" + getWebUrl().replaceFirst("action\\.php","listing.php") + "&rev=" + revision + "&sc=1\">" + revision + "</a>";
         else
             return revision;
     }
@@ -992,7 +996,7 @@ public class SvnAdaptor extends Vcs {
         else if (getWebInterface().equals("ViewVC"))
             return "<a href=\"" + getWebUrl() + "/" + clean_path + "?pathrev=" + revision + "&view=markup\">" + path + "</a>";
         else if (getWebInterface().equals("WebSVN"))
-            return "<a href=\"" + getWebUrl() + "/filedetails.php?path=" + clean_path + "&rev=" + revision + "\">" + path + "</a>";
+            return "<a href=\"" + getWebUrl().replaceFirst("action\\.php","filedetails.php") + "&path=" + clean_path + "&rev=" + revision + "\">" + path + "</a>";
         else
             return path;
     }
@@ -1026,7 +1030,7 @@ public class SvnAdaptor extends Vcs {
         else if (getWebInterface().equals("ViewVC"))
             return "";
         else if (getWebInterface().equals("WebSVN"))
-            return "(<a href=\"" + getWebUrl() + "/diff.php?path=" + clean_path + "&rev=" + revision + "\">diff</a>)";
+            return "(<a href=\"" + getWebUrl().replaceFirst("action\\.php","diff.php") + "&path=" + clean_path + "&rev=" + revision + "\">diff</a>)";
         else
             return "";
     }
@@ -1061,7 +1065,7 @@ public class SvnAdaptor extends Vcs {
         else if (getWebInterface().equals("ViewVC"))
             return "(<a href=\"" + getWebUrl() + "/" + clean_path + "?r1=" + prev_rev + "&r2=" + revision + "&view=markup\">diff</a>)";
         else if (getWebInterface().equals("WebSVN"))
-            return "(<a href=\"" + getWebUrl() + "/comp.php?compare[]=" + clean_path + "@" + prev_rev + "&compare[]=" + clean_path + "@" + revision + "\">diff</a>)";
+            return "(<a href=\"" + getWebUrl().replaceFirst("action\\.php","comp.php") + "&compare[]=" + clean_path + "@" + prev_rev + "&compare[]=" + clean_path + "@" + revision + "\">diff</a>)";
         else
             return "";
     }
