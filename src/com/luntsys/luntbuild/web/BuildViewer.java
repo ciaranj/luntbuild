@@ -721,16 +721,15 @@ public abstract class BuildViewer extends SecuritySupportComponent implements Pa
                             for (int p = 0; p < paths.getLength(); p++) {
                                 if (paths.item(p).getNodeName().equals("path")) {
                                     String action = paths.item(p).getAttributes().item(0).getNodeValue();
-                                    String path = Luntbuild.getTextContent(paths.item(p));
+                                    String raw_path = Luntbuild.getTextContent(paths.item(p));
+                                    String path = "";
                                     String path_comment = "";
                                     // Try to create diff link
                                     if (classname.equals("com.luntsys.luntbuild.vcs.SvnAdaptor"))
-                                        path = ((SvnAdaptor) vcs).createLinkForFile(path, revision) + " " +
-                                            ((SvnAdaptor) vcs).createLinkForDiff(path, revision);
+                                        path = ((SvnAdaptor) vcs).createLinkForFile(raw_path, revision);
                                     else if  (classname.equals("com.luntsys.luntbuild.vcs.SvnExeAdaptor"))
-                                        path = ((SvnExeAdaptor) vcs).createLinkForFile(path, revision) + " " +
-                                            ((SvnExeAdaptor) vcs).createLinkForDiff(path, revision);
-                                    if (action.equals("A")) {
+                                        path = ((SvnExeAdaptor) vcs).createLinkForFile(raw_path, revision);
+                                   if (action.equals("A")) {
                                         if (paths.item(p).getAttributes().item(2) == null) {
                                             action = "<img src=\"images/svn_file_add.gif\" width=\"16\" height=\"16\" title=\"add\"> ";
                                         } else {
@@ -751,6 +750,11 @@ public abstract class BuildViewer extends SecuritySupportComponent implements Pa
                                         action = "<img src=\"images/svn_file_delete.gif\" width=\"16\" height=\"16\" title=\"delete\"> ";
                                     } else if (action.equals("M")) {
                                         action = "<img src=\"images/svn_file_modify.gif\" width=\"16\" height=\"16\" title=\"modify\"> ";
+                                        // Try to create diff link
+                                        if (classname.equals("com.luntsys.luntbuild.vcs.SvnAdaptor"))
+                                            path = path + " " + ((SvnAdaptor) vcs).createLinkForDiff(raw_path, revision);
+                                        else if  (classname.equals("com.luntsys.luntbuild.vcs.SvnExeAdaptor"))
+                                            path = path + " " + ((SvnExeAdaptor) vcs).createLinkForDiff(raw_path, revision);
                                     } else if (action.equals("R")) {
                                         if (paths.item(p).getAttributes().item(2) == null) {
                                             action = "<img src=\"images/svn_file_move.gif\" width=\"16\" height=\"16\" title=\"replace\"> ";
