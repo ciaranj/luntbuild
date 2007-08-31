@@ -6,6 +6,7 @@ luntbuild 1.5.2 Release Notes
 
 - Feature: (Change 5972) Implemented build listener and report extension system, please see <install_dir>/luntbuild_config.xml for details
 - Feature: (Change 6075) Added support for sventon, SVN web interface
+- Fix: (Bug 5995) Temporary fix for LDAP, do not authenticate if password is blank
 - Fix: Diff links for SVN revision logs will now only show where appropriate
 
 ==============================================
