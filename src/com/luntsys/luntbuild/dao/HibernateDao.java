@@ -1443,7 +1443,11 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                 it = schedule.getBuilds().iterator();
                 while (it.hasNext()) {
                     Build build = (Build) it.next();
-                    project12.getBuilds().add(build.getFacade());
+                    try {
+                    	project12.getBuilds().add(build.getFacade());
+                    } catch (HibernateException ex) {
+                        logger.error("Unable to get build facade: " + build.getId() + " build schedule might have been deleted", ex);
+                    }
                 }
             }
             Query query = session.createQuery("from User user");
