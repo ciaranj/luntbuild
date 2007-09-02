@@ -129,7 +129,7 @@ public class QuartzService implements IScheduler {
 					if (trigger instanceof SimpleTrigger) {
 						// Already should fire, fire it now (almost)
 						trigger.setStartTime(new Date(System.currentTimeMillis() + 30 * 1000));
-					} else {
+					} else if (nextFire != null) {
 						// Should fire 
 						trigger.setStartTime(nextFire);
 					}
