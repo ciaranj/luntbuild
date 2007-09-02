@@ -328,8 +328,11 @@
 		</javadoc>
 	</target>
 
-    <target name="stage" depends="webstage, api, stage_docs"
-        description="Stages Luntbuild for packaging">
+    <target name="stage" depends="stage-copy, webstage, api, stage_docs"/>
+	
+    <target name="stage-nodoc" depends="stage-copy, webstage, api"/>
+	
+    <target name="stage-copy" description="Stages Luntbuild for packaging">
         <!--
                 Writes some important informations about this build into a property file which
                 will be used by the application to show build version, date, etc.
