@@ -1415,6 +1415,8 @@ public class Luntbuild {
      */
     private static void loadExtensions() {
         File config = new File(installDir + File.separatorChar + extensionsConfigFile);
+        if (!config.exists()) return;
+        
         DOMParser parser = null;
         extensions = new Hashtable();
         listeners = new Hashtable();
