@@ -279,24 +279,25 @@ public class WebdavServlet extends HttpServlet {
 		String method = req.getMethod();
 
 		if (fdebug == 1) {
-			log.debug("WebdavServlet\n request: method = " + method);
+			log.debug("WebdavServlet REQUEST:  -----------------");
+			log.debug("Method = " + method);
 			log.debug("Time: " + System.currentTimeMillis());
-			log.debug("path: " + getRelativePath(req));
+			log.debug("Path: " + getRelativePath(req));
 			Enumeration e = req.getHeaderNames();
 			while (e.hasMoreElements()) {
 				String s = (String) e.nextElement();
-				log.debug("header: " + s + " " + req.getHeader(s));
+				log.debug("Header: " + s + " " + req.getHeader(s));
 			}
 			e = req.getAttributeNames();
 			while (e.hasMoreElements()) {
 				String s = (String) e.nextElement();
-				log.debug("attribute: " + s + " "
+				log.debug("Attribute: " + s + " "
 						+ req.getAttribute(s));
 			}
 			e = req.getParameterNames();
 			while (e.hasMoreElements()) {
 				String s = (String) e.nextElement();
-				log.debug("parameter: " + s + " "
+				log.debug("Parameter: " + s + " "
 						+ req.getParameter(s));
 			}
 		}
@@ -332,8 +333,9 @@ public class WebdavServlet extends HttpServlet {
 				}
 
 				fStore.commit();
+				
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("WebdavServer internal error: ", e);
 				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 				fStore.rollback();
 				throw new ServletException(e);
@@ -342,7 +344,7 @@ public class WebdavServlet extends HttpServlet {
 		} catch (UnauthenticatedException e) {
 			resp.sendError(WebdavStatus.SC_FORBIDDEN);
 		} catch (WebdavException e) {
-			e.printStackTrace();
+			log.error("WebdavServer internal error: ", e);
 			throw new ServletException(e);
 		}
 	}
@@ -772,11 +774,24 @@ public class WebdavServlet extends HttpServlet {
 					if (includeBody && fStore.isFolder(path)) {
 						renderHtml(path, resp.getOutputStream(), req.getContextPath());
 					} else {
-						if (!fStore.objectExists(path)) {
-							resp.sendError(HttpServletResponse.SC_NOT_FOUND,
-									req.getRequestURI());
-						}
+						if (!fStore.objectExists(path) && includeBody) {
+							resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+						} else {
+				            // Check if we're included so we can return the appropriate 
+				            // missing resource name in the error
+				            String requestUri = (String) req.getAttribute("javax.servlet.include.request_uri");
+				            if (requestUri == null) {
+				                requestUri = req.getRequestURI();
+				            } else {
+				                // We're included, and the response.sendError() below is going
+				                // to be ignored by the resource that is including us.
+				                // Therefore, the only way we can let the including resource
+				                // know is by including warning message in response
+				            	resp.getWriter().write("The requested resource (" + requestUri + ") is not available");
+				            }
 
+				            resp.sendError(HttpServletResponse.SC_NOT_FOUND, requestUri);
+						}
 					}
 				}
 			} catch (AccessDeniedException e) {
