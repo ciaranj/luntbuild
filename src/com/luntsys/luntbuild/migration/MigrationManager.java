@@ -770,7 +770,12 @@ public class MigrationManager {
 			schedule.setName(scheduleFacade.getName());
 			Project project = new Project();
 			project.setId(scheduleFacade.getProjectId());
-			schedule.setProject((Project) data.getProjects().get(data.getProjects().indexOf(project)));
+			int projectId = data.getProjects().indexOf(project);
+			if (projectId == -1) {
+				logger.error("Unable to locate project with id: " + scheduleFacade.getProjectId());
+				continue;
+			}
+			schedule.setProject((Project) data.getProjects().get(projectId));
 			schedule.setFacade(scheduleFacade);
 			data.getSchedules().add(schedule);
 		}
@@ -785,8 +790,12 @@ public class MigrationManager {
 				Schedule dependentSchedule = new Schedule();
 				dependentSchedule.setId(dependentScheduleId);
 				int index = data.getSchedules().indexOf(dependentSchedule);
-				if (index != -1)
+				if (index != -1) {
 					schedule.getDependentSchedules().add(data.getSchedules().get(index));
+				} else {
+					logger.error("Unable to get dependent schedule with id: " + dependentScheduleId);
+					continue;
+				}
 			}
 		}
 
@@ -799,7 +808,12 @@ public class MigrationManager {
 			build.setId(buildFacade.getId());
 			Schedule schedule = new Schedule();
 			schedule.setId(buildFacade.getScheduleId());
-			build.setSchedule((Schedule) data.getSchedules().get(data.getSchedules().indexOf(schedule)));
+			int index = data.getSchedules().indexOf(schedule);
+			if (index == -1) {
+				logger.error("Unable to get schedule with id: " + buildFacade.getScheduleId());
+				continue;
+			}
+			build.setSchedule((Schedule) data.getSchedules().get(index));
 			build.setFacade(buildFacade);
 			data.getBuilds().add(build);
 		}
@@ -839,8 +853,18 @@ public class MigrationManager {
 			project.setId(vcsLoginFacade.getProjectId());
 			User user = new User();
 			user.setId(vcsLoginFacade.getUserId());
-			vcsLogin.setProject((Project) data.getProjects().get(data.getProjects().indexOf(project)));
-			vcsLogin.setUser((User) data.getUsers().get(data.getUsers().indexOf(user)));
+			int index = data.getProjects().indexOf(project);
+			if (index == -1) {
+				logger.error("Unable to find project with id: " + vcsLoginFacade.getProjectId());
+				continue;
+			}
+			vcsLogin.setProject((Project) data.getProjects().get(index));
+			index = data.getUsers().indexOf(user);
+			if (index == -1) {
+				logger.error("Unable to find user with id: " + vcsLoginFacade.getUserId());
+				continue;
+			}
+			vcsLogin.setUser((User) data.getUsers().get(index));
 			data.getVcsLoginMapping().add(vcsLogin);
 		}
 
@@ -852,14 +876,31 @@ public class MigrationManager {
 			RolesMapping rolesMapping = new RolesMapping();
 			Project project = new Project();
 			project.setId(rolesMappingFacade.getProjectId());
-			project = (Project) data.getProjects().get(data.getProjects().indexOf(project));
+			int projectId = data.getProjects().indexOf(project);
+			if (projectId == -1) {
+				logger.error("Unable to locate project with id: " + rolesMappingFacade.getProjectId());
+				continue;
+			}
+			project = (Project) data.getProjects().get(projectId);
 			User user = new User();
 			user.setId(rolesMappingFacade.getUserId());
 			Role role = new Role();
 			role.setId(rolesMappingFacade.getRoleId());
 			rolesMapping.setProject(project);
-			rolesMapping.setUser((User) data.getUsers().get(data.getUsers().indexOf(user)));
-			rolesMapping.setRole((Role) data.getRoles().get(data.getRoles().indexOf(role)));
+			int index = data.getUsers().indexOf(user);
+			if (index == -1) {
+				logger.error("Unable to get user with id: " + rolesMappingFacade.getUserId());
+				continue;
+			} else {
+				rolesMapping.setUser((User) data.getUsers().get(index));
+			}
+			index = data.getRoles().indexOf(role);
+			if (index == -1) {
+				logger.error("Unable to get role with id: " + rolesMappingFacade.getRoleId());
+				continue;
+			} else {
+				rolesMapping.setRole((Role) data.getRoles().get(index));
+			}
 			project.getRolesMappings().add(rolesMapping);
 		}
 
@@ -871,10 +912,21 @@ public class MigrationManager {
 			NotifyMapping notifyMapping = new NotifyMapping();
 			Project project = new Project();
 			project.setId(notifyMappingFacade.getProjectId());
-			project = (Project) data.getProjects().get(data.getProjects().indexOf(project));
+			int projectId = data.getProjects().indexOf(project);
+			if (projectId == -1) {
+				logger.error("Unable to get project with id: " + notifyMappingFacade.getProjectId());
+				continue;
+			}
+			project = (Project) data.getProjects().get(projectId);
 			User user = new User();
 			user.setId(notifyMappingFacade.getUserId());
-			user = (User) data.getUsers().get(data.getUsers().indexOf(user));
+			int userId = data.getUsers().indexOf(user);
+			if (userId == -1) {
+				logger.error("Unable to get user with id: " + notifyMappingFacade.getUserId());
+				continue;
+			} else {
+				user = (User) data.getUsers().get(userId);
+			}
 			notifyMapping.setProject(project);
 			notifyMapping.setUser(user);
 			project.getNotifyMappings().add(notifyMapping);
