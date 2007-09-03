@@ -259,7 +259,7 @@
         </jar>
     </target>
 
-	<target name="stage_docs"
+	<target name="stage_docs" depends="stage_javadocs"
         description="Builds primary documentation">
 		<echo level="info">Staging documentation</echo>
 		<copy todir="stage/docs/api">
@@ -309,6 +309,9 @@
 			<fileset dir="docs/zh-cn"/>
 		</copy>
 
+	</target>
+
+	<target name="stage_javadocs" unless="skip-javadoc">
 		<echo level="info">Generating full JavaDoc</echo>
 		<mkdir dir="stage/docs/javadoc"/>
 		<javadoc sourcepath="src" classpathref="classpath" destdir="stage/docs/javadoc"
@@ -327,10 +330,10 @@
 			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
 		</javadoc>
 	</target>
-
-    <target name="stage" depends="stage-copy, webstage, api, stage_docs"/>
 	
-    <target name="stage-nodoc" depends="stage-copy, webstage, api"/>
+    <target name="stage" depends="webstage, api, stage_docs, stage-copy"/>
+	
+    <target name="stage-nodoc" depends="webstage, api, stage-copy"/>
 	
     <target name="stage-copy" description="Stages Luntbuild for packaging">
         <!--
