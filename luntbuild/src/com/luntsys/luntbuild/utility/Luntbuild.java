@@ -1222,7 +1222,7 @@ public class Luntbuild {
                 	is = new FileInputStream(installDir + "/buildInfo.properties");
                 	buildInfos.load(is);
                 } catch (Exception e) {
-					// TODO: handle exception
+					logger.error("Failed to load buildInfo.properties");
 	            } finally {
 	            	if (is != null) try{is.close();} catch (Exception e) {}
 	            }
@@ -1240,8 +1240,28 @@ public class Luntbuild {
                 InputStream jdbcIs = context.getResourceAsStream("/WEB-INF/jdbc.properties");
                 if (jdbcIs != null) {
                     props.load(jdbcIs);
+    	        	try {
+    	        		props.load(jdbcIs);
+    	        	} catch (Exception e) {
+    					logger.error("Failed to load jdbc properties");
+    	            } finally {
+    	            	if (jdbcIs != null) try{jdbcIs.close();} catch (Exception e) {}
+    				}
                 }
                 
+    	        InputStream ldapIs = context.getResourceAsStream("/WEB-INF/ldap.properties");
+    	        if (ldapIs != null) {
+    	        	try {
+    	        		props.load(ldapIs);
+    	        	} catch (Exception e) {
+    					logger.error("Failed to load ldap properties");
+    	            } finally {
+    	            	if (ldapIs != null) try{ldapIs.close();} catch (Exception e) {}
+    				}
+    	        } else {
+    	        	logger.error("Failed to load ldap properties");
+    	        }
+
                 setEmbeddedDbUrls(props);
 
                 PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();

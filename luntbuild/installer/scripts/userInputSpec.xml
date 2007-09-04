@@ -148,51 +148,98 @@
                align="left"
                id="fields.unused.text"
                txt="To disable LDAP, leave LDAP Host and LDAP UserDN empty." />
-        <field type="text" variable="ldapHost">
-            <spec txt="LDAP Host:" id="input.ldapHost" size="30" set=""/>
+        <field type="text" variable="ldap.host">
+            <spec txt="LDAP Host:" id="input.ldap.host" size="30" set=""/>
         </field>
-        <field type="text" variable="ldapPort">
-            <spec txt="LDAP Port:" id="input.ldapPort" size="10" set="389"/>
+        <field type="text" variable="ldap.port">
+            <spec txt="LDAP Port:" id="input.ldap.port" size="10" set="389"/>
         </field>
-        <field type="text" variable="ldapUrl">
-            <spec txt="LDAP Url:" id="input.ldapUrl" size="30" set=""/>
+        <field type="text" variable="ldap.path">
+            <spec txt="LDAP Root:" id="input.ldap.path" size="30" set=""/>
         </field>
-        <field type="text" variable="ldapPrefix">
-            <spec txt="LDAP Prefix:" id="input.ldapPrefix" size="30" set=""/>
+        <field type="text" variable="ldap.basedn">
+            <spec txt="LDAP BaseDn:" id="input.ldap.basedn" size="30" set=""/>
         </field>
-        <field type="text" variable="ldapSuffix">
-            <spec txt="LDAP Suffix:" id="input.ldapSuffix" size="30" set=""/>
+        <field type="text" variable="ldap.manager.cn">
+            <spec txt="LDAP Access DN:" id="input.ldap.manager.cn" size="30" set="changeme"/>
         </field>
-        <field type="text" variable="ldapUserDn">
-            <spec txt="LDAP UserDN:" id="input.ldapUserDn" size="30" set=""/>
+        <field type="text" variable="ldap.manager.pass">
+            <spec txt="LDAP Access Password:" id="input.ldapUserDn" size="30" set="changeme"/>
         </field>
         <field type="space"/>
-        <field type="text" variable="ldapAuthentication">
-            <spec txt="LDAP Authentication:" id="input.ldapAuth" size="30" set="simple"/>
+        <field type="text" variable="ldap.searchBase">
+            <spec txt="LDAP Search Base:" id="input.ldap.searchBase" size="30" set="OU=All Users"/>
         </field>
-        <field type="text" variable="ldapUserId">
-            <spec txt="LDAP User Id Attribute:" id="input.ldapUserId" size="30" set="uid"/>
+        <field type="text" variable="ldap.groupRoleAttr">
+            <spec txt="LDAP Group Role Attribute:" id="input.ldap.groupRoleAttr" size="30" set="OU"/>
         </field>
-		<field type="check" variable="ldapUseLuntbuildOnFail">
-			<spec txt="Try Luntbuild Account if LDAP Fails" id="ldapcheck.1" true="true" false="false" set="true" />
-		</field>
-		<field type="check" variable="ldapCreateLuntbuildUser">
+        <field type="text" variable="ldap.groupMemberAttr">
+            <spec txt="LDAP Group Memeber Attribute:" id="input.ldap.groupMemberAttr" size="30" set="sAMAccountName"/>
+        </field>
+        <field type="text" variable="ldap.accountNameAttr">
+            <spec txt="LDAP Account Name Attribute:" id="input.ldap.accountNameAttr" size="30" set="sAMAccountName"/>
+        </field>
+        <field type="space"/>
+		<field type="check" variable="ldap.CreateLuntbuildUser">
 			<spec txt="Create Luntbuild User" id="ldapcheck.2" true="true" false="false" set="true" />
 		</field>
-		<field type="check" variable="ldapCanCreateProject">
+		<field type="check" variable="ldap.CanCreateProject">
 			<spec txt="LDAP User can create project" id="ldapcheck.3" true="true" false="false" set="true" />
 		</field>
-		<field type="check" variable="ldapCanViewProject">
+		<field type="check" variable="ldap.CanViewProject">
 			<spec txt="LDAP User can view projects" id="ldapcheck.4" true="true" false="false" set="true" />
 		</field>
-		<field type="check" variable="ldapCanBuildProject">
+		<field type="check" variable="ldap.CanBuildProject">
 			<spec txt="LDAP User can build projects" id="ldapcheck.5" true="true" false="false" set="true" />
 		</field>
-        <field type="text" variable="ldapEmailAttrName">
-            <spec txt="LDAP Mail Attribute:" id="input.ldapMail" size="30" set="mail"/>
+        <field type="text" variable="ldap.EmailAttrName">
+            <spec txt="LDAP Mail Attribute:" id="input.ldap.EmailAttrName" size="30" set="mail"/>
+        </field>
+        <field type="text" variable="ldap.fullNameAttr">
+            <spec txt="LDAP Full User Name Attribute:" id="input.ldap.fullNameAttr" size="30" set="CN"/>
         </field>
         <field type="space"/>
         <field type="divider" align="left"/>
         <field type="space"/>
     </panel>
+    <panel order="3">
+        <field type="title" align="left" bold="yes" txt="Configure LDAP User Groups." id="input.title"/>
+        <field type="divider" align="left"/>
+        <field type="space"/>
+        <field type="staticText"
+               align="left"
+               id="fields.unused.text"
+               txt="Specify one or more LDAP User Groups (some can be empty)." />
+        <field type="text" variable="ldap.group0">
+            <spec txt="LDAP Group 0:" id="input.ldap.group0" size="30" set=""/>
+        </field>
+        <field type="text" variable="ldap.group1">
+            <spec txt="LDAP Group 1:" id="input.ldap.group1" size="30" set=""/>
+        </field>
+        <field type="text" variable="ldap.group2">
+            <spec txt="LDAP Group 2:" id="input.ldap.group2" size="30" set=""/>
+        </field>
+        <field type="text" variable="ldap.group3">
+            <spec txt="LDAP Group 3:" id="input.ldap.group3" size="30" set=""/>
+        </field>
+        <field type="text" variable="ldap.group4">
+            <spec txt="LDAP Group 4:" id="input.ldap.group4" size="30" set=""/>
+        </field>
+        <field type="text" variable="ldap.group5">
+            <spec txt="LDAP Group 5:" id="input.ldap.group5" size="30" set=""/>
+        </field>
+        <field type="text" variable="ldap.group6">
+            <spec txt="LDAP Group 6:" id="input.ldap.group6" size="30" set=""/>
+        </field>
+        <field type="text" variable="ldap.group7">
+            <spec txt="LDAP Group 7:" id="input.ldap.group7" size="30" set=""/>
+        </field>
+        <field type="text" variable="ldap.group8">
+            <spec txt="LDAP Group 8:" id="input.ldap.group8" size="30" set=""/>
+        </field>
+        <field type="text" variable="ldap.group9">
+            <spec txt="LDAP Group 9:" id="input.ldap.group9" size="30" set=""/>
+        </field>
+    </panel>
+    
 </userInput>
