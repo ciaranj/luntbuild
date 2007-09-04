@@ -1428,10 +1428,13 @@ public class Luntbuild {
             parser.parse(config.getAbsolutePath());
         } catch (IOException e) {
             logger.error("Loading of \"" + extensionsConfigFile + "\" failed", e);
+            return;
         } catch (SAXException  e) {
             logger.error("\"" + extensionsConfigFile + "\" is not properly formatted", e);
+            return;
         } catch (Exception e) {
             logger.error("Exception occured while reading \"" + extensionsConfigFile + "\"", e);
+            return;
         }
 
         // Load extensions
