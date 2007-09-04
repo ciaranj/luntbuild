@@ -35,7 +35,9 @@ import com.luntsys.luntbuild.web.components.tabcontrol.TabControl;
 import com.luntsys.luntbuild.web.selectionmodels.*;
 import org.apache.tapestry.BaseComponent;
 import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.RedirectException;
 import org.apache.tapestry.engine.IPageLoader;
+import org.apache.tapestry.engine.PageService;
 import org.apache.tapestry.event.PageDetachListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.form.IPropertySelectionModel;
@@ -158,25 +160,37 @@ public abstract class ManualBuildEditor extends BaseComponent implements PageDet
 			}
 		}
 		Luntbuild.getSchedService().scheduleBuild(getSchedule(), trigger);
-		if (getWhereFrom() == BUILD_FROM_SCHEDULESTAB)
+		if (getWhereFrom() == BUILD_FROM_SCHEDULESTAB) {
         	getSchedulesTab().setAction(null);
-		else {
+            PageService s = new PageService();
+            String redirect = s.getLink(cycle, this, new Object[]{"ProjectPage"}).getURL();
+            throw new RedirectException(redirect);
+		} else {
             Home homePage = (Home) cycle.getPage("Home");
             cycle.activate(homePage);
             TabControl tabs = (TabControl) homePage.getComponent("tabs");
             tabs.setSelectedTabId("builds");
+            PageService s = new PageService();
+            String redirect = s.getLink(cycle, this, new Object[]{"Home"}).getURL();
+            throw new RedirectException(redirect);
 		}
 	}
 
 	public void cancel(IRequestCycle cycle){
 		getSchedulesTab().ensureCurrentTab();
-		if (getWhereFrom() == BUILD_FROM_SCHEDULESTAB)
+		if (getWhereFrom() == BUILD_FROM_SCHEDULESTAB) {
         	getSchedulesTab().setAction(null);
-		else {
+            PageService s = new PageService();
+            String redirect = s.getLink(cycle, this, new Object[]{"ProjectPage"}).getURL();
+            throw new RedirectException(redirect);
+        }else {
             Home homePage = (Home) cycle.getPage("Home");
             cycle.activate(homePage);
             TabControl tabs = (TabControl) homePage.getComponent("tabs");
             tabs.setSelectedTabId("builds");
+            PageService s = new PageService();
+            String redirect = s.getLink(cycle, this, new Object[]{"Home"}).getURL();
+            throw new RedirectException(redirect);
 		}
 	}
 
