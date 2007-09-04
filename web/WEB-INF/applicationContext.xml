@@ -119,13 +119,10 @@
 	<!-- If you replace this bean with say JdbcDaoImpl, just ensure your replacement
 		 has the same bean id (authenticationDao) -->
 	<bean id="inMemoryAuthenticationDAO" class="org.acegisecurity.userdetails.memory.InMemoryDaoImpl">
-		<property name="userMap">
-			<value>
-				<!-- this is the build-in site admin user - please change the password for security reasons.
-                     However, name of the user, and its
-				     role should not be changed! -->
-					luntbuild=@luntbuildPassword@,ROLE_SITE_ADMIN,ROLE_AUTHENTICATED
-			</value>
+		<property name="userProperties">
+			<bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+				<property name="location" value="/WEB-INF/users.properties"/>
+			</bean>
 		</property>
 	</bean>
 
@@ -179,22 +176,74 @@
 		</property>
 	</bean>
 
-	<!-- luntbuild internal RDBMS, LDAP based authentication DAO -->
+	<!-- luntbuild internal RDBMS authentication DAO -->
 	<bean id="luntbuildAuthenticationDAO" class="com.luntsys.luntbuild.security.ApplicationInternalDAO">
-        <property name="ldapHost" value="@ldapHost@"/>
-        <property name="ldapPort" value="@ldapPort@"/>
-        <property name="ldapUserDn" value="@ldapUserDn@"/>
-        <property name="ldapAuthentication" value="@ldapAuthentication@"/>
-        <property name="ldapUserId" value="@ldapUserId@"/>
-        <property name="ldapUseLuntbuildOnFail" value="@ldapUseLuntbuildOnFail@"/>
-        <property name="ldapCreateLuntbuildUser" value="@ldapCreateLuntbuildUser@"/>
-        <property name="ldapCanCreateProject" value="@ldapCanCreateProject@"/>
-        <property name="ldapCanViewProject" value="@ldapCanViewProject@"/>
-        <property name="ldapCanBuildProject" value="@ldapCanBuildProject@"/>
-        <property name="ldapEmailAttrName" value="@ldapEmailAttrName@"/>
-        <property name="ldapUrl" value="@ldapUrl@"/>
-        <property name="ldapPrefix" value="@ldapPrefix@"/>
-        <property name="ldapSuffix" value="@ldapSuffix@"/>
+	</bean>
+ 
+	<!-- 
+		LDAP authentication provider
+	-->
+	<bean id="userSearch" class="org.acegisecurity.ldap.search.FilterBasedLdapUserSearch">	
+		<constructor-arg><value>${ldap.searchBase}</value></constructor-arg>
+		<constructor-arg><value>(${ldap.accountNameAttr}={0})</value></constructor-arg>		
+		<constructor-arg><ref local="initialDirContextFactory" /></constructor-arg>		
+		<property name="searchSubtree"><value>true</value></property>
+	</bean>
+
+    <!-- Authentication provider for authentication via LDAP. -->
+    <bean id="ldapAuthenticationProvider" class="com.luntsys.luntbuild.security.LuntbuildLdapAuthenticationProvider">
+		<property name="dirContextFactory"><ref bean="initialDirContextFactory"/></property>
+    
+        <property name="authenticationDao"><ref local="luntbuildAuthenticationDAO"/></property>
+        <property name="ldapCreateLuntbuildUser" value="${ldap.CreateLuntbuildUser}"/>
+        <property name="ldapCanCreateProject" value="${ldap.CanCreateProject}"/>
+        <property name="ldapCanViewProject" value="${ldap.CanViewProject}"/>
+        <property name="ldapCanBuildProject" value="${ldap.CanBuildProject}"/>
+        <property name="ldapEmailAttrName" value="${ldap.EmailAttrName}"/>
+        <property name="ldapAccountNameAttr" value="${ldap.accountNameAttr}"/>
+        <property name="ldapSearchBase" value="${ldap.searchBase}"/>
+        <property name="ldapFullNameAttr" value="${ldap.fullNameAttr}"/>
+
+        <constructor-arg>
+            <bean class="org.acegisecurity.providers.ldap.authenticator.BindAuthenticator">
+                <constructor-arg ref="initialDirContextFactory"/>
+ 				<property name="userDnPatterns">
+					<list>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group0}</value>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group1}</value>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group2}</value>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group3}</value>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group4}</value>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group5}</value>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group6}</value>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group7}</value>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group8}</value>
+						<value>${ldap.accountNameAttr}={0}, ${ldap.group9}</value>
+					</list>
+				</property>
+				<property name="userSearch"><ref local="userSearch"/></property>
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.acegisecurity.providers.ldap.populator.DefaultLdapAuthoritiesPopulator">
+                <constructor-arg ref="initialDirContextFactory"/>
+                <constructor-arg>
+                    <value>${ldap.basedn}</value>
+                </constructor-arg>
+                <property name="groupSearchFilter" value="${ldap.groupMemberAttr}={0}"/>
+				<property name="groupRoleAttribute" value="${ldap.groupRoleAttr}"/>
+				<property name="searchSubtree" value="true"/>
+				<property name="convertToUpperCase" value="true"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <!-- Initial context factory for JNDI queries to LDAP server. -->
+	<bean id="initialDirContextFactory"
+		class="org.acegisecurity.ldap.DefaultInitialDirContextFactory">
+        <constructor-arg value="ldap://${ldap.host}:${ldap.port}/${ldap.path}"/>
+        <property name="managerDn" value="${ldap.manager.cn}"/>
+        <property name="managerPassword" value="${ldap.manager.pass}"/>
 	</bean>
 
 	<!-- provider for declared user-roles -->
@@ -231,6 +280,9 @@
 
 				<!-- authentication provider which validates users again internal db -->
 				<ref local="luntbuildAuthenticationProvider"/>
+				
+				<!-- authentication provider which validates users again Ldap -->
+				<ref local="ldapAuthenticationProvider"/>				
 			</list>
 		</property>
 	</bean>
@@ -433,5 +485,8 @@
     	    </value>
 	    </property>
 	</bean>
+
+	<!-- This bean is optional; it isn't used by any other bean as it only listens and logs -->
+	<bean id="loggerListener" class="org.acegisecurity.event.authentication.LoggerListener"/>
 
 </beans>

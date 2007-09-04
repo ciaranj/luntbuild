@@ -125,23 +125,20 @@
 	<target name="web-config" depends="webstage">
         <delete file="stage/web/WEB-INF/web.xml"/>
         <delete file="stage/web/WEB-INF/applicationContext.xml"/>
+        <delete file="stage/web/WEB-INF/users.properties"/>
         <filter token="installDir" value="${luntbuild-install-dir}"/>
         <filter token="sessionTimeout" value="30"/>
         <filter token="luntbuildPassword" value="luntbuild"/>
         <filter token="ldapHost" value=""/>
-        <filter token="ldapPort" value=""/>
-        <filter token="ldapUrl" value=""/>
-        <filter token="ldapPrefix" value=""/>
-        <filter token="ldapSuffix" value=""/>
-        <filter token="ldapUserDn" value=""/>
-        <filter token="ldapAuthentication" value="simple"/>
-        <filter token="ldapUserId" value="uid"/>
-        <filter token="ldapUseLuntbuildOnFail" value="true"/>
         <filter token="ldapCreateLuntbuildUser" value="true"/>
         <filter token="ldapCanCreateProject" value="true"/>
         <filter token="ldapCanViewProject" value="true"/>
         <filter token="ldapCanBuildProject" value="true"/>
         <filter token="ldapEmailAttrName" value="mail"/>
+        <copy file="web/WEB-INF/users.properties"
+            tofile="stage/web/WEB-INF/users.properties" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/ldap.properties"
+            tofile="stage/web/WEB-INF/ldap.properties" overwrite="true" filtering="true" />
         <copy file="web/WEB-INF/applicationContext.xml"
             tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
         <copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
@@ -353,20 +350,37 @@
 		<filter token="installDir" value="$INSTALL_PATH"/>
 		<filter token="sessionTimeout" value="${sessionTimeout}"/>
 		<filter token="luntbuildPassword" value="${luntbuildPassword}"/>
-        <filter token="ldapHost" value="${ldapHost}"/>
-        <filter token="ldapPort" value="${ldapPort}"/>
-        <filter token="ldapUrl" value="${ldapUrl}"/>
-        <filter token="ldapPrefix" value="${ldapPrefix}"/>
-        <filter token="ldapSuffix" value="${ldapSuffix}"/>
-        <filter token="ldapUserDn" value="${ldapUserDn}"/>
-        <filter token="ldapAuthentication" value="${ldapAuthentication}"/>
-        <filter token="ldapUserId" value="${ldapUserId}"/>
-        <filter token="ldapUseLuntbuildOnFail" value="${ldapUseLuntbuildOnFail}"/>
-        <filter token="ldapCreateLuntbuildUser" value="${ldapCreateLuntbuildUser}"/>
-        <filter token="ldapCanCreateProject" value="${ldapCanCreateProject}"/>
-        <filter token="ldapCanViewProject" value="${ldapCanViewProject}"/>
-        <filter token="ldapCanBuildProject" value="${ldapCanBuildProject}"/>
-        <filter token="ldapEmailAttrName" value="${ldapEmailAttrName}"/>
+    	
+        <filter token="ldapHost" value="${ldap.host}"/>
+        <filter token="ldapPort" value="${ldap.port}"/>
+        <filter token="ldapPath" value="${ldap.path}"/>
+        <filter token="ldapBaseDn" value="${ldap.basedn}"/>
+    	<filter token="ldapGroup0" value="${ldap.group0}"/>
+    	<filter token="ldapGroup1" value="${ldap.group1}"/>
+    	<filter token="ldapGroup2" value="${ldap.group2}"/>
+    	<filter token="ldapGroup3" value="${ldap.group3}"/>
+        <filter token="ldapGroup4" value="${ldap.group4}"/>
+        <filter token="ldapGroup5" value="${ldap.group5}"/>
+        <filter token="ldapGroup6" value="${ldap.group6}"/>
+        <filter token="ldapGroup7" value="${ldap.group7}"/>
+        <filter token="ldapGroup8" value="${ldap.group8}"/>
+        <filter token="ldapGroup9" value="${ldap.group9}"/>
+        <filter token="ldapSearchBase" value="${ldap.searchBase}"/>
+        <filter token="ldapGroupRoleAttr" value="${ldap.groupRoleAttr}"/>
+        <filter token="ldapGroupMemberAttr" value="${ldap.groupMemberAttr}"/>
+        <filter token="ldapAccountNameAttr" value="${ldap.accountNameAttr}"/>
+        <filter token="ldapManagerCn" value="${ldap.manager.cn}"/>
+        <filter token="ldapManagerPass" value="${ldap.manager.pass}"/>
+        <filter token="ldapCreateLuntbuildUser" value="${ldap.CreateLuntbuildUser}"/>
+        <filter token="ldapCanCreateProject" value="${ldap.CanCreateProject}"/>
+        <filter token="ldapCanViewProject" value="${ldap.CanViewProject}"/>
+        <filter token="ldapCanBuildProject" value="${ldap.CanBuildProject}"/>
+        <filter token="ldapEmailAttrName" value="${ldap.EmailAttrName}"/>
+        <filter token="ldapFullNameAttr" value="${ldap.fullNameAttr}"/>
+        <copy file="web/WEB-INF/users.properties"
+            tofile="stage/web/WEB-INF/users.properties" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/ldap.properties"
+            tofile="stage/web/WEB-INF/ldap.properties" overwrite="true" filtering="true" />
 		<copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
 			overwrite="true" filtering="true" />
 		<copy file="web/WEB-INF/applicationContext.xml"
@@ -463,23 +477,28 @@
 		</junitreport>
 	</target>
 
-	<target name="zip" depends="stage" description="Builds Luntbuild zip distribution">
-        <filter token="ldapHost" value=""/>
-        <filter token="ldapPort" value=""/>
-        <filter token="ldapUrl" value=""/>
-        <filter token="ldapPrefix" value=""/>
-        <filter token="ldapSuffix" value=""/>
-        <filter token="ldapUserDn" value=""/>
-        <filter token="ldapAuthentication" value="simple"/>
-        <filter token="ldapUserId" value="uid"/>
-        <filter token="ldapUseLuntbuildOnFail" value="true"/>
+	<target name="zip" depends="stage" description="Builds Luntbuild zip distribution">		
+        <filter token="installDir" value="${luntbuild-install-dir}"/>
+        <filter token="sessionTimeout" value="30"/>
+        <filter token="luntbuildPassword" value="luntbuild"/>
+        <filter token="ldapSearchBase" value="OU=All Users"/>
+        <filter token="ldapGroupRoleAttr" value="OU"/>
+        <filter token="ldapGroupMemberAttr" value="sAMAccountName"/>
+        <filter token="ldapAccountNameAttr" value="sAMAccountName"/>
         <filter token="ldapCreateLuntbuildUser" value="true"/>
         <filter token="ldapCanCreateProject" value="true"/>
         <filter token="ldapCanViewProject" value="true"/>
         <filter token="ldapCanBuildProject" value="true"/>
         <filter token="ldapEmailAttrName" value="mail"/>
+        <filter token="ldapFullNameAttr" value="CN"/>
+        <copy file="web/WEB-INF/users.properties"
+            tofile="stage/web/WEB-INF/users.properties" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/ldap.properties"
+            tofile="stage/web/WEB-INF/ldap.properties" overwrite="true" filtering="true" />
         <copy file="web/WEB-INF/applicationContext.xml"
             tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
+            overwrite="true" filtering="true" />
 		<delete dir="stage/db"/>
 		<copy todir="stage/db">
 			<fileset dir="db"/>
