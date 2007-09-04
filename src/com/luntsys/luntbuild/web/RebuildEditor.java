@@ -36,7 +36,9 @@ import com.luntsys.luntbuild.web.selectionmodels.PostbuildStrategySelectionModel
 import com.luntsys.luntbuild.BuildGenerator;
 import org.apache.tapestry.BaseComponent;
 import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.RedirectException;
 import org.apache.tapestry.engine.IPageLoader;
+import org.apache.tapestry.engine.PageService;
 import org.apache.tapestry.event.PageDetachListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.form.IPropertySelectionModel;
@@ -120,6 +122,9 @@ public abstract class RebuildEditor extends BaseComponent implements PageDetachL
 		}
 		Luntbuild.getSchedService().scheduleBuild(buildViewer.getBuild().getSchedule(), trigger);
 		buildViewer.setAction(null);
+        PageService s = new PageService();
+        String redirect = s.getLink(cycle, this, new Object[]{"Home"}).getURL();
+        throw new RedirectException(redirect);
 	}
 
 	/**
@@ -130,6 +135,9 @@ public abstract class RebuildEditor extends BaseComponent implements PageDetachL
 		BuildViewer buildViewer = (BuildViewer)getContainer();
 		buildViewer.getBuildsTab().ensureCurrentTab();
 		buildViewer.setAction(null);
+        PageService s = new PageService();
+        String redirect = s.getLink(cycle, this, new Object[]{"Home"}).getURL();
+        throw new RedirectException(redirect);
 	}
 
 	public int getNotifyStrategy() {
