@@ -38,7 +38,8 @@
 					</listitem>
 					<listitem>
 						<para>Edit builders of projectA and projectB, pass in publishing directory of the shared jars as build properties:
-							<programlisting>	sharedJarsDir=${system.project["common"].schedule[build.schedule.name].lastSuccessBuild.artifactsDir}
+							<programlisting>
+	sharedJarsDir=${system.project["common"].schedule[build.schedule.name].lastSuccessBuild.artifactsDir}
 							</programlisting>
 						</para>
 					</listitem>
@@ -125,11 +126,11 @@
             Yes you can, for example, if you want the version be "foo-yyMMDD_HHMM", you can configure
             "next build version" property of a project as follows:
             <programlisting>
-     "foo-" + shortYear + numericMonth + dayOfMonth + "_" + hour + minute (For luntbuild-1.1.1)
+	"foo-" + shortYear + numericMonth + dayOfMonth + "_" + hour + minute (For luntbuild-1.1.1)
             </programlisting>
             or
             <programlisting>
-	  foo-${shortYear}${numericMonth}${dayOfMonth}_${hour}${minute} (For latest luntbuild code in CVS)
+	foo-${shortYear}${numericMonth}${dayOfMonth}_${hour}${minute} (For latest luntbuild code in CVS)
             </programlisting>
             Where "shortYear", "numericMonth", "dayOfMonth", "hour", "minute" are all OGNL expressions.
             OGNL expressions can be used in build version string, please refer to Luntbuild user manual.
@@ -199,7 +200,7 @@
             This is an known behavior of Windows batch file. To overcome that, you can set
             "build success condition" as:
                 <programlisting>
-		result==0 and logContainsLine("BUILD SUCCESSFUL")
+	result==0 and logContainsLine("BUILD SUCCESSFUL")
                 </programlisting>
 				</para>
 			</answer>
@@ -245,7 +246,7 @@
 				<para>
                 Edit &lt;server&gt;/webapps/luntbuild/luntbuild-login.html and remove line:
                 <programlisting>
-                &lt;a href=&quot;app.do?service=reset/Home&amp;relogin=no&quot;&gt;Anonymous&lt;/a&gt;
+	&lt;a href=&quot;app.do?service=reset/Home&amp;relogin=no&quot;&gt;Anonymous&lt;/a&gt;
 				</programlisting>
 				</para>
 				<para>
@@ -556,6 +557,25 @@ at org.springframework.web.context.support.WebApplicationContextUtils.getRequire
         		</para>
 			</answer>
 		</qandaentry>
+		<qandaentry>
+			<question>
+				<para>
+            Does Luntbuild work with alias modules?
+				</para>
+			</question>
+			<answer>
+				<para>
+            No, not exactly.  Luntbuild can not work with alias modules, but you can make alias modules
+            seem like regular modules to Luntbuild.  If you set the alias module to checkout to a folder
+            named after itself, then Luntbuild can treat the alias module as a regular module.  Example
+            alias module:
+					<programlisting>
+AliasModule -d AliasModule module1 module2
+					</programlisting>
+            
+        		</para>
+			</answer>
+		</qandaentry>
 	</qandaset>
 
 
@@ -586,8 +606,8 @@ at org.springframework.web.context.support.WebApplicationContextUtils.getRequire
         To exclude files or directories, create a separate module for each exclussion and precede
         the Depot path property with a minus (-) sign, as follows:
 					<programlisting>
-        Depot path:  -//depot.side
-        Client path: //client.side
+	Depot path:  -//depot.side
+	Client path: //client.side
 					</programlisting>
 				</para>
 			</answer>
@@ -627,7 +647,7 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
         the Visual Sourcesafe Date format to use (assuming you're using the appropriate
         locale setup as Visual Sourcesafe honors the local locale settings) should be as follows:
 					<programlisting>
-		'd/M/yy;H:mm'
+	'd/M/yy;H:mm'
 					</programlisting>
 				</para>
 			</answer>
@@ -684,7 +704,7 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 		  You can modify default write interval in the db/luntbuild.script file in your Luntbuild installation.
 		  Just modify the following line:
 					<programlisting>
-		SET WRITE_DELAY 60
+	SET WRITE_DELAY 60
 					</programlisting>
 			  Actually Luntbuild-1.2.1 set this value to 0 to disable any write delay.
 				</para>
@@ -726,12 +746,12 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 				<para>
                 You can try following small change in the WEB-INF/applicationContext.xml:
 					<programlisting>
- &lt;bean id=&quot;hibernateSessionFactory&quot; class=&quot;org.springframework.orm.hibernate3.LocalSessionFactoryBean&quot;&gt;
+&lt;bean id=&quot;hibernateSessionFactory&quot; class=&quot;org.springframework.orm.hibernate3.LocalSessionFactoryBean&quot;&gt;
 [...]
-  &lt;property name=&quot;schemaUpdate&quot;&gt;
-   &lt;value&gt;true&lt;/value&gt;
-  &lt;/property&gt;
- &lt;/bean&gt;
+	&lt;property name=&quot;schemaUpdate&quot;&gt;
+		&lt;value&gt;true&lt;/value&gt;
+	&lt;/property&gt;
+&lt;/bean&gt;
 					</programlisting>
 
                 Setting "schemaUpdate" to true enables the session factory to create (or update)
@@ -749,8 +769,7 @@ set CATALINA_OPTS=-Duser.timezone=P4_SVR_TIMEZONE
 			</question>
 			<answer>
 				<para>
-        Please see
-					<ulink url="http://www.javaforge.com/proj/doc/displayWikiDocument.do?doc_id=1433">
+        Please see <ulink url="http://www.javaforge.com/proj/doc/displayWikiDocument.do?doc_id=1433">
         Luntbuild Wiki</ulink> for details.
 				</para>
 			</answer>
