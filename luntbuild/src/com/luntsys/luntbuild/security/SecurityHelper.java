@@ -183,18 +183,27 @@ public class SecurityHelper
         while (tokenizer.hasMoreTokens())
         {
             String role = tokenizer.nextToken();
-
+            String newProjRole = null;
+            
             // construct prj specific roles
             if ( prjid > NON_PRJ_ID)
             {
                 // if base_roles are specific
                 if ( role.indexOf("PRJ") > 0 )
                 {
+                	String origRole = role;
                     role = role +"_" + prjid;
+                    // Initially we get proj id 0 (when no project is created), so lets include it
+                    if (prjid >= 1) {
+                    	newProjRole = origRole +"_" + 0;
+                    }
                 }
             }
 
             requiredAuthorities.add(new GrantedAuthorityImpl(role.trim()));
+            if (newProjRole != null) {
+            	requiredAuthorities.add(new GrantedAuthorityImpl(newProjRole.trim()));
+            }
         }
 
         return requiredAuthorities;

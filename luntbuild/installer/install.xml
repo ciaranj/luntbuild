@@ -56,11 +56,11 @@
 		<res id="Installer.image.2" src="../installer/img/border3.png" />
 		<res id="Installer.image.3" src="../installer/img/border4.png" />
 		<res id="Installer.image.4" src="../installer/img/border5.png" />
-		<res id="Installer.image.5" src="../installer/img/border5.png" />
-		<res id="Installer.image.6" src="../installer/img/border5.png" />
-		<res id="Installer.image.7" src="../installer/img/border6.png" />
-		<res id="Installer.image.8" src="../installer/img/border6.png" />
-		<res id="Installer.image.9" src="../installer/img/border6.png" />
+		<res id="Installer.image.5" src="../installer/img/border6.png" />
+		<res id="Installer.image.6" src="../installer/img/border6.png" />
+		<res id="Installer.image.7" src="../installer/img/border7.png" />
+		<res id="Installer.image.8" src="../installer/img/border7.png" />
+		<res id="Installer.image.9" src="../installer/img/border8.png" />
 		<res id="Installer.image.10" src="../installer/img/border8.png" />
 		<res id="Heading.image" src="../installer/img/heading-image.gif"/>
         <res id="LicencePanel.licence" src="license.txt"/>
