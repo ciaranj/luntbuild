@@ -887,6 +887,18 @@ public class CvsAdaptor extends Vcs {
         return revisions;
     }
 
+    private String rebasePath(String path) {
+        if (Luntbuild.isEmpty(path))
+            return path;
+        if (getActualCvsRoot().matches("^[^/\\\\]*[/\\\\][^/\\\\]*[/\\\\].*$")) {
+            String base = getActualCvsRoot().replaceFirst("^[^/\\\\]*[/\\\\][^/\\\\]*[/\\\\]","");
+            path = Luntbuild.removeLeadingSlash(path);
+            if (path.startsWith(base))
+                path = path.substring(base.length() + 1);
+        }
+        return path;
+    }
+
     /**
      * Creates a link to browse the repository.
      * 
@@ -909,12 +921,13 @@ public class CvsAdaptor extends Vcs {
         if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl()) ||
                 Luntbuild.isEmpty(path) || Luntbuild.isEmpty(version))
             return path;
+        String clean_path = rebasePath(path);
         if (getWebInterface().equals("ViewVC"))
-            return "<a href=\"" + getWebUrl() + "/" + path + "?rev=" + version + "&view=markup\">" + path + "</a>";
+            return "<a href=\"" + getWebUrl() + "/" + clean_path + "?rev=" + version + "&view=markup\">" + path + "</a>";
         else if (getWebInterface().equals("Chora"))
-            return "<a href=\"" + getWebUrl() + "/co.php?r=" + version + "&f=" + path + "\">" + path + "</a>";
+            return "<a href=\"" + getWebUrl() + "/co.php?r=" + version + "&f=" + clean_path + "\">" + path + "</a>";
         else if (getWebInterface().equals("wwCVS"))
-            return "<a href=\"" + getWebUrl() + "/file.aspx?tag=&project=" + path + "&revision=" + version + "\">" + path + "</a>";
+            return "<a href=\"" + getWebUrl() + "/file.aspx?tag=&project=" + clean_path + "&revision=" + version + "\">" + path + "</a>";
         else
             return path;
     }
@@ -957,12 +970,13 @@ public class CvsAdaptor extends Vcs {
         if (Luntbuild.isEmpty(getWebInterface()) || Luntbuild.isEmpty(getWebUrl()) ||
                 Luntbuild.isEmpty(path) || Luntbuild.isEmpty(version) || Luntbuild.isEmpty(prev_ver))
             return "";
+        String clean_path = rebasePath(path);
         if (getWebInterface().equals("ViewVC"))
-            return "(<a href=\"" + getWebUrl() + "/" + path + "?r1=" + prev_ver + "&r2=" + version + "\">diff</a>)";
+            return "(<a href=\"" + getWebUrl() + "/" + clean_path + "?r1=" + prev_ver + "&r2=" + version + "\">diff</a>)";
         else if (getWebInterface().equals("Chora"))
-            return "(<a href=\"" + getWebUrl() + "/diff.php?r1=" + prev_ver + "&r2=" + version + "&f=" + path + "\">diff</a>)";
+            return "(<a href=\"" + getWebUrl() + "/diff.php?r1=" + prev_ver + "&r2=" + version + "&f=" + clean_path + "\">diff</a>)";
         else if (getWebInterface().equals("wwCVS"))
-            return "(<a href=\"" + getWebUrl() + "/diff.aspx?tag=&project=" + path + "&diff_rev_1=" + prev_ver + "&diff_rev_2=" + version + "\">diff</a>)";
+            return "(<a href=\"" + getWebUrl() + "/diff.aspx?tag=&project=" + clean_path + "&diff_rev_1=" + prev_ver + "&diff_rev_2=" + version + "\">diff</a>)";
         else
             return "";
     }
