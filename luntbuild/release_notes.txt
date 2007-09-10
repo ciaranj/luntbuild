@@ -4,16 +4,16 @@ luntbuild 1.5.2 Release Notes
 
 !NOTE! - ${build.junitHtmlReportDir} has been depricated, please use ${build.getReportDir("JUnit")} instead
 
-- Fix: [# 4413] Error while login as anonymous when LDAP is enabled
-- Fix: [# 1507] No BaseDN option when configuring LDAP
-- Fix: [# 5995] Critical Security Failure: LDAP errors ignored (sf 1767222)
-- Fix: Improved migration manager to handle orphaned users/schedules/builds 
 - Feature: (Change 5972) Implemented build listener and report extension system, please see <install_dir>/luntbuild_config.xml for details
 - Feature: (Change 6075) Added support for sventon, SVN web interface
-- Fix: (Bug 5995) Temporary fix for LDAP, do not authenticate if password is blank
+- Fix: (Bug 4413) Error while login as anonymous when LDAP is enabled
+- Fix: (Bug 1507) No BaseDN option when configuring LDAP
+- Fix: (Bug 5995) Critical Security Failure: LDAP errors ignored (sf 1767222)
+- Fix: Improved migration manager to handle orphaned users/schedules/builds
 - Fix: Diff links for SVN revision logs will now only show where appropriate
 - Fix: (Bug 6066) Fixed support for WebSVN and multiple repositories, SVN web interface
 - Fix: (Bug 5969) Fixed manual builds executing multiple times when refreshing immediately after starting a manual build
+- Fix: (Bug 6036) Fixed exception case when creating a new project with a normal user
 
 ==============================================
 luntbuild 1.5.1 Release Notes
