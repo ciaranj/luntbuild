@@ -2,8 +2,9 @@
 luntbuild 1.5.2 Release Notes
 ==============================================
 
-!NOTE! - ${build.junitHtmlReportDir} has been depricated, please use ${build.getReportDir("JUnit")} instead
+!NOTE! - ${build.junitHtmlReportDir} has been depreciated, please use ${build.getReportDir("JUnit")} instead
 
+- Feature: Updated SVNKIT library to version 1.1.4.
 - Feature: (Change 5972) Implemented build listener and report extension system, please see <install_dir>/luntbuild_config.xml for details
 - Feature: (Change 6075) Added support for sventon, SVN web interface
 - Fix: (Bug 4413) Error while login as anonymous when LDAP is enabled
