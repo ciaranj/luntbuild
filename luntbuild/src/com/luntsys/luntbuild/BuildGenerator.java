@@ -610,10 +610,11 @@ public class BuildGenerator implements StatefulJob {
                 while (it.hasNext()) {
                     String checkinLogin = (String) it.next();
                     User checkinUser = project.getUserByVcsLogin(checkinLogin, allUsers);
-                    if (checkinUser == null)
-                        throw new BuildException("ERROR: Failed to find Luntbuild user for VCS login \"" +
-                                checkinLogin + "\" of the project \"" + project.getName() + "\"!");
-                    checkinUsers.add(checkinUser);
+                    if (checkinUser == null) {
+                        logger.warn("User for VCS login \"" +
+                                checkinLogin + "\" is not Luntbuild user for the project \"" + project.getName() + "\"!");
+                    } else
+                    	checkinUsers.add(checkinUser);
                 }
                 prevBuild = prevBuild.getPrevBuild();
             } while ( prevBuild != null && prevBuild.getStatus() != Constants.BUILD_STATUS_SUCCESS);
@@ -623,10 +624,11 @@ public class BuildGenerator implements StatefulJob {
             while (it.hasNext()) {
                 String checkinLogin = (String) it.next();
                 User checkinUser = project.getUserByVcsLogin(checkinLogin, allUsers);
-                if (checkinUser == null)
-                    throw new BuildException("ERROR: Failed to find Luntbuild user for VCS login \"" +
-                            checkinLogin + "\" of the project \"" + project.getName() + "\"!");
-                checkinUsers.add(checkinUser);
+                if (checkinUser == null) {
+                    logger.warn("User for VCS login \"" +
+                            checkinLogin + "\" is not Luntbuild user for the project \"" + project.getName() + "\"!");
+                } else
+                	checkinUsers.add(checkinUser);
             }
         }
 
