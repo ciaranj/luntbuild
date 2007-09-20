@@ -64,6 +64,8 @@ public class SvnExeAdaptor extends Vcs {
     static final long serialVersionUID = 1;
 
     private static final String SVN_COMMAND_INPUT = null;
+    private static final String INPUT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    private static final String OUTPUT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
     private static final String REPO_LAYOUT_SINGLE = "single";
     private static final String REPO_LAYOUT_MULTIPLE = "multiple";
@@ -789,8 +791,8 @@ public class SvnExeAdaptor extends Vcs {
      * @throws RuntimeException if an exception occurs while reading the SVN log
      */
     public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
-        final SimpleDateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        final SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        final SimpleDateFormat inFormat = new SimpleDateFormat(INPUT_DATE_FORMAT);
+        final SimpleDateFormat outFormat = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
         inFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         outFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         

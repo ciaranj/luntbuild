@@ -65,6 +65,7 @@ import com.luntsys.luntbuild.utility.ValidationException;
  * <p>This adaptor is NOT safe for remote hosts.</p>
  */
 public abstract class AbstractClearcaseAdaptor extends Vcs {
+    private static final String DATE_FORMAT = "dd-MMMM-yyyy.HH:mm:ss";
 	/**
 	 * Keep tracks of version of this class, used when do serialization-deserialization
 	 */
@@ -933,7 +934,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 if (branch != null) {
                     cmdLine.createArgument().setLine("-branch " + branch);
                 }
-                final SimpleDateFormat format = new SimpleDateFormat("dd-MMMM-yyyy.HH:mm:ss",
+                final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT,
                                                 new DateFormatSymbols(Locale.ENGLISH));
                 cmdLine.createArgument().setLine(
                         "-since " + format.format(sinceDate));
@@ -958,7 +959,8 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                             action = authorMatcher.group(3).trim();
                             /** Date format for Clearcase base. */
                             try {
-                                date = new SimpleDateFormat("dd-MMMM-yyyy.HH:mm:ss", new DateFormatSymbols(Locale.ENGLISH)).
+                                date = new SimpleDateFormat(DATE_FORMAT,
+                                        new DateFormatSymbols(Locale.ENGLISH)).
                                 	parse(authorMatcher.group(1).trim());
                             } catch (Exception e) {
                                 logger.error("Failed to parse date from log", e);

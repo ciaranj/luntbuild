@@ -68,6 +68,7 @@ import java.util.regex.Pattern;
  */
 public class CvsAdaptor extends Vcs {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final String LOG_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 	/**
 	 * Keep tracks of version of this class, used when do serialization-deserialization
 	 */
@@ -762,7 +763,7 @@ public class CvsAdaptor extends Vcs {
                                             addRevision = true;
                                         } else if (authormatcher.find()) {
                                             try {
-                                                date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(authormatcher.group(1).trim());
+                                                date = new SimpleDateFormat(LOG_DATE_FORMAT).parse(authormatcher.group(1).trim());
                                             } catch (Exception e) {
                                                 logger.error("Failed to parse date from CVS log", e);
                                                 date = null;
@@ -808,7 +809,7 @@ public class CvsAdaptor extends Vcs {
                                     addRevision = true;
                                 } else if (authormatcher.find()) {
                                     try {
-                                        date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(authormatcher.group(1).trim());
+                                        date = new SimpleDateFormat(LOG_DATE_FORMAT).parse(authormatcher.group(1).trim());
                                     } catch (Exception e) {
                                         logger.error("Failed to parse date from CVS log", e);
                                         date = null;
@@ -858,7 +859,7 @@ public class CvsAdaptor extends Vcs {
                                 addRevision = true;
                             } else if (authormatcher.find()) {
                                 try {
-                                    date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(authormatcher.group(1).trim());
+                                    date = new SimpleDateFormat(LOG_DATE_FORMAT).parse(authormatcher.group(1).trim());
                                 } catch (Exception e) {
                                     throw new BuildException("Failed to parse date from CVS log", e);
                                 }
