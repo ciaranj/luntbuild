@@ -568,7 +568,7 @@ public class Build {
         if (report == null)
             throw new RuntimeException("Report named \"" + report_name + "\" not found.");
 
-        String report_url = report.getReportUrl(getReportDir(report_name));
+        String report_url = report.getReportUrl(getPublishDir());
         if (report_url != null)
             return getPublishUrl() + "/" + report_url;
         else
