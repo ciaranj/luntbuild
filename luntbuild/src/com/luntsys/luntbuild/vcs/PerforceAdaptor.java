@@ -1002,7 +1002,7 @@ public class PerforceAdaptor extends Vcs {
      * @inheritDoc
      */
     public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
-        final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd:HH:mm:ss");
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String workingDir = workingSchedule.getWorkDirRaw();
         final Revisions revisions = new Revisions();
         revisions.addLog(this.getClass().getName(), toString());

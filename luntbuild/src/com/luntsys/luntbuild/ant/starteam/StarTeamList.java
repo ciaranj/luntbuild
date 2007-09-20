@@ -41,6 +41,7 @@ import org.apache.tools.ant.Project;
  */
 
 public class StarTeamList extends TreeBasedTask {
+    private static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss zzz";
     private boolean listUncontrolled = true;
     /**
      * List files, dates, and statuses as of this label; optional.
@@ -190,7 +191,7 @@ public class StarTeamList extends TreeBasedTask {
 
     protected void list(File reposFile, java.io.File localFile)
             throws IOException {
-        SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss zzz");
+        SimpleDateFormat SDF = new SimpleDateFormat(DATE_FORMAT);
         StringBuffer b = new StringBuffer();
         int status = reposFile.getStatus();
         java.util.Date displayDate = null;

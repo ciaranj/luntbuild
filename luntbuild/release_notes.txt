@@ -16,6 +16,7 @@ luntbuild 1.5.2 Release Notes
 - Fix: (Bug 5969) Fixed manual builds executing multiple times when refreshing immediately after starting a manual build
 - Fix: (Bug 6036) Fixed exception case when creating a new project with a normal user
 - Fix: (Bug 5985) Fixed display of elapsed build time for running builds when using MySQL as the luntbuild database
+- Fix: (Bug 6177) Fixed date format bug for PerforceAdaptor introduced in Luntbuild 1.5.0
 
 ==============================================
 luntbuild 1.5.1 Release Notes
