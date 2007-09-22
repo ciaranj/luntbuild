@@ -28,6 +28,8 @@
 
 package com.luntsys.luntbuild.test.utility;
 
+import java.io.File;
+
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
 import junit.framework.TestCase;
@@ -169,4 +171,33 @@ public class LuntbuildTest extends TestCase {
 	public void testIsVariablesContained() {
 		assertEquals(false, Luntbuild.isVariablesContained("lb-1.0"));
 	}
+	
+
+    public void testConcatPathNoSlashes() {
+        String path1 = "a";
+        String path2 = "b";
+        String path3 = Luntbuild.concatPath(path1, path2);
+        assertEquals("a" + File.separator + "b", path3);
+    }
+
+    public void testConcatPathOneTrallingSlash() {
+        String path1 = "a" + File.separator;
+        String path2 = "b";
+        String path3 = Luntbuild.concatPath(path1, path2);
+        assertEquals("a" + File.separator + "b", path3);
+    }
+
+    public void testConcatPathOneLeadingSlash() {
+        String path1 = "a";
+        String path2 =  File.separator +"b";
+        String path3 = Luntbuild.concatPath(path1, path2);
+        assertEquals("a" + File.separator + "b", path3);
+    }
+    
+    public void testConcatPathBothSlashes() {
+        String path1 = "a" + File.separator;
+        String path2 =  File.separator +"b";
+        String path3 = Luntbuild.concatPath(path1, path2);
+        assertEquals("a" + File.separator + "b", path3);
+    }
 }
