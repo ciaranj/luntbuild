@@ -2,14 +2,14 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
 [
-  <!ENTITY login-chapter SYSTEM "../guide/login-chapter.docbook">
-  <!ENTITY homepage-chapter SYSTEM "../guide/homepage-chapter.docbook">
-  <!ENTITY createproject-chapter SYSTEM "../guide/createproject-chapter.docbook">
-  <!ENTITY cvsadaptor-section SYSTEM "../guide/cvsadaptor-section.docbook">
-  <!ENTITY cvsmodule-section SYSTEM "../guide/cvsmodule-section.docbook">
-  <!ENTITY antbuilder-section SYSTEM "../guide/antbuilder-section.docbook">
-  <!ENTITY editschedule-section SYSTEM "../guide/editschedule-section.docbook">
-  <!ENTITY builds-chapter SYSTEM "../guide/builds-chapter.docbook">
+  <!ENTITY login-chapter SYSTEM "../guide/login-chapter.xml">
+  <!ENTITY homepage-chapter SYSTEM "../guide/homepage-chapter.xml">
+  <!ENTITY createproject-chapter SYSTEM "../guide/createproject-chapter.xml">
+  <!ENTITY cvsadaptor-section SYSTEM "../guide/cvsadaptor-section.xml">
+  <!ENTITY cvsmodule-section SYSTEM "../guide/cvsmodule-section.xml">
+  <!ENTITY antbuilder-section SYSTEM "../guide/antbuilder-section.xml">
+  <!ENTITY editschedule-section SYSTEM "../guide/editschedule-section.xml">
+  <!ENTITY builds-chapter SYSTEM "../guide/builds-chapter.xml">
 ]>
 
 <book>
@@ -199,7 +199,7 @@
 
 </chapter>
 
-<chapter id="editschedule">
+<chapter id="createschedule">
 <title>Create Schedule</title>
 
 &editschedule-section;

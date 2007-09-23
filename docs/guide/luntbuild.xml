@@ -2,21 +2,21 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
   "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd"
 [
-  <!ENTITY installation-chapter SYSTEM "../installguide/install-chapter.docbook">
-  <!ENTITY database-chapter SYSTEM "../installguide/database-chapter.docbook">
-  <!ENTITY ldap-chapter SYSTEM "../installguide/ldap-chapter.docbook">
-  <!ENTITY remote-chapter SYSTEM "../api/remote-chapter.docbook">
-  <!ENTITY login-chapter SYSTEM "login-chapter.docbook">
-  <!ENTITY homepage-chapter SYSTEM "homepage-chapter.docbook">
-  <!ENTITY createproject-chapter SYSTEM "createproject-chapter.docbook">
-  <!ENTITY cvsadaptor-section SYSTEM "cvsadaptor-section.docbook">
-  <!ENTITY cvsmodule-section SYSTEM "cvsmodule-section.docbook">
-  <!ENTITY clearcaseadaptor-section SYSTEM "clearcaseadaptor-section.docbook">
-  <!ENTITY antbuilder-section SYSTEM "antbuilder-section.docbook">
-  <!ENTITY editschedule-section SYSTEM "editschedule-section.docbook">
-  <!ENTITY builds-chapter SYSTEM "builds-chapter.docbook">
-  <!ENTITY clearcaseadaptor-section SYSTEM "clearcase-section.docbook">
-  <!ENTITY notificationtemplates-chapter SYSTEM "notificationtemplates-chapter.docbook">
+  <!ENTITY installation-chapter SYSTEM "../installguide/install-chapter.xml">
+  <!ENTITY database-chapter SYSTEM "../installguide/database-chapter.xml">
+  <!ENTITY ldap-chapter SYSTEM "../installguide/ldap-chapter.xml">
+  <!ENTITY remote-chapter SYSTEM "../api/remote-chapter.xml">
+  <!ENTITY login-chapter SYSTEM "login-chapter.xml">
+  <!ENTITY homepage-chapter SYSTEM "homepage-chapter.xml">
+  <!ENTITY createproject-chapter SYSTEM "createproject-chapter.xml">
+  <!ENTITY cvsadaptor-section SYSTEM "cvsadaptor-section.xml">
+  <!ENTITY cvsmodule-section SYSTEM "cvsmodule-section.xml">
+  <!ENTITY clearcaseadaptor-section SYSTEM "clearcaseadaptor-section.xml">
+  <!ENTITY antbuilder-section SYSTEM "antbuilder-section.xml">
+  <!ENTITY editschedule-section SYSTEM "editschedule-section.xml">
+  <!ENTITY builds-chapter SYSTEM "builds-chapter.xml">
+  <!ENTITY clearcaseadaptor-section SYSTEM "clearcase-section.xml">
+  <!ENTITY notificationtemplates-chapter SYSTEM "notificationtemplates-chapter.xml">
 ]>
 
 <book>

@@ -262,7 +262,7 @@
 		<copy todir="stage/docs/api">
 			<fileset dir="docs/api">
 				<exclude name="*.xsl"/>
-				<exclude name="*.docbook"/>
+				<exclude name="*.xml"/>
 				<exclude name="*.pdf"/>
 				<exclude name="*.project"/>
 			</fileset>
@@ -270,7 +270,7 @@
 		<copy todir="stage/docs/guide">
 			<fileset dir="docs/guide">
 				<exclude name="*.xsl"/>
-				<exclude name="*.docbook"/>
+				<exclude name="*.xml"/>
 				<exclude name="*.pdf"/>
 				<exclude name="*.project"/>
 			</fileset>
@@ -278,7 +278,7 @@
 		<copy todir="stage/docs/faq">
 			<fileset dir="docs/faq">
 				<exclude name="*.xsl"/>
-				<exclude name="*.docbook"/>
+				<exclude name="*.xml"/>
 				<exclude name="*.pdf"/>
 				<exclude name="*.project"/>
 			</fileset>
@@ -286,7 +286,7 @@
 		<copy todir="stage/docs/installguide">
 			<fileset dir="docs/installguide">
 				<exclude name="*.xsl"/>
-				<exclude name="*.docbook"/>
+				<exclude name="*.xml"/>
 				<exclude name="*.pdf"/>
 				<exclude name="*.project"/>
 			</fileset>
@@ -294,7 +294,7 @@
 		<copy todir="stage/docs/quickstart">
 			<fileset dir="docs/quickstart">
 				<exclude name="*.xsl"/>
-				<exclude name="*.docbook"/>
+				<exclude name="*.xml"/>
 				<exclude name="*.pdf"/>
 				<exclude name="*.project"/>
 			</fileset>
@@ -308,7 +308,7 @@
 
 	</target>
 
-	<target name="stage_javadocs" unless="skip-javadoc">
+	<target name="stage_javadocs">
 		<echo level="info">Generating full JavaDoc</echo>
 		<mkdir dir="stage/docs/javadoc"/>
 		<javadoc sourcepath="src" classpathref="classpath" destdir="stage/docs/javadoc"
@@ -324,7 +324,7 @@
 			<link href="http://tapestry.apache.org/tapestry3/doc/api/"/>
 			<link href="http://acegisecurity.org/multiproject/acegi-security/apidocs/"/>
 			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
-			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
+			<bottom><![CDATA[<i>Copyright &#169; 2007 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
 		</javadoc>
 	</target>
 	
