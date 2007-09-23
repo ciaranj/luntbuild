@@ -1,4 +1,4 @@
-<Project source="D:\luntbuild\docs\guide\luntbuild.docbook">
+<Project source="D:\luntbuild\docs\guide\luntbuild.xml">
 	<PDFTask target="D:\luntbuild\docs\guide">
 		<SaxonWrapper>
 			<param name="styleDoc" value="xsl/fo.xsl"/>

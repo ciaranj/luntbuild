@@ -6,16 +6,16 @@ NOTE. Before you generate documentation, unzip xsl.zip in your docs directory.
 Html divided into chapters is generated using command:
 
 cd docs/guide
-xsltproc --nonet luntbuild-html.xsl luntbuild.docbook
+xsltproc --nonet luntbuild-html.xsl luntbuild.xml
 
 Single Html is generated using command:
 
 cd docs/guide
-xsltproc --nonet luntbuild-html-single.xsl luntbuild.docbook > manual.html
+xsltproc --nonet luntbuild-html-single.xsl luntbuild.xml > manual.html
 
 FAQ html is generated using command:
 cd docs/faq
-xsltproc --nonet luntbuild.xsl faqs.docbook > index.html
+xsltproc --nonet luntbuild.xsl faqs.xml > index.html
 
 Installation guide is generated using command:
 
@@ -25,7 +25,7 @@ xsltproc --nonet luntbuild.xsl installguide.xml > installguide.html
 Quick Start guide is generated using command:
 
 cd docs/quickstart
-xsltproc --nonet luntbuild.xsl quickstart.docbook > quickstart.html
+xsltproc --nonet luntbuild.xsl quickstart.xml > quickstart.html
 
 
 Pdf are generated using command:
