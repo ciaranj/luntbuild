@@ -1,0 +1,33 @@
+#set ($GREEN = "#00AA00")
+#set ($RED = "#AA0000")
+#set ($OTHER = "#AAAA00")
+
+#if ($build_isSuccess)
+  #set ($color=$GREEN)
+#elseif (${build_isFailure})
+  #set ($color=$RED)
+#else
+  #set ($color=$OTHER)
+#end
+
+<span style="color:${color}">
+Schedule <a href="${schedule_url}">${schedule_project}/${schedule_name}</a> finished with status: ${schedule_status}
+at ${schedule_status_date}.
+<br /><br />
+See the <a href="${luntbuild_systemlog_url}">system log</a> for details.
+<br /><br />
+${schedule_desc}
+<br /><br />
+<big><b>Links:</b></big><br />
+</hr>
+<table summary="" border="2" cellpadding="10" cellspacing="0">
+  <tbody>
+    <tr>
+      <td>Build List</td>
+      <td><a href="${luntbuild_webroot}/luntbuild/api/rss/${schedule_project}/${schedule_name}">${luntbuild_webroot}/luntbuild/api/rss/${schedule_project}/${schedule_name}</a></td>
+   </tr>
+  </tbody>
+</table>
+-- luntbuild
+<br /><a href="${luntbuild_servlet_url}">Login Page</a>
+</span>

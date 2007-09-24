@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification
+      PUBLIC "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+      "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification
+	class="com.luntsys.luntbuild.web.ProjectsTab"
+	allow-informal-parameters="no">
+
+	<property-specification name="project" type="com.luntsys.luntbuild.db.Project"/>
+	<property-specification name="projectIndex" type="int"/>
+	<property-specification name="action" type="java.lang.String"/>
+	<property-specification name="projectIdToDelete" type="long" persistent="yes"/>
+
+</component-specification>

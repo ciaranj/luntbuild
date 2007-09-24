@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification
+      PUBLIC "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+      "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification
+	class="com.luntsys.luntbuild.web.AdministrationTab"
+	allow-informal-parameters="no">
+
+	<property-specification name="errorMsg" type="java.lang.String"/>
+	<property-specification name="successMsg" type="java.lang.String"/>
+	<property-specification name="filePathToExport" type="java.lang.String" persistent="yes" />
+   <property-specification name="filePathToImport" type="java.lang.String" persistent="yes" />
+   <property-specification name="projectPathToExport" type="java.lang.String" persistent="yes" />
+   <property-specification name="projectPathToImport" type="java.lang.String" persistent="yes" />
+   <property-specification name="projectToExport" type="com.luntsys.luntbuild.db.Project" persistent="yes" />
+	<property-specification name="action" type="java.lang.String"/>
+
+</component-specification>
