@@ -685,23 +685,22 @@ public class Luntbuild {
         String trimmedPath1 = path1.trim();
         String trimmedPath2 = path2.trim();
         String path;
-        char lastCharOfPath1 = trimmedPath1.charAt(trimmedPath1.length() - 1);
-        char firstCharOfPath2 = trimmedPath2.charAt(0);
-        if (lastCharOfPath1 == '/' || lastCharOfPath1 == '\\') {
-            if (firstCharOfPath2 == '/' || firstCharOfPath2 == '\\') {
+        if (trimmedPath1.charAt(trimmedPath1.length() - 1) == '/' ||
+                trimmedPath1.charAt(trimmedPath1.length() - 1) == '\\') {
+            if (trimmedPath2.charAt(0) == '/' || trimmedPath2.charAt(0) == '\\') {
                 if (trimmedPath1.length() == 1)
                     path = trimmedPath2;
                 else {
-                    path = trimmedPath1.substring(0, trimmedPath1.length() - 1);
+                    path = trimmedPath1.substring(0, trimmedPath1.length() - 2);
                     path += trimmedPath2;
                 }
             } else
                 path = trimmedPath1 + trimmedPath2;
         } else {
-            if (firstCharOfPath2 == '/' || firstCharOfPath2 == '\\')
+            if (trimmedPath2.charAt(0) == '/' || trimmedPath2.charAt(0) == '\\')
                 path = trimmedPath1 + trimmedPath2;
             else
-                path = trimmedPath1 + File.separator + trimmedPath2;
+                path = trimmedPath1 + "/" + trimmedPath2;
         }
         return path;
     }
@@ -769,7 +768,7 @@ public class Luntbuild {
      * @return <code>true</code> if the string is empty
      */
     public static boolean isEmpty(String aString) {
-        if (aString == null || aString.trim().equals(""))
+        if (aString == null || aString.trim().equals("") || aString.trim().equals("\"\""))
             return true;
         else
             return false;
@@ -1379,7 +1378,7 @@ public class Luntbuild {
         if (path == null) {
             throw new RuntimeException("ServletContext.getRealPath() failed: please deploy Luntbuild web application as exploded directory instead of only in war file!");
         }
-        if (!(path.endsWith("/") || path.endsWith("\\") || path.endsWith(File.separator))) {
+        if (!(path.endsWith("/") || path.endsWith("\\") || path.endsWith(File.pathSeparator))) {
             path += "/";
         }
         path += "WEB-INF/classes";
