@@ -24,16 +24,18 @@ import java.io.FileOutputStream;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.httpclient.auth.AuthenticationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.webdavaccess.exceptions.WebdavException;
@@ -43,6 +45,7 @@ import org.webdavaccess.exceptions.WebdavException;
  * 
  * @author joa
  * @author re
+ * @author lubosp
  */
 public class LocalFileSystemStorage implements IWebdavStorage {
 
@@ -50,13 +53,22 @@ public class LocalFileSystemStorage implements IWebdavStorage {
     
 	private static final String ROOTPATH_PARAMETER = "rootpath";
 	private static final String DEBUG_PARAMETER = "storeDebug";
+	private static final int MAX_PROPERTIES_CACHE_SIZE = 5000;
+	private static final String CUSTOM_PROPERTIES_STORAGE = ".properties";
+	private static final String PROPERTIES_STORAGE_PATH_SEPARATOR = "|";
 
+	private static final String SYSTEM_PROPERTY_PREFIX = "__";
+	private static final String CREATION_DATE_PROPERTY = SYSTEM_PROPERTY_PREFIX + "CreationDate" + SYSTEM_PROPERTY_PREFIX;
+	private static final String CREATION_DATE_FORMAT = "yyyyMMddHHmmss";
+	
 	private static int BUF_SIZE = 50000;
 	private static File root = null;
 	private static int debug = -1;
 	
 	private String servletName;
 
+	private MRUCache mPropertiesCache;
+	
 	public void begin(HttpServletRequest req, Hashtable parameters, String defaultStorageLocation)
 			throws WebdavException {
 		if (debug == -1) {
@@ -100,6 +112,9 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 			
 			servletName = req.getServletPath();
 		}
+		
+		mPropertiesCache = new MRUCache(MAX_PROPERTIES_CACHE_SIZE);
+		
 	}
 
 	public void commit() throws WebdavException {
@@ -164,14 +179,39 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		try {
 			if (!file.createNewFile())
 				throw new WebdavException("cannot create file: " + uri);
+			Properties props = new Properties();
+			props.setProperty(CREATION_DATE_PROPERTY, new SimpleDateFormat(CREATION_DATE_FORMAT).format(new Date()));
+			setCustomProperties(uri, props);
 		} catch (IOException e) {
 			throw new WebdavException(e);
 		}
 	}
 
 	/**
+	 * @throws IOException
+	 *             if the resource cannot be created
+	 */
+	public void copyResource(String src, String dest) throws WebdavException {
+		if (debug == 1)
+			log.debug("LocalFileSystemStore.createResource(" + dest + ")");
+		dest = normalize(dest);
+		File file = new File(root, dest);
+		try {
+			if (!file.createNewFile())
+				throw new WebdavException("cannot create file: " + dest);
+		} catch (IOException e) {
+			throw new WebdavException(e);
+		}
+		src = normalize(src);
+		setResourceContent(dest, getResourceContent(src), null, null);
+
+		// copy properties from src to dest
+		copyCustomProperties(src, dest);
+	}
+
+	/**
 	 * tries to save the given InputStream to the file at path "uri". content
-	 * type and charachter encoding are ignored
+	 * type and character encoding are ignored
 	 */
 	public void setResourceContent(String uri, InputStream is,
 			String contentType, String characterEncoding)
@@ -221,8 +261,17 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 	public Date getCreationDate(String uri) throws WebdavException {
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.getCreationDate(" + uri + ")");
-		// TODO return creation date instead of last modified
+		// return creation date if available else last modified
 		uri = normalize(uri);
+		Properties props = getCustomProperties(uri, true);
+		if (props.containsKey(CREATION_DATE_PROPERTY)) {
+			try {
+				return new SimpleDateFormat(CREATION_DATE_FORMAT).parse(
+						props.getProperty(CREATION_DATE_PROPERTY));
+			} catch (Exception e) {
+				// get modified date instead
+			}
+		}
 		File file = new File(root, uri);
 		return new Date(file.lastModified());
 	}
@@ -242,8 +291,8 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 			List childList = new ArrayList();
 			for (int i = 0; i < children.length; i++) {
 				String name = children[i].getName();
-				childList.add(name);
-
+				if (!CUSTOM_PROPERTIES_STORAGE.equals(name))
+					childList.add(name);
 			}
 			String[] childrenNames = new String[childList.size()];
 			childrenNames = (String[]) childList.toArray(childrenNames);
@@ -292,6 +341,8 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		uri = normalize(uri);
 		File file = new File(root, uri);
 		boolean success = file.delete();
+		// delete properties
+		deleteProperties(uri);
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.removeObject(" + uri + ")=" + success);
 		if (!success) {
@@ -300,11 +351,218 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 
 	}
 
+	// Normalize uri
 	private String normalize(String uri) {
 		if (uri.startsWith(servletName))
 			return uri.substring(servletName.length());
 		else
 			return uri;
+	}
+
+	// Get properties file for resourceUri
+	private File getPropertiesFile(String resourceUri) {
+		File file = new File(root, resourceUri);
+		file = file.getParentFile();
+		if (file == null) return null;
+		return new File(file.getAbsoluteFile() + File.separator + CUSTOM_PROPERTIES_STORAGE);
+	}
+	
+	// Save custom properties
+	private void saveCustomProperties(Properties newProperties, String resourceUri) {
+		if (newProperties == null || newProperties.size() == 0) return;
+		
+		resourceUri = normalize(resourceUri);
+		File file = getPropertiesFile(resourceUri);
+		if (file == null) return;
+		Properties persisted = new Properties();
+		// Properties file exists, load it so we can add new properties
+		if (file.exists()) {
+			InputStream in = null;
+			try {
+				in = new FileInputStream(file);
+				persisted.loadFromXML(in);
+			} catch (Exception e) {
+				log.warn("Failed to get properties from cache for " + resourceUri);
+				return;
+			} finally {
+				if (in != null) try {in.close();} catch (Exception e) {}
+			}
+		}
+		// Add new properties with key format of: resourceUri + "|" + key
+		Enumeration en = newProperties.keys();
+		while(en.hasMoreElements()) {
+			String key = (String)en.nextElement();
+			persisted.setProperty(resourceUri + PROPERTIES_STORAGE_PATH_SEPARATOR + key, newProperties.getProperty(key));
+		}
+		// Store the updates properties
+		OutputStream os = null;
+		try {
+			os = new FileOutputStream(file);
+			persisted.storeToXML(os, "");
+		} catch (Exception e) {
+			log.warn("Failed to store properties for " + resourceUri);
+		} finally {
+			if (os != null) try {os.close();} catch (Exception e) {}
+		}
+	}
+	
+	// Get properties for given uri
+	private Properties getPropertiesFor(String uri) {
+		uri = normalize(uri);
+		File file = getPropertiesFile(uri);
+		if (file == null || !file.exists()) {
+			return null;
+		}
+		InputStream in = null;
+		Properties persisted = new Properties();
+		try {
+			in = new FileInputStream(file);
+			persisted.loadFromXML(in);
+		} catch (Exception e) {
+			log.warn("Failed to get properties from cache for " + uri);
+			return null;
+		} finally {
+			if (in != null) try {in.close();} catch (Exception e) {}
+		}
+		Enumeration en = persisted.keys();
+		Properties props = new Properties();
+		while(en.hasMoreElements()) {
+			String key = (String)en.nextElement();
+			if (key.startsWith(uri + PROPERTIES_STORAGE_PATH_SEPARATOR)) {
+				String newKey = key.substring(uri.length() + PROPERTIES_STORAGE_PATH_SEPARATOR.length());
+				props.setProperty(newKey, persisted.getProperty(key));
+			}
+		}
+		return (props.size() == 0) ? null : props;
+	}
+	
+    /**
+     * Set custom properties for given resource
+     * 
+     * @param resourceUri URI of the resource
+     * @param properties to set
+     */
+	public void setCustomProperties(String resourceUri, Properties newProperties) {
+		if (newProperties == null || newProperties.size() == 0) return;
+		
+		resourceUri = normalize(resourceUri);
+		if (resourceUri.endsWith("/" + CUSTOM_PROPERTIES_STORAGE)) return;
+		
+		Properties props = (Properties)mPropertiesCache.get(resourceUri);
+		if (props == null) {
+			// Get them from persistent storage
+			props = getPropertiesFor(resourceUri);
+			if (props == null) props = new Properties();
+		}
+		
+		props.putAll(newProperties);
+		// Save in cache
+		try {
+			mPropertiesCache.put(resourceUri, props);
+		} catch (Exception e) {
+			log.warn("Failed to put properties into cache for " + resourceUri);
+		}
+		// Write them to the persistent storage
+		saveCustomProperties(props, resourceUri);
+	}
+
+    /**
+     * Get custom properties for given resource
+     * 
+     * @param resourceUri URI of the resource
+     */
+	private Properties getCustomProperties(String resourceUri, boolean doIncludeSystem) {
+		resourceUri = normalize(resourceUri);
+		// Try cache first
+		Properties props = (Properties)mPropertiesCache.get(resourceUri);
+		if (props != null) {
+			if (!doIncludeSystem) props = removeSystemProperties(props);
+			return props;
+		}
+		// Get them from persistent storage
+		try {
+			props = getPropertiesFor(resourceUri);
+			if (props == null) return new Properties();
+			if (!doIncludeSystem) props = removeSystemProperties(props);
+			// Put them to the cache
+			mPropertiesCache.put(resourceUri, props);
+		} catch (Exception e) {
+			log.warn("Failed to put properties into cache for " + resourceUri);
+		}
+		
+		return props;
+	}
+
+	private Properties removeSystemProperties(Properties props) {
+		// remove system props
+		Enumeration en = props.keys();
+		Properties newProps = new Properties();
+		while(en.hasMoreElements()) {
+			String key = (String)en.nextElement();
+			if (!(key.startsWith(SYSTEM_PROPERTY_PREFIX) && key.endsWith(SYSTEM_PROPERTY_PREFIX))) {
+				newProps.setProperty(key, props.getProperty(key));
+			}
+		}
+		return newProps;
+	}
+	
+    /**
+     * Get custom properties for given resource
+     * 
+     * @param resourceUri URI of the resource
+     */
+	public Properties getCustomProperties(String resourceUri) {
+		return getCustomProperties(resourceUri, false);
+	}
+	
+	/**
+	 * Delete properties for given resource
+	 * 
+	 * @param resourceUri for which to delete properties
+	 */
+	public void deleteProperties(String resourceUri) {
+		resourceUri = normalize(resourceUri);
+		// Try cache first
+		Properties props = (Properties)mPropertiesCache.get(resourceUri);
+		if (props != null) mPropertiesCache.remove(resourceUri);
+		File file = getPropertiesFile(resourceUri);
+		if (file == null || !file.exists()) {
+			return;
+		}
+		InputStream in = null;
+		Properties persisted = new Properties();
+		try {
+			in = new FileInputStream(file);
+			persisted.loadFromXML(in);
+		} catch (Exception e) {
+			log.warn("Failed to get properties from cache for " + resourceUri);
+			return;
+		} finally {
+			if (in != null) try {in.close();} catch (Exception e) {}
+		}
+		if (persisted.remove(resourceUri) != null) {
+			// Store the updates properties
+			OutputStream os = null;
+			try {
+				os = new FileOutputStream(file);
+				persisted.storeToXML(os, "");
+			} catch (Exception e) {
+				log.warn("Failed to store properties for " + resourceUri);
+			} finally {
+				if (os != null) try {os.close();} catch (Exception e) {}
+			}
+		}
+	}
+	
+	/**
+	 * Copy properties from src to dest
+	 * 
+	 * @param srcUri to copy from
+	 * @param destUri to copy to
+	 */
+	public void copyCustomProperties(String srcUri, String destUri) {
+		Properties props = getCustomProperties(srcUri);
+		setCustomProperties(destUri, props);
 	}
 
 }

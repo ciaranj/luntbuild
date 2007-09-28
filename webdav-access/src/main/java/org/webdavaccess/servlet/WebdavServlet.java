@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.TimeZone;
 import java.util.Vector;
 
@@ -396,8 +397,8 @@ public class WebdavServlet extends HttpServlet {
 	 *            HttpServletRequest
 	 * @throws ServletException
 	 */
-	private void getPropertyNodeAndType(Node propNode, int type,
-			ServletRequest req) throws ServletException {
+	private PropertyNodeType getPropertyNodeAndType(ServletRequest req) throws ServletException {
+		PropertyNodeType nodeType = new PropertyNodeType(FIND_ALL_PROP);
 		if (req.getContentLength() != 0) {
 			DocumentBuilder documentBuilder = getDocumentBuilder();
 			try {
@@ -414,14 +415,14 @@ public class WebdavServlet extends HttpServlet {
 						break;
 					case Node.ELEMENT_NODE:
 						if (currentNode.getNodeName().endsWith("prop")) {
-							type = FIND_BY_PROPERTY;
-							propNode = currentNode;
+							nodeType.setType(FIND_BY_PROPERTY);
+							nodeType.setNode(currentNode);
 						}
 						if (currentNode.getNodeName().endsWith("propname")) {
-							type = FIND_PROPERTY_NAMES;
+							nodeType.setType(FIND_PROPERTY_NAMES);
 						}
 						if (currentNode.getNodeName().endsWith("allprop")) {
-							type = FIND_ALL_PROP;
+							nodeType.setType(FIND_ALL_PROP);
 						}
 						break;
 					}
@@ -431,10 +432,98 @@ public class WebdavServlet extends HttpServlet {
 			}
 		} else {
 			// no content, which means it is a allprop request
-			type = FIND_ALL_PROP;
+			nodeType.setType(FIND_ALL_PROP);
 		}
+		return nodeType;
 	}
 
+	private class PropertyNodeType {
+		Node node = null;
+		int type = FIND_ALL_PROP;
+		public PropertyNodeType(int type) {
+			this.type = type;
+		}
+		public PropertyNodeType(Node propNode, int type) {
+			this.node = propNode;
+			this.type = type;
+		}
+		/**
+		 * @return the node
+		 */
+		protected Node getNode() {
+			return node;
+		}
+		/**
+		 * @param node the node to set
+		 */
+		protected void setNode(Node node) {
+			this.node = node;
+		}
+		/**
+		 * @return the type
+		 */
+		protected int getType() {
+			return type;
+		}
+		/**
+		 * @param type the type to set
+		 */
+		protected void setType(int type) {
+			this.type = type;
+		}
+	}
+	
+	/**
+	 * Gets properties to be set from request
+	 * 
+	 * @param req
+	 * @return Properties
+	 * @throws ServletException
+	 */
+	private Properties getProperties(ServletRequest req) throws ServletException {
+		Properties props = new Properties();
+		if (req.getContentLength() == 0) return props;
+		DocumentBuilder documentBuilder = getDocumentBuilder();
+		try {
+			Document document = documentBuilder.parse(new InputSource(req
+					.getInputStream()));
+			// Get the root element of the document
+			Element rootElement = document.getDocumentElement();
+			NodeList childList = rootElement.getChildNodes();
+
+			for (int i = 0; i < childList.getLength(); i++) {
+				Node currentNode = childList.item(i);
+				switch (currentNode.getNodeType()) {
+				case Node.ELEMENT_NODE:
+					if ("set".equals(currentNode.getLocalName())) {
+						NodeList propList = currentNode.getChildNodes();
+						for (int j = 0; j < propList.getLength(); j++) {
+							Node propNode = propList.item(j);
+							if ("prop".equals(propNode.getLocalName())) {
+								NodeList propNodes = propNode.getChildNodes();
+								for(int k = 0; k < propNodes.getLength(); k++) {
+									Node node = propNodes.item(k);
+									String pname = node.getNodeName();
+									if (pname == null || pname.trim().length() == 0) continue;
+									String value = node.getTextContent();
+									props.setProperty(pname, value);
+								}
+							}
+						}
+					} else if ("remove".equals(currentNode.getLocalName())) {
+					}
+					break;
+				case Node.TEXT_NODE:
+				default:
+					break;
+				}
+			}
+		} catch (Exception e) {
+
+		}
+		return props;
+	}
+	
 	/**
 	 * creates the parent path from the given path by removing the last
 	 * '/' and everything after that
@@ -638,12 +727,10 @@ public class WebdavServlet extends HttpServlet {
 				path = getCleanPath(getRelativePath(req));
 				
 
-				int propertyFindType = FIND_ALL_PROP;
-				Node propNode = null;
-				getPropertyNodeAndType(propNode, propertyFindType, req);
+				PropertyNodeType nodeType = getPropertyNodeAndType(req);
 
-				if (propertyFindType == FIND_BY_PROPERTY) {
-					properties = getPropertiesFromXML(propNode);
+				if (nodeType.getType() == FIND_BY_PROPERTY) {
+					properties = getPropertiesFromXML(nodeType.getNode());
 				}
 
 				resp.setStatus(WebdavStatus.SC_MULTI_STATUS);
@@ -656,10 +743,10 @@ public class WebdavServlet extends HttpServlet {
 						+ generateNamespaceDeclarations(), XMLWriter.OPENING);
 				if (depth == 0) {
 					parseProperties(req, generatedXML, path,
-							propertyFindType, properties);
+							nodeType.getType(), properties);
 				} else {
 					recursiveParseProperties(path, req, generatedXML,
-							propertyFindType, properties, depth);
+							nodeType.getType(), properties, depth);
 				}
 				generatedXML.writeElement(null, "multistatus",
 						XMLWriter.CLOSING);
@@ -691,11 +778,37 @@ public class WebdavServlet extends HttpServlet {
 
 		if (readOnly) {
 			resp.sendError(WebdavStatus.SC_FORBIDDEN);
-
-		} else
-
-			resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
-		// TODO implement proppatch
+		} else {
+			String lockOwner = "doProppatch" + System.currentTimeMillis() + req.toString();
+			String path = getRelativePath(req);
+			if ((path.toUpperCase().startsWith("/WEB-INF")) ||
+					(path.toUpperCase().startsWith("/META-INF"))) {
+				resp.sendError(WebdavStatus.SC_FORBIDDEN);
+				return;
+			}
+	
+			if (fResLocks.lock(path, lockOwner, false, -1)) {
+				try {
+					if (!fStore.objectExists(path)) {
+						resp.setStatus(WebdavStatus.SC_NOT_FOUND);
+						return;
+						// we do not to continue since there is no root
+						// resource
+					}
+					
+					Properties properties = getProperties(req);
+					
+					fStore.setCustomProperties(path, properties);
+					
+				} catch (WebdavException e) {
+					resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+				} finally {
+					fResLocks.unlock(path, lockOwner);
+				}
+			} else {
+				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+			}
+		}
 	}
 
 	/**
@@ -1434,9 +1547,7 @@ public class WebdavServlet extends HttpServlet {
 			HttpServletResponse resp) throws WebdavException, IOException {
 
 		if (fStore.isResource(sourcePath)) {
-			fStore.createResource(destinationPath);
-			fStore.setResourceContent(destinationPath, fStore
-					.getResourceContent(sourcePath), null, null);
+			fStore.copyResource(sourcePath, destinationPath);
 		} else {
 
 			if (fStore.isFolder(sourcePath)) {
@@ -1482,11 +1593,7 @@ public class WebdavServlet extends HttpServlet {
 				children[i] = "/" + children[i];
 				try {
 					if (fStore.isResource(sourcePath + children[i])) {
-						fStore.createResource(destinationPath + children[i]);
-						fStore.setResourceContent(destinationPath + children[i],
-								fStore.getResourceContent(sourcePath
-										+ children[i]), null, null);
-
+						fStore.copyResource(sourcePath + children[i], destinationPath + children[i]);
 					} else {
 						copyFolder(sourcePath + children[i], destinationPath
 								+ children[i], errorList, req, resp);
@@ -1736,9 +1843,8 @@ public class WebdavServlet extends HttpServlet {
 				.getTime());
 		boolean isFolder = fStore.isFolder(path);
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-                        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
-                        String lastModified = formatter.format(fStore.getLastModified
-                (path));
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String lastModified = formatter.format(fStore.getLastModified(path));
 		String resourceLength = String.valueOf(fStore.getResourceLength(path));
 
 		// ResourceInfo resourceInfo = new ResourceInfo(path, resources);
@@ -1767,6 +1873,8 @@ public class WebdavServlet extends HttpServlet {
 		if (lastSlash != -1)
 			resourceName = resourceName.substring(lastSlash + 1);
 
+		Properties customProperties;
+		Enumeration en;
 		switch (type) {
 
 		case FIND_ALL_PROP:
@@ -1801,6 +1909,16 @@ public class WebdavServlet extends HttpServlet {
 						XMLWriter.CLOSING);
 			}
 
+			// Get custom properties
+			customProperties = fStore.getCustomProperties(path);
+			if (customProperties != null && customProperties.size() > 0) {
+				en = customProperties.keys();
+				while(en.hasMoreElements()) {
+					String key = (String)en.nextElement();
+					generatedXML.writeProperty(null, key, customProperties.getProperty(key));
+				}
+			}
+			
 			generatedXML.writeProperty(null, "source", "");
 			generatedXML.writeElement(null, "prop", XMLWriter.CLOSING);
 			generatedXML.writeElement(null, "status", XMLWriter.OPENING);
@@ -1837,6 +1955,17 @@ public class WebdavServlet extends HttpServlet {
 			generatedXML.writeElement(null, "lockdiscovery",
 					XMLWriter.NO_CONTENT);
 
+			// Get custom properties
+			customProperties = fStore.getCustomProperties(path);
+			if (customProperties != null && customProperties.size() > 0) {
+				customProperties = fStore.getCustomProperties(path);
+				en = customProperties.keys();
+				while(en.hasMoreElements()) {
+					String key = (String)en.nextElement();
+					generatedXML.writeElement(null, key, XMLWriter.NO_CONTENT);
+				}
+			}
+			
 			generatedXML.writeElement(null, "prop", XMLWriter.CLOSING);
 			generatedXML.writeElement(null, "status", XMLWriter.OPENING);
 			generatedXML.writeText(status);
@@ -1855,6 +1984,8 @@ public class WebdavServlet extends HttpServlet {
 			generatedXML.writeElement(null, "prop", XMLWriter.OPENING);
 
 			Enumeration properties = propertiesVector.elements();
+
+			customProperties = fStore.getCustomProperties(path);
 
 			while (properties.hasMoreElements()) {
 
@@ -1918,6 +2049,8 @@ public class WebdavServlet extends HttpServlet {
 					}
 				} else if (property.equals("source")) {
 					generatedXML.writeProperty(null, "source", "");
+				} else if (customProperties != null && customProperties.containsKey(property)) {
+					generatedXML.writeProperty(null, property, customProperties.getProperty(property));					
 				} else {
 					propertiesNotFound.addElement(property);
 				}
@@ -1976,7 +2109,7 @@ public class WebdavServlet extends HttpServlet {
 	 */
 	protected String getETag(String path, String resourceLength, String lastModified){
 		// TODO create a real (?) ETag
-		// parameter "path" is not used at the monent
+		// parameter "path" is not used at the moment
 		return "W/\"" + resourceLength + "-"
 				+ lastModified + "\"";
 		

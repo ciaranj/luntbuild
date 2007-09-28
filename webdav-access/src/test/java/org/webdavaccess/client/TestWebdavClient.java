@@ -6,7 +6,9 @@ package org.webdavaccess.client;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
@@ -60,9 +62,6 @@ public class TestWebdavClient extends TestCase {
 		super.tearDown();
 	}
 
-	/**
-	 * Test method for {@link com.insightful.splusserver.api.storage.ClientStorage#uploadFile(java.lang.String, java.io.File)}.
-	 */
 	public void testUploadFile() {
 		try {
 			boolean status = webdavClient.doUploadFile(webdavUrl + "/uploaded.txt", new File("src/test/uploaded.txt"));
@@ -72,9 +71,6 @@ public class TestWebdavClient extends TestCase {
 		}
 	}
 
-	/**
-	 * Test method for {@link com.insightful.splusserver.api.storage.ClientStorage#downloadFile(java.lang.String, java.io.File)}.
-	 */
 	public void testDownloadFile() {
 		try {
 			boolean status = webdavClient.doDownloadFile(webdavUrl + "/uploaded.txt", new File("src/test/downloaded.txt"));
@@ -90,9 +86,6 @@ public class TestWebdavClient extends TestCase {
 		}
 	}
 
-	/**
-	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#createFolder(java.lang.String, java.lang.String)}.
-	 */
 	public void testCreateFolder() {
 		try {
 			String dirname = new Date().toString().replaceAll(" ", "_").replaceAll(":", "_");
@@ -103,9 +96,6 @@ public class TestWebdavClient extends TestCase {
 		}
 	}
 
-	/**
-	 * Test method for {@link com.insightful.splusserver.api.storage.ClientStorage#getList(java.lang.String)}.
-	 */
 	public void testGetList() {
 		try {
 			Vector results = webdavClient.getList(webdavUrl);
@@ -119,9 +109,6 @@ public class TestWebdavClient extends TestCase {
 		}
 	}
 
-	/**
-	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#copy(java.lang.String, java.lang.String, boolean)}.
-	 */
 	public void testCopy() {
 		try {
 			boolean status = webdavClient.createFolder(webdavUrl + "/fromcopytest");
@@ -136,9 +123,6 @@ public class TestWebdavClient extends TestCase {
 		}
 	}
 
-	/**
-	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#move(java.lang.String, java.lang.String, boolean)}.
-	 */
 	public void testMove() {
 		try {
 			String filename = new Date().toString().replaceAll(" ", "_").replaceAll(":", "_") + ".txt";
@@ -153,9 +137,6 @@ public class TestWebdavClient extends TestCase {
 		}
 	}
 
-	/**
-	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#delete(java.lang.String)}.
-	 */
 	public void testDelete() {
 		try {
 			String dirname = new Date().toString().replaceAll(" ", "_").replaceAll(":", "_");
@@ -170,22 +151,6 @@ public class TestWebdavClient extends TestCase {
 		}
 	}
 
-	/**
-	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#findProperties(java.lang.String, java.lang.String, java.lang.String)}.
-	 */
-	public void testFindProperties() {
-		String[] propNames = new String[] {"resourcetype"};
-		try {
-			Vector results = webdavClient.findProperties(webdavUrl + "/fromcopytest", propNames);
-			assertTrue("testFindProperties()", results.size() > 0);
-		} catch (Exception e) {
-			fail("Failed testFindProperties(): " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Test method for {@link com.insightful.splusserver.server.storage.ServerStorage#setProperties(java.lang.String, java.lang.String[], java.lang.String[])}.
-	 */
 	public void testSetProperties() {
 		String[] propNames = new String[] {"propname1", "propname2", "propname3"};
 		String[] propValues = new String[] {"propvalue1", "propvalue2", "propvalue3"};
@@ -202,4 +167,41 @@ public class TestWebdavClient extends TestCase {
 		}
 	}
 
+	public void testFindProperties() {
+		String[] propNames = new String[] {"resourcetype"};
+		try {
+			Vector results = webdavClient.findProperties(webdavUrl + "/fromcopytest", propNames);
+			assertTrue("testFindProperties()", results.size() > 0);
+			results = webdavClient.findProperties(webdavUrl + "/fromcopytest", propNames, "infinity", "names");
+			assertTrue("testFindProperties() names", results.size() > 0);
+			results = webdavClient.findProperties(webdavUrl + "/fromcopytest", new String[] {"propname1", "propname2", "propname3"}, "infinity", "byname");
+			boolean success = true;
+			for (Iterator it = results.iterator(); it.hasNext();) {
+				WebdavProperty wprop = (WebdavProperty) it.next();
+				success &= wprop.getResource() != null;
+				success &= propertyContains(wprop.getProperties(), new String[] {"propname1", "propname2", "propname3"});
+			}
+			assertTrue("testFindProperties() names", results.size() > 0 && success);
+		} catch (Exception e) {
+			fail("Failed testFindProperties(): " + e.getMessage());
+		}
+	}
+
+	private boolean propertyContains(Properties props, String[] propNames) {
+		if (props == null || props.size() == 0) return false;
+		boolean success = true;
+		Enumeration en = props.keys();
+		while(en.hasMoreElements()) {
+			String key = (String)en.nextElement();
+			boolean hasKey = false;
+			for(int i = 0; i < propNames.length; i++) {
+				if (propNames[i].equals(key)) {
+					hasKey = true;
+					break;
+				}
+			}
+			success &= hasKey;
+		}
+		return success;
+	}
 }

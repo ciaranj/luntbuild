@@ -516,10 +516,27 @@ public class WebdavClient {
 		}
 	}
 	
+	/**
+	 * Returns vector of matching WebdavProperty values.<br/><br/>
+	 * 
+	 * If <b>all</b> <i>type</i> is specified all properties for matching resources are returned.<br/>
+	 * If <b>names</b> <i>type</i> is specified only property names are returned, property values in WebdavProperty Properties are empty.<br/>
+	 * If <b>byname</b> <i>type</i> is specified only properties with names specified in <i>propNames</i> for matching resources are returned.<br/>
+	 * 
+	 * @param uri resource uri
+	 * @param propNames property names, only used for "byname" type
+	 * @param depth ("0", "1" or "infinity")
+	 * @param type ("all", "names", "byname")
+	 * @return vector of matching WebdavProperty values
+	 * 
+	 * @throws WebdavException
+	 * 
+	 * @see #com.insightful.webdavaccess.client.WebdavProperty
+	 */
 	public Vector findProperties(String uri, String [] propNames, String depth, String type)
 		throws WebdavException {
 		Vector results = doPropFind(uri, null, null, null, propNames, depth, type);
-		return getMatchingResources(results);
+		return getMatchingResources(results, propNames);
 	}
 	
 	public Vector findProperties(String uri, String [] propNames)
@@ -581,12 +598,21 @@ public class WebdavClient {
 		return properties;
 	}
 	
-	private static Vector getMatchingResources(Vector results) {
+	private static Vector getMatchingResources(Vector results, String [] propNames) {
 		Vector empty = new Vector();
 		if (results == null || results.size() != 6) return empty;
 		Vector tmp = (Vector)results.get(5);
 		if (tmp.size() != 3) return empty;
-		return (Vector)tmp.get(1);
+		
+		Vector paths = (Vector)tmp.get(1);		
+		Vector propVect = (Vector)tmp.get(2);
+		Vector webdavProps = new Vector();
+		for (int i = 0; i < propVect.size(); i++) {
+			WebdavProperty wpr = new WebdavProperty((String)paths.get(i), (Vector)propVect.get(i));
+			if (wpr != null && wpr.getProperties().size() > 0)
+				webdavProps.add(wpr);
+		}
+		return webdavProps;
 	}
 	
 	private static Vector storeLockDiscovery(Node lockDiscovery) {

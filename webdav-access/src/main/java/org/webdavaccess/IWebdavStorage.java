@@ -28,6 +28,7 @@ import org.webdavaccess.exceptions.WebdavException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -140,6 +141,19 @@ public interface IWebdavStorage {
     void createResource(String resourceUri) throws WebdavException;
 
     /**
+     * Creates a content resource from <code>sourceUri</code> at the position specified by
+     * <code>destinationUri</code>.
+     * 
+     * @param sourceUri
+     *            URI of the source resource
+     * @param destinationUri
+     *            URI of the destination resource
+     * @throws WebdavException
+     * 				if something goes wrong on the store level
+     */
+    void copyResource(String sourceUri, String destinationUri) throws WebdavException;
+
+    /**
      * Sets / stores the content of the resource specified by
      * <code>resourceUri</code>.
      * 
@@ -231,4 +245,19 @@ public interface IWebdavStorage {
      * 				if something goes wrong on the store level
      */
     void removeObject(String uri) throws WebdavException;
+    
+    /**
+     * Set custom properties for given resource
+     * 
+     * @param resourceUri URI of the resource
+     * @param properties to set
+     */
+    void setCustomProperties(String resourceUri, Properties properties);
+    
+    /**
+     * Get custom properties for given resource
+     * 
+     * @param resourceUri URI of the resource
+     */
+    Properties getCustomProperties(String resourceUri);
 }
