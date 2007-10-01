@@ -341,7 +341,10 @@ public class Revisions {
         if (!Luntbuild.isEmpty(revision))
             lastEntry.setAttribute(REVISION_ATTR, revision);
         Element authorElement = doc.createElement(AUTHOR_TAG);
-        authorElement.appendChild(doc.createCDATASection(author));
+        if (!Luntbuild.isEmpty(author))
+            authorElement.appendChild(doc.createCDATASection(author));
+        else
+            authorElement.appendChild(doc.createCDATASection("anonymous"));
         lastEntry.appendChild(authorElement);
         Element dateElement = doc.createElement(DATE_TAG);
         if (date != null)
@@ -390,13 +393,17 @@ public class Revisions {
             throw new BuildException("No entry exists to add task to.");
         Element taskElement = doc.createElement(TASK_TAG);
         Element tasks = (Element) lastEntry.getElementsByTagName("tasks").item(0);
-        taskElement.setAttribute(TASK_USER_ATTR, user);
-        taskElement.setAttribute(TASK_STATUS_ATTR, status);
+        if (!Luntbuild.isEmpty(user))
+            taskElement.setAttribute(TASK_USER_ATTR, user);
+        if (!Luntbuild.isEmpty(status))
+            taskElement.setAttribute(TASK_STATUS_ATTR, status);
         Element nameElement = doc.createElement(TASK_NAME_TAG);
-        nameElement.appendChild(doc.createCDATASection(name));
+        if (!Luntbuild.isEmpty(name))
+            nameElement.appendChild(doc.createCDATASection(name));
         taskElement.appendChild(nameElement);
         Element descriptionElement = doc.createElement(TASK_DESC_TAG);
-        descriptionElement.appendChild(doc.createCDATASection(description));
+        if (!Luntbuild.isEmpty(description))
+            descriptionElement.appendChild(doc.createCDATASection(description));
         taskElement.appendChild(descriptionElement);
         
         tasks.appendChild(taskElement);
@@ -414,9 +421,12 @@ public class Revisions {
             throw new BuildException("No entry exists to add path to.");
         Element pathElement = doc.createElement(PATH_TAG);
         Element paths = (Element) lastEntry.getElementsByTagName("paths").item(0);
-        pathElement.setAttribute(PATH_ACTION_ATTR, action);
-        pathElement.setAttribute(PATH_REVISION_ATTR, revision);
-        pathElement.appendChild(doc.createCDATASection(path));
+        if (!Luntbuild.isEmpty(action))
+            pathElement.setAttribute(PATH_ACTION_ATTR, action);
+        if (!Luntbuild.isEmpty(revision))
+            pathElement.setAttribute(PATH_REVISION_ATTR, revision);
+        if (!Luntbuild.isEmpty(path))
+            pathElement.appendChild(doc.createCDATASection(path));
         
         paths.appendChild(pathElement);
     }

@@ -1,4 +1,10 @@
 ==============================================
+luntbuild 1.5.3 Release Notes
+==============================================
+
+- Fix: (Bug 6146) Fixed NULL and blank value handling for revision logs (caused problems with CDATA sections)
+
+==============================================
 luntbuild 1.5.2 Release Notes
 ==============================================
 
