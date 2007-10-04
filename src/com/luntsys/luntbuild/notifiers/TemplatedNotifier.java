@@ -36,6 +36,8 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     protected Log logger = null;
     /** Template dir */
     public String templateDir = null;
+    /** Template sub dir */
+    public String subDir = null;
     /** Build template file */
     public String templateBuildFile = null;
     /** Schedule template file */
@@ -58,8 +60,9 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      * @param subdir the template subdir (in installdir/templates)
      */
     public TemplatedNotifier(Class logClass, String subdir) {
-        this.logger = LogFactory.getLog(logClass);
-        this.templateDir = TEMPLATE_BASE_DIR + File.separator + subdir;
+        logger = LogFactory.getLog(logClass);
+        templateDir = TEMPLATE_BASE_DIR;
+        subDir = subdir;
         setTemplateFiles();
     }
 
@@ -77,11 +80,11 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      * @param templatePropertyName the property name to use
      */
     private void setTemplateFiles(String templatePropertyName) {
-        File f = new File(this.templateDir + File.separator + TEMPLATE_DEF_FILE);
+        File f = new File(templateDir + File.separator + subDir + File.separator + TEMPLATE_DEF_FILE);
         if (!f.exists()) {
-            this.logger.error("Unable to find template definition file " + f.getPath());
-            this.templateBuildFile = DEFAULT_TEMPLATE_BUILD;
-            this.templateScheduleFile = DEFAULT_TEMPLATE_SCHEDULE;
+            logger.error("Unable to find template definition file " + f.getPath());
+            templateBuildFile = subDir + "/" + DEFAULT_TEMPLATE_BUILD;
+            templateScheduleFile = subDir + "/" + DEFAULT_TEMPLATE_SCHEDULE;
             return;
         }
         Properties props = new Properties();
@@ -90,19 +93,21 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
             in = new FileInputStream(f);
             props.load(in);
         } catch (IOException e) {
-            this.logger.error("Unable to read template definition file " + f.getPath());
-            this.templateBuildFile = DEFAULT_TEMPLATE_BUILD;
-            this.templateScheduleFile = DEFAULT_TEMPLATE_SCHEDULE;
+            logger.error("Unable to read template definition file " + f.getPath());
+            templateBuildFile = subDir + "/" + DEFAULT_TEMPLATE_BUILD;
+            templateScheduleFile = subDir + "/" + DEFAULT_TEMPLATE_SCHEDULE;
             return;
         } finally {
             if (in != null) try { in.close(); } catch (Exception e) {/*Ignore*/}
         }
-        this.templateBuildFile = props.getProperty(templatePropertyName + "_buildTemplate");
-        this.templateScheduleFile = props.getProperty(templatePropertyName + "_scheduleTemplate");
-        if (this.templateBuildFile == null) this.templateBuildFile = props.getProperty("buildTemplate");
-        if (this.templateScheduleFile == null) this.templateScheduleFile = props.getProperty("scheduleTemplate");
-        if (this.templateBuildFile == null) this.templateBuildFile = DEFAULT_TEMPLATE_BUILD;
-        if (this.templateScheduleFile == null) this.templateScheduleFile = DEFAULT_TEMPLATE_SCHEDULE;
+        templateBuildFile = props.getProperty(templatePropertyName + "_buildTemplate");
+        templateScheduleFile = props.getProperty(templatePropertyName + "_scheduleTemplate");
+        if (templateBuildFile == null) templateBuildFile = props.getProperty("buildTemplate");
+        if (templateScheduleFile == null) templateScheduleFile = props.getProperty("scheduleTemplate");
+        if (templateBuildFile == null) templateBuildFile = DEFAULT_TEMPLATE_BUILD;
+        if (templateScheduleFile == null) templateScheduleFile = DEFAULT_TEMPLATE_SCHEDULE;
+        templateBuildFile = subDir + "/" + templateBuildFile;
+        templateScheduleFile = subDir + "/" + templateScheduleFile;
     }
 
     /**
@@ -113,7 +118,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      */
     private void init(String templatePropertyName) throws Exception {
         Properties props = new Properties();
-        props.put("file.resource.loader.path", this.templateDir);
+        props.put("file.resource.loader.path", templateDir);
         props.put("runtime.log", "velocity.log");
         Velocity.init(props);
         setTemplateFiles(templatePropertyName);
@@ -127,7 +132,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      * @throws Exception from {@link Velocity#getTemplate(String)}
      */
     private String processTemplate(Build build, VelocityContext ctx) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.templateBuildFile),
+        return processTemplate(Velocity.getTemplate(templateBuildFile),
                 build, ctx);
     }
 
@@ -139,7 +144,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      * @throws Exception from {@link Velocity#getTemplate(String)}
      */
     private String processTemplate(Schedule schedule, VelocityContext ctx) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.templateScheduleFile), schedule, ctx);
+        return processTemplate(Velocity.getTemplate(templateScheduleFile), schedule, ctx);
     }
 
     /**
@@ -160,7 +165,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         EventCartridge ec = new EventCartridge();
         ec.addEventHandler(this);
         ec.attachToContext(context);
-        this.ognlRoot = build;
+        ognlRoot = build;
 
         // Process the template
         StringWriter writer = null;
@@ -193,7 +198,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         EventCartridge ec = new EventCartridge();
         ec.addEventHandler(this);
         ec.attachToContext(context);
-        this.ognlRoot = schedule;
+        ognlRoot = schedule;
 
         // Process the template
         StringWriter writer = null;
@@ -218,9 +223,9 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
                 reference = reference.substring(2, reference.length() - 1);
             }
             Object expression = Ognl.parseExpression(reference);
-            Map ctx = Ognl.createDefaultContext(this.ognlRoot);
+            Map ctx = Ognl.createDefaultContext(ognlRoot);
             Object ognlValue;
-            ognlValue = Ognl.getValue(expression, ctx, this.ognlRoot, String.class);
+            ognlValue = Ognl.getValue(expression, ctx, ognlRoot, String.class);
             return ognlValue;
         } catch (OgnlException ex) {
             return value;
@@ -362,9 +367,9 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
      */
     protected String constructNotificationTitle(Build build) {
         String buildDesc = build.getSchedule().getProject().getName() +
-        "/" + build.getSchedule().getName() + "/" + build.getVersion();
+            "/" + build.getSchedule().getName() + "/" + build.getVersion();
         return "[luntbuild] build of \"" + buildDesc +
-        "\" " + com.luntsys.luntbuild.facades.Constants.getBuildStatusText(build.getStatus());
+            "\" " + com.luntsys.luntbuild.facades.Constants.getBuildStatusText(build.getStatus());
     }
 
     /**
@@ -376,7 +381,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     protected String constructNotificationBody4CheckinUsers(Build build) {
         VelocityContext context = new VelocityContext();
         context.put("build_user_msg",
-                "You have received this note because you've made checkins in the source repository recently.");
+            "You have received this note because you've made checkins in the source repository recently.");
         return constructNotificationBody(build, context);
     }
 
@@ -389,7 +394,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     protected String constructNotificationBody(Build build) {
         VelocityContext context = new VelocityContext();
         context.put("build_user_msg",
-                "You have received this email because you asked to be notified.");
+            "You have received this email because you asked to be notified.");
         return constructNotificationBody(build, context);
     }
 
@@ -406,20 +411,20 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
             return processTemplate(build, ctx);
         }
         catch (ResourceNotFoundException rnfe) {
-            this.logger.error("Could not load template file: " + this.templateBuildFile
-                    + "\nTemplateDir = " + this.templateDir, rnfe);
-            return "Could not load template file: " + this.templateBuildFile + "\nTemplateDir = " +
-            this.templateDir;
+            logger.error("Could not load template file: " + templateBuildFile +
+                "\nTemplateDir = " + templateDir, rnfe);
+            return "Could not load template file: " + templateBuildFile + "\nTemplateDir = " +
+                templateDir;
         }
         catch (ParseErrorException pee) {
-            this.logger.error("Unable to parse template file: " + this.templateBuildFile +
-                    "\nTemplateDir = " + this.templateDir, pee);
-            return "Unable to parse template file: " + this.templateBuildFile + "\nTemplateDir = " +
-            this.templateDir;
+            logger.error("Unable to parse template file: " + templateBuildFile +
+                "\nTemplateDir = " + templateDir, pee);
+            return "Unable to parse template file: " + templateBuildFile + "\nTemplateDir = " +
+                templateDir;
         }
         catch(Exception ex) {
             // Wrap in a runtime exception and throw it up the stack
-            this.logger.error("Failed to process template", ex);
+            logger.error("Failed to process template", ex);
             throw new RuntimeException(ex);
         }
     }
@@ -437,20 +442,20 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
             return processTemplate(schedule, ctx);
         }
         catch (ResourceNotFoundException rnfe) {
-            this.logger.error("Could not load template file: " + this.templateScheduleFile
-                    + "\nTemplateDir = " + this.templateDir, rnfe);
-            return "Could not load template file: " + this.templateScheduleFile + "\nTemplateDir = " +
-            this.templateDir;
+            logger.error("Could not load template file: " + templateScheduleFile +
+                "\nTemplateDir = " + templateDir, rnfe);
+            return "Could not load template file: " + templateScheduleFile + "\nTemplateDir = " +
+                templateDir;
         }
         catch (ParseErrorException pee) {
-            this.logger.error("Unable to parse template file: " + this.templateScheduleFile +
-                    "\nTemplateDir = " + this.templateDir, pee);
-            return "Unable to parse template file: " + this.templateScheduleFile + "\nTemplateDir = " +
-            this.templateDir;
+            logger.error("Unable to parse template file: " + templateScheduleFile +
+                "\nTemplateDir = " + templateDir, pee);
+            return "Unable to parse template file: " + templateScheduleFile + "\nTemplateDir = " +
+                templateDir;
         }
         catch(Exception ex) {
             // Wrap in a runtime exception and throw it up the stack
-            this.logger.error("Failed to process template", ex);
+            logger.error("Failed to process template", ex);
             throw new RuntimeException(ex);
         }
     }
