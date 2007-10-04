@@ -1000,9 +1000,9 @@ public class MigrationManager {
 			schedule.setFacade(scheduleFacade);
 			data.getSchedules().add(schedule);
 
-			it = project12.getBuilds().iterator();
-			while (it.hasNext()) {
-				com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade = (com.luntsys.luntbuild.facades.lb12.BuildFacade) it.next();
+			Iterator buildit = project12.getBuilds().iterator();
+			while (buildit.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade = (com.luntsys.luntbuild.facades.lb12.BuildFacade) buildit.next();
 				logger.info("Defacading build: " + data.getSchedule(buildFacade.getScheduleId()).getProject().getName() +
 						"/" + data.getSchedule(buildFacade.getScheduleId()) + "/" + buildFacade.getVersion());
 				Build build = new Build();

@@ -1440,9 +1440,9 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
             while (it.hasNext()) {
                 Schedule schedule = (Schedule) it.next();
                 project12.getSchedules().add(schedule.getFacade());
-                it = schedule.getBuilds().iterator();
-                while (it.hasNext()) {
-                    Build build = (Build) it.next();
+                Iterator buildit = schedule.getBuilds().iterator();
+                while (buildit.hasNext()) {
+                    Build build = (Build) buildit.next();
                     try {
                     	project12.getBuilds().add(build.getFacade());
                     } catch (HibernateException ex) {
