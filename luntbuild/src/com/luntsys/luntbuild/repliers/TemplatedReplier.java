@@ -35,6 +35,8 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
     protected Log logger = null;
     /** Template dir */
     public String templateDir = null;
+    /** Template sub dir */
+    public String subDir = null;
     /** Template file */
     public String templateFile = null;
 
@@ -54,8 +56,9 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
      * @param subdir the template subdir (in installdir/templates)
      */
     public TemplatedReplier(Class logClass, String subdir) {
-        this.logger = LogFactory.getLog(logClass);
-        this.templateDir = TEMPLATE_BASE_DIR + "/" + subdir;
+        logger = LogFactory.getLog(logClass);
+        templateDir = TEMPLATE_BASE_DIR;
+        subDir = subdir;
         setTemplateFiles();
     }
 
@@ -73,10 +76,10 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
      * @param templatePropertyName the property name to use
      */
     private void setTemplateFiles(String templatePropertyName, String templateProperty) {
-        File f = new File(this.templateDir + "/" + TEMPLATE_DEF_FILE);
+        File f = new File(templateDir + "/" + subDir + "/" + TEMPLATE_DEF_FILE);
         if (!f.exists()) {
-            this.logger.error("Unable to find template definition file " + f.getPath());
-            this.templateFile = DEFAULT_TEMPLATE;
+            logger.error("Unable to find template definition file " + f.getPath());
+            templateFile = subDir + "/" + DEFAULT_TEMPLATE;
             return;
         }
         Properties props = new Properties();
@@ -85,15 +88,16 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
             in = new FileInputStream(f);
             props.load(in);
         } catch (IOException e) {
-            this.logger.error("Unable to read template definition file " + f.getPath());
-            this.templateFile = DEFAULT_TEMPLATE;
+            logger.error("Unable to read template definition file " + f.getPath());
+            templateFile = subDir + "/" + DEFAULT_TEMPLATE;
             return;
         } finally {
             if (in != null) try { in.close(); } catch (Exception e) {/*Ignore*/}
         }
-        this.templateFile = props.getProperty(templatePropertyName + "_" + templateProperty);
-        if (this.templateFile == null) this.templateFile = props.getProperty(templateProperty);
-        if (this.templateFile == null) this.templateFile = DEFAULT_TEMPLATE;
+        templateFile = props.getProperty(templatePropertyName + "_" + templateProperty);
+        if (templateFile == null) templateFile = props.getProperty(templateProperty);
+        if (templateFile == null) templateFile = DEFAULT_TEMPLATE;
+        templateFile = subDir + "/" + templateFile;
     }
 
     /**
@@ -104,7 +108,7 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
      */
     private void init(String templatePropertyName, String templateProperty) throws Exception {
         Properties props = new Properties();
-        props.put("file.resource.loader.path", this.templateDir);
+        props.put("file.resource.loader.path", templateDir);
         props.put("runtime.log", "velocity.log");
         Velocity.init(props);
         setTemplateFiles(templatePropertyName, templateProperty);
@@ -118,7 +122,7 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
      * @throws Exception from {@link Velocity#getTemplate(String)}
      */
     private String processTemplate(Build build, VelocityContext ctx) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.templateFile), build, ctx);
+        return processTemplate(Velocity.getTemplate(templateFile), build, ctx);
     }
 
     /**
@@ -129,7 +133,7 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
      * @throws Exception from {@link Velocity#getTemplate(String)}
      */
     private String processTemplate(Schedule schedule, VelocityContext ctx) throws Exception {
-        return processTemplate(Velocity.getTemplate(this.templateFile), schedule, ctx);
+        return processTemplate(Velocity.getTemplate(templateFile), schedule, ctx);
     }
 
     /**
@@ -150,7 +154,7 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
         EventCartridge ec = new EventCartridge();
         ec.addEventHandler(this);
         ec.attachToContext(context);
-        this.ognlRoot = build;
+        ognlRoot = build;
 
         // Process the template
         StringWriter writer = null;
@@ -183,7 +187,7 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
         EventCartridge ec = new EventCartridge();
         ec.addEventHandler(this);
         ec.attachToContext(context);
-        this.ognlRoot = schedule;
+        ognlRoot = schedule;
 
         // Process the template
         StringWriter writer = null;
@@ -208,9 +212,9 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
                 reference = reference.substring(2, reference.length() - 1);
             }
             Object expression = Ognl.parseExpression(reference);
-            Map ctx = Ognl.createDefaultContext(this.ognlRoot);
+            Map ctx = Ognl.createDefaultContext(ognlRoot);
             Object ognlValue;
-            ognlValue = Ognl.getValue(expression, ctx, this.ognlRoot, String.class);
+            ognlValue = Ognl.getValue(expression, ctx, ognlRoot, String.class);
             return ognlValue;
         } catch (OgnlException ex) {
             return value;
@@ -351,9 +355,9 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
      */
     protected String constructTitle(Build build) {
         String buildDesc = build.getSchedule().getProject().getName() +
-        "/" + build.getSchedule().getName() + "/" + build.getVersion();
+            "/" + build.getSchedule().getName() + "/" + build.getVersion();
         return "[luntbuild] build of \"" + buildDesc +
-        "\" " + com.luntsys.luntbuild.facades.Constants.getBuildStatusText(build.getStatus());
+            "\" " + com.luntsys.luntbuild.facades.Constants.getBuildStatusText(build.getStatus());
     }
 
     /**
@@ -365,7 +369,7 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
     protected String constructBody(Build build) {
         VelocityContext context = new VelocityContext();
         context.put("build_user_msg",
-                "You have received this email because you asked to be notified.");
+            "You have received this email because you asked to be notified.");
         return constructBody(build, context);
     }
 
@@ -378,25 +382,25 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
      */
     private String constructBody(Schedule schedule, VelocityContext ctx) {
         try {
-            init(schedule.getProject().getName().replaceAll(" ","_") + "_"
-            	+ schedule.getName().replaceAll(" ","_"), "scheduleTemplate");
+            init(schedule.getProject().getName().replaceAll(" ","_") + "_" +
+            	schedule.getName().replaceAll(" ","_"), "scheduleTemplate");
             return processTemplate(schedule, ctx);
         }
         catch (ResourceNotFoundException rnfe) {
-            this.logger.error("Could not load template file: " + this.templateFile
-                    + "\nTemplateDir = " + this.templateDir, rnfe);
-            return "Could not load template file: " + this.templateFile + "\nTemplateDir = " +
-            this.templateDir;
+            logger.error("Could not load template file: " + templateFile +
+                "\nTemplateDir = " + templateDir, rnfe);
+            return "Could not load template file: " + templateFile + "\nTemplateDir = " +
+                templateDir;
         }
         catch (ParseErrorException pee) {
-            this.logger.error("Unable to parse template file: " + this.templateFile +
-                    "\nTemplateDir = " + this.templateDir, pee);
-            return "Unable to parse template file: " + this.templateFile + "\nTemplateDir = " +
-            this.templateDir;
+            logger.error("Unable to parse template file: " + templateFile +
+                "\nTemplateDir = " + templateDir, pee);
+            return "Unable to parse template file: " + templateFile + "\nTemplateDir = " +
+                templateDir;
         }
         catch(Exception ex) {
             // Wrap in a runtime exception and throw it up the stack
-            this.logger.error("Failed to process template", ex);
+            logger.error("Failed to process template", ex);
             throw new RuntimeException(ex);
         }
     }
@@ -410,25 +414,25 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
      */
     private String constructBody(Build build, VelocityContext ctx) {
         try {
-            init(build.getSchedule().getProject().getName().replaceAll(" ","_") + "_"
-            	+ build.getSchedule().getName().replaceAll(" ","_"), "buildTemplate");
+            init(build.getSchedule().getProject().getName().replaceAll(" ","_") + "_" +
+            	build.getSchedule().getName().replaceAll(" ","_"), "buildTemplate");
             return processTemplate(build, ctx);
         }
         catch (ResourceNotFoundException rnfe) {
-            this.logger.error("Could not load template file: " + this.templateFile
-                    + "\nTemplateDir = " + this.templateDir, rnfe);
-            return "Could not load template file: " + this.templateFile + "\nTemplateDir = " +
-            this.templateDir;
+            logger.error("Could not load template file: " + templateFile +
+                "\nTemplateDir = " + templateDir, rnfe);
+            return "Could not load template file: " + templateFile + "\nTemplateDir = " +
+                templateDir;
         }
         catch (ParseErrorException pee) {
-            this.logger.error("Unable to parse template file: " + this.templateFile +
-                    "\nTemplateDir = " + this.templateDir, pee);
-            return "Unable to parse template file: " + this.templateFile + "\nTemplateDir = " +
-            this.templateDir;
+            logger.error("Unable to parse template file: " + templateFile +
+                "\nTemplateDir = " + templateDir, pee);
+            return "Unable to parse template file: " + templateFile + "\nTemplateDir = " +
+                templateDir;
         }
         catch(Exception ex) {
             // Wrap in a runtime exception and throw it up the stack
-            this.logger.error("Failed to process template", ex);
+            logger.error("Failed to process template", ex);
             throw new RuntimeException(ex);
         }
     }

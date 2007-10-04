@@ -4,6 +4,7 @@ luntbuild 1.5.3 Release Notes
 
 - Fix: (Bug 6146) Fixed NULL and blank value handling for revision logs (caused problems with CDATA sections)
 - Fix: (Bug 6206) Fixed exported projects only exporting with their first schedule
+- Fix: (Bug 6184) Fixed race condition between notifiers and repliers (RSS) over template files
 
 ==============================================
 luntbuild 1.5.2 Release Notes
