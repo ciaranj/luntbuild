@@ -58,8 +58,7 @@ import java.util.List;
  * 
  * @author johannes plachy
  */
-public class AuthenticationProviderManager extends AbstractAuthenticationManager implements InitializingBean
-{
+public class AuthenticationProviderManager extends AbstractAuthenticationManager implements InitializingBean {
     private static transient final Log logger = LogFactory.getLog(AuthenticationProviderManager.class);
 
     // ~ Instance fields
@@ -92,8 +91,7 @@ public class AuthenticationProviderManager extends AbstractAuthenticationManager
      *         that supports the given <code>Authentication</code> object
      * @see AuthenticationProvider
      */
-    protected Authentication doAuthentication(Authentication authentication) throws AuthenticationException
-    {
+    protected Authentication doAuthentication(Authentication authentication) throws AuthenticationException {
         Authentication result = null;
         boolean foundProvider = false;
 
@@ -101,38 +99,28 @@ public class AuthenticationProviderManager extends AbstractAuthenticationManager
 
         Class toTest = authentication.getClass();
 
-        while ((iter.hasNext()) && (result == null))
-        {
+        while ((iter.hasNext()) && (result == null)) {
             AuthenticationProvider provider = (AuthenticationProvider) iter.next();
 
-            if (provider.supports(toTest))
-            {
+            if (provider.supports(toTest)) {
                 foundProvider = true;
 
-                try
-                {
+                try {
                     result = provider.authenticate(authentication);
-                }
-                catch ( AuthenticationException ae)
-                {
+                } catch ( AuthenticationException ae) {
+                    // ignore
                 }                
             }
         }
 
-        if (result != null)
-        {
+        if (result != null) {
             // return initialized authenticationTokens
             return result;
-        }
-        else
-        {
+        } else {
             // throw exeption if authentication fails
-            if (foundProvider == false)
-            {
+            if (foundProvider == false) {
                 throw new ProviderNotFoundException("No authentication provider for " + toTest.getName());
-            }
-            else
-            {
+            } else {
                 throw new ApplicationAuthenticationException("no provider was able to authenticate");
             }
         }
@@ -141,15 +129,14 @@ public class AuthenticationProviderManager extends AbstractAuthenticationManager
     /**
      * @inheritDoc
      */
-    public void afterPropertiesSet() throws Exception
-    {
-        checkIfValidList(this.providers);
+    public void afterPropertiesSet() throws Exception {
+        checkIfValidList(providers);
     }
 
-    private void checkIfValidList(List listToCheck)
-    {
-        if ((listToCheck == null) || (listToCheck.size() == 0)) { throw new IllegalArgumentException(
-                "A list of AuthenticationManagers is required"); }
+    private void checkIfValidList(List listToCheck) {
+        if ((listToCheck == null) || (listToCheck.size() == 0)) {
+            throw new IllegalArgumentException("A list of AuthenticationManagers is required");
+        }
     }
 
     /**
@@ -158,39 +145,30 @@ public class AuthenticationProviderManager extends AbstractAuthenticationManager
      * @return the list of <code>AuthenticationProvider</code> objects
      * @see AuthenticationProvider
      */
-    public List getProviders()
-    {
-        return this.providers;
+    public List getProviders() {
+        return providers;
     }
 
     /**
      * Sets the <code>AuthenticationProvider</code> objects to be used for authentication.
      * 
      * @param newList the list of <code>AuthenticationProvider</code> objects
-     * @throws IllegalArgumentException if Provider doesnt implement <code>AuthenticationProvider</code>
+     * @throws IllegalArgumentException if provider doesnt implement <code>AuthenticationProvider</code>
      * @see AuthenticationProvider
      */
-    public void setProviders(List newList)
-    {
+    public void setProviders(List newList) {
         checkIfValidList(newList);
-
         Iterator iter = newList.iterator();
 
-        while (iter.hasNext())
-        {
-            Object currentObject = null;
-
-            try
-            {
-                currentObject = iter.next();
-            }
-            catch (ClassCastException cce)
-            {
+        while (iter.hasNext()) {
+            try {
+                ((AuthenticationProvider) iter.next()).toString();
+            } catch (ClassCastException cce) {
             	logger.error("AuthenticationProvider - must implement AuthenticationProvider", cce);
                 throw new IllegalArgumentException("AuthenticationProvider - must implement AuthenticationProvider" + cce.getMessage());
             }
         }
 
-        this.providers = newList;
+        providers = newList;
     }
 }

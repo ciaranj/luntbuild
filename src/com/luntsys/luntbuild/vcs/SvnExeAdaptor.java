@@ -1196,11 +1196,6 @@ public class SvnExeAdaptor extends Vcs {
             return "";
     }
 
-    private void initLogger(Project antProject) {
-        SvnCustomLogger svnLogger = new SvnCustomLogger(antProject);
-        SVNDebugLog.setDefaultLog(svnLogger);
-    }
-
     /**
      * Selection model used for user interface of <code>SvnAdaptor</code>.
      */

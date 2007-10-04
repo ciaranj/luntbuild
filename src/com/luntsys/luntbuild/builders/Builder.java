@@ -45,7 +45,6 @@ import org.w3c.dom.NodeList;
 import java.io.*;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**

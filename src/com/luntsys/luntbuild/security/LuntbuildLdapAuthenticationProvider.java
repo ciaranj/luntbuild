@@ -327,7 +327,7 @@ public class LuntbuildLdapAuthenticationProvider extends LdapAuthenticationProvi
 	                    Attribute attrib = attrs.get(getLdapEmailAttrName());
 	                    if (attrib.getID().equals(getLdapEmailAttrName())) {
 	                        // Return first email
-	                        for (NamingEnumeration e = attrib.getAll();e.hasMore();) {
+	                        for (NamingEnumeration e = attrib.getAll(); e.hasMore(); ) {
 	                        	retAttrs.put("mail", (String)e.next());
 	                        	break;
 	                        }
@@ -344,7 +344,7 @@ public class LuntbuildLdapAuthenticationProvider extends LdapAuthenticationProvi
 	                    Attribute attrib = attrs.get(getLdapFullNameAttr());
 	                    if (attrib.getID().equals(getLdapFullNameAttr())) {
 	                        // Return first email
-	                        for (NamingEnumeration e = attrib.getAll();e.hasMore();) {
+	                        for (NamingEnumeration e = attrib.getAll(); e.hasMore(); ) {
 	                        	retAttrs.put("fullname", (String)e.next());
 	                        	break;
 	                        }
