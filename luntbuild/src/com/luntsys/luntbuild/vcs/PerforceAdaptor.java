@@ -1010,6 +1010,7 @@ public class PerforceAdaptor extends Vcs {
         revisions.getChangeLogs().add(toString());
         revisions.getChangeLogs().add("");
         setupP4Client(workingSchedule, antProject);
+        // Keep this
         final int nextChange = getClientChangelist(workingSchedule, antProject) + 1;
         Commandline cmdLine = buildP4Executable();
         cmdLine.createArgument().setValue("-s");

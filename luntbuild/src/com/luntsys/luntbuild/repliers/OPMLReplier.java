@@ -6,7 +6,6 @@ package com.luntsys.luntbuild.repliers;
 
 import com.luntsys.luntbuild.builders.Builder;
 import com.luntsys.luntbuild.db.*;
-import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.NotifierProperty;
 import com.luntsys.luntbuild.vcs.Vcs;
@@ -48,7 +47,7 @@ public class OPMLReplier extends Replier {
 		String body = "";
 		String footer = "";
 
-		String servletURL = (String) Luntbuild.getServletUrl();
+		String servletURL = Luntbuild.getServletUrl();
 		apiURL = servletURL.replaceAll("app.do","api/rss");
 
 		// Construct feed

@@ -261,7 +261,7 @@ public class XMLReplier extends Replier {
     public String getSystem() {
         String XMLText = "";
         XMLText += "<system>";
-        XMLText += "<servletUrl>" + escape((String) Luntbuild.getServletRootUrl()) + "</servletUrl>";
+        XMLText += "<servletUrl>" + escape(Luntbuild.getServletRootUrl()) + "</servletUrl>";
         XMLText += "<workingDir>" + escape((String) Luntbuild.getProperties().get(Constants.WORKING_DIR)) + "</workingDir>";
         XMLText += "<publishDir>" + escape((String) Luntbuild.getProperties().get(Constants.PUBLISH_DIR)) + "</publishDir>";
         XMLText += "<pageRefreshInterval>" + ((String) Luntbuild.getProperties().get(Constants.PAGE_REFRESH_INTERVAL)) + "</pageRefreshInterval>";
