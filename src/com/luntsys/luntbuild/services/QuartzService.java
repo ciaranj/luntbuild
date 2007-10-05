@@ -125,14 +125,12 @@ public class QuartzService implements IScheduler {
 					trigger.setName(String.valueOf(schedule.getId()));
 					trigger.setJobGroup(Scheduler.DEFAULT_GROUP);
 					trigger.setJobName(jobDetail.getName());
-					Date nextFire = trigger.getNextFireTime();
 					if (trigger instanceof SimpleTrigger) {
-						// Already should fire, fire it now (almost)
-						trigger.setStartTime(new Date(System.currentTimeMillis() + 30 * 1000));
-					} else if (nextFire != null) {
-						// Should fire 
-						trigger.setStartTime(nextFire);
-					}
+						SimpleTrigger simpleTrigger = (SimpleTrigger) trigger;
+						simpleTrigger.setStartTime(new Date(System.currentTimeMillis() +
+								simpleTrigger.getRepeatInterval()));
+					} else
+						trigger.setStartTime(new Date(System.currentTimeMillis()));
 					sched.scheduleJob(trigger);
 				}
 			} catch (Exception e) {
