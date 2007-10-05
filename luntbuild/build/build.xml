@@ -130,11 +130,31 @@
         <filter token="sessionTimeout" value="30"/>
         <filter token="luntbuildPassword" value="luntbuild"/>
         <filter token="ldapHost" value=""/>
+        <filter token="ldapPort" value="389"/>
+        <filter token="ldapPath" value=""/>
+        <filter token="ldapBaseDn" value=""/>
+        <filter token="ldapGroup0" value=""/>
+        <filter token="ldapGroup1" value=""/>
+        <filter token="ldapGroup2" value=""/>
+        <filter token="ldapGroup3" value=""/>
+        <filter token="ldapGroup4" value=""/>
+        <filter token="ldapGroup5" value=""/>
+        <filter token="ldapGroup6" value=""/>
+        <filter token="ldapGroup7" value=""/>
+        <filter token="ldapGroup8" value=""/>
+        <filter token="ldapGroup9" value=""/>
+        <filter token="ldapSearchBase" value="OU=All Users"/>
+        <filter token="ldapGroupRoleAttr" value="OU"/>
+        <filter token="ldapGroupMemberAttr" value="sAMAccountName"/>
+        <filter token="ldapAccountNameAttr" value="sAMAccountName"/>
+        <filter token="ldapManagerCn" value="changeme"/>
+        <filter token="ldapManagerPass" value="changeme"/>
         <filter token="ldapCreateLuntbuildUser" value="true"/>
         <filter token="ldapCanCreateProject" value="true"/>
         <filter token="ldapCanViewProject" value="true"/>
         <filter token="ldapCanBuildProject" value="true"/>
         <filter token="ldapEmailAttrName" value="mail"/>
+        <filter token="ldapFullNameAttr" value=""/>
         <copy file="web/WEB-INF/users.properties"
             tofile="stage/web/WEB-INF/users.properties" overwrite="true" filtering="true" />
         <copy file="web/WEB-INF/ldap.properties"
@@ -152,28 +172,10 @@
       -->
     <target name="war" depends="web-config"
         description="Builds Luntbuild webapp deployment package">
-        <copy file="web/WEB-INF/web.xml" tofile="stage/web.xml" overwrite="true" />
+        <copy file="stage/web/WEB-INF/web.xml" tofile="stage/web.xml" overwrite="true" />
         <delete file="stage/web/WEB-INF/web.xml"/>
         <war basedir="stage/web" destfile="stage/luntbuild.war" webxml="stage/web.xml"/>
         <delete file="stage/web.xml"/>
-    </target>
-
-    <!-- Used for development, please do not remove. lubosp.
-    This can be used with MyEclipse Deploy J2EE Project to Server... action.
-    Just create a project luntbuild-deploy, run this target, and add deployment for the project.
-    Then you can just build luntbuild using deploy target, deploy it by clicking on
-    Deploy J2EE Project to Server... and selecting luntbuild-deploy deployment.
-    Now you can start Tomcat (or your favorite servlet container).
-      -->
-    <target name="deploy" depends="war"
-        description="Deploys the webapp deployment package to the webapp server">
-        <fail unless="app.server.webapps"
-            message="Please specify servlet container webapps directory, where to copy luntbuild.war." />
-        <delete dir="${app.server.webapps}/luntbuild" failonerror="false"/>
-        <mkdir dir="${app.server.webapps}/luntbuild"/>
-        <copy file="stage/luntbuild.war" todir="${app.server.webapps}"/>
-        <unwar src="${app.server.webapps}/luntbuild.war" dest="${app.server.webapps}/luntbuild"
-            overwrite="true" />
     </target>
 
 	<target name="api" depends="webstage_compile, api_docs"
