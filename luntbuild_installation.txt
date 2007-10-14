@@ -4,35 +4,56 @@ Introduction
   We recommend to use the installer for all Luntbuild standard installations including
   upgrades. See section A and D for details.
 
-  In case you need to modify for some reason Luntbuild configuration files (web.xml,
-  applicationContext.xml) with attributes/values beyond the attributes/values modified
-  by Luntbuild installer, you might choose installation using Luntbuild distribution
-  zip file. See section B for details.
+  In case you need to modify for some reason Luntbuild configuration files (web.xml etc.)
+  with attributes/values beyond the attributes/values modified by Luntbuild installer,
+  you might choose installation using Luntbuild distribution zip file. See section B for details.
 
   In case you need to modify and/or extend the source code implementation of Luntbuild,
   you might to choose to build Luntbuild distribution from the source code. See section C
   for details.
 
-  If you are upgrading from previous releases,  please refer to section D.
+  Supported application servers/servlet containers (Servlet 2.3 and JSP 1.2 support
+   are required)
+  ---------------------------------------------------
+ * Tomcat 4.x
+ * Tomcat 5.5
+ * Jetty 4.2.23
+ * Jetty 5.1.12
+ * Resin 3.0.12
+ * JBoss 4.0.1RC2
+ * JBoss 3.2.7
+ * JOnAS 4.3.3
+ * SunOne 6.1
+ * Orion 2.x
 
+ Luntbuild may work with other application servers/servlet containers but
+ it is not tested with them.
 
 A. Installation using Luntbuild installer (with GUI)
 ----------------------------------------------------
 
-  NOTE: This is clean installation of Luntbuild. For upgrades from version 1.1.1,
-  please refer to section D of this file.
+  It you are upgrading from previous version of Luntbuild, before you install new version
+  perform the following tasks:
+  
+  * Export your Luntbuild data for current version of Luntbuild (Administration tab)
+  * Backup your DB (if you use external database) and your current Luntbuild installation
+  * Shutdown the servlet container that is used to run Luntbuild (if any)
+  * Delete luntbuild schema from DB (if you use external database)
+  
+  NOTE: For upgrades from version 1.1.1, please refer to section D of this file.
 
   1) Make sure you have jdk1.4 or jdk1.5 installed, and add the directory which
-     contains the java and jar executable into your system path(IMPORTANT!).
+     contains the java and jar executable into your system path(IMPORTANT!)
      Go to "http://java.sun.com/" for JDK download, if you didn't install it yet.
 
   2) Make sure you get one of Luntbuild supported servlet container or application
-     server installed (Servlet2.3 and JSP1.2 support are required), and make sure
-     it has been stopped.
+     server installed, and make sure it has
+     been stopped.
 
-  3) Download Luntbuild installer from "http://sourceforge.net/projects/luntbuild/".
+  3) Download Luntbuild installer from "http://sourceforge.net/projects/luntbuild/"
+     or from Javaforge: http://www.javaforge.com/proj/doc.do?doc_id=1205
       This file is normally named as "luntbuild-xxx-installer.jar", where xxx denotes
-      version.
+      current version.
 
   4) Run command "java -jar luntbuild-xxx-installer.jar". A GUI will display to
       guide you through the installation, and Luntbuild will install into the selected
@@ -44,40 +65,44 @@ A. Installation using Luntbuild installer (with GUI)
      the installer will deploy luntbuild.war for you.
 
   6) Access the Luntbuild web application and you should be able to start your
-     Luntbuild adventure 8-)!
+     Luntbuild adventure, :D
 
 B. Installation using zip distribution (without GUI)
 ----------------------------------------------------
 
-  NOTE: This is clean installation of Luntbuild. For upgrades from version 1.1.1,
-  please refer to section D of this file.
+  It you are upgrading from previous version of Luntbuild, before you install new version,
+  perform the following tasks:
+  
+  * Export your Luntbuild data for current version of Luntbuild (Administration tab)
+  * Backup your DB (if you use external database) and your current Luntbuild installation
+  * Shutdown the servlet container that is used to run Luntbuild (if any)
+  * Delete luntbuild schema from DB (if you use external database)
+  
+  NOTE: For upgrades from version 1.1.1, please refer to section D of this file.
 
   1) Make sure you get one of Luntbuild supported servlet container or application
      server installed, and make sure it has been stopped.
 
-  3) Download the Luntbuild zip distribution from "http://sourceforge.net/projects/luntbuild/".
-      This file is normally named as "luntbuild-xxx.zip", where xxx denotes version.
+  3) Download the Luntbuild zip distribution from "http://sourceforge.net/projects/luntbuild/"
+     or from Javaforge: http://www.javaforge.com/proj/doc.do?doc_id=1205.
+     This file is normally named as "luntbuild-xxx.zip", where xxx denotes current version.
 
   4) Extract the zip file into the directory where you want to install Luntbuild, say
      "/opt/luntbuild". And edit the following files with your text editor:
      * Edit file "/opt/luntbuild/web/WEB-INF/web.xml":
        Replace "$INSTALL_PATH" with your Luntbuild installation path (/opt/luntbuild here).
-       Replace "${sessionTimeout}" with your desired session timeout value (normally 30).
-     * Edit file "/opt/luntbuild/web/WEB-INF/applicationContext.xml":
-	   Replace "${luntbuildPassword}" with your desired site administrator password.
-	 * OPTIONAL: Replace file "/opt/luntbuild/web/WEB-INF/jdbc.properties" with the properties file
-	     of your desired database "/opt/luntbuild/web/WEB-INF/jdbc.xxx.properties"
-	   For client connection databases, replace "${jdbcHost}", "${jdbcPort}", and "${jdbcDatabase}"
-	   in the "jdbc.properties" file with the host name, port and database respectively
-	 * Edit file "/opt/luntbuild/web/WEB-INF/jdbc.properties":
-	   Replace "${jdbcUsername}" with your desired (or existing) database user name
-	   Replace "${jdbcPassword}" with your desired (or existing) database user password
+     * Optionally edit file "/opt/luntbuild/web/WEB-INF/users.properties":
+	   Replace "luntbuild=luntbuild" with your desired site administrator password
+	   in the format "luntbuild=youradminpassword". NOTE, that admin user HAS to be "luntbuild".
 
+  5) If you use LDAP, edit file "/opt/luntbuild/web/WEB-INF/ldap.properties" and
+     follow Luntbuild documentation to configure LDAP.
+     
   5) Copy all the contents under "/opt/luntbuild/web" directory, and deploy it as a web application to
       your application server, or servlet container. For example, if you are using
       Tomcat servlet container:
 
-        - Make Tomcat has been stopped
+        - Make Tomcat sure has been stopped
         - Change to Tomcat install dir:
              > cd <tomcat install dir>/webapps
         - Make luntbuild directory:
@@ -86,7 +111,7 @@ B. Installation using zip distribution (without GUI)
              > cp -r /opt/luntbuild/web/* <tomcat install dir>/webapps/luntbuild
         - Start Tomcat
 
-        Note. Do not create luntbuild.war file, just copy the contents under "/opt/luntbuild/web" directory
+        Note. Do NOT create luntbuild.war file, just copy the contents under "/opt/luntbuild/web" directory
         to the luntbuild directory in the appropriate web application directory of your
         application server, or servlet container.
 
@@ -103,14 +128,14 @@ C. Building Luntbuild from source distribution
   2) Make sure you have Apache ant 1.6.1 (or higher) installed.
      Goto "http://ant.apache.org" for Ant download.
 
-  3) Download the source distribution from "http://sourceforge.net/projects/luntbuild/".
-      This file is normally named as "luntbuild-xxx-src.zip", where xxx denotes
-      current version.
+  3) Check out the source distribution from SVN repository at:
+     "http://www.javaforge.com/proj/summary.do?proj_id=70".
 
   4) Extract the source distribution into a directory, let's say
      "/yourhome/luntbuild-src". Change to directory
-     "/yourhome/luntbuild-src/build", and run command "ant clean installer zip".
-     Then Luntbuild installer and zip distribution will both be generated into directory
+     "/yourhome/luntbuild-src/build", and run command "ant clean installer"
+     or "ant clean zip".
+     Then Luntbuild installer or zip distribution will both be generated into directory
      "/yourhome/luntbuild-src/distribute".
 
   5) Follow the installation procedures in sections A, B, or D to install Luntbuild.
