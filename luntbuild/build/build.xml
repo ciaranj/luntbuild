@@ -6,8 +6,8 @@
       <format property="currentDate" pattern="MM-dd-yyyy" locale="en"/>
     </tstamp>
 
-    <property name="buildVersion" value="1.5.2"/>
-	<property name="fileVersion" value="1.5.2"/>
+    <property name="buildVersion" value="1.5.3-devel"/>
+	<property name="fileVersion" value="1.5.3-devel"/>
     <property name="buildId" value=""/>
     <property name="artifactsDir" value="${basedir}/distribute"/>
 	<property name="junitHtmlReportDir" value="test/junitHtmlReport"/>
@@ -74,12 +74,9 @@
 
     <target name="webstage" depends="webstage_compile, compile-standalone"
         description="Stages web resources">
-		<filter token="installDir" value="${luntbuild-install-build}"/>
-		<filter token="sessionTimeout" value="30"/>
-		<copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
-			overwrite="true" filtering="true" />
+		<copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml" overwrite="true"/>
 		<copy file="web/WEB-INF/applicationContext.xml"
-			tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+			tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true"/>
 		<copy todir="stage/web/images" flatten="true">
 			<fileset dir="web">
 				<patternset refid="web.images"/>
@@ -480,13 +477,28 @@
 	</target>
 
 	<target name="zip" depends="stage" description="Builds Luntbuild zip distribution">		
-        <filter token="installDir" value="${luntbuild-install-dir}"/>
         <filter token="sessionTimeout" value="30"/>
         <filter token="luntbuildPassword" value="luntbuild"/>
+        <filter token="ldapHost" value=""/>
+        <filter token="ldapPort" value="389"/>
+        <filter token="ldapPath" value=""/>
+        <filter token="ldapBaseDn" value=""/>
+        <filter token="ldapGroup0" value=""/>
+        <filter token="ldapGroup1" value=""/>
+        <filter token="ldapGroup2" value=""/>
+        <filter token="ldapGroup3" value=""/>
+        <filter token="ldapGroup4" value=""/>
+        <filter token="ldapGroup5" value=""/>
+        <filter token="ldapGroup6" value=""/>
+        <filter token="ldapGroup7" value=""/>
+        <filter token="ldapGroup8" value=""/>
+        <filter token="ldapGroup9" value=""/>
         <filter token="ldapSearchBase" value="OU=All Users"/>
         <filter token="ldapGroupRoleAttr" value="OU"/>
         <filter token="ldapGroupMemberAttr" value="sAMAccountName"/>
         <filter token="ldapAccountNameAttr" value="sAMAccountName"/>
+        <filter token="ldapManagerCn" value="changeme"/>
+        <filter token="ldapManagerPass" value="changeme"/>
         <filter token="ldapCreateLuntbuildUser" value="true"/>
         <filter token="ldapCanCreateProject" value="true"/>
         <filter token="ldapCanViewProject" value="true"/>

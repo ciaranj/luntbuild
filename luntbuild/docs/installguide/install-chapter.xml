@@ -6,8 +6,8 @@
   upgrades. See <link linkend="installer">installer section</link> and <link linkend="upgrade">upgrade section</link> for details.
 </para>
 <para>
-  In case you need to modify for some reason Luntbuild configuration files (web.xml,
-  applicationContext.xml) with attributes/values beyond the attributes/values modified
+  In case you need to modify for some reason Luntbuild configuration files (web.xml etc.)
+  with attributes/values beyond the attributes/values modified
   by Luntbuild installer, you might choose installation using Luntbuild distribution
   zip file. See <link linkend="zip">zip section</link> for details.
 </para>
@@ -38,7 +38,8 @@
      it has been stopped. Alternatively you can run Luntbuild in <link linkend="standalone">standalone</link> mode.
 </para></listitem>
 <listitem><para>
-  Download Luntbuild installer from <ulink url="http://sourceforge.net/projects/luntbuild/">Luntbuild Sourceforge site</ulink>.
+  Download Luntbuild installer from <ulink url="http://sourceforge.net/projects/luntbuild/">Luntbuild Sourceforge site</ulink>,
+  or from <ulink url="http://www.javaforge.com/proj/doc.do?doc_id=1205">Luntbuid Javaforge  site</ulink>.
       This file is normally named as <emphasis>luntbuild-xxx-installer.jar</emphasis>, where xxx denotes
       current version.
 </para></listitem>
@@ -68,7 +69,8 @@
 </para></note></para>
 <orderedlist numeration="arabic">
 <listitem><para>
-  Download the Luntbuild zip distribution from <ulink url="http://sourceforge.net/projects/luntbuild/">Luntbuild Sourceforge site</ulink>.
+  Download the Luntbuild zip distribution from <ulink url="http://sourceforge.net/projects/luntbuild/">Luntbuild Sourceforge site</ulink>,
+  or from <ulink url="http://www.javaforge.com/proj/doc.do?doc_id=1205">Luntbuid Javaforge  site</ulink>.
       This file is normally named <emphasis>luntbuild-xxx.zip</emphasis>, where xxx denotes the current version.
 </para></listitem>
 <listitem><para>
@@ -77,9 +79,11 @@
      <simplelist>
        <member>Edit file <emphasis>/opt/luntbuild/web/WEB-INF/web.xml</emphasis>:</member>
        <member>Replace <emphasis>$INSTALL_PATH</emphasis> with your Luntbuild installation path (/opt/luntbuild here).</member>
-       <member>Replace <emphasis>${sessionTimeout}</emphasis> with your desired session timeout value (normally 30).</member>
-       <member>Edit file <emphasis>/opt/luntbuild/web/WEB-INF/applicationContext.xml</emphasis>:</member>
-	   <member>Replace <emphasis>${luntbuildPassword}</emphasis> with your desired site administrator password.</member>
+       <member>Optionally edit file <emphasis>/opt/luntbuild/web/WEB-INF/users.properties</emphasis>:</member>
+	   <member>Replace <emphasis>luntbuild=luntbuild</emphasis> with your desired site administrator password
+	   in the format <emphasis>luntbuild=youradminpassword</emphasis>. NOTE, that admin user HAS to be <emphasis>luntbuild</emphasis></member>
+	   <member>If you use LDAP, edit file <emphasis>/opt/luntbuild/web/WEB-INF/ldap.properties</emphasis> and
+     follow Luntbuild documentation to configure LDAP.</member>
 	 </simplelist>
 </para></listitem>
 <listitem><para>
@@ -123,15 +127,14 @@
      Goto <ulink url="http://ant.apache.org">http://ant.apache.org</ulink> for Ant download.
 </para></listitem>
 <listitem><para>
-  Download the source distribution from <ulink url="http://sourceforge.net/projects/luntbuild/">Luntbuild Sourceforge site</ulink>.
-      This file is normally named <emphasis>luntbuild-xxx-src.zip</emphasis>, where xxx denotes
-      the current version.
+  Checkout the source distribution from SVN from <ulink url="http://svn.javaforge.com/svn/luntbuild">Luntbuild Javaforge site</ulink>.
 </para></listitem>
 <listitem><para>
   Extract the source distribution into a directory, let's say
      <emphasis>/yourhome/luntbuild-src</emphasis>. Change to the directory
-     <emphasis>/yourhome/luntbuild-src/build</emphasis>, and run command <emphasis>ant clean installer zip</emphasis>.
-     Then Luntbuild installer and zip distribution will both be generated into directory
+     <emphasis>/yourhome/luntbuild-src/build</emphasis>, and run command <emphasis>ant clean installer</emphasis>,
+     or <emphasis>ant clean zip</emphasis>
+     Then Luntbuild installer or zip distribution will both be generated into directory
      <emphasis>/yourhome/luntbuild-src/distribute</emphasis>.
 </para></listitem>
 <listitem><para>
@@ -264,8 +267,8 @@ integrate your app as a system service if you like.
     The backup strategy might depend on the type of the database you are using.
 </para>
 <para>
-    The database independent way to backup Luntbuild data is to use Export function in Administation tab.
-    Unfortunatelly there is currently not an automated way to create a backup, it has to be created
+    The database independent way to backup Luntbuild data is to use Export function in Administration tab.
+    Unfortunately there is currently not an automated way to create a backup, it has to be created
     by login as Luntbuild administrator and perform Export.
 </para>
 <para>
