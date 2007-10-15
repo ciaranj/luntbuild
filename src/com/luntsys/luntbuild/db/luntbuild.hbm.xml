@@ -89,7 +89,7 @@
 		<property name="buildCleanupStrategy" column="BUILD_CLEANUP_STRATEGY"/>
 		<property name="buildCleanupStrategyData" column="BUILD_CLEANUP_STRATEGY_DATA" length="255" />
 		<property name="workingPath" column="WORKING_PATH" length="255" />
-		<set name="builds" table="LB_BUILD" inverse="true" cascade="all-delete-orphan" lazy="false">
+		<set name="builds" table="LB_BUILD" inverse="true" cascade="delete" lazy="false">
 			<key column="FK_SCHEDULE_ID"/>
 			<one-to-many class="Build"/>
 		</set>
