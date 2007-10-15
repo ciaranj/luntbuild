@@ -3,8 +3,12 @@ luntbuild 1.5.3 Release Notes
 ==============================================
 
 - Fix: (Bug 6146) Fixed NULL and blank value handling for revision logs (caused problems with CDATA sections)
-- Fix: (Bug 6206) Fixed exported projects only exporting with their first schedule
 - Fix: (Bug 6184) Fixed race condition between notifiers and repliers (RSS) over template files
+- Fix: (Bug 6205) Fixed regression bug with copying projects
+- Fix: (Bug 6206) Fixed exported projects only exporting with their first schedule
+- Fix: (Bug 6239) Updated configuration files to make Zip installation easier
+- Fix: (Bug 6240) Updated installation instructions text file
+- Fix: (Bug 6255) Fixed quiet period for StarTeam adaptor
 
 ==============================================
 luntbuild 1.5.2 Release Notes

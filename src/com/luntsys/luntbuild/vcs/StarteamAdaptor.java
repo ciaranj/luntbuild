@@ -456,12 +456,16 @@ public class StarteamAdaptor extends Vcs {
 						File currentFile = (File) currentFiles.get(itemId);
 						if (buildFiles.containsKey(itemId)) {
 							File buildFile = (File) buildFiles.get(itemId);
-							if (currentFile.getContentVersion() != buildFile.getContentVersion())
-								addChangeLogs(currentFile, "File modified", revisions);
-							else if (!currentFile.getParentFolderHierarchy().equals(buildFile.getParentFolderHierarchy()))
-								addChangeLogs(currentFile, "File moved", revisions);
+							if (currentFile.getContentVersion() != buildFile.getContentVersion()) {
+                                revisions.setFileModified(true);
+								addChangeLogs(currentFile, "File modified", revisions);                
+                            } else if (!currentFile.getParentFolderHierarchy().equals(buildFile.getParentFolderHierarchy())) {
+                                revisions.setFileModified(true);
+								addChangeLogs(currentFile, "File moved", revisions);                
+                            }
 							buildFiles.remove(itemId);
 						} else {
+                            revisions.setFileModified(true);
 							addChangeLogs(currentFile, "File added", revisions);
 						}
 					}
@@ -469,6 +473,7 @@ public class StarteamAdaptor extends Vcs {
 					itFile = buildFiles.values().iterator();
 					while (itFile.hasNext()) {
 						File file = (File) itFile.next();
+                        revisions.setFileModified(true);
 						addChangeLogs((File) file.getFromHistoryByDate(currentTime), "File deleted", revisions);
 					}
 
@@ -481,8 +486,6 @@ public class StarteamAdaptor extends Vcs {
 				}
 			}
 		}
-		if (revisions.getChangeLogs().size() != 0)
-			revisions.setFileModified(true);
 		return revisions;
 	}
 
