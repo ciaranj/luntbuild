@@ -228,6 +228,12 @@ public class MyExecTask extends Task {
 		try {
 			getProject().log("Execute command: " + Commandline.describeCommand(cmdLine),
 					Project.MSG_VERBOSE);
+            getProject().log("Execution directory: " + workingDir,
+                    Project.MSG_VERBOSE);
+            if( env != null ) {
+                getProject().log("Execution environment: " + env.getVariables(),
+                        Project.MSG_VERBOSE);
+            } 
 			if (wait) {
 				return exec.execute();
 			}
