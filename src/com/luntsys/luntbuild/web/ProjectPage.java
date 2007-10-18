@@ -138,6 +138,8 @@ public abstract class ProjectPage extends HierarchyPage implements PageDetachLis
 			while (it.hasNext()) {
 				Schedule schedule = (Schedule) it.next();
 				schedule.setId(0);
+				if (getProjectIdToCopy() != 0)
+					schedule.getBuilds().clear();
 				Luntbuild.getDao().saveSchedule(schedule);
 			}
 		}
