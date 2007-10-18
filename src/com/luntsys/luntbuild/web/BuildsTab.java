@@ -94,6 +94,7 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 	 * @param cycle
 	 */
 	public void enableAllBuilds(IRequestCycle cycle) {
+        ensureCurrentTab();
 		List schedules = getSchedules();
 		for (int i = 0; i < schedules.size(); i++)
 		{
@@ -109,6 +110,7 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 	 * @param cycle
 	 */
 	public void disableAllBuilds(IRequestCycle cycle) {
+        ensureCurrentTab();
 		List schedules = getSchedules();
 		for (int i = 0; i < schedules.size(); i++)
 		{
@@ -124,6 +126,7 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 	 * @param cycle
 	 */
 	public void enableBuild(IRequestCycle cycle) {
+        ensureCurrentTab();
 		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
 		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
 		schedule.setScheduleDisabled(false);
@@ -136,6 +139,7 @@ public abstract class BuildsTab extends TabPageComponent implements PageDetachLi
 	 * @param cycle
 	 */
 	public void disableBuild(IRequestCycle cycle) {
+        ensureCurrentTab();
 		long scheduleId = ((Long) cycle.getServiceParameters()[0]).longValue();
 		Schedule schedule = Luntbuild.getDao().loadSchedule(scheduleId);
 		schedule.setScheduleDisabled(true);
