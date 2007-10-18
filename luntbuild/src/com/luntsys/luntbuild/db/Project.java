@@ -788,19 +788,25 @@ public class Project implements AclObjectIdentity, VariableHolder {
 		while (it.hasNext()) {
 			VcsLogin vcsLogin = (VcsLogin) it.next();
 			VcsLogin newVcsLogin = new VcsLogin(newProject, vcsLogin.getUser(), vcsLogin.getLogin());
-			newVcsLogin.setId(vcsLogin.getId());
 			newProject.getVcsLogins().add(newVcsLogin);
 		}
+		int id = 1;
 		it = getSchedules().iterator();
 		while (it.hasNext()) {
 			Schedule schedule = (Schedule) it.next();
 			Schedule newSchedule = new Schedule();
-			newSchedule.setId(schedule.getId());
 			newSchedule.setProject(newProject);
 			newSchedule.setName(schedule.getName());
 			newSchedule.setFacade(schedule.getFacade());
+			newSchedule.setId(id++);
 			newProject.getSchedules().add(newSchedule);
 		}
+		it = newProject.getSchedules().iterator();
+		while (it.hasNext()) {
+			Schedule schedule = (Schedule) it.next();
+			schedule.setId(0);
+		}
+		
 		return newProject;
 	}
 
