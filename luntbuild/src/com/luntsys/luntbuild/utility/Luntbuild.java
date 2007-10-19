@@ -1898,8 +1898,7 @@ public class Luntbuild {
      * @return the string with the substituted characters
      */
     public static String xmlEncodeEntities(String str) {
-        if (str == null)
-            return str;
+        if (str == null) return "";
         StringBuffer buf = new StringBuffer();
         int len = str.length();
         for (int i = 0; i < len; i++){
