@@ -790,7 +790,8 @@ public class Project implements AclObjectIdentity, VariableHolder {
 			VcsLogin newVcsLogin = new VcsLogin(newProject, vcsLogin.getUser(), vcsLogin.getLogin());
 			newProject.getVcsLogins().add(newVcsLogin);
 		}
-		int id = 1;
+		// Need to use fake id because id is used in equals, same id would cause other than first schedules not inserted
+		int fakeId = 1;
 		it = getSchedules().iterator();
 		while (it.hasNext()) {
 			Schedule schedule = (Schedule) it.next();
@@ -798,9 +799,10 @@ public class Project implements AclObjectIdentity, VariableHolder {
 			newSchedule.setProject(newProject);
 			newSchedule.setName(schedule.getName());
 			newSchedule.setFacade(schedule.getFacade());
-			newSchedule.setId(id++);
+			newSchedule.setId(fakeId++);
 			newProject.getSchedules().add(newSchedule);
 		}
+		// Now reset the ids
 		it = newProject.getSchedules().iterator();
 		while (it.hasNext()) {
 			Schedule schedule = (Schedule) it.next();
