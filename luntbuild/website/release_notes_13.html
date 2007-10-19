@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+
+<html>
+	<head>
+		<title></title>
+	</head>
+
+	<body>
+		<h2>
+			Luntbuild 1.3 Release Notes
+		</h2>
+		<H4>
+			Changes since 1.2.2
+		</H4>
+		<FONT size="2">
+			<UL>
+				<LI>
+					Added deleteBuilds(), moveBuilds() methods to Luntbuild remote API (after beta)
+				</LI>
+				<LI>
+					Added basic LDAP authentication support
+				</LI>
+				<LI>
+					Added canCreateProject(), getUsers(), getUser() methods to Luntbuild remote API (after beta)
+				</LI>
+				<LI>
+					Added createSchedule(), deleteSchedule(), getBuildLog(), getBuildLogHtml(), getRevisionLog(), getRevisionLogHtml(), getSystemLog(), getSystemLogHtml() methods to Luntbuild remote API (after beta)
+				</LI>
+				<LI>
+					Added support for Maven version 2
+				</LI>
+				<LI>
+					Added getSystemLogUrl() method to Build facade (for remote access)
+				</LI>
+				<LI>
+					Improved output format (Html, Xml, Text) of Luntbuild reports (build, revision, system log)
+				</LI>
+				<LI>
+					Added templates support for Luntbuild notifiers messages, based on Velocity template engine http://jakarta.apache.org/velocity/
+				</LI>
+				<LI>
+					Added Build Filter using javascript to Builds page (contributed by Fabrice Belingard)
+				</LI>
+				<LI>
+					Added, tested support for external DBs (installer, scripts); MySql, Progres are supported
+				</LI>
+				<LI>
+					Updated Hibernate to version 3
+				</LI>
+				<LI>
+					Added Rake builder http://rake.rubyforge.org/
+				</LI>
+				<LI>
+					Updated security to acegi-0.9 (Scott Battaglia patch, Lubos to 0.9)
+				</LI>
+				<LI>
+					Implemented anonymous user access (view)
+				</LI>
+				<LI>
+					Updated Quartz scheduler to 1.5.1
+				</LI>
+				<LI>
+					Implemented standalone luntbuild using Jetty servlet container
+				</LI>
+				<LI>
+					Implemented copy for vcs adapter, builder, schedule
+				</LI>
+				<LI>
+					Updated Jabber notifier to support SSL, GoogleTalk
+				</LI>
+				<LI>
+					Added notifier support for Lotus Sametime http://cquick.conacyt.mx/sametime/toolkits/st30javatk/
+				</LI>
+				<LI>
+					Fix the bug that hessian client can not get error message sometimes.
+				</LI>
+				<LI>
+					Fix the bug that HSQLDB shuts down abnormally when application shuts down.
+				</LI>
+				<LI>
+					Fix the bug that the source been labeled may be different from the source been build against in case of using StarTeam as version control system.
+				</LI>
+				<LI>
+					Fix the potential bug that there are extra bytes in downloaded build artifacts.
+				</LI>
+				<LI>
+					Fix the bug that some icon can not be displayed when run Luntbuild in tomcat 5.5 or uppper.
+				</LI>
+				<LI>
+					Fix the bug that label can not be applied if more than one module shares the same StarTeam view.
+				</LI>
+				<LI>
+					When talk to StarTeam server, 10 seconds are deduced from the current configuration time in order to tolerate slight time difference (must be less than 10 seconds hence) between build and StarTeam server.
+				</LI>
+				<LI>
+					Fix the bug that "clean by days" build cleanup strategy does not work due to a acegi authentication credentials not found exception.
+				</LI>
+				<LI>
+					Fix the bug that import/export does not work when installs without demo data.
+				</LI>
+				<LI>
+					Url mapping of Tapestry servlet is now "/luntbuild/app.do". The previous mapping ("/luntbuild/app") has some problems when deploying into Orion application server.
+				</LI>
+				<LI>
+					Wiki has been moved to: http://www.javaforge.com/proj/doc.do?proj_id=70
+				</LI>
+			</UL>
+		</FONT>
+	</body>
+</html>
