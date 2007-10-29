@@ -1,10 +1,13 @@
 ==============================================
+luntbuild X.X.X Release Notes
+==============================================
+
+- Fix: (Bug 6325) Fixed AccurevAdaptor not saving settings
+
+==============================================
 luntbuild 1.5.3 Release Notes
 ==============================================
 
-- Fix: (bug 6205) Exception thrown when copying a project
-- Fix: (Bug 6239) 1.5.2 distribution inappropriately configured out of the box
-- Fix: (Bug 6240) Upgrade instructions are severely outdated
 - Fix: (Bug 6146) Fixed NULL and blank value handling for revision logs (caused problems with CDATA sections)
 - Fix: (Bug 6184) Fixed race condition between notifiers and repliers (RSS) over template files
 - Fix: (Bug 6205) Fixed regression bug with copying projects

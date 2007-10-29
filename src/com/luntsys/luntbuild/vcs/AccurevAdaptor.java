@@ -7,10 +7,10 @@ package com.luntsys.luntbuild.vcs;
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb12.AccurevModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.remoting.facade.AccurevAdaptorFacade;
-import com.luntsys.luntbuild.remoting.facade.AccurevModuleFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.OgnlHelper;
@@ -181,41 +181,9 @@ public class AccurevAdaptor extends Vcs {
      * @inheritDoc
      * @see AccurevAdaptorFacade
      */
-    public VcsFacade getFacade() {
-        AccurevAdaptorFacade facade = new AccurevAdaptorFacade();
-        List modules = getModules();
-        for (Iterator iterator = modules.iterator(); iterator.hasNext();) {
-            Module module = (Module) iterator.next();
-            facade.getModules().add(module.getFacade());
-        }
-        return facade;
-    }
-
-    /**
-     * @inheritDoc
-     * @see AccurevAdaptorFacade
-     */
-    public void setFacade(VcsFacade facade) {
-    	// TODO throw RuntimeException if the facade is not the right class
-        AccurevAdaptorFacade accurevAdaptorFacade = (AccurevAdaptorFacade) facade;
-        getModules().clear();
-        Iterator it = accurevAdaptorFacade.getModules().iterator();
-        while (it.hasNext()) {
-            AccurevModuleFacade moduleFacade = (AccurevModuleFacade) it.next();
-            AccurevModule module = new AccurevModule();
-            module.setFacade(moduleFacade);
-            getModules().add(module);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     * @see com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade
-     */
     public void saveToFacade(VcsFacade facade) {
     	// TODO throw RuntimeException if the facade is not the right class
-        com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade accuFacade =
-            (com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade) facade;
+        AccurevAdaptorFacade accuFacade = (AccurevAdaptorFacade) facade;
         accuFacade.setUser(getUser());
         accuFacade.setPassword(getPassword());
     }
@@ -223,13 +191,12 @@ public class AccurevAdaptor extends Vcs {
     /**
      * @inheritDoc
      * @throws RuntimeException if the facade is not an <code>AccurevAdaptorFacade</code>
-     * @see com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade
+     * @see AccurevAdaptorFacade
      */
     public void loadFromFacade(VcsFacade facade) {
-        if (!(facade instanceof com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade))
+        if (!(facade instanceof AccurevAdaptorFacade))
             throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
-        com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade accuFacade =
-            (com.luntsys.luntbuild.facades.lb12.AccurevAdaptorFacade) facade;
+        AccurevAdaptorFacade accuFacade = (AccurevAdaptorFacade) facade;
         setUser(accuFacade.getUser());
         setPassword(accuFacade.getPassword());
     }
