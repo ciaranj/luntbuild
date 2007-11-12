@@ -6,9 +6,8 @@ var MENU_ITEMS = [
 		['Screenshots', 'screenshots.html', null]
 	],
 	['Downloads', null, null,
-		['Download Release', 'http://sourceforge.net/project/showfiles.php?group_id=113344&package_id=122604', null],
-		['Download Weekly', 'http://www.javaforge.com/proj/doc.do?doc_id=1440', {'sb':'Warning!!! Might not be backward or forward compatible!!!'}],
-		['Download Luntclipse', 'http://sourceforge.net/project/showfiles.php?group_id=113344&package_id=163970', null]
+		['Download Release', 'http://www.javaforge.com/proj/doc.do?doc_id=1205', null],
+		['Download Luntclipse', 'http://www.javaforge.com/proj/doc.do?doc_id=1205', null]
 	],
 	['<strong>You can help!</strong>', 'http://www.javaforge.com/proj/doc/displayWikiDocument.do?doc_id=1306', null],
 	['Documentation', null, null,
@@ -36,21 +35,17 @@ var MENU_ITEMS = [
 	['Articles', 'articles/index.html', null
 	],
 	['Communication', null, null,
-		['Bugs', 'http://sourceforge.net/tracker/?group_id=113344&atid=664861', null],
+		['Bugs', 'http://www.javaforge.com/proj/tracker/submitNew.do?tracker_id=277', null],
 		['Nabble Forums', 'http://www.nabble.com/LuntBuild-f2706.html', null],
-		['SF Forums', 'http://sourceforge.net/forum/?group_id=113344', null],
+		['Forums', 'http://www.javaforge.com/proj/forum.do?proj_id=70', null],
 		['Mailing Lists', 'https://lists.sourceforge.net/lists/listinfo/luntbuild-users', null],
-		['Feature Requests', 'http://sourceforge.net/tracker/?group_id=113344&atid=664864', null],
-		['Planned Tasks', 'http://www.javaforge.com/proj/tracker/browseTracker.do?tracker_id=280', null]
+		['Feature Requests', 'http://www.javaforge.com/proj/tracker/submitNew.do?tracker_id=278', null]
 	],
 	['Development', null, null,
-		['Sourceforge Project', 'http://www.sf.net/projects/luntbuild/', null],
 		['Javaforge Project', 'http://www.javaforge.com/proj/summary.do?proj_id=70', null],
 		['Development Documents', 'http://www.javaforge.com/proj/doc.do?proj_id=70', null],
 		['Development Wiki', 'http://www.javaforge.com/proj/wiki/displayHomePage.do?proj_id=70', null],
-		['Development Blog', 'http://jroller.com/page/luntbuild', null],
 		['FishEye Cvs', 'http://fisheye.cenqua.com/viewrep/luntbuild', null],
-		['Javaforge Source', 'http://www.javaforge.com/proj/sources.do?proj_id=70', null],
-		['Sourceforge Statistics', 'http://sourceforge.net/export/projhtml.php?group_id=113344&mode=full&no_table=0', null]
+		['Javaforge Source', 'http://www.javaforge.com/proj/sources.do?proj_id=70', null]
 	]
 ];
