@@ -338,8 +338,7 @@ public class Revisions {
         if (lastLog == null)
             throw new BuildException("No log exists to add entry to.");
         lastEntry = this.doc.createElement(ENTRY_TAG);
-        if (!Luntbuild.isEmpty(revision))
-            lastEntry.setAttribute(REVISION_ATTR, revision);
+        lastEntry.setAttribute(REVISION_ATTR, revision);
         Element authorElement = doc.createElement(AUTHOR_TAG);
         if (!Luntbuild.isEmpty(author))
             authorElement.appendChild(doc.createCDATASection(author));
@@ -393,10 +392,8 @@ public class Revisions {
             throw new BuildException("No entry exists to add task to.");
         Element taskElement = doc.createElement(TASK_TAG);
         Element tasks = (Element) lastEntry.getElementsByTagName("tasks").item(0);
-        if (!Luntbuild.isEmpty(user))
-            taskElement.setAttribute(TASK_USER_ATTR, user);
-        if (!Luntbuild.isEmpty(status))
-            taskElement.setAttribute(TASK_STATUS_ATTR, status);
+        taskElement.setAttribute(TASK_USER_ATTR, user);
+        taskElement.setAttribute(TASK_STATUS_ATTR, status);
         Element nameElement = doc.createElement(TASK_NAME_TAG);
         if (!Luntbuild.isEmpty(name))
             nameElement.appendChild(doc.createCDATASection(name));
@@ -421,10 +418,8 @@ public class Revisions {
             throw new BuildException("No entry exists to add path to.");
         Element pathElement = doc.createElement(PATH_TAG);
         Element paths = (Element) lastEntry.getElementsByTagName("paths").item(0);
-        if (!Luntbuild.isEmpty(action))
-            pathElement.setAttribute(PATH_ACTION_ATTR, action);
-        if (!Luntbuild.isEmpty(revision))
-            pathElement.setAttribute(PATH_REVISION_ATTR, revision);
+        pathElement.setAttribute(PATH_ACTION_ATTR, action);
+        pathElement.setAttribute(PATH_REVISION_ATTR, revision);
         if (!Luntbuild.isEmpty(path))
             pathElement.appendChild(doc.createCDATASection(path));
         
