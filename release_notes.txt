@@ -3,6 +3,7 @@ luntbuild X.X.X Release Notes
 ==============================================
 
 - Fix: (Bug 6325) Fixed AccurevAdaptor not saving settings
+- Fix: (Bug 6408) Fixed missing attributes in CVS revision logs causing exceptions on build viewer page
 
 ==============================================
 luntbuild 1.5.3 Release Notes
