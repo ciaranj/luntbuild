@@ -30,6 +30,7 @@ package com.luntsys.luntbuild.web;
 import com.luntsys.luntbuild.BuildGenerator;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.luntsys.luntbuild.utility.ValidationException;
 import com.luntsys.luntbuild.web.components.tabcontrol.TabControl;
 import com.luntsys.luntbuild.web.selectionmodels.*;
@@ -144,13 +145,12 @@ public abstract class ManualBuildEditor extends BaseComponent implements PageDet
 				return;
 			}
 		} else if (getBuildTiming() == com.luntsys.luntbuild.facades.Constants.BUILD_TIMING_AT){
-			try{
-					Date startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(getBuildTime());
-				trigger.setStartTime(startTime);
-			} catch (ParseException e){
-				setErrorMsg("Value of the property \"at\" is invalid: " + e.getMessage());
+			Date startTime = SynchronizedDateFormatter.parseDate(getBuildTime(), "yyyy-MM-dd HH:mm");
+			if (startTime == null) {
+				setErrorMsg("Value of the property \"at\" is invalid: " + getBuildTime());
 				return;
 			}
+			trigger.setStartTime(startTime);
 		} else {
 			try{
 				trigger.setStartTime(Luntbuild.getDateByHHMM(getBuildTime()));

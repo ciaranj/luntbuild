@@ -791,8 +791,8 @@ public class SvnExeAdaptor extends Vcs {
      * @throws RuntimeException if an exception occurs while reading the SVN log
      */
     public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
-        final SimpleDateFormat inFormat = new SimpleDateFormat(INPUT_DATE_FORMAT);
-        final SimpleDateFormat outFormat = new SimpleDateFormat(OUTPUT_DATE_FORMAT);
+        final SimpleDateFormat inFormat = SynchronizedDateFormatter.getFormat(INPUT_DATE_FORMAT);
+        final SimpleDateFormat outFormat = SynchronizedDateFormatter.getFormat(OUTPUT_DATE_FORMAT);
         inFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         outFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         

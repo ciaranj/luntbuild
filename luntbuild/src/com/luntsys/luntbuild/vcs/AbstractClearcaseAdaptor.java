@@ -57,6 +57,7 @@ import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.MyExecTask;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.luntsys.luntbuild.utility.ValidationException;
 
 /**
@@ -934,8 +935,8 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 if (branch != null) {
                     cmdLine.createArgument().setLine("-branch " + branch);
                 }
-                final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT,
-                                                new DateFormatSymbols(Locale.ENGLISH));
+                final SimpleDateFormat format = SynchronizedDateFormatter.getFormat(DATE_FORMAT);
+                format.setDateFormatSymbols(new DateFormatSymbols(Locale.ENGLISH));
                 cmdLine.createArgument().setLine(
                         "-since " + format.format(sinceDate));
                 cmdLine.createArgument().setValue(path);
@@ -958,13 +959,14 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                                     authorMatcher.group(2).trim());
                             action = authorMatcher.group(3).trim();
                             /** Date format for Clearcase base. */
+                            SimpleDateFormat sdf = SynchronizedDateFormatter.getFormat(DATE_FORMAT);
+                            sdf.setDateFormatSymbols(new DateFormatSymbols(Locale.ENGLISH));
                             try {
-                                date = new SimpleDateFormat(DATE_FORMAT,
-                                        new DateFormatSymbols(Locale.ENGLISH)).
-                                	parse(authorMatcher.group(1).trim());
+                                date = sdf.parse(authorMatcher.group(1).trim());
                             } catch (Exception e) {
-                                logger.error("Failed to parse date from log", e);
-                                date = null;
+                            	date = SynchronizedDateFormatter.parseDate(authorMatcher.group(1).trim(), DATE_FORMAT);
+                            	if (date == null)
+                            		logger.error("Failed to parse date from log", e);
                             }
                         } else if (fileMatcher.find()) {
                             String path = fileMatcher.group(1).trim();

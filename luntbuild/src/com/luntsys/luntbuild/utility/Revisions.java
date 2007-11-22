@@ -347,7 +347,7 @@ public class Revisions {
         lastEntry.appendChild(authorElement);
         Element dateElement = doc.createElement(DATE_TAG);
         if (date != null)
-            dateElement.appendChild(doc.createCDATASection(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(date)));
+            dateElement.appendChild(doc.createCDATASection(SynchronizedDateFormatter.formatDate(date, "yyyy-MM-dd'T'HH:mm:ssZ")));
         lastEntry.appendChild(dateElement);
         lastEntry.appendChild(doc.createElement("tasks"));
         lastEntry.appendChild(doc.createElement("paths"));

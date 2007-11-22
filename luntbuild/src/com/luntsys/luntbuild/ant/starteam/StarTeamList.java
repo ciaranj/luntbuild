@@ -16,6 +16,7 @@
  */
 package com.luntsys.luntbuild.ant.starteam;
 
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.starbase.starteam.File;
 import com.starbase.starteam.Folder;
 import com.starbase.starteam.Item;
@@ -191,7 +192,6 @@ public class StarTeamList extends TreeBasedTask {
 
     protected void list(File reposFile, java.io.File localFile)
             throws IOException {
-        SimpleDateFormat SDF = new SimpleDateFormat(DATE_FORMAT);
         StringBuffer b = new StringBuffer();
         int status = reposFile.getStatus();
         java.util.Date displayDate = null;
@@ -203,7 +203,7 @@ public class StarTeamList extends TreeBasedTask {
         b.append(pad(Status.name(status), 12)).append(' ');
         b.append(pad(getUserName(reposFile.getLocker()), 20))
                 .append(' ')
-                .append(SDF.format(displayDate))
+                .append(SynchronizedDateFormatter.formatDate(displayDate, DATE_FORMAT))
                 .append(rpad(String.valueOf(reposFile.getSize()), 9))
                 .append(' ')
                 .append(reposFile.getName());

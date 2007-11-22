@@ -759,7 +759,6 @@ public class VssAdaptor extends Vcs {
 						}
 						if (line.matches("^\\*\\*\\*\\*\\*.*\\*\\*\\*\\*$")) {
 							if (block.isValid()) {
-								SimpleDateFormat vss_date_format = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
 								String version = "";
 								String file_version = "";
 								String author = "";
@@ -838,11 +837,9 @@ public class VssAdaptor extends Vcs {
 											author = authormatcher.group(1).trim();
 											revisions.getChangeLogins().add(author);
 											String date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
-							                try {
-							                	date = vss_date_format.parse(date_text);
-							                } catch (Exception e) {
-							                	throw new BuildException("Failed to parse date from VSS history", e);
-							                }
+						                	date = SynchronizedDateFormatter.parseDate(date_text, DEFAULT_DATETIME_FORMAT);
+						                	if (date == null)
+							                	throw new BuildException("Failed to parse date from VSS history: " + date_text);
 											parseNextLine = true;
 										} else if (commentmatcher.find()) {
 											comment = commentmatcher.group(1).trim();
@@ -868,7 +865,6 @@ public class VssAdaptor extends Vcs {
 					}
 				}.execute();
 				if (block.isValid()) {
-					SimpleDateFormat vss_date_format = new SimpleDateFormat(DEFAULT_DATETIME_FORMAT);
 					String version = "";
 					String file_version = "";
 					String author = "";
@@ -947,11 +943,9 @@ public class VssAdaptor extends Vcs {
 								author = authormatcher.group(1).trim();
 								revisions.getChangeLogins().add(author);
 								String date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
-				                try {
-				                	date = vss_date_format.parse(date_text);
-				                } catch (Exception e) {
-				                	throw new BuildException("Failed to parse date from VSS history", e);
-				                }
+			                	date = SynchronizedDateFormatter.parseDate(date_text, DEFAULT_DATETIME_FORMAT);
+			                	if (date == null)
+				                	throw new BuildException("Failed to parse date from VSS history: " + date_text);
 								parseNextLine = true;
 							} else if (commentmatcher.find()) {
 								comment = commentmatcher.group(1).trim();
@@ -1021,7 +1015,7 @@ public class VssAdaptor extends Vcs {
 	 * @param date the date to format
 	 * @return the formatted date
 	 */
-	protected String formatDateForVss(Date date) {
+	protected synchronized String formatDateForVss(Date date) {
 		String pattern = DEFAULT_DATETIME_FORMAT;
 		if (!Luntbuild.isEmpty(getDateTimeFormat()))
 			pattern = getActualDateTimeFormat();
