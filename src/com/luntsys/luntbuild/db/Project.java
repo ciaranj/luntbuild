@@ -105,22 +105,6 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	private String variables = "versionIterator=1";
 	private int logLevel = com.luntsys.luntbuild.facades.Constants.LOG_LEVEL_NORMAL;
 
-    private static ArrayList dateFormats = new ArrayList();
-    static {
-        dateFormats.add(new SimpleDateFormat("MM/dd/yyyy"));
-        dateFormats.add(new SimpleDateFormat("MM-dd-yyyy"));
-        dateFormats.add(new SimpleDateFormat("d MMM yyyy"));
-        dateFormats.add(new SimpleDateFormat("d-MMM-yyyy"));
-        dateFormats.add(new SimpleDateFormat("d MMM. yyyy"));
-        dateFormats.add(new SimpleDateFormat("MMM d, yyyy"));
-        dateFormats.add(new SimpleDateFormat("MMM. d, yyyy"));
-        dateFormats.add(DateFormat.getDateInstance(SimpleDateFormat.DEFAULT));
-        dateFormats.add(DateFormat.getDateInstance(SimpleDateFormat.SHORT));
-        dateFormats.add(DateFormat.getDateInstance(SimpleDateFormat.MEDIUM));
-        dateFormats.add(DateFormat.getDateInstance(SimpleDateFormat.LONG));
-        dateFormats.add(DateFormat.getDateInstance(SimpleDateFormat.FULL));
-    }
-
 
 	/**
 	 * Sets the identifier of this project, will be called by hibernate.
@@ -548,22 +532,8 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	 * @return <code>true</code> if the VCS contents of this project has changed
      */
     public boolean isVcsModifiedSince(String sinceDate) {
-        Date date;
-        for (Iterator iter = dateFormats.iterator(); iter.hasNext();) {
-            DateFormat df = (DateFormat) iter.next();
-
-            try {
-                date = df.parse(sinceDate);
-                return isVcsModifiedSince(date);
-            } catch (ParseException ex) {
-                logger.error("Unable to parse date: " + sinceDate);
-                return false;
-            } catch (NumberFormatException nfe) {
-                logger.error("Unable to parse date: " + sinceDate);
-                return false;
-            }
-        }
-        return false;
+        Date date = SynchronizedDateFormatter.parseDate(sinceDate);
+        return (date != null) ? isVcsModifiedSince(date) : false;
     }
 
     /**

@@ -15,6 +15,7 @@ import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.luntsys.luntbuild.utility.ValidationException;
 import com.luntsys.luntbuild.vcs.accurev.AccurevHelper;
 import com.luntsys.luntbuild.vcs.accurev.AccurevModuleInterface;
@@ -216,7 +217,6 @@ public class AccurevAdaptor extends Vcs {
         antProject.log("Getting Revisions... ");
         AccurevHelper.setUser(user, password, antProject);
         AccurevHelper.syncTime(antProject);
-        final SimpleDateFormat format = new SimpleDateFormat(ACCUREV_DATE_FORMAT);
         final Revisions revisions = new Revisions();
         revisions.addLog(this.getClass().getName(), toString());
         revisions.getChangeLogs().add("*************************************************************");
@@ -234,7 +234,8 @@ public class AccurevAdaptor extends Vcs {
             cmdLine.createArgument().setLine("-p " + module.getActualDepot());
             cmdLine.createArgument().setLine("-s " + module.getActualBackingStream());
             cmdLine.createArgument().setLine("-k promote");
-            cmdLine.createArgument().setLine("-t \"now-" + format.format(sinceDate) + "\"");
+            cmdLine.createArgument().setLine("-t \"now-" +
+            		SynchronizedDateFormatter.formatDate(sinceDate, ACCUREV_DATE_FORMAT) + "\"");
             cmdLine.createArgument().setValue("-fx");
             Document doc = AccurevHelper.buildResponseDocument(cmdLine, antProject);
             if (doc == null) {
@@ -255,7 +256,7 @@ public class AccurevAdaptor extends Vcs {
                 long timeVal = Long.parseLong(transaction.attributeValue("time"));
                 timeVal = timeVal * 1000; // Accurev returns time in seconds
                 Date transDate = new Date(timeVal);
-                String dateString = format.format(transDate);
+                String dateString = SynchronizedDateFormatter.formatDate(transDate, ACCUREV_DATE_FORMAT);
                 final String transactionStr = transaction.attributeValue("id");
                 final long transactionNumber = Long.parseLong(transactionStr);
 

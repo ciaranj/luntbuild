@@ -571,14 +571,13 @@ public class CvsAdaptor extends Vcs {
 		envs.addVariable(var);
 		Commandline cmdLine = buildCvsExecutable();
 
-		final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         if (!isDisableHistoryCmd()) {
 			final boolean commitsHappened[] = new boolean[1];
 			commitsHappened[0] = true;
 			cmdLine.clearArgs();
 			cmdLine.createArgument().setValue("-d" + getActualCvsRoot());
 			cmdLine.createArgument().setLine("-q history -c -a");
-			cmdLine.createArgument().setValue("-D" + format.format(sinceDate));
+			cmdLine.createArgument().setValue("-D" + SynchronizedDateFormatter.formatDate(sinceDate, DATE_FORMAT));
 			new MyExecTask("history", antProject, null, cmdLine, envs, null, -1) {
 				public void handleStdout(String line) {
 					if (line.equals("No records selected."))
@@ -609,7 +608,7 @@ public class CvsAdaptor extends Vcs {
 					cmdLine.createArgument().setLine("-q log -N");
 				else
 					cmdLine.createArgument().setLine("-q log -S -N");
-				cmdLine.createArgument().setValue("-d>" + format.format(sinceDate));
+				cmdLine.createArgument().setValue("-d>" + SynchronizedDateFormatter.formatDate(sinceDate, DATE_FORMAT));
 				if (Luntbuild.isEmpty(module.getBranch()))
 					cmdLine.createArgument().setValue("-b");
 				else
@@ -674,14 +673,13 @@ public class CvsAdaptor extends Vcs {
         }
         envs.addVariable(var);
         Commandline cmdLine = buildCvsExecutable();
-		final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         if (!isDisableHistoryCmd()) {
             antProject.log("History command enabled.");
             final boolean commitsHappened[] = new boolean[1];
             commitsHappened[0] = true;
             cmdLine.createArgument().setValue("-d" + getActualCvsRoot());
             cmdLine.createArgument().setLine("-q history -c -a");
-			cmdLine.createArgument().setValue("-D" + format.format(sinceDate));
+			cmdLine.createArgument().setValue("-D" + SynchronizedDateFormatter.formatDate(sinceDate, DATE_FORMAT));
             new MyExecTask("history", antProject, null, cmdLine, envs, null, -1) {
                 public void handleStdout(String line) {
                     if (line.equals("No records selected."))
@@ -728,7 +726,7 @@ public class CvsAdaptor extends Vcs {
                     cmdLine.createArgument().setLine("-q log -N");
                 else
                     cmdLine.createArgument().setLine("-q log -S -N");
-				cmdLine.createArgument().setValue("-d>" + format.format(sinceDate));
+				cmdLine.createArgument().setValue("-d>" + SynchronizedDateFormatter.formatDate(sinceDate, DATE_FORMAT));
                 if (Luntbuild.isEmpty(module.getBranch()))
                     cmdLine.createArgument().setValue("-b");
                 else
@@ -762,12 +760,10 @@ public class CvsAdaptor extends Vcs {
                                             revision = revisionmatcher.group(1).trim();
                                             addRevision = true;
                                         } else if (authormatcher.find()) {
-                                            try {
-                                                date = new SimpleDateFormat(LOG_DATE_FORMAT).parse(authormatcher.group(1).trim());
-                                            } catch (Exception e) {
-                                                logger.error("Failed to parse date from CVS log", e);
-                                                date = null;
-                                            }
+                                            date = SynchronizedDateFormatter.parseDate(authormatcher.group(1).trim(),
+                                            		LOG_DATE_FORMAT);
+                                            if (date == null)
+                                                logger.error("Failed to parse date from CVS log: " + authormatcher.group(1).trim());
                                             author = authormatcher.group(2).trim();
                                             revisions.getChangeLogins().add(author);
                                             captureMessage = true;
@@ -808,12 +804,9 @@ public class CvsAdaptor extends Vcs {
                                     revision = revisionmatcher.group(1).trim();
                                     addRevision = true;
                                 } else if (authormatcher.find()) {
-                                    try {
-                                        date = new SimpleDateFormat(LOG_DATE_FORMAT).parse(authormatcher.group(1).trim());
-                                    } catch (Exception e) {
-                                        logger.error("Failed to parse date from CVS log", e);
-                                        date = null;
-                                    }
+                                    date = SynchronizedDateFormatter.parseDate(authormatcher.group(1).trim(), LOG_DATE_FORMAT);
+                                    if (date == null)
+                                        logger.error("Failed to parse date from CVS log: " + authormatcher.group(1).trim());
                                     author = authormatcher.group(2).trim();
                                     revisions.getChangeLogins().add(author);
                                     captureMessage = true;
@@ -858,11 +851,9 @@ public class CvsAdaptor extends Vcs {
                                 revision = revisionmatcher.group(1).trim();
                                 addRevision = true;
                             } else if (authormatcher.find()) {
-                                try {
-                                    date = new SimpleDateFormat(LOG_DATE_FORMAT).parse(authormatcher.group(1).trim());
-                                } catch (Exception e) {
-                                    throw new BuildException("Failed to parse date from CVS log", e);
-                                }
+                                date = SynchronizedDateFormatter.parseDate(authormatcher.group(1).trim(), LOG_DATE_FORMAT);
+                                if (date == null)
+                                	throw new BuildException("Failed to parse date from CVS log:" + authormatcher.group(1).trim());
                                 author = authormatcher.group(2).trim();
                                 revisions.getChangeLogins().add(author);
                                 captureMessage = true;

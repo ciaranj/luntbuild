@@ -41,8 +41,6 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -153,25 +151,12 @@ public class Luntbuild {
     public static final int FILE_BLOCK_SIZE = 25000;
 
     /** Date format for the web interface */
-    public static final SynchronizedFormatter DATE_DISPLAY_FORMAT =
-            new SynchronizedFormatter("yyyy-MM-dd HH:mm");
+    public static final SynchronizedDateFormatter DATE_DISPLAY_FORMAT =
+            new SynchronizedDateFormatter("yyyy-MM-dd HH:mm");
 
     /** ISO date format, used by web feeds */
-    public static final SynchronizedFormatter DATE_DISPLAY_FORMAT_ISO =
-            new SynchronizedFormatter("yyyy-MM-dd'T'HH:mm:ssZ"); 
-
-    /** A synchronized wrapper around SimpleDateFormat */
-    public static class SynchronizedFormatter {
-        SimpleDateFormat delegate;
-        
-        public SynchronizedFormatter(String format) {
-            delegate = new SimpleDateFormat(format);
-        }
-        
-        public String format(Date date) {
-            return delegate.format(date);
-        }
-    }
+    public static final SynchronizedDateFormatter DATE_DISPLAY_FORMAT_ISO =
+            new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ssZ"); 
 
     /** Log4j system log - HTML */
     public static final String log4jFileName = "luntbuild_log.html";
@@ -633,21 +618,18 @@ public class Luntbuild {
      * @throws RuntimeException if <code>hhmm</code> is formatted wrong
      */
     public static Date getDateByHHMM(String hhmm) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-            Date timeDate = sdf.parse(hhmm);
-            Calendar timeCal = Calendar.getInstance(); // only time part of this calendar will be used
-            timeCal.setTime(timeDate);
-            Calendar dateCal = Calendar.getInstance(); // only date part of this calendar will be used
-            dateCal.setTimeInMillis(System.currentTimeMillis());
-            dateCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
-            dateCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
-            dateCal.set(Calendar.SECOND, 0);
-            dateCal.set(Calendar.MILLISECOND, 0);
-            return dateCal.getTime();
-        } catch (ParseException ex) {
-            throw new RuntimeException(ex);
-        }
+        Date timeDate = SynchronizedDateFormatter.parseDate(hhmm, "hh:mm");
+        if (timeDate == null)
+        	throw new RuntimeException("Unable to get date by hh:mm");
+        Calendar timeCal = Calendar.getInstance(); // only time part of this calendar will be used
+        timeCal.setTime(timeDate);
+        Calendar dateCal = Calendar.getInstance(); // only date part of this calendar will be used
+        dateCal.setTimeInMillis(System.currentTimeMillis());
+        dateCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+        dateCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+        dateCal.set(Calendar.SECOND, 0);
+        dateCal.set(Calendar.MILLISECOND, 0);
+        return dateCal.getTime();
     }
 
     /**

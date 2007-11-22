@@ -1002,7 +1002,6 @@ public class PerforceAdaptor extends Vcs {
      * @inheritDoc
      */
     public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
-        final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         String workingDir = workingSchedule.getWorkDirRaw();
         final Revisions revisions = new Revisions();
         revisions.addLog(this.getClass().getName(), toString());
@@ -1025,8 +1024,9 @@ public class PerforceAdaptor extends Vcs {
 				continue;
             if (Luntbuild.isEmpty(module.getLabel())) {
                 cmdLine.createArgument().setValue(module.getActualClientPath().replaceFirst(clientNamePattern,
-						"//" + getClient(workingSchedule) + "/") + "@" + format.format(sinceDate) +
-						"," + format.format(new Date()));
+						"//" + getClient(workingSchedule) + "/") + "@" +
+						SynchronizedDateFormatter.formatDate(sinceDate, "yyyy/MM/dd HH:mm:ss") +
+						"," + SynchronizedDateFormatter.formatDate(new Date(), "yyyy/MM/dd HH:mm:ss"));
             }
         }
 
@@ -1089,12 +1089,9 @@ public class PerforceAdaptor extends Vcs {
                     changelist = matcher.group(1).trim();
                     author = matcher.group(2).trim();
                     revisions.getChangeLogins().add(author);
-                    try {
-                        date = format.parse(matcher.group(3).trim());
-                    } catch (Exception e) {
-                        logger.error("Failed to parse date from Perforce log", e);
-                        date = null;
-                    }
+                    date = SynchronizedDateFormatter.parseDate(matcher.group(3).trim(), "yyyy/MM/dd HH:mm:ss");
+                    if (date == null)
+                        logger.error("Failed to parse date from Perforce log:" + matcher.group(3).trim());
                 } else if (endmatcher.find() && revisionReady) {
                     revisionReady = false;
                     revisions.addEntryToLastLog(changelist, author, date, msg);

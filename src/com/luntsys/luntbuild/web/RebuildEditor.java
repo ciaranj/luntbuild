@@ -30,6 +30,7 @@ package com.luntsys.luntbuild.web;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.luntsys.luntbuild.web.selectionmodels.BuildTimingSelectionModel;
 import com.luntsys.luntbuild.web.selectionmodels.NotifyStrategySelectionModel;
 import com.luntsys.luntbuild.web.selectionmodels.PostbuildStrategySelectionModel;
@@ -105,13 +106,12 @@ public abstract class RebuildEditor extends BaseComponent implements PageDetachL
 				return;
 			}
 		} else if (getBuildTiming() == com.luntsys.luntbuild.facades.Constants.BUILD_TIMING_AT){
-			try{
-				Date startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(getBuildTime());
-				trigger.setStartTime(startTime);
-			} catch (ParseException e){
-				setErrorMsg("Value of the property \"at\" is invalid: " + e.getMessage());
+			Date startTime = SynchronizedDateFormatter.parseDate(getBuildTime(), "yyyy-MM-dd HH:mm");
+			if (startTime == null) {
+				setErrorMsg("Value of the property \"at\" is invalid: " + getBuildTime());
 				return;
 			}
+			trigger.setStartTime(startTime);
 		} else {
 			try{
 				trigger.setStartTime(Luntbuild.getDateByHHMM(getBuildTime()));

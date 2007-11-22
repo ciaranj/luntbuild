@@ -1,7 +1,8 @@
 ==============================================
-luntbuild X.X.X Release Notes
+luntbuild 1.5.4 Release Notes
 ==============================================
 
+- Fix: [#BUG-6407] CVS unparseable date errors in logfile
 - Fix: (Bug 6325) Fixed AccurevAdaptor not saving settings
 - Fix: (Bug 6408) Fixed missing attributes in CVS revision logs causing exceptions on build viewer page
 
