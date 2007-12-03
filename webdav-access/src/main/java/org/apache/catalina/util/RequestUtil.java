@@ -31,7 +31,7 @@ import javax.servlet.http.Cookie;
  *
  * @author Craig R. McClanahan
  * @author Tim Tye
- * @version $Revision: 1.1 $ $Date: 2006/01/19 16:07:06 $
+ * @version $Revision: #1 $ $Date: 2007/07/21 $
  */
 
 public final class RequestUtil {

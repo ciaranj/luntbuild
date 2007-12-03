@@ -53,9 +53,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-
 import org.webdavaccess.IWebdavAlias;
 import org.webdavaccess.IWebdavAuthorization;
 import org.webdavaccess.IWebdavStorage;
@@ -68,16 +65,21 @@ import org.webdavaccess.exceptions.ObjectAlreadyExistsException;
 import org.webdavaccess.exceptions.ObjectNotFoundException;
 import org.webdavaccess.exceptions.UnauthenticatedException;
 import org.webdavaccess.exceptions.WebdavException;
+import org.xml.sax.InputSource;
 
 
 /**
- * Servlet which provides support for WebDAV level 2.
- * 
- * the original class is org.apache.catalina.servlets.WebdavServlet by Remy
- * Maucherat, which was heavily changed
- * 
- * @author Remy Maucherat
- */
+* Servlet which provides support for WebDAV level 2.
+* 
+* the original class is org.apache.catalina.servlets.WebdavServlet by Remy
+* Maucherat, which was heavily changed
+* 
+* @author Remy Maucherat
+* @author Lubos Pochman
+*
+* Original class org.apache.catalina.servlets.WebdavServlet modified by Remy Maucherat
+* 
+*/
 
 public class WebdavServlet extends HttpServlet {
 
@@ -343,6 +345,7 @@ public class WebdavServlet extends HttpServlet {
 			}
 
 		} catch (UnauthenticatedException e) {
+			log.error("WebdavServer not authenticated: ", e);
 			resp.sendError(WebdavStatus.SC_FORBIDDEN);
 		} catch (WebdavException e) {
 			log.error("WebdavServer internal error: ", e);
@@ -480,13 +483,12 @@ public class WebdavServlet extends HttpServlet {
 	 * @return Properties
 	 * @throws ServletException
 	 */
-	private Properties getProperties(ServletRequest req) throws ServletException {
-		Properties props = new Properties();
+	private Properties[] getPropertiesToSetOrRemove(ServletRequest req) throws ServletException {
+		Properties[] props = new Properties[]{new Properties(), new Properties()};
 		if (req.getContentLength() == 0) return props;
 		DocumentBuilder documentBuilder = getDocumentBuilder();
 		try {
-			Document document = documentBuilder.parse(new InputSource(req
-					.getInputStream()));
+			Document document = documentBuilder.parse(new InputSource(req.getInputStream()));
 			// Get the root element of the document
 			Element rootElement = document.getDocumentElement();
 			NodeList childList = rootElement.getChildNodes();
@@ -506,11 +508,25 @@ public class WebdavServlet extends HttpServlet {
 									String pname = node.getNodeName();
 									if (pname == null || pname.trim().length() == 0) continue;
 									String value = node.getTextContent();
-									props.setProperty(pname, value);
+									props[0].setProperty(pname, value);
 								}
 							}
 						}
 					} else if ("remove".equals(currentNode.getLocalName())) {
+						NodeList propList = currentNode.getChildNodes();
+						for (int j = 0; j < propList.getLength(); j++) {
+							Node propNode = propList.item(j);
+							if ("prop".equals(propNode.getLocalName())) {
+								NodeList propNodes = propNode.getChildNodes();
+								for(int k = 0; k < propNodes.getLength(); k++) {
+									Node node = propNodes.item(k);
+									String pname = node.getNodeName();
+									if (pname == null || pname.trim().length() == 0) continue;
+									String value = node.getTextContent();
+									props[1].setProperty(pname, value);
+								}
+							}
+						}
 					}
 					break;
 				case Node.TEXT_NODE:
@@ -519,7 +535,7 @@ public class WebdavServlet extends HttpServlet {
 				}
 			}
 		} catch (Exception e) {
-
+			throw new ServletException("Unable to parse properties set/remove request");
 		}
 		return props;
 	}
@@ -667,8 +683,7 @@ public class WebdavServlet extends HttpServlet {
 	protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		String lockOwner = "doOptions" + System.currentTimeMillis()
-				+ req.toString();
+		String lockOwner = "doOptions" + System.nanoTime() + req.toString();
 		String path = getRelativePath(req);
 		if (fResLocks.lock(path, lockOwner, false, 0)) {
 			try {
@@ -678,13 +693,16 @@ public class WebdavServlet extends HttpServlet {
 				resp.addHeader("Allow", methodsAllowed);
 				resp.addHeader("MS-Author-Via", "DAV");
 			} catch (AccessDeniedException e) {
+				log.error("WebdavServer not authenticated: ", e);
 				resp.sendError(WebdavStatus.SC_FORBIDDEN);
 			} catch (WebdavException e) {
+				log.error("WebdavServer internal error: ", e);
 				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 			} finally {
 				fResLocks.unlock(path, lockOwner);
 			}
 		} else {
+			log.error("WebdavServer unable to lock resource " + lockOwner);
 			resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -704,15 +722,15 @@ public class WebdavServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		// Retrieve the resources
-		String lockOwner = "doPropfind" + System.currentTimeMillis()
-				+ req.toString();
+		String lockOwner = "doPropfind" + System.nanoTime() + req.toString();
 		String path = getRelativePath(req);
 		if ((path.toUpperCase().startsWith("/WEB-INF")) ||
 				(path.toUpperCase().startsWith("/META-INF"))) {
+			log.error("WebdavServer cannot access /WEB-INF and /META-INF");
 			resp.sendError(WebdavStatus.SC_FORBIDDEN);
 			return;
 		}
-		
+
 		int depth = getDepth(req);
 		if (fResLocks.lock(path, lockOwner, false, depth)) {
 			try {
@@ -752,13 +770,16 @@ public class WebdavServlet extends HttpServlet {
 						XMLWriter.CLOSING);
 				generatedXML.sendData();
 			} catch (AccessDeniedException e) {
+				log.error("WebdavServer not authenticated: ", e);
 				resp.sendError(WebdavStatus.SC_FORBIDDEN);
 			} catch (WebdavException e) {
+				log.error("WebdavServer internal error: ", e);
 				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 			} finally {
 				fResLocks.unlock(path, lockOwner);
 			}
 		} else {
+			log.error("WebdavServer unable to lock resource " + lockOwner);
 			resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -777,12 +798,14 @@ public class WebdavServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		if (readOnly) {
+			log.error("WebdavServer not authenticated for write");
 			resp.sendError(WebdavStatus.SC_FORBIDDEN);
 		} else {
-			String lockOwner = "doProppatch" + System.currentTimeMillis() + req.toString();
+			String lockOwner = "doProppatch" + System.nanoTime() + req.toString();
 			String path = getRelativePath(req);
 			if ((path.toUpperCase().startsWith("/WEB-INF")) ||
 					(path.toUpperCase().startsWith("/META-INF"))) {
+				log.error("WebdavServer cannot access /WEB-INF and /META-INF");
 				resp.sendError(WebdavStatus.SC_FORBIDDEN);
 				return;
 			}
@@ -796,16 +819,23 @@ public class WebdavServlet extends HttpServlet {
 						// resource
 					}
 					
-					Properties properties = getProperties(req);
+					Properties[] properties = getPropertiesToSetOrRemove(req);
+					// Set properties
+					if (properties[0] != null && properties[0].size() > 0)
+						fStore.setCustomProperties(path, properties[0]);
 					
-					fStore.setCustomProperties(path, properties);
+					// Remove properties
+					if (properties[1] != null && properties[1].size() > 0)
+						fStore.removeCustomProperties(path, properties[1]);
 					
 				} catch (WebdavException e) {
+					log.error("WebdavServer internal error: ", e);
 					resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 				} finally {
 					fResLocks.unlock(path, lockOwner);
 				}
 			} else {
+				log.error("WebdavServer unable to lock resource " + lockOwner);
 				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -826,8 +856,7 @@ public class WebdavServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp,
 			boolean includeBody) throws ServletException, IOException {
 
-		String lockOwner = "doGet" + System.currentTimeMillis()
-				+ req.toString();
+		String lockOwner = "doGet" + System.nanoTime() + req.toString();
 		String path = getRelativePath(req);
 		if (fResLocks.lock(path, lockOwner, false, 0)) {
 			try {
@@ -886,6 +915,7 @@ public class WebdavServlet extends HttpServlet {
 				} else {
 					if (includeBody && fStore.isFolder(path)) {
 						renderHtml(path, resp.getOutputStream(), req.getContextPath());
+						resp.setContentType("text/html");
 					} else {
 						if (!fStore.objectExists(path) && includeBody) {
 							resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -908,15 +938,18 @@ public class WebdavServlet extends HttpServlet {
 					}
 				}
 			} catch (AccessDeniedException e) {
+				log.error("WebdavServer not authenticated: ", e);
 				resp.sendError(WebdavStatus.SC_FORBIDDEN);
 			} catch (ObjectAlreadyExistsException e) {
 				resp.sendError(WebdavStatus.SC_NOT_FOUND, req.getRequestURI());
 			} catch (WebdavException e) {
+				log.error("WebdavServer internal error: ", e);
 				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 			} finally {
 				fResLocks.unlock(path, lockOwner);
 			}
 		} else {
+			log.error("WebdavServer unable to lock resource " + lockOwner);
 			resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -1132,8 +1165,7 @@ public class WebdavServlet extends HttpServlet {
 				// not readonly
 				String path = getRelativePath(req);
 				String parentPath = getParentPath(path);
-				String lockOwner = "doMkcol" + System.currentTimeMillis()
-						+ req.toString();
+				String lockOwner = "doMkcol" + System.nanoTime() + req.toString();
 				if (fResLocks.lock(path, lockOwner, true, 0)) {
 					try {
 						if (parentPath != null
@@ -1142,35 +1174,38 @@ public class WebdavServlet extends HttpServlet {
 							if (!fStore.objectExists(path)) {
 								try {
 									fStore.createFolder(path);
+									resp.setStatus(WebdavStatus.SC_CREATED);
 								} catch (ObjectAlreadyExistsException e) {
 									String methodsAllowed = determineMethodsAllowed(
 											true, isFolder);
 									resp.addHeader("Allow", methodsAllowed);
-									resp
-											.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
+									resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
 								}
 							} else {
 								// object already exists
 								String methodsAllowed = determineMethodsAllowed(
 										true, isFolder);
 								resp.addHeader("Allow", methodsAllowed);
-								resp
-										.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
+								resp.sendError(WebdavStatus.SC_METHOD_NOT_ALLOWED);
 							}
 						} else {
 							resp.sendError(WebdavStatus.SC_CONFLICT);
 						}
 					} catch (AccessDeniedException e) {
+						log.error("WebdavServer not authenticated: ", e);
 						resp.sendError(WebdavStatus.SC_FORBIDDEN);
 					} catch (WebdavException e) {
+						log.error("WebdavServer internal error: ", e);
 						resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 					} finally {
 						fResLocks.unlock(path, lockOwner);
 					}
 				} else {
+					log.error("WebdavServer unable to lock resource " + lockOwner);
 					resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 				}
 			} else {
+				log.error("WebdavServer not authenticated for write");
 				resp.sendError(WebdavStatus.SC_FORBIDDEN);
 			}
 		}
@@ -1192,8 +1227,7 @@ public class WebdavServlet extends HttpServlet {
 
 		if (!readOnly) {
 			String path = getRelativePath(req);
-			String lockOwner = "doDelete" + System.currentTimeMillis()
-					+ req.toString();
+			String lockOwner = "doDelete" + System.nanoTime() + req.toString();
 			if (fResLocks.lock(path, lockOwner, true, -1)) {
 				try {
 					Hashtable errorList = new Hashtable();
@@ -1202,19 +1236,22 @@ public class WebdavServlet extends HttpServlet {
 						sendReport(req, resp, errorList);
 					}
 				} catch (AccessDeniedException e) {
+					log.error("WebdavServer not authenticated: ", e);
 					resp.sendError(WebdavStatus.SC_FORBIDDEN);
 				} catch (ObjectAlreadyExistsException e) {
-					resp.sendError(WebdavStatus.SC_NOT_FOUND, req
-							.getRequestURI());
+					resp.sendError(WebdavStatus.SC_NOT_FOUND, req.getRequestURI());
 				} catch (WebdavException e) {
+					log.error("WebdavServer internal error: ", e);
 					resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 				} finally {
 					fResLocks.unlock(path, lockOwner);
 				}
 			} else {
+				log.error("WebdavServer unable to lock resource " + lockOwner);
 				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 			}
 		} else {
+			log.error("WebdavServer not authenticated for write");
 			resp.sendError(WebdavStatus.SC_FORBIDDEN);
 		}
 
@@ -1236,8 +1273,7 @@ public class WebdavServlet extends HttpServlet {
 		if (!readOnly) {
 			String path = getRelativePath(req);
 			String parentPath = getParentPath(path);
-			String lockOwner = "doPut" + System.currentTimeMillis()
-					+ req.toString();
+			String lockOwner = "doPut" + System.nanoTime() + req.toString();
 			if (fResLocks.lock(path, lockOwner, true, -1)) {
 				try {
 					if (parentPath != null && fStore.isFolder(parentPath)
@@ -1256,13 +1292,16 @@ public class WebdavServlet extends HttpServlet {
 						resp.sendError(WebdavStatus.SC_CONFLICT);
 					}
 				} catch (AccessDeniedException e) {
+					log.error("WebdavServer not authenticated: ", e);
 					resp.sendError(WebdavStatus.SC_FORBIDDEN);
 				} catch (WebdavException e) {
+					log.error("WebdavServer internal error: ", e);
 					resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 				} finally {
 					fResLocks.unlock(path, lockOwner);
 				}
 			} else {
+				log.error("WebdavServer unable to lock resource " + lockOwner);
 				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 			}
 		} else {
@@ -1288,29 +1327,30 @@ public class WebdavServlet extends HttpServlet {
 
 		String path = getRelativePath(req);
 		if (!readOnly) {
-			String lockOwner = "doCopy" + System.currentTimeMillis()
-					+ req.toString();
+			String lockOwner = "doCopy" + System.nanoTime() + req.toString();
 			if (fResLocks.lock(path, lockOwner, false, -1)) {
 				try {
 					copyResource(req, resp);
 				} catch (AccessDeniedException e) {
+					log.error("WebdavServer not authenticated: ", e);
 					resp.sendError(WebdavStatus.SC_FORBIDDEN);
 				} catch (ObjectAlreadyExistsException e) {
-					resp.sendError(WebdavStatus.SC_CONFLICT, req
-							.getRequestURI());
+					resp.sendError(WebdavStatus.SC_CONFLICT, req.getRequestURI());
 				} catch (ObjectNotFoundException e) {
-					resp.sendError(WebdavStatus.SC_NOT_FOUND, req
-							.getRequestURI());
+					resp.sendError(WebdavStatus.SC_NOT_FOUND, req.getRequestURI());
 				} catch (WebdavException e) {
+					log.error("WebdavServer internal error: ", e);
 					resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 				} finally {
 					fResLocks.unlock(path, lockOwner);
 				}
 			} else {
+				log.error("WebdavServer unable to lock resource " + lockOwner);
 				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 			}
 
 		} else {
+			log.error("WebdavServer not authenticated for write");
 			resp.sendError(WebdavStatus.SC_FORBIDDEN);
 		}
 
@@ -1334,8 +1374,7 @@ public class WebdavServlet extends HttpServlet {
 		if (!readOnly) {
 
 			String path = getRelativePath(req);
-			String lockOwner = "doMove" + System.currentTimeMillis()
-					+ req.toString();
+			String lockOwner = "doMove" + System.nanoTime() + req.toString();
 			if (fResLocks.lock(path, lockOwner, false, -1)) {
 				try {
 					String destinationPath = copyResource(req, resp);
@@ -1347,22 +1386,26 @@ public class WebdavServlet extends HttpServlet {
 						}
 						if (fAliasManager != null) fAliasManager.resourceMovedNotification(path, destinationPath);
 					} else {
+						log.error("Destination directory in doMove cannot be empty");
 						resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 					}
 				} catch (AccessDeniedException e) {
+					log.error("WebdavServer not authenticated: ", e);
 					resp.sendError(WebdavStatus.SC_FORBIDDEN);
 				} catch (ObjectAlreadyExistsException e) {
-					resp.sendError(WebdavStatus.SC_NOT_FOUND, req
-							.getRequestURI());
+					resp.sendError(WebdavStatus.SC_NOT_FOUND, req.getRequestURI());
 				} catch (WebdavException e) {
+					log.error("WebdavServer internal error: ", e);
 					resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 				} finally {
 					fResLocks.unlock(path, lockOwner);
 				}
 			} else {
+				log.error("WebdavServer unable to lock resource " + lockOwner);
 				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 			}
 		} else {
+			log.error("WebdavServer not authenticated for write");
 			resp.sendError(WebdavStatus.SC_FORBIDDEN);
 
 		}
@@ -1446,20 +1489,11 @@ public class WebdavServlet extends HttpServlet {
 			destinationPath = destinationPath.substring(contextPath.length());
 		}
 
-//		String pathInfo = req.getPathInfo();
-//		if (pathInfo != null) {
-//			String servletPath = req.getServletPath();
-//			if ((servletPath != null) {
-//					&& (destinationPath.startsWith(servletPath))) {
-//				destinationPath = destinationPath.substring(servletPath
-//						.length());
-//			}
-//		}
-
 		String path = getRelativePath(req);
 
 		// if source = destination
 		if (path.equals(destinationPath)) {
+			log.error("WebdavServer cannot copy if source and destination is the same");
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN);
 		}
 
@@ -1473,42 +1507,20 @@ public class WebdavServlet extends HttpServlet {
 		}
 
 		// Overwriting the destination
-		String lockOwner = "copyResource" + System.currentTimeMillis()
-				+ req.toString();
+		String lockOwner = "copyResource" + System.nanoTime() + req.toString();
 		if (fResLocks.lock(destinationPath, lockOwner, true, -1)) {
 			try {
 
 				// Retrieve the resources
 				if (!fStore.objectExists(path)) {
-					resp
-							.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					log.error("Recource to be copied does not exist " + path);
+					resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					return null;
 				}
 
-				boolean exists = fStore.objectExists(destinationPath);
 				Hashtable errorList = new Hashtable();
 
-				if (overwrite) {
-
-					// Delete destination resource, if it exists
-					if (exists) {
-						deleteResource(destinationPath, errorList, req, resp);
-
-					} else {
-						resp.setStatus(WebdavStatus.SC_CREATED);
-					}
-				} else {
-
-					// If the destination exists, then it's a conflict
-					if (exists) {
-						resp.sendError(WebdavStatus.SC_PRECONDITION_FAILED);
-						return null;
-					} else {
-						resp.setStatus(WebdavStatus.SC_CREATED);
-					}
-
-				}
-				copy(path, destinationPath, errorList, req, resp);
+				copy(path, destinationPath, overwrite, errorList, req, resp);
 				if (!errorList.isEmpty()) {
 					sendReport(req, resp, errorList);
 				}
@@ -1517,6 +1529,7 @@ public class WebdavServlet extends HttpServlet {
 				fResLocks.unlock(destinationPath, lockOwner);
 			}
 		} else {
+			log.error("WebdavServer unable to lock resource " + lockOwner);
 			resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
 			return null;
 		}
@@ -1542,16 +1555,20 @@ public class WebdavServlet extends HttpServlet {
 	 *             if an error in the underlying store occurs
 	 * @throws IOException
 	 */
-	private void copy(String sourcePath, String destinationPath,
+	private void copy(String sourcePath, String destinationPath, boolean overwrite,
 			Hashtable errorList, HttpServletRequest req,
 			HttpServletResponse resp) throws WebdavException, IOException {
 
 		if (fStore.isResource(sourcePath)) {
-			fStore.copyResource(sourcePath, destinationPath);
+			if (fStore.isFolder(destinationPath)) {
+				copyFolder(sourcePath, destinationPath, overwrite, errorList, req, resp);
+			} else {
+				checkOverwriteResource(destinationPath, overwrite, errorList, req, resp);
+				fStore.copyResource(sourcePath, destinationPath);
+			}
 		} else {
-
 			if (fStore.isFolder(sourcePath)) {
-				copyFolder(sourcePath, destinationPath, errorList, req, resp);
+				copyFolder(sourcePath, destinationPath, overwrite, errorList, req, resp);
 			} else {
 				resp.sendError(WebdavStatus.SC_NOT_FOUND);
 			}
@@ -1567,7 +1584,7 @@ public class WebdavServlet extends HttpServlet {
 	 * @param destinationPath
 	 *            where to write
 	 * @param errorList
-	 * 			  all errors that ocurred
+	 * 			  all errors that occurred
 	 * @param req
 	 *            HttpServletRequest
 	 * @param resp
@@ -1575,11 +1592,13 @@ public class WebdavServlet extends HttpServlet {
 	 * @throws WebdavException
 	 *             if an error in the underlying store occurs
 	 */
-	private void copyFolder(String sourcePath, String destinationPath,
+	private void copyFolder(String sourcePath, String destinationPath, boolean overwrite,
 			Hashtable errorList, HttpServletRequest req,
 			HttpServletResponse resp) throws WebdavException {
 
-		fStore.createFolder(destinationPath);
+		if (!fStore.objectExists(destinationPath))
+			fStore.createFolder(destinationPath);
+		
 		boolean infiniteDepth = true;
 		if (req.getHeader("depth") != null) {
 			if (req.getHeader("depth").equals("0")) {
@@ -1588,40 +1607,78 @@ public class WebdavServlet extends HttpServlet {
 		}
 		if (infiniteDepth) {
 			String[] children = fStore.getChildrenNames(sourcePath);
-
-			for (int i = children.length - 1; i >= 0; i--) {
-				children[i] = "/" + children[i];
-				try {
-					if (fStore.isResource(sourcePath + children[i])) {
-						fStore.copyResource(sourcePath + children[i], destinationPath + children[i]);
-					} else {
-						copyFolder(sourcePath + children[i], destinationPath
-								+ children[i], errorList, req, resp);
+			if (children == null || children.length == 0) {
+				if (fStore.isResource(sourcePath)) {
+					String resourceName = fStore.getResourceName(sourcePath);
+					checkOverwriteResource(destinationPath + "/" + resourceName, overwrite, errorList, req, resp);
+					fStore.copyResource(sourcePath, destinationPath + "/" + resourceName);
+				}
+			} else {
+			
+				for (int i = children.length - 1; i >= 0; i--) {
+					children[i] = "/" + children[i];
+					try {
+						if (fStore.isResource(sourcePath + children[i])) {
+							checkOverwriteResource(destinationPath + children[i], overwrite, errorList, req, resp);
+							fStore.copyResource(sourcePath + children[i], destinationPath + children[i]);
+						} else {
+							copyFolder(sourcePath + children[i], destinationPath + children[i], overwrite, errorList, req, resp);
+						}
+					} catch (AccessDeniedException e) {
+						errorList.put(destinationPath + children[i], new Integer(
+								WebdavStatus.SC_FORBIDDEN));
+					} catch (ObjectNotFoundException e) {
+						errorList.put(destinationPath + children[i], new Integer(
+								WebdavStatus.SC_NOT_FOUND));
+					} catch (ObjectAlreadyExistsException e) {
+						errorList.put(destinationPath + children[i], new Integer(
+								WebdavStatus.SC_CONFLICT));
+					} catch (WebdavException e) {
+						log.error("WebdavServer internal error in copyFolder: " + (destinationPath + children[i]), e);
+						errorList.put(destinationPath + children[i], new Integer(
+								WebdavStatus.SC_INTERNAL_SERVER_ERROR));
 					}
-				} catch (AccessDeniedException e) {
-					errorList.put(destinationPath + children[i], new Integer(
-							WebdavStatus.SC_FORBIDDEN));
-				} catch (ObjectNotFoundException e) {
-					errorList.put(destinationPath + children[i], new Integer(
-							WebdavStatus.SC_NOT_FOUND));
-				} catch (ObjectAlreadyExistsException e) {
-					errorList.put(destinationPath + children[i], new Integer(
-							WebdavStatus.SC_CONFLICT));
-				} catch (WebdavException e) {
-					errorList.put(destinationPath + children[i], new Integer(
-							WebdavStatus.SC_INTERNAL_SERVER_ERROR));
 				}
 			}
 		}
 	}
 
+	private void checkOverwriteResource(String path, boolean overwrite, Hashtable errorList, HttpServletRequest req, HttpServletResponse resp)
+	throws WebdavException {
+		try {
+			boolean exists = fStore.objectExists(path);
+			if (overwrite) {
+	
+				// Delete destination resource, if it exists and it is not directory
+				if (exists && !fStore.isFolder(path)) {
+					deleteResource(path, errorList, req, resp);
+	
+				} else {
+					resp.setStatus(WebdavStatus.SC_CREATED);
+				}
+			} else {
+	
+				// If the destination exists, then it's a conflict
+				if (exists) {
+					resp.sendError(WebdavStatus.SC_PRECONDITION_FAILED);
+					return;
+				} else {
+					resp.setStatus(WebdavStatus.SC_CREATED);
+				}
+	
+			}
+		} catch (Exception e) {
+			throw new WebdavException(e);
+		}
+	}
+	
 	/**
-	 * deletes the recources at "path"
+	 * deletes the resources at "path"
 	 * 
 	 * @param path
 	 *            the folder to be deleted
 	 * @param errorList
-	 * 			  all errors that ocurred
+	 * 			  all errors that occurred
 	 * @param req
 	 *            HttpServletRequest
 	 * @param resp
@@ -1651,6 +1708,7 @@ public class WebdavServlet extends HttpServlet {
 			}
 
 		} else {
+			log.error("WebdavServer not authenticated for write");
 			resp.sendError(WebdavStatus.SC_FORBIDDEN);
 		}
 	}
@@ -1695,6 +1753,7 @@ public class WebdavServlet extends HttpServlet {
 				errorList.put(path + children[i], new Integer(
 						WebdavStatus.SC_NOT_FOUND));
 			} catch (WebdavException e) {
+				log.error("WebdavServer internal error in copyFolder: " + (path + children[i]), e);
 				errorList.put(path + children[i], new Integer(
 						WebdavStatus.SC_INTERNAL_SERVER_ERROR));
 			}
@@ -2179,3 +2238,4 @@ public class WebdavServlet extends HttpServlet {
 	}
 
 }
+

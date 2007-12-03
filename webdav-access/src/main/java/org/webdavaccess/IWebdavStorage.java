@@ -1,8 +1,4 @@
 /*
- * $Header: /cvsroot/webdav-servlet/webdav-servlet/src/main/java/net/sf/webdav/Attic/IWebdavStorage.java,v 1.3 2006/03/20 19:09:07 yavarin Exp $
- * $Revision: 1.3 $
- * $Date: 2006/03/20 19:09:07 $
- *
  * ====================================================================
  *
  * Copyright 2004 The Apache Software Foundation
@@ -23,14 +19,14 @@
 
 package org.webdavaccess;
 
-import org.webdavaccess.exceptions.WebdavException;
-
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.webdavaccess.exceptions.WebdavException;
 
 /**
  * Interface for simple implementation of any store for the WebdavServlet
@@ -40,8 +36,8 @@ import javax.servlet.http.HttpServletRequest;
  * 
  */
 public interface IWebdavStorage {
-	
-    /**
+
+	/**
      * Indicates that a new request or transaction with this store involved has
      * been started. The request will be terminated by either {@link #commit()}
      * or {@link #rollback()}. If only non-read methods have been called, the
@@ -119,6 +115,14 @@ public interface IWebdavStorage {
      */
     boolean isResource(String uri) throws WebdavException;
 
+	/**
+	 * Returns resource name (without path).
+	 * 
+	 * @param uri resource path
+	 * @return resource name (without path)
+	 */
+	public String getResourceName(String uri);
+	
     /**
      * Creates a folder at the position specified by <code>folderUri</code>.
      * 
@@ -253,6 +257,14 @@ public interface IWebdavStorage {
      * @param properties to set
      */
     void setCustomProperties(String resourceUri, Properties properties);
+    
+    /**
+     * Remove custom properties for given resource
+     * 
+     * @param resourceUri URI of the resource
+     * @param properties to set
+     */
+    void removeCustomProperties(String resourceUri, Properties properties);
     
     /**
      * Get custom properties for given resource

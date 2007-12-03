@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.commons.httpclient.Credentials;
@@ -20,7 +22,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.HttpURL;
+import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.webdav.lib.WebdavResource;
@@ -37,7 +39,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.webdavaccess.exceptions.WebdavException;
-
 
 /** 
  * Provides Webdav client.
@@ -140,7 +141,7 @@ public class WebdavClient {
 	 */
 	public boolean doDownloadFile(String url, File file) throws WebdavException {
 		try {
-			HttpURL hrl = new HttpURL(url);
+			URI hrl = new URI(url, true);
 			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.getMethod(file);
 			currentStatusCode = wdr.getStatusCode();
@@ -163,10 +164,9 @@ public class WebdavClient {
 		try {
 			int idx = url.lastIndexOf('/');
 			if (idx < 0) return false;
-			
 			String filename = url.substring(idx + 1);
 			url = url.substring(0, idx);
-			HttpURL hrl = new HttpURL(url);
+			URI hrl = new URI(url, true);
 			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.putMethod(wdr.getPath() + "/" + filename, new FileInputStream(file));
 			currentStatusCode = wdr.getStatusCode();
@@ -186,11 +186,18 @@ public class WebdavClient {
 	 */
 	public Vector getList(String url) throws WebdavException {
 		try {
-			HttpURL hrl = new HttpURL(url);
+			URI hrl = new URI(url, true);
 			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			Vector results = new Vector();
-	        if(!wdr.isCollection()) return results;
+	        if(!wdr.isCollection()) {
+				currentStatusCode = HttpStatus.SC_OK;
+	        	return results;
+	        }
 	        WebdavResource[] flist = wdr.listWebdavResources();
+	        if (flist == null) {
+				currentStatusCode = HttpStatus.SC_OK;
+	        	return results;
+	        }
 	        for (int i = 0; i < flist.length; i++) {
 	        	WebdavResource fwdr = flist[i];
 	        	WebdavInfo info = createWebdavInfo(fwdr);
@@ -213,7 +220,7 @@ public class WebdavClient {
 	 */
 	public WebdavInfo getInfo(String url) throws WebdavException {
 		try {
-			HttpURL hrl = new HttpURL(url);
+			URI hrl = new URI(url, true);
 			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			WebdavInfo info = createWebdavInfo(wdr);
 			currentStatusCode = HttpStatus.SC_OK;
@@ -242,8 +249,7 @@ public class WebdavClient {
 	
 	/** 
 	  * COPY: Additional "destination", "overwrite", and "depth" parameters.
-	  */
-	
+	  */	
 	public boolean doCopy(String uri, String responseBodyFileName, 
 			String [] requestHeaderNames, String [] requestHeaderValues,
 			String destination, boolean overwrite, String depth)
@@ -288,7 +294,7 @@ public class WebdavClient {
 	 */
 	public boolean doLock(String url, String user, int duration) throws WebdavException {
 		try {
-			HttpURL hrl = new HttpURL(url);
+			URI hrl = new URI(url, true);
 			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.lockMethod(user, duration);
 			currentStatusCode = wdr.getStatusCode();
@@ -308,7 +314,7 @@ public class WebdavClient {
 	 */
 	public boolean doUnock(String url) throws WebdavException {
 		try {
-			HttpURL hrl = new HttpURL(url);
+			URI hrl = new URI(url, true);
 			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.unlockMethod();
 			currentStatusCode = wdr.getStatusCode();
@@ -385,8 +391,7 @@ public class WebdavClient {
 	
 	 /** 
 	  * MOVE: Additional "destination" and "overwrite" parameters.
-	  */
-	
+	  */	
 	public boolean doMove(String uri, String destination, boolean overwrite)
 		throws WebdavException {
 		return doMove(uri, null, null, null, destination, overwrite);
@@ -401,7 +406,7 @@ public class WebdavClient {
 	 */
 	public boolean doDelete(String url) throws WebdavException {
 		try {
-			HttpURL hrl = new HttpURL(url);
+			URI hrl = new URI(url, true);
 			WebdavResource wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			boolean status = wdr.deleteMethod();
 			currentStatusCode = wdr.getStatusCode();
@@ -422,7 +427,7 @@ public class WebdavClient {
 	public boolean doExists(String url) throws WebdavException {
 		WebdavResource wdr = null;
 		try {
-			HttpURL hrl = new HttpURL(url);
+			URI hrl = new URI(url, true);
 			wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			wdr.setProperties(DepthSupport.DEPTH_0);
 			boolean status = wdr.exists();
@@ -449,7 +454,7 @@ public class WebdavClient {
 	public boolean doIsCollection(String url) throws WebdavException {
 		WebdavResource wdr = null;
 		try {
-			HttpURL hrl = new HttpURL(url);
+			URI hrl = new URI(url, true);
 			wdr = new WebdavResource(hrl.getEscapedURIReference(), setCredentials(), true);
 			wdr.setProperties(DepthSupport.DEPTH_0);
 			boolean status = wdr.isCollection();
@@ -468,8 +473,7 @@ public class WebdavClient {
 
 	 /** 
 	  * PROPFIND:  Additional property name, depth, and type parameters.
-	  */
-	
+	  */	
 	public Vector doPropFind(String uri, String responseBodyFileName, 
 			String [] requestHeaderNames, String [] requestHeaderValues,
 			String [] propNames, String depth, String type)
@@ -531,7 +535,6 @@ public class WebdavClient {
 	 * 
 	 * @throws WebdavException
 	 * 
-	 * @see #com.insightful.webdavaccess.client.WebdavProperty
 	 */
 	public Vector findProperties(String uri, String [] propNames, String depth, String type)
 		throws WebdavException {
@@ -544,6 +547,19 @@ public class WebdavClient {
 		return findProperties(uri, propNames, "infinity", "all");
 	}
 
+	public static String[] getPropertyNames(Vector properties) {
+		Vector namesList = new Vector();
+		for (Iterator it = properties.iterator(); it.hasNext();) {
+			WebdavProperty wprop = (WebdavProperty) it.next();
+			Enumeration en = wprop.getProperties().keys();
+			while(en.hasMoreElements()) {
+				String key = (String)en.nextElement();
+				namesList.add(key);
+			}
+		}		
+		return (String [])namesList.toArray(new String[namesList.size()]);
+	}
+	
 	private static Vector storeResponseDocument(XMLResponseMethodBase methodObj) {
 		Element multistatus = methodObj.getResponseDocument().getDocumentElement();
 		Vector names = new Vector(), values = new Vector();
@@ -728,8 +744,7 @@ public class WebdavClient {
 	
 	 /** 
 	  * PROPPATCH: Additional property name and value parameters.
-	  */
-	
+	  */	
 	public boolean doPropPatch(String uri, String responseBodyFileName, 
 			String [] requestHeaderNames, String [] requestHeaderValues,
 			String [] propNames, String [] propValues)
@@ -768,6 +783,47 @@ public class WebdavClient {
 		return doPropPatch(uri, null, null, null, propNames, propValues);
 	}
 	
+	 /** 
+	  * PROPREMOVE: Additional property name.
+	  */	
+	public boolean doPropRemove(String uri, String responseBodyFileName, 
+			String [] requestHeaderNames, String [] requestHeaderValues,
+			String [] propNames)
+		throws WebdavException {
+		Vector results = null;
+
+		try {
+			PropPatchMethod methodObj = new PropPatchMethod(uri) {
+				public void addRequestHeaders(HttpState state, HttpConnection conn) throws IOException, HttpException {
+					super.addRequestHeaders(state, conn);
+					// force content length to be generated
+					super.setRequestHeader("Content-Length", Integer.toString(generateRequestBody().length()));
+				}
+			};
+			addPropertiesToRemove(methodObj, propNames);
+			
+			results = executeMethodObject(methodObj, responseBodyFileName,
+					requestHeaderNames, requestHeaderValues);
+			
+			// get property info from response document
+			if (methodObj.getResponseDocument()!= null && 
+					methodObj.getResponseDocument().getDocumentElement() != null) {
+				// convert the response document into a list of items
+				results.set(results.size()-1, storeResponseDocument(methodObj));
+			}
+	
+			currentStatusCode = methodObj.getStatusCode();
+			return currentStatusCode == HttpStatus.SC_OK;
+		} catch (Exception e) {
+			currentStatusCode = HttpStatus.SC_METHOD_FAILURE;
+			throw new WebdavException(e);
+		}
+	}
+	
+	public boolean removeProperties(String uri, String [] propNames) throws WebdavException {
+		return doPropRemove(uri, null, null, null, propNames);
+	}
+	
 	/**
 	 * Execute an HttpMethod object.  This routine is responsible for
 	 * setting the additional request header values, executing the
@@ -801,8 +857,7 @@ public class WebdavClient {
 		
 	/**
 	 *  Set request headers if specified.
-	 */
-	
+	 */	
 	private static void setRequestHeaders(HttpMethod methodObj, 
 			String [] requestHeaderNames, String [] requestHeaderValues){
 		if (requestHeaderNames != null && requestHeaderValues != null) {
@@ -818,8 +873,7 @@ public class WebdavClient {
 	
 	/**
 	 *  Add properties to set if specified.
-	 */
-	
+	 */	
 	private static void addPropertiesToSet(PropPatchMethod methodObj, 
 			String [] propNames, String [] propValues){
 		if (propNames != null && propValues != null) {
@@ -833,10 +887,23 @@ public class WebdavClient {
 	}
 	
 	/**
+	 *  Add properties to set if specified.
+	 */	
+	private static void addPropertiesToRemove(PropPatchMethod methodObj, String [] propNames){
+		if (propNames != null) {
+			int numNames = propNames.length;
+			if (numNames > 0){
+				for (int i = 0; i < numNames; i++){
+					methodObj.addPropertyToRemove(propNames[i]);
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Convert string value of "0", "1", or "infinity" to the appropriate
 	 * depth int flag.
-	 */
-	
+	 */	
 	private static int getDepthCode(String depth){
 		int result;
 		
@@ -856,8 +923,7 @@ public class WebdavClient {
 	/**
 	 * Convert string value of "shared" or "exclusive" to the appropriate
 	 * scope short flag.
-	 */
-	
+	 */	
 	private static int getPropFindTypeCode(String type){
 		int result;
 		
@@ -877,8 +943,7 @@ public class WebdavClient {
 	/**
 	 * Gather up various information from the executed HttpMethod object
 	 * and return it to S-PLUS as an Object array. 
-	 */
-	
+	 */	
 	private static String [] RESULT_ELEMENTS = new String [] {
 		"Status", "RequestHeaders", "ResponseHeaders", 
 		"ResponseFooters", "Body"
@@ -966,7 +1031,6 @@ public class WebdavClient {
      * output stream.  This method does not open or close the file streams,
      * it just performs the byte transfer.
      */
-
     private static void transferBytes(InputStream sourceStream,
                               OutputStream targetStream)
         throws IOException {

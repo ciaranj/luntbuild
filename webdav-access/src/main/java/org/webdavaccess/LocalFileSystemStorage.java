@@ -24,10 +24,11 @@ import java.io.FileOutputStream;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -53,14 +54,12 @@ public class LocalFileSystemStorage implements IWebdavStorage {
     
 	private static final String ROOTPATH_PARAMETER = "rootpath";
 	private static final String DEBUG_PARAMETER = "storeDebug";
+	
 	private static final int MAX_PROPERTIES_CACHE_SIZE = 5000;
 	private static final String CUSTOM_PROPERTIES_STORAGE = ".properties";
 	private static final String PROPERTIES_STORAGE_PATH_SEPARATOR = "|";
 
-	private static final String SYSTEM_PROPERTY_PREFIX = "__";
-	private static final String CREATION_DATE_PROPERTY = SYSTEM_PROPERTY_PREFIX + "CreationDate" + SYSTEM_PROPERTY_PREFIX;
-	private static final String CREATION_DATE_FORMAT = "yyyyMMddHHmmss";
-	
+
 	private static int BUF_SIZE = 50000;
 	private static File root = null;
 	private static int debug = -1;
@@ -143,7 +142,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		File file = new File(root, uri);
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.isFolder(" + uri + ")=" + file.isDirectory());
-		return file.isDirectory();
+		return file.exists() && file.isDirectory();
 	}
 
 	public boolean isResource(String uri) throws WebdavException {
@@ -151,9 +150,21 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		File file = new File(root, uri);
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.isResource(" + uri + ") " + file.isFile());
-		return file.isFile();
+		return file.exists() && file.isFile();
 	}
 
+	public String getResourceName(String uri) {
+		uri = normalize(uri);
+		File file = new File(root, uri);
+		if (file.isDirectory()) return uri;
+		int idx = file.getAbsolutePath().lastIndexOf(File.separatorChar);
+		if (idx < 0) return uri;
+		String name = file.getAbsolutePath().substring(idx + 1);
+		if (debug == 1)
+			log.debug("LocalFileSystemStore.getResourceName(" + uri + ") " + name);
+		return name;
+	}
+	
 	/**
 	 * @throws IOException
 	 *             if the folder cannot be created
@@ -179,9 +190,6 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		try {
 			if (!file.createNewFile())
 				throw new WebdavException("cannot create file: " + uri);
-			Properties props = new Properties();
-			props.setProperty(CREATION_DATE_PROPERTY, new SimpleDateFormat(CREATION_DATE_FORMAT).format(new Date()));
-			setCustomProperties(uri, props);
 		} catch (IOException e) {
 			throw new WebdavException(e);
 		}
@@ -263,15 +271,6 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 			log.debug("LocalFileSystemStore.getCreationDate(" + uri + ")");
 		// return creation date if available else last modified
 		uri = normalize(uri);
-		Properties props = getCustomProperties(uri, true);
-		if (props.containsKey(CREATION_DATE_PROPERTY)) {
-			try {
-				return new SimpleDateFormat(CREATION_DATE_FORMAT).parse(
-						props.getProperty(CREATION_DATE_PROPERTY));
-			} catch (Exception e) {
-				// get modified date instead
-			}
-		}
 		File file = new File(root, uri);
 		return new Date(file.lastModified());
 	}
@@ -342,7 +341,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		File file = new File(root, uri);
 		boolean success = file.delete();
 		// delete properties
-		deleteProperties(uri);
+		deleteProperties(uri, null);
 		if (debug == 1)
 			log.debug("LocalFileSystemStore.removeObject(" + uri + ")=" + success);
 		if (!success) {
@@ -365,6 +364,18 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		file = file.getParentFile();
 		if (file == null) return null;
 		return new File(file.getAbsoluteFile() + File.separator + CUSTOM_PROPERTIES_STORAGE);
+	}
+	
+	private String getResourcePropertyKey(String resourceUri, String key) {
+		return resourceUri + PROPERTIES_STORAGE_PATH_SEPARATOR + key;
+	}
+	
+	private boolean isResourceProperty(String uri, String key) {
+		return key.startsWith(uri + PROPERTIES_STORAGE_PATH_SEPARATOR);
+	}
+	
+	private String getPropertyKey(String uri, String key) {
+		return key.substring(uri.length() + PROPERTIES_STORAGE_PATH_SEPARATOR.length());
 	}
 	
 	// Save custom properties
@@ -392,7 +403,7 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		Enumeration en = newProperties.keys();
 		while(en.hasMoreElements()) {
 			String key = (String)en.nextElement();
-			persisted.setProperty(resourceUri + PROPERTIES_STORAGE_PATH_SEPARATOR + key, newProperties.getProperty(key));
+			persisted.setProperty(getResourcePropertyKey(resourceUri, key), newProperties.getProperty(key));
 		}
 		// Store the updates properties
 		OutputStream os = null;
@@ -428,8 +439,8 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		Properties props = new Properties();
 		while(en.hasMoreElements()) {
 			String key = (String)en.nextElement();
-			if (key.startsWith(uri + PROPERTIES_STORAGE_PATH_SEPARATOR)) {
-				String newKey = key.substring(uri.length() + PROPERTIES_STORAGE_PATH_SEPARATOR.length());
+			if (isResourceProperty(uri, key)) {
+				String newKey = getPropertyKey(uri, key);
 				props.setProperty(newKey, persisted.getProperty(key));
 			}
 		}
@@ -466,24 +477,29 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		saveCustomProperties(props, resourceUri);
 	}
 
+	/* (non-Javadoc)
+	 */
+	public void removeCustomProperties(String resourceUri, Properties properties) {
+		if (properties == null || properties.size() == 0) return;
+		deleteProperties(resourceUri, properties);
+	}
+
     /**
      * Get custom properties for given resource
      * 
      * @param resourceUri URI of the resource
      */
-	private Properties getCustomProperties(String resourceUri, boolean doIncludeSystem) {
+	public Properties getCustomProperties(String resourceUri) {
 		resourceUri = normalize(resourceUri);
 		// Try cache first
 		Properties props = (Properties)mPropertiesCache.get(resourceUri);
 		if (props != null) {
-			if (!doIncludeSystem) props = removeSystemProperties(props);
 			return props;
 		}
 		// Get them from persistent storage
 		try {
 			props = getPropertiesFor(resourceUri);
 			if (props == null) return new Properties();
-			if (!doIncludeSystem) props = removeSystemProperties(props);
 			// Put them to the cache
 			mPropertiesCache.put(resourceUri, props);
 		} catch (Exception e) {
@@ -493,34 +509,12 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		return props;
 	}
 
-	private Properties removeSystemProperties(Properties props) {
-		// remove system props
-		Enumeration en = props.keys();
-		Properties newProps = new Properties();
-		while(en.hasMoreElements()) {
-			String key = (String)en.nextElement();
-			if (!(key.startsWith(SYSTEM_PROPERTY_PREFIX) && key.endsWith(SYSTEM_PROPERTY_PREFIX))) {
-				newProps.setProperty(key, props.getProperty(key));
-			}
-		}
-		return newProps;
-	}
-	
-    /**
-     * Get custom properties for given resource
-     * 
-     * @param resourceUri URI of the resource
-     */
-	public Properties getCustomProperties(String resourceUri) {
-		return getCustomProperties(resourceUri, false);
-	}
-	
 	/**
 	 * Delete properties for given resource
 	 * 
 	 * @param resourceUri for which to delete properties
 	 */
-	public void deleteProperties(String resourceUri) {
+	public void deleteProperties(String resourceUri, Properties propertiesToDelete) {
 		resourceUri = normalize(resourceUri);
 		// Try cache first
 		Properties props = (Properties)mPropertiesCache.get(resourceUri);
@@ -540,7 +534,27 @@ public class LocalFileSystemStorage implements IWebdavStorage {
 		} finally {
 			if (in != null) try {in.close();} catch (Exception e) {}
 		}
-		if (persisted.remove(resourceUri) != null) {
+		boolean changed = false;
+		Enumeration en = persisted.keys();
+		HashMap toRemove = new HashMap();
+		while(en.hasMoreElements()) {
+			String key = (String)en.nextElement();
+			if (isResourceProperty(resourceUri, key)) {
+				if (propertiesToDelete != null) {
+					String newKey = getPropertyKey(resourceUri, key);
+					if (propertiesToDelete.getProperty(newKey) != null)
+						toRemove.put(key, persisted.getProperty(key));
+				} else {
+					toRemove.put(key, persisted.getProperty(key));
+				}
+			}
+		}
+		changed = !toRemove.isEmpty();
+		for (Iterator it = toRemove.keySet().iterator(); it.hasNext();) {
+			String key = (String) it.next();
+			persisted.remove(key);
+		}
+		if (changed) {
 			// Store the updates properties
 			OutputStream os = null;
 			try {

@@ -14,6 +14,7 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 import junit.framework.TestCase;
 
 /**
@@ -24,7 +25,7 @@ public class TestWebdavClient extends TestCase {
 
 	private static Log log = LogFactory.getLog(TestWebdavClient.class);
 	
-	private static final String webdavUrl = "http://localhost:8080/webdav-access/webdav";
+	private static final String webdavUrl = "http://localhost:8080/SplusServer/webdav";
 	/**
 	 * @param arg0
 	 */
@@ -91,6 +92,8 @@ public class TestWebdavClient extends TestCase {
 			String dirname = new Date().toString().replaceAll(" ", "_").replaceAll(":", "_");
 			boolean status = webdavClient.createFolder(webdavUrl + "/" + dirname);
 			assertTrue("testCreateFolder() - " + dirname, status);
+			status = webdavClient.doIsCollection(webdavUrl + "/" + dirname);
+			assertTrue("doIsCollection() - " + dirname, status);
 		} catch (Exception e) {
 			fail("Failed testCreateFolder(): " + e.getMessage());
 		}
@@ -131,7 +134,7 @@ public class TestWebdavClient extends TestCase {
 			status = webdavClient.doMove(webdavUrl + "/fromcopytest/" + filename,
 					webdavUrl + "/tocopytest/" + filename, true);
 			if (!status)
-				System.out.println("Move status: " + webdavClient.getCurrentStatusMessage());
+				fail("Move status: " + webdavClient.getCurrentStatusMessage());
 		} catch (Exception e) {
 			fail("Failed testMove(): " + e.getMessage());
 		}
@@ -154,13 +157,16 @@ public class TestWebdavClient extends TestCase {
 	public void testSetProperties() {
 		String[] propNames = new String[] {"propname1", "propname2", "propname3"};
 		String[] propValues = new String[] {"propvalue1", "propvalue2", "propvalue3"};
+		boolean status = true;
 		try {
-			Vector results = webdavClient.getList(webdavUrl + "/fromcopytest");
+			Vector results = webdavClient.getList(webdavUrl + "/tocopytest");
 			for (Iterator iter = results.iterator(); iter.hasNext();) {
 				WebdavInfo info = (WebdavInfo) iter.next();
 				String url = info.getPath();
-				boolean status = webdavClient.setProperties(url, propNames, propValues);
-				System.out.println("Set properties status: " + webdavClient.getCurrentStatusMessage());
+				status &= webdavClient.setProperties(url, propNames, propValues);
+			}
+			if (!status) {
+				fail("Failed testSetProperties(): " + webdavClient.getCurrentStatusMessage());
 			}
 		} catch (Exception e) {
 			fail("Failed testSetProperties(): " + e.getMessage());
@@ -170,12 +176,12 @@ public class TestWebdavClient extends TestCase {
 	public void testFindProperties() {
 		String[] propNames = new String[] {"resourcetype"};
 		try {
-			Vector results = webdavClient.findProperties(webdavUrl + "/fromcopytest", propNames);
+			Vector results = webdavClient.findProperties(webdavUrl + "/tocopytest", propNames);
 			assertTrue("testFindProperties()", results.size() > 0);
-			results = webdavClient.findProperties(webdavUrl + "/fromcopytest", propNames, "infinity", "names");
+			results = webdavClient.findProperties(webdavUrl + "/tocopytest", propNames, "infinity", "names");
 			assertTrue("testFindProperties() names", results.size() > 0);
-			results = webdavClient.findProperties(webdavUrl + "/fromcopytest", new String[] {"propname1", "propname2", "propname3"}, "infinity", "byname");
-			boolean success = true;
+			results = webdavClient.findProperties(webdavUrl + "/tocopytest", new String[] {"propname1", "propname2", "propname3"}, "infinity", "byname");
+			boolean success = results != null && results.size() > 0;
 			for (Iterator it = results.iterator(); it.hasNext();) {
 				WebdavProperty wprop = (WebdavProperty) it.next();
 				success &= wprop.getResource() != null;
@@ -203,5 +209,53 @@ public class TestWebdavClient extends TestCase {
 			success &= hasKey;
 		}
 		return success;
+	}
+
+	public void testDeleteProperties() {
+		boolean status = true;
+		try {
+			Vector results = webdavClient.getList(webdavUrl + "/tocopytest");
+			for (Iterator iter = results.iterator(); iter.hasNext();) {
+				WebdavInfo info = (WebdavInfo) iter.next();
+				String url = info.getPath();
+				status &= webdavClient.removeProperties(url, new String[] {"propname1", "propname2", "propname3"});
+			}
+			if (!status) {
+				fail("Failed testDeleteProperties()" + webdavClient.getCurrentStatusMessage());
+			} else {
+				// TODO validate properties removed
+			}
+		} catch (Exception e) {
+			fail("Failed testDeleteProperties(): " + e.getMessage());
+		}
+	}
+	
+	public void testRepeatDoExist() {
+		try {
+			boolean status = webdavClient.doUploadFile(webdavUrl + "/uploaded.txt", new File("src/test/uploaded.txt"));
+			assertTrue("testRepeatDoExist() - uploaded.txt", status);
+			long startTime = System.currentTimeMillis();
+			for (int i = 0; i < 100; i++) {
+				status = webdavClient.doExists(webdavUrl + "/uploaded.txt");
+				if (!status) fail("webdavClient.doExists() failed");
+			}
+			System.out.println("doExists() 100x took " + (System.currentTimeMillis() - startTime) + "ms");
+		} catch (Exception e) {
+			fail("Failed testRepeatDoExist(): " + e.getMessage());
+		}
+	}
+	
+	public void testRepeatDoIsCollection() {
+		try {
+			boolean status;
+			long startTime = System.currentTimeMillis();
+			for (int i = 0; i < 100; i++) {
+				status = webdavClient.doIsCollection(webdavUrl + "/fromcopytest");
+				if (!status) fail("webdavClient.doIsCollection() failed");
+			}
+			System.out.println("doIsCollection() 100x took " + (System.currentTimeMillis() - startTime) + "ms");
+		} catch (Exception e) {
+			fail("Failed testRepeatDoIsCollection(): " + e.getMessage());
+		}
 	}
 }

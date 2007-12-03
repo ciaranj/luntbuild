@@ -4,6 +4,7 @@ import java.util.Enumeration;
 
 import org.webdavaccess.exceptions.CacheException;
 
+
 public interface ICache {
 
 	/**

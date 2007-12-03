@@ -16,34 +16,63 @@
 
 package org.webdavaccess;
 
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
- * some very simple locking management for concurrent data access, NOT the
- * webdav locking. ( could that be used instead? )
+ * a very simple locking management for concurrent data access, NOT the
+ * webdav locking.
+ * <p>
+ * The <code>ResourceLocks</code> are only used for a preliminary check, while
+ * the <code>VirtualFileSystem</code> takes care of distributed locking.
+ * </p>
+ * <p>
+ * The original class is <code>org.apache.catalina.servlets.WebdavServlet</code>
+ * by the webdav-servlet project at Sourceforge (<a
+ * href="http://webdav-servlet.sf.net">http://webdav-servlet.sf.net</a>).<br/>
+ * The class was heavily refactored to meet the <em>pulse</em> coding
+ * standards.
+ * </p>
+ * 
  * 
  * @author re
+ * @author Thomas Weber
+ * @version $Revision$
  */
 public class ResourceLocks {
 
+	private static Log log = LogFactory.getLog(ResourceLocks.class);
+
 	/**
-	 * after creating this much LockObjects, a cleanup delets unused LockObjects
+	 * after creating this much LockObjects, a cleanup deletes unused
+	 * LockObjects.
 	 */
 	private final int fCleanupLimit = 100000;
 
+	/**
+	 * .
+	 */
 	private int fCleanupCounter = 0;
 
 	/**
-	 * keys: path value: LockObject from that path
+	 * keys: path value: LockObject from that path.
 	 */
-	private Hashtable fLocks = null;
+	private ConcurrentHashMap<String, LockObject> fLocks = null;
 
 	// REMEMBER TO REMOVE UNUSED LOCKS FROM THE HASHTABLE AS WELL
 
+	/**
+	 * the root of the repository.
+	 */
 	private LockObject fRoot = null;
 
+	/**
+	 * constructor.
+	 */
 	public ResourceLocks() {
-		this.fLocks = new Hashtable();
+		this.fLocks = new ConcurrentHashMap<String, LockObject>();
 		fRoot = new LockObject("/");
 	}
 
@@ -57,11 +86,13 @@ public class ResourceLocks {
 	 *            the owner of the lock
 	 * @param exclusive
 	 *            if the lock should be exclusive (or shared)
+	 * @param depth
+	 *            the depth for lock checking
 	 * @return true if the resource at path was successfully locked, false if an
 	 *         existing lock prevented this
 	 */
-	public synchronized boolean lock(String path, String owner,
-			boolean exclusive, int depth) {
+	public final synchronized boolean lock(final String path,
+			final String owner, final boolean exclusive, final int depth) {
 
 		LockObject lo = generateLockObjects(path);
 		if (lo.checkLocks(exclusive, depth)) {
@@ -69,35 +100,39 @@ public class ResourceLocks {
 				lo.fExclusive = exclusive;
 				return true;
 			} else {
+				log.warn("Cannot lock, lo.addLockObjectOwner() failed for owner " + owner + " and path:" + path);
 				return false;
 			}
 		} else {
 			// can not lock
+			log.warn("Cannot lock, lo.checkLocks() failed for path: " + path);
 			return false;
 		}
 	}
 
 	/**
-	 * unlocks all resources at "path" (and all subfolders if existing)<p/>
-	 * that have the same owner
+	 * unlocks all resources at "path" (and all sub folders if existing) that
+	 * have the same owner.
 	 * 
 	 * @param path
 	 *            what resource to unlock
 	 * @param owner
 	 *            who wants to unlock
 	 */
-	public synchronized void unlock(String path, String owner) {
-
+	public final synchronized void unlock(final String path,
+			final String owner) {
 		if (this.fLocks.containsKey(path)) {
 			LockObject lo = (LockObject) this.fLocks.get(path);
 			lo.removeLockObjectOwner(owner);
-			// System.out.println("number of LockObjects in the hashtable: "
-			//		+ fLocks.size());
-
-		}else{
-			// there is no lock at that path. someone tried to unlock it
-			// anyway. could point to a problem
-			System.out.println("net.sf.webdav.ResourceLocks.unlock(): no lock for path "+path);
+			if (log.isDebugEnabled()) {
+				log.debug("Number of LockObjects: " + fLocks.size());
+			}
+		} else {
+			/*
+			 * there is no lock at that path. someone tried to unlock it anyway.
+			 * could point to a problem
+			 */
+			log.warn("no lock for path " + path);
 		}
 
 		if (fCleanupCounter > fCleanupLimit) {
@@ -108,14 +143,16 @@ public class ResourceLocks {
 
 	/**
 	 * generates LockObjects for the resource at path and its parent folders.
-	 * does not create new LockObjects if they already exist
+	 * does not create new LockObjects if they already exist.
 	 * 
 	 * @param path
 	 *            path to the (new) LockObject
 	 * @return the LockObject for path.
 	 */
-	public LockObject generateLockObjects(String path) {
-		// System.out.println("generateLockObjects path: " + path + "<end>");
+	private LockObject generateLockObjects(final String path) {
+		if (log.isDebugEnabled()) {
+			log.debug("generating LockObject for path " + path);
+		}
 		if (!this.fLocks.containsKey(path)) {
 			LockObject parentLockObject = generateLockObjects(getParentPath(path));
 			LockObject returnObject = new LockObject(path);
@@ -130,13 +167,12 @@ public class ResourceLocks {
 
 	/**
 	 * deletes unused LockObjects and resets the counter.
-	 * works recursively starting at the given LockObject
 	 * 
 	 * @param lo
-	 * 
+	 *            the <code>LockObject</code> to be cleaned
+	 * @return <code>true</code>, if the operation was successful
 	 */
-	private boolean cleanLockObjects(LockObject lo) {
-
+	private boolean cleanLockObjects(final LockObject lo) {
 		if (lo.fChildren == null) {
 			if (lo.fOwner == null) {
 				lo.removeLockObject();
@@ -150,8 +186,8 @@ public class ResourceLocks {
 			for (int i = 0; i < limit; i++) {
 				if (!cleanLockObjects(lo.fChildren[i])) {
 					canDelete = false;
-				}else{
-					
+				} else {
+
 					// because the deleting shifts the array
 					i--;
 					limit--;
@@ -171,13 +207,13 @@ public class ResourceLocks {
 	}
 
 	/**
-	 * creates the parent path from the given path by removing the last
-	 * '/' and everything after that
+	 * get the parent path of the given path.
 	 * 
-	 * @param path the path
-	 * @return parent path
+	 * @param path
+	 *            the given path
+	 * @return the parent path of the given path
 	 */
-	private String getParentPath(String path) {
+	private String getParentPath(final String path) {
 		int slash = path.lastIndexOf('/');
 		if (slash == -1) {
 			return null;
@@ -192,42 +228,46 @@ public class ResourceLocks {
 	}
 
 	// ----------------------------------------------------------------------------
-	
+
 	/**
-	 * a helper class for ResourceLocks, represents the Locks
-	 * 
-	 * @author re
-	 *
+	 * internal lock object.
 	 */
 	private class LockObject {
 
-		String fPath;
+		/**
+		 * the path for the <code>LockObject</code>.
+		 */
+		private String fPath;
 
 		/**
 		 * owner of the lock. shared locks can have multiple owners. is null if
 		 * no owner is present
 		 */
-		String[] fOwner = null;
+		private String[] fOwner = null;
 
 		/**
-		 * children of that lock
+		 * children of that lock.
 		 */
-		LockObject[] fChildren = null;
+		private LockObject[] fChildren = null;
 
-		LockObject fParent = null;
+		/**
+		 * ???
+		 */
+		private LockObject fParent = null;
 
 		/**
 		 * weather the lock is exclusive or not. if owner=null the exclusive
 		 * value doesn't matter
 		 */
-		boolean fExclusive = false;
+		private boolean fExclusive = false;
 
 		/**
+		 * constructs a <code>LockObject</code> for the given path.
 		 * 
 		 * @param path
 		 *            the path to the locked object
 		 */
-		LockObject(String path) {
+		LockObject(final String path) {
 			this.fPath = path;
 			fLocks.put(path, this);
 
@@ -235,13 +275,13 @@ public class ResourceLocks {
 		}
 
 		/**
-		 * adds a new owner to a lock
+		 * adds a new owner to a lock.
 		 * 
 		 * @param owner
 		 *            string that represents the owner
 		 * @return true if the owner was added, false otherwise
 		 */
-		boolean addLockObjectOwner(String owner) {
+		boolean addLockObjectOwner(final String owner) {
 			if (this.fOwner == null) {
 				this.fOwner = new String[1];
 			} else {
@@ -253,7 +293,7 @@ public class ResourceLocks {
 				// happen)
 				for (int i = 0; i < size; i++) {
 					if (this.fOwner[i].equals(owner)) {
-						return false;
+						return !this.fExclusive;
 					}
 				}
 
@@ -268,20 +308,19 @@ public class ResourceLocks {
 		}
 
 		/**
-		 * tries to remove the owner from the lock
+		 * tries to remove the owner from the lock.
 		 * 
 		 * @param owner
 		 *            string that represents the owner
 		 */
-		void removeLockObjectOwner(String owner) {
+		void removeLockObjectOwner(final String owner) {
 			if (this.fOwner != null) {
-				int size = this.fOwner.length;
-				for (int i = 0; i < size; i++) {
+				for (int i = 0; i < this.fOwner.length; i++) {
 					// check every owner if it is the requested one
 					if (this.fOwner[i].equals(owner)) {
 						// remove the owner
-						String[] newLockObjectOwner = new String[size - 1];
-						for (int i2 = 0; i2 < (size - 1); i2++) {
+						String[] newLockObjectOwner = new String[this.fOwner.length - 1];
+						for (int i2 = 0; i2 < (this.fOwner.length - 1); i2++) {
 							if (i2 < i) {
 								newLockObjectOwner[i2] = this.fOwner[i2];
 							} else {
@@ -299,10 +338,12 @@ public class ResourceLocks {
 		}
 
 		/**
-		 * adds a new child lock to this lock
+		 * adds a child <code>LockObject</code>.
+		 * 
 		 * @param newChild
+		 *            the <code>LockObject</code> to be added
 		 */
-		void addChild(LockObject newChild) {
+		void addChild(final LockObject newChild) {
 			if (this.fChildren == null) {
 				this.fChildren = new LockObject[0];
 			}
@@ -345,35 +386,29 @@ public class ResourceLocks {
 
 				// removing from hashtable
 				fLocks.remove(this.fPath);
-
 				// now the garbage collector has some work to do
 			}
 		}
 
 		/**
-		 * checks if a lock of the given exclusivity can be placed,
-		 * only considering cildren up to "depth"
 		 * 
 		 * @param exclusive
 		 *            wheather the new lock should be exclusive
 		 * @param depth
-		 *            the depth to which should be checked
+		 *            the depth for child checks
 		 * @return true if the lock can be placed
 		 */
-		boolean checkLocks(boolean exclusive, int depth) {
+		boolean checkLocks(final boolean exclusive, final int depth) {
 			return (checkParents(exclusive) && checkChildren(exclusive, depth));
-
 		}
 
 		/**
-		 * helper of checkLocks(). looks if the parents are locked
 		 * 
 		 * @param exclusive
 		 *            wheather the new lock should be exclusive
 		 * @return true if no locks at the parent path are forbidding a new lock
 		 */
-		private boolean checkParents(boolean exclusive) {
-
+		private boolean checkParents(final boolean exclusive) {
 			if (this.fPath.equals("/")) {
 				return true;
 			} else {
@@ -395,66 +430,44 @@ public class ResourceLocks {
 		}
 
 		/**
-		 * helper of checkLocks(). looks if the children are locked
 		 * 
 		 * @param exclusive
-		 *            wheather the new lock should be exclusive
+		 *            whether the new lock should be exclusive
+		 * @param depth
+		 *            the depth for the check
 		 * @return true if no locks at the children paths are forbidding a new
 		 *         lock
 		 */
-		private boolean checkChildren(boolean exclusive, int depth) {
+		private boolean checkChildren(final boolean exclusive, final int depth) {
 			if (this.fChildren == null) {
 				// a file
-
 				if (this.fOwner == null) {
 					// no owner
 					return true;
-				} else {
-					// there already is a owner
-					if (this.fExclusive || exclusive) {
-						// the new lock and/or the old lock are exclusive
-						return false;
-					} else {
-						// new and old lock are shared
-						return true;
-					}
 				}
-			} else {
-				// a folder
-				
-					
-				
-				if (this.fOwner == null) {
-					// no owner, checking children
-					
-					if (depth!=0){
+				return !(this.fExclusive || exclusive);
+			}
+
+			// a folder
+			if (this.fOwner == null) {
+				// no owner, checking children
+				if (depth != 0) {
 					boolean canLock = true;
 					int limit = this.fChildren.length;
 					for (int i = 0; i < limit; i++) {
-						if (!this.fChildren[i].checkChildren(exclusive,depth-1)) {
+						if (!this.fChildren[i].checkChildren(exclusive,
+								depth - 1)) {
 							canLock = false;
 						}
 					}
 					return canLock;
-					}else{
-						// depth == 0  -> we don't care for children
-						return true;
-					}
 				} else {
-					// there already is a owner
-					if (this.fExclusive || exclusive) {
-						// the new lock and/or the old lock are exclusive
-						return false;
-					} else {
-						// new and old lock are shared.
-						// the old lock was successfully placed, so i can add
-						// the new one as well, since it has the same requirements
-						return true;
-					}
+					// depth == 0 -> we don't care for children
+					return true;
 				}
+			} else {
+				return !(this.fExclusive || exclusive);
 			}
-			
 		}
-
 	}
 }
