@@ -163,7 +163,10 @@ D. Upgrading Luntbuild (with special notes for upgrading Luntbuild 1.1.1)
      into your previous Luntbuild installation directory, that is "/opt/luntbuild"
      in this case.
 
-  5) Access the Luntbuild web application, click on "Administration" tab, and
+  5) If using an external database, drop the existing database.  Then recreate the database from
+     the apropriate SQL file located at "/opt/luntbuild/db/<database>".
+
+  6) Access the Luntbuild web application, click on "Administration" tab, and
      import from previously exported data file "/yourhome/luntbuild-data.xml".
      That will migrate data of previous Luntbuild installation to latest version.
      However, if your previous version is 1.1.1, some settings needs to be re-configured:

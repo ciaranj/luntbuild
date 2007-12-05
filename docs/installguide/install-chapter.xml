@@ -175,6 +175,10 @@
      in this case.
 </para></listitem>
 <listitem><para>
+  If using an external database, drop the existing database.  Then recreate the database from
+     the apropriate SQL file located at "/opt/luntbuild/db/&lt;database&gt;".
+</para></listitem>
+<listitem><para>
   Access the Luntbuild web application, click on <emphasis>Administration</emphasis> tab, and
      import from previously exported data file <emphasis>/yourhome/luntbuild-data.xml</emphasis>.
      That will migrate data of previous Luntbuild installation to latest version.

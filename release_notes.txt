@@ -6,6 +6,7 @@ luntbuild 1.5.4 Release Notes
 - Fix: (Bug 6325) Fixed AccurevAdaptor not saving settings
 - Fix: (Bug 6407) CVS unparseable date errors in logfile
 - Fix: (Bug 6408) Fixed missing attributes in CVS revision logs causing exceptions on build viewer page
+- Fix: (Bug 6507) Updated upgrade instructions to include required step for external databases
 
 ==============================================
 luntbuild 1.5.3 Release Notes
