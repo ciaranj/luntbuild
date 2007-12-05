@@ -773,18 +773,6 @@ Fill the following information:
         </para></listitem>
         </varlistentry>
         <varlistentry>
-        <term>Config Spec</term>
-        <listitem><para>
-          Put your config spec in here. Add a load line after the config spec you use in your dynamic views
-          for each directory you need, like this:
-        <simplelist>
-        <member>include \\server\ClearCase\configspecs\myconfigspec.txt</member>
-        <member>load \myvob\modules\build</member>
-        <member>load \myvob\modules\mymodule</member>
-		</simplelist>
-        </para></listitem>
-        </varlistentry>
-        <varlistentry>
         <term>Modification detection config</term>
         <listitem><para>
         This property will only take effect when the "What to build" property equals to "latest". It is used by Luntbuild
