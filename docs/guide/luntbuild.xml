@@ -2296,7 +2296,15 @@ This is useful for creating projects that are similar to existing projects.
 <para>
 If you encounter a problem during the build of your project, first check the build log of the failed build.
 By default, Luntbuild will only write log of informational, warning, and error messages.
-You can edit a project information and set "Log level" property to "verbose".
+You can edit a project information and set "Log level" property to "verbose". To debug Luntbuild problems
+reported in system log, you can edit &lt;luntbuild install dir&gt;/log4j.properties, while Luntbuild is running,
+and change logging levels for appropriate loggers (like log4j.logger.org.acegisecurity) or you can set
+html or text appender Threshold and set them to INFO or DEBUG.
+After you save the changes in &lt;luntbuild install dir&gt;/log4j.properties, Luntbuild will reload the changes
+and will start using the new logging levels.
+See <ulink url="http://logging.apache.org/log4j/1.2/manual.html">log4j documentation</ulink> for details about log4j configuration. 
+</para>
+<para>
 Luntbuild system log is written to &lt;luntbuild install dir&gt;/logs directory.
 The "text" version of the log, "luntbuild_log.txt" retains the information even on Luntbuild
 (servlet container) restart. The "html" version of the log, "luntbuild_log.html" contains
