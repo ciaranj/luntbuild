@@ -537,7 +537,7 @@ public class SvnAdaptor extends Vcs {
         File destDir = getModuleDestDir(module, workingDir);
 
         try {
-            getClientManager().getUpdateClient().doUpdate(destDir, SVNRevision.HEAD, true);
+            getClientManager().getUpdateClient().doCheckout(getModuleUrl(module), destDir, SVNRevision.HEAD, SVNRevision.HEAD, true);
         } catch (SVNException e) {
             retrieveModule(workingDir, module, antProject);
         }
