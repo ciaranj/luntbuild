@@ -2426,6 +2426,32 @@ for details.
 to define project related roles. See chapter <link linkend="firstproject">Creating a Project</link> for details.
 </para>
 </section>
+<section><title>How to disable anonymous access to view builds?</title>
+    <para>
+        Starting with version 1.3 Luntbuild supports anonymous access to view builds and other Luntbuild artifacts.
+        To disable anonymous login you will have to:
+    </para>
+    <para>
+        Edit &lt;server&gt;/webapps/luntbuild/luntbuild-login.html and remove line:
+        <programlisting>
+    &lt;a href=&quot;app.do?service=reset/Home&amp;relogin=no&quot;&gt;Anonymous&lt;/a&gt;
+        </programlisting>
+    </para>
+    <para>
+        Edit &lt;server&gt;/webapps/luntbuild/WEB-INF/applicationContext.xml and remove lines:
+        <programlisting>
+    &lt;bean id=&quot;anonymousProcessingFilter&quot; class=&quot;org.acegisecurity.providers.anonymous.AnonymousProcessingFilter&quot;&gt;
+        &lt;property name=&quot;key&quot;&gt;&lt;value&gt;anonymous&lt;/value&gt;&lt;/property&gt;
+        &lt;property name=&quot;userAttribute&quot;&gt;&lt;value&gt;anonymous,ROLE_ANONYMOUS&lt;/value&gt;&lt;/property&gt;
+    &lt;/bean&gt;
+
+    &lt;bean id=&quot;anonymousAuthenticationProvider&quot; class=&quot;org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider&quot;&gt;
+        &lt;property name=&quot;key&quot;&gt;&lt;value&gt;anonymous&lt;/value&gt;&lt;/property&gt;
+    &lt;/bean&gt;
+        </programlisting>
+        You have to remove anonymousProcessingFilter from filterChainProxy bean.
+    </para>
+</section>
 </chapter>
 
 <chapter id="administration">
