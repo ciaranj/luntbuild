@@ -28,27 +28,34 @@
 
 package com.luntsys.luntbuild.db;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.acegisecurity.AccessDeniedException;
+import org.acegisecurity.acl.basic.AclObjectIdentity;
+
 import com.luntsys.luntbuild.builders.Builder;
 import com.luntsys.luntbuild.facades.Constants;
 import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
 import com.luntsys.luntbuild.facades.lb12.ProjectFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.security.SecurityHelper;
-import com.luntsys.luntbuild.utility.*;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.OgnlHelper;
+import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
+import com.luntsys.luntbuild.utility.ValidationException;
+import com.luntsys.luntbuild.utility.Variable;
+import com.luntsys.luntbuild.utility.VariableHolder;
 import com.luntsys.luntbuild.vcs.Vcs;
-import org.acegisecurity.AccessDeniedException;
-import org.acegisecurity.acl.basic.AclObjectIdentity;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.File;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * A Luntbuild project.
@@ -62,8 +69,6 @@ public class Project implements AclObjectIdentity, VariableHolder {
 	 * 
 	 */
 	private static final long serialVersionUID = 5880116718483855560L;
-
-	private static Log logger = LogFactory.getLog(Project.class);
 
 	private long id;
 	private String name;

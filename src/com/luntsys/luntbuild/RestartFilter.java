@@ -28,20 +28,27 @@
 
 package com.luntsys.luntbuild;
 
-import com.caucho.hessian.io.HessianOutput;
-import com.luntsys.luntbuild.facades.LuntbuildException;
-import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.services.HessianService;
+import java.io.IOException;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.servlet.http.HttpSession;
+
 import org.acegisecurity.ui.rememberme.TokenBasedRememberMeServices;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.caucho.hessian.io.HessianOutput;
+import com.luntsys.luntbuild.facades.LuntbuildException;
+import com.luntsys.luntbuild.services.HessianService;
+import com.luntsys.luntbuild.utility.Luntbuild;
 
 /**
  * Servlet filter that handles restarts and sets encoding to UTF-8.

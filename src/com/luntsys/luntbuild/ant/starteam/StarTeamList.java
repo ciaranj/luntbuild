@@ -16,6 +16,12 @@
  */
 package com.luntsys.luntbuild.ant.starteam;
 
+import java.io.IOException;
+import java.util.Enumeration;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+
 import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.starbase.starteam.File;
 import com.starbase.starteam.Folder;
@@ -23,11 +29,6 @@ import com.starbase.starteam.Item;
 import com.starbase.starteam.Status;
 import com.starbase.starteam.View;
 import com.starbase.starteam.ViewConfiguration;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Enumeration;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 
 /**
  * Produces a listing of the contents of the StarTeam repository

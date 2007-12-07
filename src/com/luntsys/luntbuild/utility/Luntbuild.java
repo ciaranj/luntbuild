@@ -65,17 +65,8 @@ import org.acegisecurity.AuthenticationManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Appender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.HTMLLayout;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.helpers.FileWatchdog;
-import org.apache.log4j.helpers.LogLog;
 import org.apache.tapestry.ApplicationRuntimeException;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.multipart.DefaultMultipartDecoder;
@@ -89,9 +80,9 @@ import org.apache.xerces.parsers.DOMParser;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
-import org.xml.sax.SAXException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.builders.AntBuilder;
@@ -1077,20 +1068,37 @@ public class Luntbuild {
      *    or {@link Ognl#getValue(java.lang.Object, java.util.Map, java.lang.Object, java.lang.Class)}
      */
     public static String evaluateExpression(Object ognlRoot, String expression) throws OgnlException {
-    	return resolveOgnlExpressions(ognlRoot, expression);
+    	return resolveOgnlExpressions(ognlRoot, expression, String.class);
     }
 
-    private static String resolveOgnlExpressions(Object ognlRoot, String expression) throws OgnlException {
+    /**
+     * Evaluates the value of an OGNL expression. During the evaluation, substring contained in ${...} will be treated
+     * as an OGNL expression and will be evaluated against the specified <code>ognlRoot</code> object. For example,
+     * the string "testcvs-${year}" can evaluate to be "testcvs-2004".
+     * 
+     * @param ognlRoot the root object
+     * @param expression the OGNL expression
+     * @param resultClass class of the ognl value
+     * @return the evaluated string
+     * @throws OgnlException from {@link Ognl#parseExpression(java.lang.String)}
+     *    or {@link Ognl#getValue(java.lang.Object, java.util.Map, java.lang.Object, java.lang.Class)}
+     */
+    public static Object evaluateExpression(Object ognlRoot, String expression, Class resultClass) throws OgnlException {
+        return Ognl.getValue(Ognl.parseExpression(expression),
+                Ognl.createDefaultContext(ognlRoot), ognlRoot, resultClass);
+    }
+
+    private static String resolveOgnlExpressions(Object ognlRoot, String expression, Class resultClass) throws OgnlException {
         String value = expression;
         Matcher matcher;
         while ((matcher = ognlVariablePattern.matcher(value)).find()) {
             String ognlValue = (String) Ognl.getValue(Ognl.parseExpression(matcher.group(1)),
-                    Ognl.createDefaultContext(ognlRoot), ognlRoot, String.class);
+                    Ognl.createDefaultContext(ognlRoot), ognlRoot, resultClass);
             if (ognlValue == null)
                 ognlValue = "";
             else if (ognlValue.equals(expression))
                 ognlValue = "";
-            ognlValue = resolveOgnlExpressions(ognlRoot, ognlValue);
+            ognlValue = resolveOgnlExpressions(ognlRoot, ognlValue, resultClass);
             value = matcher.replaceFirst(ognlValue);
         }
         return value;
@@ -1103,7 +1111,8 @@ public class Luntbuild {
      * @return the OGNL expression with variable references removed
      * @throws ValidationException
      */
-    public static String validateExpression(String expression) {
+    public static String validateExpression(String expression) throws ValidationException {
+    	if (expression == null) throw new ValidationException("Invalid ognl expression: null");
         String value = expression;
         Matcher matcher;
         while ((matcher = ognlVariablePattern.matcher(value)).find()) {
@@ -1296,28 +1305,6 @@ public class Luntbuild {
         }
     }
     
-    /**
-     * Gets the path to the servlet classes.
-     * 
-     * <p>Need to build path and make sure path separator is at the end of the real context
-     * path before appending WEB-INF/classes (Jetty does not).<p>
-     * 
-     * @param context the servlet context
-     * @return the path to the servlet classes
-     * @throws RuntimeException if {@link ServletContext#getRealPath(java.lang.String)} fails
-     */
-    private static String getPath(ServletContext context) {
-        String path = context.getRealPath("/");
-        if (path == null) {
-            throw new RuntimeException("ServletContext.getRealPath() failed: please deploy Luntbuild web application as exploded directory instead of only in war file!");
-        }
-        if (!(path.endsWith("/") || path.endsWith("\\") || path.endsWith(File.pathSeparator))) {
-            path += "/";
-        }
-        path += "WEB-INF/classes";
-        return path;
-    }
-
     private static void loadBuilders(ServletContext context) {
         builders = new ArrayList();
         builders.add(AntBuilder.class);
@@ -1543,7 +1530,7 @@ public class Luntbuild {
      * @param context the servlet context
      */
     public static void destroyApplication(ServletContext context) {
-        logWatchDog.destroy();
+        logWatchDog.interrupt();
         logger.info("Enter application shutdown");
         SecurityHelper.runAsSiteAdmin();
         getSchedService().shutdown();

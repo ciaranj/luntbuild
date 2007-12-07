@@ -28,22 +28,33 @@
 
 package com.luntsys.luntbuild.vcs;
 
-import com.luntsys.luntbuild.ant.Commandline;
-import com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.utility.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.luntsys.luntbuild.ant.Commandline;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.utility.DisplayProperty;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.MyExecTask;
+import com.luntsys.luntbuild.utility.OgnlHelper;
+import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.ValidationException;
 
 /**
  * UCM Clearcase VCS adaptor implementation. This adaptor will utilize the base Clearcase

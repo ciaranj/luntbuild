@@ -17,7 +17,9 @@
 
 package com.luntsys.luntbuild.ant.perforce;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * heavily inspired from LogOutputStream

@@ -28,22 +28,20 @@
 
 package com.luntsys.luntbuild.db;
 
-import com.luntsys.luntbuild.BuildGenerator;
-import com.luntsys.luntbuild.facades.BuildParams;
-import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.facades.lb12.ScheduleFacade;
-import com.luntsys.luntbuild.builders.Builder;
-import com.luntsys.luntbuild.dependency.DependentNode;
-import com.luntsys.luntbuild.security.SecurityHelper;
-import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.utility.OgnlHelper;
-import com.luntsys.luntbuild.utility.Revisions;
-import com.luntsys.luntbuild.utility.ValidationException;
-import com.luntsys.luntbuild.utility.Variable;
-import com.luntsys.luntbuild.utility.VariableHolder;
-import com.luntsys.luntbuild.web.ProjectPage;
-import ognl.Ognl;
-import ognl.OgnlException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.acegisecurity.AccessDeniedException;
 import org.apache.commons.logging.Log;
@@ -52,12 +50,20 @@ import org.quartz.CronTrigger;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.text.ParseException;
-import java.util.*;
+import com.luntsys.luntbuild.BuildGenerator;
+import com.luntsys.luntbuild.builders.Builder;
+import com.luntsys.luntbuild.dependency.DependentNode;
+import com.luntsys.luntbuild.facades.BuildParams;
+import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.facades.lb12.ScheduleFacade;
+import com.luntsys.luntbuild.security.SecurityHelper;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.OgnlHelper;
+import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.ValidationException;
+import com.luntsys.luntbuild.utility.Variable;
+import com.luntsys.luntbuild.utility.VariableHolder;
+import com.luntsys.luntbuild.web.ProjectPage;
 
 /**
  * A schedule for executing a <code>Project</code>.
@@ -785,8 +791,8 @@ public class Schedule implements DependentNode, VariableHolder {
             throw new ValidationException("Invalid build necessary condition: should not contain sequence \"" +
                     Luntbuild.TRIGGER_NAME_SEPERATOR + "\"");
         try {
-            Ognl.parseExpression(buildNecessaryCondition);
-        } catch (OgnlException e) {
+        	Luntbuild.validateExpression(buildNecessaryCondition);
+        } catch (ValidationException e) {
             throw new ValidationException("Invalid build necessary condition: " + buildNecessaryCondition +
                     ", reason: " + e.getMessage());
         }

@@ -28,12 +28,14 @@
 
 package com.luntsys.luntbuild.builders;
 
-import com.luntsys.luntbuild.ant.Commandline;
-import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
-import com.luntsys.luntbuild.utility.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
 
-import ognl.Ognl;
 import ognl.OgnlException;
 
 import org.apache.tools.ant.BuildException;
@@ -42,10 +44,15 @@ import org.apache.tools.ant.types.Environment;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.*;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
+import com.luntsys.luntbuild.ant.Commandline;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.facades.lb12.BuilderFacade;
+import com.luntsys.luntbuild.utility.DisplayProperty;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.LuntbuildLogger;
+import com.luntsys.luntbuild.utility.MyExecTask;
+import com.luntsys.luntbuild.utility.OgnlHelper;
+import com.luntsys.luntbuild.utility.ValidationException;
 
 /**
  * Base class for all builders.
@@ -207,8 +214,8 @@ public abstract class Builder implements Serializable {
         }
         if (!Luntbuild.isEmpty(getBuildSuccessCondition())) {
             try {
-                Ognl.parseExpression(getBuildSuccessCondition());
-            } catch (OgnlException e) {
+            	Luntbuild.validateExpression(getBuildSuccessCondition());
+            } catch (ValidationException e) {
                 throw new ValidationException("Invalid build success condition: " + getBuildSuccessCondition() +
                         ", reason: " + e.getMessage());
             }
@@ -427,11 +434,9 @@ public abstract class Builder implements Serializable {
         try {
             Boolean buildSuccessValue;
             if (!Luntbuild.isEmpty(buildSuccessCondition))
-                buildSuccessValue = (Boolean) Ognl.getValue(Ognl.parseExpression(buildSuccessCondition),
-                    Ognl.createDefaultContext(this), this, Boolean.class);
+            	buildSuccessValue = (Boolean)Luntbuild.evaluateExpression(this, buildSuccessCondition, Boolean.class);
             else
-                buildSuccessValue = (Boolean) Ognl.getValue(Ognl.parseExpression("result==0"),
-                    Ognl.createDefaultContext(this), this, Boolean.class);
+               	buildSuccessValue = (Boolean)Luntbuild.evaluateExpression(this, "result==0", Boolean.class);
             if (buildSuccessValue == null)
                 return false;
             else

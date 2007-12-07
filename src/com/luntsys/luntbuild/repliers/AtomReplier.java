@@ -4,16 +4,19 @@
 
 package com.luntsys.luntbuild.repliers;
 
+import java.util.Iterator;
+
+import org.springframework.dao.DataAccessException;
+
 import com.luntsys.luntbuild.builders.Builder;
-import com.luntsys.luntbuild.db.*;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Project;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.facades.SearchCriteria;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.NotifierProperty;
 import com.luntsys.luntbuild.vcs.Vcs;
-
-import org.springframework.dao.DataAccessException;
-
-import java.util.Iterator;
 
 /**
  * Atom API replier implementation.

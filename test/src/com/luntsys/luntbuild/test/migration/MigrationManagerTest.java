@@ -29,12 +29,10 @@
 package com.luntsys.luntbuild.test.migration;
 
 import com.luntsys.luntbuild.migration.MigrationManager;
-import com.luntsys.luntbuild.migration.MigrationException;
 import junit.framework.TestCase;
 
 import com.thoughtworks.xstream.XStream;
 import java.io.*;
-import java.lang.*;
 
 /**
  * Test class for <code>MigrationManager</code>.
@@ -78,6 +76,7 @@ public class MigrationManagerTest extends TestCase {
 		try {
 			com.luntsys.luntbuild.facades.lb12.DataCollection datacollection =
 				MigrationManager.importAsDataCollection12(xmlFile);
+			assertTrue(datacollection != null);
 		} catch (Exception e) {
 			fail(e.toString());
 		}
@@ -94,6 +93,7 @@ public class MigrationManagerTest extends TestCase {
 		try {
 			com.luntsys.luntbuild.facades.lb12.DataCollection datacollection =
 				MigrationManager.importAsDataCollection12(xmlFile);
+			assertTrue(datacollection != null);
 		} catch (Exception e) {
 			fail(e.toString());
 		}
@@ -112,6 +112,7 @@ public class MigrationManagerTest extends TestCase {
 		try {
 			com.luntsys.luntbuild.facades.lb12.DataCollection datacollection =
 				MigrationManager.importAsDataCollection12(xmlFile);
+			assertTrue(datacollection != null);
 		} catch (Exception e) {
 			fail(e.toString());
 		}

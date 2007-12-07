@@ -4,13 +4,16 @@
 
 package com.luntsys.luntbuild.repliers;
 
+import java.util.Iterator;
+
 import com.luntsys.luntbuild.builders.Builder;
-import com.luntsys.luntbuild.db.*;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Project;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.NotifierProperty;
 import com.luntsys.luntbuild.vcs.Vcs;
-
-import java.util.Iterator;
 
 /**
  * OPML API replier implementation.

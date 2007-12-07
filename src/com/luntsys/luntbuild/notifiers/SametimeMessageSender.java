@@ -28,6 +28,12 @@
 
 package com.luntsys.luntbuild.notifiers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.lotus.sametime.commui.CommUI;
 import com.lotus.sametime.commui.CommUIEvent;
 import com.lotus.sametime.commui.CommUIListener;
@@ -43,8 +49,6 @@ import com.lotus.sametime.im.Im;
 import com.lotus.sametime.im.ImEvent;
 import com.lotus.sametime.im.ImListener;
 import com.lotus.sametime.im.InstantMessagingService;
-
-import java.util.*;
 
 /**
  * Sametime message sender and listener.

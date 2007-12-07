@@ -28,20 +28,31 @@
 
 package com.luntsys.luntbuild.security;
 
-import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.db.Role;
-import org.acegisecurity.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+import net.sf.ehcache.Cache;
+
+import org.acegisecurity.Authentication;
+import org.acegisecurity.AuthenticationException;
+import org.acegisecurity.AuthenticationManager;
+import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.context.SecurityContext;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+import org.acegisecurity.providers.dao.cache.EhCacheBasedUserCache;
 import org.acegisecurity.userdetails.UserDetails;
 import org.acegisecurity.userdetails.UserDetailsService;
-import org.acegisecurity.providers.dao.cache.EhCacheBasedUserCache;
-import net.sf.ehcache.Cache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.*;
+import com.luntsys.luntbuild.db.Role;
+import com.luntsys.luntbuild.utility.Luntbuild;
 
 /**
  * The <code>SecurityHelper</code> is used to validate autheticated pricipals

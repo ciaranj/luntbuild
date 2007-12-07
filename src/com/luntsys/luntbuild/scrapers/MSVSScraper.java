@@ -1,8 +1,11 @@
 package com.luntsys.luntbuild.scrapers;
 
-import org.apache.velocity.VelocityContext;
 import java.util.Vector;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.velocity.VelocityContext;
+
 import com.luntsys.luntbuild.db.Build;
 
 /**

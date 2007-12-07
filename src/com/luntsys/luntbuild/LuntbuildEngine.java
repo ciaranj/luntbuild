@@ -29,8 +29,6 @@
 package com.luntsys.luntbuild;
 
 import org.acegisecurity.AccessDeniedException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.tapestry.IPage;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.Tapestry;
@@ -48,8 +46,6 @@ public class LuntbuildEngine extends BaseEngine {
 	 * Comment for <code>serialVersionUID</code>
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private static Log logger = LogFactory.getLog(LuntbuildEngine.class);
 
 	/**
 	 * @inheritDoc

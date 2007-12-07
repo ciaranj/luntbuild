@@ -28,21 +28,29 @@
 
 package com.luntsys.luntbuild.vcs;
 
-import com.luntsys.luntbuild.ant.Commandline;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.facades.lb12.BaseClearcaseAdaptorFacade;
-import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.utility.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Delete;
 import org.apache.tools.ant.types.FileSet;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.luntsys.luntbuild.ant.Commandline;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.facades.lb12.BaseClearcaseAdaptorFacade;
+import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.MyExecTask;
 
 /**
  * The clearcase base adaptor

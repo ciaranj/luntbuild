@@ -30,8 +30,6 @@ package com.luntsys.luntbuild;
 
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.db.Build;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.tapestry.ApplicationRuntimeException;
 
 import javax.servlet.ServletException;
@@ -54,7 +52,6 @@ public class ResourceAccessServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -819260279056874433L;
-	private static Log logger = LogFactory.getLog(ResourceAccessServlet.class);
 
 	/**
 	 * Handles a requests.

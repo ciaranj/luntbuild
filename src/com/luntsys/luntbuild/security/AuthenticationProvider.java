@@ -10,8 +10,6 @@ import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.acegisecurity.AuthenticationException;
 import org.acegisecurity.AuthenticationServiceException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataAccessException;
 import org.acegisecurity.DisabledException;
 import org.acegisecurity.AccountExpiredException;
@@ -29,8 +27,6 @@ import org.acegisecurity.providers.dao.cache.NullUserCache;
  * @author lubosp
  */
 public class AuthenticationProvider extends AbstractUserDetailsAuthenticationProvider  {
-
-    private static transient final Log logger = LogFactory.getLog(AuthenticationProvider.class);
 
     private UserDetailsService authenticationDao;
     private boolean hideUserNotFoundExceptions = true;

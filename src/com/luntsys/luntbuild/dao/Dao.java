@@ -28,15 +28,22 @@
 
 package com.luntsys.luntbuild.dao;
 
-import com.luntsys.luntbuild.db.*;
-import com.luntsys.luntbuild.facades.SearchCriteria;
-import com.luntsys.luntbuild.facades.lb12.DataCollection;
-import com.luntsys.luntbuild.facades.lb12.ProjectCollection;
-import org.springframework.dao.DataAccessException;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.dao.DataAccessException;
+
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Project;
+import com.luntsys.luntbuild.db.Property;
+import com.luntsys.luntbuild.db.Role;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.db.User;
+import com.luntsys.luntbuild.db.VcsLogin;
+import com.luntsys.luntbuild.facades.SearchCriteria;
+import com.luntsys.luntbuild.facades.lb12.DataCollection;
+import com.luntsys.luntbuild.facades.lb12.ProjectCollection;
 
 /**
  * Data access interface of this application.

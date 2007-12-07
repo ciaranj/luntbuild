@@ -28,22 +28,39 @@
 
 package com.luntsys.luntbuild.vcs;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tapestry.form.IPropertySelectionModel;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+
+import com.luntsys.luntbuild.ant.starteam.StarTeamCheckout;
+import com.luntsys.luntbuild.ant.starteam.StarTeamLabel;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.StarteamAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.StarteamModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.utility.*;
-import com.luntsys.luntbuild.ant.starteam.StarTeamCheckout;
-import com.luntsys.luntbuild.ant.starteam.StarTeamLabel;
-import com.starbase.starteam.*;
+import com.luntsys.luntbuild.utility.DisplayProperty;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.OgnlHelper;
+import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.ValidationException;
+import com.starbase.starteam.File;
+import com.starbase.starteam.Folder;
+import com.starbase.starteam.Item;
+import com.starbase.starteam.Server;
+import com.starbase.starteam.StarTeamFinder;
+import com.starbase.starteam.User;
+import com.starbase.starteam.View;
+import com.starbase.starteam.ViewConfiguration;
 import com.starbase.util.OLEDate;
-import org.apache.tapestry.form.IPropertySelectionModel;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-
-import java.util.*;
 
 /**
  * Borland StarTeam VCS adaptor implementation.

@@ -1,9 +1,16 @@
 package com.luntsys.luntbuild.repliers;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
-import ognl.Ognl;
 import ognl.OgnlException;
 
 import org.apache.commons.logging.Log;
@@ -208,14 +215,7 @@ public abstract class TemplatedReplier extends Replier implements ReferenceInser
     public Object referenceInsert(String reference, Object value) {
         if (value != null) return value;
         try {
-            if (reference.startsWith("${")) {
-                reference = reference.substring(2, reference.length() - 1);
-            }
-            Object expression = Ognl.parseExpression(reference);
-            Map ctx = Ognl.createDefaultContext(ognlRoot);
-            Object ognlValue;
-            ognlValue = Ognl.getValue(expression, ctx, ognlRoot, String.class);
-            return ognlValue;
+        	return Luntbuild.evaluateExpression(ognlRoot, reference);
         } catch (OgnlException ex) {
             return value;
         }
