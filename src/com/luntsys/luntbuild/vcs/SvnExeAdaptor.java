@@ -591,7 +591,8 @@ public class SvnExeAdaptor extends Vcs {
             destDir = Luntbuild.concatPath(workingDir, module.getActualDestPath());
 
         Commandline cmdLine = buildSvnExecutable();
-        cmdLine.createArgument().setValue("update");
+        cmdLine.createArgument().setValue("checkout");
+        cmdLine.createArgument().setValue(url);
         cmdLine.createArgument().setValue(destDir);
         addSvnSwitches(cmdLine, antProject, false);
         new MyExecTask("update", antProject, workingDir, cmdLine, null, SVN_COMMAND_INPUT,
