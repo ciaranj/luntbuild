@@ -22,11 +22,12 @@
 
 package com.luntsys.luntbuild.ant.perforce;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.oro.text.perl.Perl5Util;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-
-import java.io.*;
 
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.ant.Execute;

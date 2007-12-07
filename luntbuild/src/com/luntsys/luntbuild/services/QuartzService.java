@@ -27,26 +27,42 @@
  */
 package com.luntsys.luntbuild.services;
 
-import com.luntsys.luntbuild.BuildGenerator;
-import com.luntsys.luntbuild.facades.BuildParams;
-import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.maintenance.SystemBackup;
-import com.luntsys.luntbuild.maintenance.SystemCare;
-import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.security.SecurityHelper;
-import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.utility.TriggerStartTimeComparator;
-import com.luntsys.luntbuild.utility.ValidationException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.*;
+import org.quartz.CronTrigger;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.io.InputStream;
-import java.util.*;
+import com.luntsys.luntbuild.BuildGenerator;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.facades.BuildParams;
+import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.maintenance.SystemBackup;
+import com.luntsys.luntbuild.maintenance.SystemCare;
+import com.luntsys.luntbuild.security.SecurityHelper;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.TriggerStartTimeComparator;
+import com.luntsys.luntbuild.utility.ValidationException;
 
 /**
  * Quartz scheduler implementation. This will loaded by Spring framework as a singleton.

@@ -42,8 +42,6 @@ public class StarTeamCheckin extends TreeBasedTask {
         setRecursive(false);
     }
 
-    private boolean createFolders = true;
-
     /**
      * The comment which will be stored with the checkin.
      */
@@ -54,15 +52,6 @@ public class StarTeamCheckin extends TreeBasedTask {
      * local files not in StarTeam will be added to the repository.
      */
     private boolean addUncontrolled = false;
-
-    /**
-     * Sets the value of createFolders
-     *
-     * @param argCreateFolders Value to assign to this.createFolders
-     */
-    public void setCreateFolders(boolean argCreateFolders) {
-        this.createFolders = argCreateFolders;
-    }
 
 
     /**

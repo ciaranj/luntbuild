@@ -36,9 +36,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.text.DateFormatSymbols;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import ognl.OgnlException;
 
 /**
@@ -47,8 +44,6 @@ import ognl.OgnlException;
  * @author alvin shen
  */
 public class OgnlHelper {
-
-    private static Log logger = LogFactory.getLog(OgnlHelper.class);
 
 	/**
 	 * The schedule this build necessary condition evaluation trigged on behalf of

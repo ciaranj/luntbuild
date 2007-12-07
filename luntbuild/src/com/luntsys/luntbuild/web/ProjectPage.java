@@ -27,18 +27,23 @@
  */
 package com.luntsys.luntbuild.web;
 
-import com.luntsys.luntbuild.db.*;
-import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.web.components.tabcontrol.TabControl;
-import com.luntsys.luntbuild.security.SecurityHelper;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.spec.IComponentSpecification;
 import org.apache.tapestry.engine.IPageLoader;
 import org.apache.tapestry.event.PageDetachListener;
 import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.spec.IComponentSpecification;
 
-import java.util.List;
-import java.util.Iterator;
+import com.luntsys.luntbuild.db.Project;
+import com.luntsys.luntbuild.db.Role;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.db.User;
+import com.luntsys.luntbuild.db.VcsLogin;
+import com.luntsys.luntbuild.security.SecurityHelper;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.web.components.tabcontrol.TabControl;
 
 /**
  * this page is used to show aspects of a specific project.

@@ -1,10 +1,17 @@
 package com.luntsys.luntbuild.notifiers;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
-import ognl.Ognl;
 import ognl.OgnlException;
 
 import org.apache.commons.logging.Log;
@@ -219,14 +226,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     public Object referenceInsert(String reference, Object value) {
         if (value != null) return value;
         try {
-            if (reference.startsWith("${")) {
-                reference = reference.substring(2, reference.length() - 1);
-            }
-            Object expression = Ognl.parseExpression(reference);
-            Map ctx = Ognl.createDefaultContext(ognlRoot);
-            Object ognlValue;
-            ognlValue = Ognl.getValue(expression, ctx, ognlRoot, String.class);
-            return ognlValue;
+        	return Luntbuild.evaluateExpression(ognlRoot, reference);
         } catch (OgnlException ex) {
             return value;
         }
@@ -495,31 +495,10 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
     }
 
     /**
-     * Gets the contents of a URL.
-     * 
-     * @param url the URL
-     * @return the contents of the URL
-     * @throws Exception if the URL cannot be read
-     */
-    private static final String readUrl(String url) throws Exception{
-        URL source = new URL(url);
-        DataInputStream dis = new DataInputStream(source.openStream());
-
-        StringBuffer sbuf = new StringBuffer();
-        int readin = 0;
-        byte[] buf = new byte[1024];
-        while ((readin = dis.read(buf)) > 0) {
-            sbuf.append(new String(buf, 0, readin));
-        }
-        dis.close();
-        return sbuf.toString();
-    }
-
-    /**
-     * Determins the hostname and port of the server.
+     * Determines the host name and port of the server.
      * 
      * @param text the URL of the server
-     * @return the root of the URL with only the protocol, hostname and port
+     * @return the root of the URL with only the protocol, host name and port
      */
     private static final String extractRootUrl(String text) throws Exception {
         URL url = new URL(text);

@@ -28,18 +28,22 @@
 
 package com.luntsys.luntbuild.vcs;
 
-import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
-import com.luntsys.luntbuild.facades.lb12.VcsFacade;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.tools.ant.Project;
+
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
+import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.utility.ValidationException;
-import org.apache.tools.ant.Project;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Base class for all version control adaptors. Different types of version control systems (VCS)

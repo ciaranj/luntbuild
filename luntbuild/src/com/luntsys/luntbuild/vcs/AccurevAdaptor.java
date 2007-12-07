@@ -4,6 +4,18 @@
 
 package com.luntsys.luntbuild.vcs;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.dom4j.Document;
+import org.dom4j.Element;
+
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
@@ -21,18 +33,6 @@ import com.luntsys.luntbuild.vcs.accurev.AccurevHelper;
 import com.luntsys.luntbuild.vcs.accurev.AccurevModuleInterface;
 import com.luntsys.luntbuild.vcs.accurev.ReferenceTreeInfo;
 import com.luntsys.luntbuild.vcs.accurev.StreamInfo;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.dom4j.Document;
-import org.dom4j.Element;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * AccuRev VCS adaptor implementation.

@@ -28,6 +28,24 @@
 
 package com.luntsys.luntbuild.vcs;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.tapestry.form.IPropertySelectionModel;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.FixCRLF;
+import org.apache.tools.ant.types.Environment;
+
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.ant.cvstask.CVSPass;
 import com.luntsys.luntbuild.ant.cvstask.Cvs;
@@ -38,26 +56,15 @@ import com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.CvsModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.utility.*;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.tapestry.form.IPropertySelectionModel;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.FixCRLF;
-import org.apache.tools.ant.types.Environment;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.luntsys.luntbuild.utility.DisplayProperty;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.LuntbuildLogger;
+import com.luntsys.luntbuild.utility.MyExecTask;
+import com.luntsys.luntbuild.utility.OgnlHelper;
+import com.luntsys.luntbuild.utility.RevisionBlock;
+import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
+import com.luntsys.luntbuild.utility.ValidationException;
 
 /**
  * CVS VCS adaptor implementation.

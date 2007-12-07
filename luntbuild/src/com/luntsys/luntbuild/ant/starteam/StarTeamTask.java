@@ -16,12 +16,18 @@
  */
 package com.luntsys.luntbuild.ant.starteam;
 
-import com.starbase.starteam.*;
-
 import java.util.StringTokenizer;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
+
+import com.starbase.starteam.BuildNumber;
+import com.starbase.starteam.Server;
+import com.starbase.starteam.StarTeamFinder;
+import com.starbase.starteam.TypeNames;
+import com.starbase.starteam.User;
+import com.starbase.starteam.View;
 
 /**
  * Common super class for all StarTeam tasks.

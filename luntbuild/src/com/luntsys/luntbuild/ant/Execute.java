@@ -33,9 +33,11 @@ import java.util.Vector;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.taskdefs.ExecuteStreamHandler;
+import org.apache.tools.ant.taskdefs.ExecuteWatchdog;
+import org.apache.tools.ant.taskdefs.LogStreamHandler;
+import org.apache.tools.ant.taskdefs.PumpStreamHandler;
 import org.apache.tools.ant.taskdefs.condition.Os;
-import org.apache.tools.ant.taskdefs.*;
-import com.luntsys.luntbuild.ant.Commandline;
 
 /**
  * Runs an external program.
@@ -71,7 +73,6 @@ public class Execute {
 	private static CommandLauncher vmLauncher = null;
 	private static CommandLauncher shellLauncher = null;
 	private static Vector procEnvironment = null;
-	private boolean spawn = false;
 
 	/**
 	 * Used to destroy processes when the VM exits.
@@ -140,16 +141,6 @@ public class Execute {
 			shellLauncher = new ScriptCommandLauncher("bin/antRun",
 					new CommandLauncher());
 		}
-	}
-
-	/**
-	 * Set whether or not you want the process to be spawned, default is not spawned.
-	 *
-	 * @param spawn if <code>true</code> you do not want ant to wait for the end of the process
-	 * @since ant 1.6
-	 */
-	public void setSpawn(boolean spawn) {
-		this.spawn = spawn;
 	}
 
 	/**

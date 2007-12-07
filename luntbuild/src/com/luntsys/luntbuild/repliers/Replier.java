@@ -3,16 +3,20 @@
  */
 package com.luntsys.luntbuild.repliers;
 
-import com.luntsys.luntbuild.builders.*;
-import com.luntsys.luntbuild.db.*;
-import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.utility.NotifierProperty;
-import com.luntsys.luntbuild.vcs.*;
+import java.net.URL;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.net.URL;
+import com.luntsys.luntbuild.builders.Builder;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Project;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.db.User;
+import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.NotifierProperty;
+import com.luntsys.luntbuild.vcs.Vcs;
 
 /**
  * Base class for all API repliers.

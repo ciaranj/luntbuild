@@ -30,7 +30,10 @@ package com.luntsys.luntbuild.facades;
 
 import java.util.List;
 
-import com.luntsys.luntbuild.facades.lb12.*;
+import com.luntsys.luntbuild.facades.lb12.BuildFacade;
+import com.luntsys.luntbuild.facades.lb12.ProjectFacade;
+import com.luntsys.luntbuild.facades.lb12.ScheduleFacade;
+import com.luntsys.luntbuild.facades.lb12.UserFacade;
 
 /**
  * Luntbuild service interface.

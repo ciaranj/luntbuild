@@ -28,22 +28,28 @@
 
 package com.luntsys.luntbuild;
 
-import com.luntsys.luntbuild.builders.Builder;
-import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.db.User;
-import com.luntsys.luntbuild.dependency.DependencyResolver;
-import com.luntsys.luntbuild.listeners.Listener;
-import com.luntsys.luntbuild.notifiers.Notifier;
-import com.luntsys.luntbuild.facades.BuildParams;
-import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.reports.Report;
-import com.luntsys.luntbuild.security.SecurityHelper;
-import com.luntsys.luntbuild.services.QuartzService;
-import com.luntsys.luntbuild.utility.*;
-import com.luntsys.luntbuild.vcs.Vcs;
-import ognl.Ognl;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import ognl.OgnlException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildEvent;
@@ -58,20 +64,24 @@ import org.quartz.Scheduler;
 import org.quartz.StatefulJob;
 import org.w3c.dom.Element;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.Writer;
-import java.util.*;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+import com.luntsys.luntbuild.builders.Builder;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.db.User;
+import com.luntsys.luntbuild.dependency.DependencyResolver;
+import com.luntsys.luntbuild.facades.BuildParams;
+import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.listeners.Listener;
+import com.luntsys.luntbuild.notifiers.Notifier;
+import com.luntsys.luntbuild.reports.Report;
+import com.luntsys.luntbuild.security.SecurityHelper;
+import com.luntsys.luntbuild.services.QuartzService;
+import com.luntsys.luntbuild.utility.EmptyBuildListenerImpl;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.LuntbuildLogger;
+import com.luntsys.luntbuild.utility.OgnlHelper;
+import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.vcs.Vcs;
 
 /**
  * This class performs the actual build process and will generate
@@ -549,10 +559,8 @@ public class BuildGenerator implements StatefulJob {
         File work = new File(workDir);
         if (!work.exists()) return true;
         try {
-            Boolean buildNecessaryValue =
-                (Boolean) Ognl.getValue(Ognl.parseExpression(buildNecessaryCondition),
-                    Ognl.createDefaultContext(OgnlHelper.getWorkingSchedule()),
-                    OgnlHelper.getWorkingSchedule(), Boolean.class);
+        	Boolean buildNecessaryValue =
+        		(Boolean)Luntbuild.evaluateExpression(OgnlHelper.getWorkingSchedule(), buildNecessaryCondition, Boolean.class);
             if (buildNecessaryValue == null)
                 return false;
             else
@@ -569,7 +577,7 @@ public class BuildGenerator implements StatefulJob {
     /**
      * Sends a notification about specified schedule.
      *
-     * @param schedule theschedule to notify about
+     * @param schedule the schedule to notify about
      * @param antProject the ant project used for logging purpose
      */
     private void sendScheduleNotification(Schedule schedule, Project antProject) {

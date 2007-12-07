@@ -27,6 +27,20 @@
  */
 package com.luntsys.luntbuild.web;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.acegisecurity.AccessDeniedException;
+import org.apache.tapestry.IRequestCycle;
+import org.apache.tapestry.engine.IPageLoader;
+import org.apache.tapestry.event.PageDetachListener;
+import org.apache.tapestry.event.PageEvent;
+import org.apache.tapestry.spec.IComponentSpecification;
+import org.quartz.Trigger;
+
 import com.luntsys.luntbuild.BuildGenerator;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
@@ -35,16 +49,6 @@ import com.luntsys.luntbuild.security.SecurityHelper;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.NameComparator;
 import com.luntsys.luntbuild.web.components.tabcontrol.TabControl;
-import org.acegisecurity.AccessDeniedException;
-
-import org.apache.tapestry.IRequestCycle;
-import org.apache.tapestry.engine.IPageLoader;
-import org.apache.tapestry.event.PageDetachListener;
-import org.apache.tapestry.event.PageEvent;
-import org.apache.tapestry.spec.IComponentSpecification;
-import org.quartz.Trigger;
-
-import java.util.*;
 
 /**
  * This component renders a project's schedule list page

@@ -28,24 +28,33 @@
 
 package com.luntsys.luntbuild.migration;
 
-import com.luntsys.luntbuild.builders.AntBuilder;
-import com.luntsys.luntbuild.dao.Dao;
-import com.luntsys.luntbuild.db.*;
-import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.utility.Luntbuild;
-import com.thoughtworks.xstream.XStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.xmlpull.mxp1.MXParser;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.xmlpull.mxp1.MXParser;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import com.luntsys.luntbuild.builders.AntBuilder;
+import com.luntsys.luntbuild.dao.Dao;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.NotifyMapping;
+import com.luntsys.luntbuild.db.Project;
+import com.luntsys.luntbuild.db.Property;
+import com.luntsys.luntbuild.db.Role;
+import com.luntsys.luntbuild.db.RolesMapping;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.db.User;
+import com.luntsys.luntbuild.db.VcsLogin;
+import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.thoughtworks.xstream.XStream;
 
 /**
  * Manager for importing and migrating data into Luntbuild.

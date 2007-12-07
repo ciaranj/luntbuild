@@ -28,6 +28,24 @@
 
 package com.luntsys.luntbuild.vcs;
 
+import java.io.StringReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.tapestry.form.IPropertySelectionModel;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
@@ -35,22 +53,14 @@ import com.luntsys.luntbuild.facades.lb12.ModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade;
 import com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
-import com.luntsys.luntbuild.utility.*;
-
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.commons.lang.StringUtils;
-import org.apache.tapestry.form.IPropertySelectionModel;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-import org.tmatesoft.svn.util.SVNDebugLog;
-
-import java.io.StringReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.luntsys.luntbuild.utility.DisplayProperty;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.LuntbuildLogger;
+import com.luntsys.luntbuild.utility.MyExecTask;
+import com.luntsys.luntbuild.utility.OgnlHelper;
+import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
+import com.luntsys.luntbuild.utility.ValidationException;
 
 /**
  * Subversion Executable VCS adaptor implementation.
@@ -82,7 +92,6 @@ public class SvnExeAdaptor extends Vcs {
 	private String webInterface;
 	/** Subversion web interface URL */
 	private String webUrl;
-    private boolean cygwinSvn;
 
     /**
      * @inheritDoc

@@ -28,12 +28,13 @@
 
 package com.luntsys.luntbuild.notifiers;
 
-import com.luntsys.luntbuild.db.Build;
-import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.db.User;
-import com.luntsys.luntbuild.facades.Constants;
-import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.utility.NotifierProperty;
+import java.awt.Color;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.tools.ant.Project;
 
 import rath.msnm.MSNMessenger;
@@ -43,10 +44,12 @@ import rath.msnm.entity.MsnFriend;
 import rath.msnm.event.MsnAdapter;
 import rath.msnm.msg.MimeMessage;
 
-import java.awt.*;
-import java.io.IOException;
-import java.util.*;
-import java.util.List;
+import com.luntsys.luntbuild.db.Build;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.db.User;
+import com.luntsys.luntbuild.facades.Constants;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.NotifierProperty;
 
 /**
  * MSN Messenger notifier implementation.

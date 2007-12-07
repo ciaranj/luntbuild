@@ -27,13 +27,8 @@
  */
 package com.luntsys.luntbuild.web;
 
-import com.luntsys.luntbuild.BuildGenerator;
-import com.luntsys.luntbuild.db.Schedule;
-import com.luntsys.luntbuild.utility.Luntbuild;
-import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
-import com.luntsys.luntbuild.utility.ValidationException;
-import com.luntsys.luntbuild.web.components.tabcontrol.TabControl;
-import com.luntsys.luntbuild.web.selectionmodels.*;
+import java.util.Date;
+
 import org.apache.tapestry.BaseComponent;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.RedirectException;
@@ -45,9 +40,18 @@ import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tapestry.spec.IComponentSpecification;
 import org.quartz.SimpleTrigger;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.luntsys.luntbuild.BuildGenerator;
+import com.luntsys.luntbuild.db.Schedule;
+import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
+import com.luntsys.luntbuild.utility.ValidationException;
+import com.luntsys.luntbuild.web.components.tabcontrol.TabControl;
+import com.luntsys.luntbuild.web.selectionmodels.BuildTimingSelectionModel;
+import com.luntsys.luntbuild.web.selectionmodels.BuildTypeSelectionModel;
+import com.luntsys.luntbuild.web.selectionmodels.LabelStrategySelectionModel;
+import com.luntsys.luntbuild.web.selectionmodels.NotifyStrategySelectionModel;
+import com.luntsys.luntbuild.web.selectionmodels.PostbuildStrategySelectionModel;
+import com.luntsys.luntbuild.web.selectionmodels.TriggerDependencyStrategySelectionModel;
 
 /**
  * This component renders a manual build editing page

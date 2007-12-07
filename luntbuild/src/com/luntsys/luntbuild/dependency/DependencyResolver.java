@@ -28,7 +28,9 @@
 
 package com.luntsys.luntbuild.dependency;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * This class handles various dependency resolving for given object(s), such as resolving

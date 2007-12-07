@@ -19,7 +19,8 @@ public class SynchronizedDateFormatterTest extends TestCase {
 	 * Test method for {@link com.luntsys.luntbuild.utility.SynchronizedDateFormatter#SynchronizedDateFormatter(java.text.DateFormat)}.
 	 */
 	public void testSynchronizedDateFormatterDateFormat() {
-		SynchronizedDateFormatter formatter = new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.DEFAULT));
+		SynchronizedDateFormatter formatter =
+			new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.DEFAULT), "default");
 		assertTrue("DateFormat.getDateInstance(SimpleDateFormat.DEFAULT)", formatter != null);
 	}
 
