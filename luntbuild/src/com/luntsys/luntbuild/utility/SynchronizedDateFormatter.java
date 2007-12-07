@@ -3,58 +3,65 @@ package com.luntsys.luntbuild.utility;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * A synchronized wrapper around SimpleDateFormat.
  */
 public class SynchronizedDateFormatter {
 	
-    private static HashMap formats = new HashMap();
+    private static List formats = new ArrayList();
     static {
-    	formats.put("yyyy.MM.dd-hh:mm", new SynchronizedDateFormatter("yyyy.MM.dd-hh:mm"));
-    	formats.put("yyyy-MM-dd hh:mm:ss zzz", new SynchronizedDateFormatter("yyyy-MM-dd hh:mm:ss zzz"));
-    	formats.put("yyyy-MM-dd'T'HH:mm:ssZ", new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ssZ"));
-    	formats.put("dd-MMMM-yyyy.HH:mm:ss", new SynchronizedDateFormatter("dd-MMMM-yyyy.HH:mm:ss"));
-    	formats.put("yyyy/MM/dd HH:mm:ss", new SynchronizedDateFormatter("yyyy/MM/dd HH:mm:ss"));
-    	formats.put("yyyy-MM-dd HH:mm:ss", new SynchronizedDateFormatter("yyyy-MM-dd HH:mm:ss"));
-    	formats.put("yyyy-MM-dd'T'HH:mm:ss'Z'", new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ss'Z'"));
-    	formats.put("yyyy-MM-dd'T'HH:mm:ss.SSS", new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS"));
-    	formats.put("M/dd/yy;h:mm:ssa", new SynchronizedDateFormatter("M/dd/yy;h:mm:ssa"));
-    	formats.put("yyyy-MM-dd HH:mm", new SynchronizedDateFormatter("yyyy-MM-dd HH:mm"));
+    	formats.add(new SynchronizedDateFormatter("yyyy.MM.dd-hh:mm"));
+    	formats.add(new SynchronizedDateFormatter("yyyy-MM-dd hh:mm:ss zzz"));
+    	formats.add(new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ssZ"));
+    	formats.add(new SynchronizedDateFormatter("yyyy-MM-ddTHH:mm:ssZ"));
+    	formats.add(new SynchronizedDateFormatter("dd-MMMM-yyyy.HH:mm:ss"));
+    	formats.add(new SynchronizedDateFormatter("yyyy/MM/dd HH:mm:ss"));
+    	formats.add(new SynchronizedDateFormatter("yyyy-MM-dd HH:mm:ss"));
+    	formats.add(new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+    	formats.add(new SynchronizedDateFormatter("EEE, d MMM yyyy HH:mm:ss Z"));
+    	formats.add(new SynchronizedDateFormatter("EEE, d MMM yyyy HH:mm:ss"));
+    	formats.add(new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+    	formats.add(new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ss.SSS Z"));
+    	formats.add(new SynchronizedDateFormatter("M/dd/yy;h:mm:ssa"));
+    	formats.add(new SynchronizedDateFormatter("yyyy-MM-dd HH:mm"));
     	
-    	formats.put("MM/dd/yyyy", new SynchronizedDateFormatter("MM/dd/yyyy"));
-        formats.put("MM-dd-yyyy", new SynchronizedDateFormatter("MM-dd-yyyy"));
-        formats.put("d MMM yyyy", new SynchronizedDateFormatter("d MMM yyyy"));
-        formats.put("d-MMM-yyyy", new SynchronizedDateFormatter("d-MMM-yyyy"));
-        formats.put("d MMM. yyyy", new SynchronizedDateFormatter("d MMM. yyyy"));
-        formats.put("MMM d, yyyy", new SynchronizedDateFormatter("MMM d, yyyy"));
-        formats.put("MMM. d, yyyy", new SynchronizedDateFormatter("MMM. d, yyyy"));
+        formats.add(new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.FULL), "full"));
+        formats.add(new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.LONG), "long"));
+        formats.add(new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.MEDIUM), "medium"));
+        formats.add(new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.SHORT), "short"));
+        formats.add(new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.DEFAULT), "default"));
+
+        formats.add(new SynchronizedDateFormatter("MM/dd/yyyy"));
+        formats.add(new SynchronizedDateFormatter("MM-dd-yyyy"));
+        formats.add(new SynchronizedDateFormatter("d MMM yyyy"));
+        formats.add(new SynchronizedDateFormatter("d-MMM-yyyy"));
+        formats.add(new SynchronizedDateFormatter("d MMM. yyyy"));
+        formats.add(new SynchronizedDateFormatter("MMM d, yyyy"));
+        formats.add(new SynchronizedDateFormatter("MMM. d, yyyy"));
         
-        formats.put("hh:mm", new SynchronizedDateFormatter("hh:mm"));
-        
-        formats.put("default", new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.DEFAULT)));
-        formats.put("short", new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.SHORT)));
-        formats.put("medium", new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.MEDIUM)));
-        formats.put("long", new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.LONG)));
-        formats.put("full", new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.FULL)));
+        formats.add(new SynchronizedDateFormatter("hh:mm"));        
     }
 
 	private ThreadLocal delegate;
+    private String pattern;
     
 	/**
 	 * Instantiates a new synchronized date formatter.
 	 * 
 	 * @param format the format
 	 */
-	public SynchronizedDateFormatter(final DateFormat format) {
+	public SynchronizedDateFormatter(final DateFormat format, String pattern) {
         delegate = new ThreadLocal() {
             protected synchronized Object initialValue() {
                 return format;
             }
         };
+        this.pattern = pattern;
 	}
 	
     /**
@@ -68,6 +75,7 @@ public class SynchronizedDateFormatter {
                 return new SimpleDateFormat(formatStr);
             }
         };
+        pattern = formatStr;
     }
     
     /**
@@ -111,10 +119,7 @@ public class SynchronizedDateFormatter {
      * @return the format
      */
     public static synchronized SimpleDateFormat getFormat(String formatStr) {
-		SynchronizedDateFormatter formatter = (SynchronizedDateFormatter)formats.get(formatStr);
-		if (formatter == null)
-			formatter = (SynchronizedDateFormatter)formats.get("medium");
-		return formatter.get();
+    	return getFormatByName(formatStr).get();
     }
     
     /**
@@ -138,7 +143,7 @@ public class SynchronizedDateFormatter {
      */
     public static synchronized final String formatDate(Date date, String defaultFormat) {
     	if (defaultFormat != null) {
-			SynchronizedDateFormatter formatter = (SynchronizedDateFormatter)formats.get(defaultFormat);
+			SynchronizedDateFormatter formatter = getFormatByName(defaultFormat);
 			try {
 				String dateStr = formatter.format(date);
 				if (dateStr != null && dateStr.trim().length() > 0) return dateStr;
@@ -146,8 +151,8 @@ public class SynchronizedDateFormatter {
 		           // try again with another formats
 			}
     	}
-    	for (Iterator it = formats.keySet().iterator(); it.hasNext();) {
-			SynchronizedDateFormatter formatter = (SynchronizedDateFormatter)formats.get(it.next());
+    	for (Iterator it = formats.iterator(); it.hasNext();) {
+			SynchronizedDateFormatter formatter = (SynchronizedDateFormatter)it.next();
 			try {
 				String dateStr = formatter.format(date);
 				if (dateStr != null && dateStr.trim().length() > 0) return dateStr;
@@ -179,7 +184,7 @@ public class SynchronizedDateFormatter {
      */
     public static synchronized final Date parseDate(String dateStr, String defaultFormat) {
     	if (defaultFormat != null) {
-			SynchronizedDateFormatter formatter = (SynchronizedDateFormatter)formats.get(defaultFormat);
+			SynchronizedDateFormatter formatter = getFormatByName(defaultFormat);
 			try {
 				Date date = formatter.parse(dateStr);
 				if (date != null) return date;
@@ -187,8 +192,8 @@ public class SynchronizedDateFormatter {
 		           // try again with another format
 			}
     	}
-    	for (Iterator it = formats.keySet().iterator(); it.hasNext();) {
-			SynchronizedDateFormatter formatter = (SynchronizedDateFormatter)formats.get(it.next());
+    	for (Iterator it = formats.iterator(); it.hasNext();) {
+			SynchronizedDateFormatter formatter = (SynchronizedDateFormatter)it.next();
 			try {
 				Date date = formatter.parse(dateStr);
 				if (date != null) return date;
@@ -197,5 +202,13 @@ public class SynchronizedDateFormatter {
 			}
 		}
     	return null;
+    }
+    
+    private static SynchronizedDateFormatter getFormatByName(String defaultFormat) {
+    	for (Iterator it = formats.iterator(); it.hasNext();) {
+			SynchronizedDateFormatter formatter = (SynchronizedDateFormatter)it.next();
+			if (formatter.pattern.equals(defaultFormat)) return formatter;
+    	}
+    	return new SynchronizedDateFormatter(DateFormat.getDateInstance(SimpleDateFormat.MEDIUM), "medium");
     }
 }
