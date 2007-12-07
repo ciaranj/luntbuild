@@ -74,6 +74,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.helpers.FileWatchdog;
+import org.apache.log4j.helpers.LogLog;
 import org.apache.tapestry.ApplicationRuntimeException;
 import org.apache.tapestry.IRequestCycle;
 import org.apache.tapestry.multipart.DefaultMultipartDecoder;
@@ -164,6 +166,9 @@ public class Luntbuild {
     /** Log4j system log - Text */
     public static final String log4jFileNameTxt = "luntbuild_log.txt";
 
+    /** log watchdog interval in ms */
+    public static final long LOG_WATCH_INTERVAL = 60 * 1000;
+    
     /** Extensions configuration file */
     public static final String extensionsConfigFile = "luntbuild_config.xml";
 
@@ -202,6 +207,11 @@ public class Luntbuild {
     /** Server port */
     public static int serverPort = 8080;
     
+    public static LogPropertyWatchdog logWatchDog;
+    
+    public static final Pattern ognlVariablePattern = Pattern.compile("\\$\\{([^$]*)\\}");
+
+
     /**
      * Gets the data access object.
      *
@@ -1048,9 +1058,7 @@ public class Luntbuild {
      * @return <code>true</code> if a variable reference is contained
      */
     public static boolean isVariablesContained(String expression) {
-        Pattern pattern = Pattern.compile("\\$\\{[^$]*\\}");
-
-        Matcher matcher = pattern.matcher(expression);
+        Matcher matcher = ognlVariablePattern.matcher(expression);
         if (matcher.find())
             return true;
         else
@@ -1069,22 +1077,25 @@ public class Luntbuild {
      *    or {@link Ognl#getValue(java.lang.Object, java.util.Map, java.lang.Object, java.lang.Class)}
      */
     public static String evaluateExpression(Object ognlRoot, String expression) throws OgnlException {
-        Pattern pattern = Pattern.compile("\\$\\{([^$]*)\\}");
+    	return resolveOgnlExpressions(ognlRoot, expression);
+    }
 
+    private static String resolveOgnlExpressions(Object ognlRoot, String expression) throws OgnlException {
         String value = expression;
         Matcher matcher;
-        while ((matcher = pattern.matcher(value)).find()) {
+        while ((matcher = ognlVariablePattern.matcher(value)).find()) {
             String ognlValue = (String) Ognl.getValue(Ognl.parseExpression(matcher.group(1)),
                     Ognl.createDefaultContext(ognlRoot), ognlRoot, String.class);
             if (ognlValue == null)
                 ognlValue = "";
             else if (ognlValue.equals(expression))
                 ognlValue = "";
+            ognlValue = resolveOgnlExpressions(ognlRoot, ognlValue);
             value = matcher.replaceFirst(ognlValue);
         }
         return value;
     }
-
+    
     /**
      * Validates the specified OGNL expression.
      * 
@@ -1093,11 +1104,9 @@ public class Luntbuild {
      * @throws ValidationException
      */
     public static String validateExpression(String expression) {
-        Pattern pattern = Pattern.compile("\\$\\{([^$]*)\\}");
-
         String value = expression;
         Matcher matcher;
-        while ((matcher = pattern.matcher(value)).find()) {
+        while ((matcher = ognlVariablePattern.matcher(value)).find()) {
             try {
                 Ognl.parseExpression(matcher.group(1));
             } catch (OgnlException e) {
@@ -1113,75 +1122,17 @@ public class Luntbuild {
      * 
      * @throws IOException from {@link #setLuntbuildHtmlLog(String)} or {@link #setLuntbuildTextLog(String)}
      */
-    private static final void setLuntbuildLogs() throws IOException {
-        setLuntbuildHtmlLog(Luntbuild.installDir);
-        setLuntbuildTextLog(Luntbuild.installDir);
-    }
-
-    /**
-     * Loads and configures log4j properties to specify the HTML and TEXT log files, with an additional config.
-     * 
-     * @param installDir the Luntbuild installation directory
-     * @param config the log4j config
-     * @throws IOException from {@link #setLuntbuildHtmlLog(String)} or {@link #setLuntbuildTextLog(String)}
-     */
-    public static final void setLuntbuildLogs(String installDir, String config) throws IOException {
+    public static final void setLuntbuildLogs() throws IOException {
+    	String config = installDir + File.separatorChar + "log4j.properties";
+    	if (!(new File(config)).exists()) throw new IOException();
         PropertyConfigurator.configure(config);
-        setLuntbuildHtmlLog(installDir);
-        setLuntbuildTextLog(installDir);
+    	logWatchDog = new LogPropertyWatchdog(config, Luntbuild.installDir);
+    	logWatchDog.setLuntbuildHtmlLog(LogManager.getRootLogger().getAppender("luntbuild_logfile"));
+    	logWatchDog.setLuntbuildTextLog(LogManager.getRootLogger().getAppender("luntbuild_txt_logfile"));
+    	logWatchDog.setDelay(LOG_WATCH_INTERVAL);
+    	logWatchDog.start();
     }
-
-    /**
-     * Sets the Luntbuild HTML log.
-     * 
-     * @param installDir the luntbuild installation directory
-     * @throws IOException from {@link FileAppender#FileAppender(org.apache.log4j.Layout, java.lang.String, boolean)}
-     */
-    private static final void setLuntbuildHtmlLog(String installDir) throws IOException {
-        Appender app = LogManager.getRootLogger().getAppender("luntbuild_logfile");
-        if (app != null) {
-            ((FileAppender) app).setFile(new File(installDir + "/logs/" +
-                    Luntbuild.log4jFileName).getAbsolutePath());
-            ((FileAppender) app).activateOptions();
-        } else {
-            logger.warn("Can not find luntbuild_logfile appender, creating...");
-            HTMLLayout layout = new HTMLLayout();
-            layout.setTitle("Luntbuild System Log");
-            layout.setLocationInfo(true);
-            app = new FileAppender(layout, new File(installDir + "/logs/" +
-                    Luntbuild.log4jFileName).getAbsolutePath(), true);
-            ((FileAppender) app).setAppend(false);
-            Logger log = LogManager.getLogger("com.luntsys.luntbuild");
-            log.setLevel(Level.INFO);
-            log.addAppender(app);
-            ((FileAppender) app).activateOptions();
-        }
-    }
-
-    /**
-     * Sets the Luntbuild text log.
-     * 
-     * @param installDir the luntbuild installation directory
-     * @throws IOException from {@link FileAppender#FileAppender(org.apache.log4j.Layout, java.lang.String, boolean)}
-     */
-    private static final void setLuntbuildTextLog(String installDir) throws IOException {
-        Appender app = LogManager.getRootLogger().getAppender("luntbuild_txt_logfile");
-        if (app != null) {
-            ((FileAppender) app).setFile(new File(installDir + "/logs/" +
-                    Luntbuild.log4jFileNameTxt).getAbsolutePath());
-            ((FileAppender) app).activateOptions();
-        } else {
-            logger.warn("Can not find luntbuild_logfile appender, creating...");
-            Layout layout = new PatternLayout("%5p [%t] (%F:%L) - %m%n");
-            app = new FileAppender(layout, new File(installDir + "/logs/" +
-                    Luntbuild.log4jFileNameTxt).getAbsolutePath(), true);
-            Logger log = LogManager.getLogger("com.luntsys.luntbuild");
-            log.setLevel(Level.INFO);
-            log.addAppender(app);
-            ((FileAppender) app).activateOptions();
-        }
-    }
-
+    
     /**
      * Initializes the Luntbuild system.
      * 
@@ -1592,6 +1543,7 @@ public class Luntbuild {
      * @param context the servlet context
      */
     public static void destroyApplication(ServletContext context) {
+        logWatchDog.destroy();
         logger.info("Enter application shutdown");
         SecurityHelper.runAsSiteAdmin();
         getSchedService().shutdown();
@@ -1932,4 +1884,5 @@ public class Luntbuild {
 
         return buf.toString();
     }
+    
 }

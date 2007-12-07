@@ -107,7 +107,7 @@
             </fileset>
 		</copy>
         <copy todir="stage/web/WEB-INF/classes">
-            <fileset dir="src">
+            <fileset dir="src" excludes="log4j.properties">
                 <patternset refid="web.other_resources"/>
             </fileset>
         </copy>
