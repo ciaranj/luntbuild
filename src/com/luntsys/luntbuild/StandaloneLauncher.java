@@ -43,17 +43,7 @@ public class StandaloneLauncher {
         }
 
         try {
-        	File l = new File("log4j.properties");
-        	if (l.exists()) {
-        		Luntbuild.setLuntbuildLogs(".", "log4j.properties");
-        	} else {
-        		l = new File("src/log4j.properties");
-            	if (l.exists()) {
-            		Luntbuild.setLuntbuildLogs(".", "src/log4j.properties");
-            	} else {
-                    BasicConfigurator.configure();
-            	}        		
-        	}
+        	Luntbuild.setLuntbuildLogs();
         } catch (Exception e) {
             BasicConfigurator.configure();
         }

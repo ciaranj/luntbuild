@@ -36,7 +36,7 @@ public class StandaloneStopper {
         }
 
         try {
-            Luntbuild.setLuntbuildLogs(".", "log4j.properties");
+            Luntbuild.setLuntbuildLogs();
         } catch (Exception e) {
             BasicConfigurator.configure();
         }
