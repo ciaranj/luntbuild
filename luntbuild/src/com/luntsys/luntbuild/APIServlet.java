@@ -98,7 +98,7 @@ public class APIServlet extends HttpServlet {
 		} else if (httpServletRequest.getPathInfo().startsWith("/help")) {
 			String source = httpServletRequest.getPathInfo().replaceFirst("/help","");
 			String help = "";
-			String url = "/luntbuild/docs/api/index.html";
+			String url = "/luntbuild/docs/api/api.html";
 
 			if (source.startsWith("/atom")) {
 				help = source.replaceFirst("/atom/?","");
@@ -121,7 +121,7 @@ public class APIServlet extends HttpServlet {
 			}
 		} else if (httpServletRequest.getPathInfo().matches("^/$|^$")) {
 			try {
-	        	httpServletResponse.sendRedirect("/luntbuild/docs/api/index.html");
+	        	httpServletResponse.sendRedirect("/luntbuild/docs/api/api.html");
 			} catch (IllegalStateException ise) {
 				throw new ServletException(ise);
 			}
