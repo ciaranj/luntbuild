@@ -54,6 +54,7 @@ public class SynchronizedDateFormatter {
 	 * Instantiates a new synchronized date formatter.
 	 * 
 	 * @param format the format
+     * @param pattern the pattern
 	 */
 	public SynchronizedDateFormatter(final DateFormat format, String pattern) {
         delegate = new ThreadLocal() {
@@ -86,7 +87,10 @@ public class SynchronizedDateFormatter {
      * @return the string
      */
     public synchronized String format(Date date) {
-        return ((SimpleDateFormat)delegate.get()).format(date);
+        if (date != null)
+            return ((SimpleDateFormat)delegate.get()).format(date);
+        else
+            return null;
     }
     
     /**
@@ -108,7 +112,10 @@ public class SynchronizedDateFormatter {
      * @throws ParseException the parse exception
      */
     public synchronized Date parse(String dateStr) throws ParseException {
-        return ((SimpleDateFormat)delegate.get()).parse(dateStr);
+        if (dateStr != null)
+            return ((SimpleDateFormat)delegate.get()).parse(dateStr);
+        else
+            return null;
     }
     
     /**
