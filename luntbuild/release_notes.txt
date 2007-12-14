@@ -13,6 +13,7 @@ luntbuild 1.5.4 Release Notes
 - Fix: (Bug 6408) Fixed missing attributes in CVS revision logs causing exceptions on build viewer page
 - Fix: (Bug 6507) Updated upgrade instructions to include required step for external databases
 - Fix: (Bug 6583) Fixed Exception when trying to parse NULL dates
+- Fix: Added double quotes around date in CVS Adaptor
 
 ==============================================
 luntbuild 1.5.3 Release Notes
