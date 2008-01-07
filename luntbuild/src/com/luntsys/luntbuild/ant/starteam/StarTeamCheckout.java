@@ -405,7 +405,7 @@ public class StarTeamCheckout extends TreeBasedTask {
                 Folder stFolder = foldersList[i];
 
                 java.io.File subfolder =
-                     new java.io.File(targetFolder, stFolder.getName());
+                     new java.io.File(targetFolder, stFolder.getPathFragment());
 
                  ufm.removeControlledItem(subfolder);
 
