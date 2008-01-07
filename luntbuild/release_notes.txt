@@ -2,6 +2,7 @@
 luntbuild 1.5.4 Release Notes
 ==============================================
 
+- Feature: Added nextVersionValue expression to Schedule so it can be retrieved for VCS Adaptors 
 - Feature: Enabled using OGNL expressions in schedule variables (that can be referenced in VCS Adaptors)
 - Feature: OGNL expressions can now be evaluated recursively
 - Feature: Improved date handling
@@ -9,7 +10,7 @@ luntbuild 1.5.4 Release Notes
 - Fix: (Bug 6070) Removed "Config Spec" from Clearcase UCM documentation, this property is not used
 - Fix: (Bug 6258) Fixed URL to API documentation
 - Fix: (Bug 6325) Fixed AccurevAdaptor not saving settings
-- Fix: (Bug 6407) CVS unparseable date errors in logfile
+- Fix: (Bug 6407) CVS unparseable date errors in log file
 - Fix: (Bug 6408) Fixed missing attributes in CVS revision logs causing exceptions on build viewer page
 - Fix: (Bug 6507) Updated upgrade instructions to include required step for external databases
 - Fix: (Bug 6583) Fixed Exception when trying to parse NULL dates

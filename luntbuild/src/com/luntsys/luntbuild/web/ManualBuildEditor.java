@@ -116,7 +116,9 @@ public abstract class ManualBuildEditor extends BaseComponent implements PageDet
 			buildAsVersion = buildAsVersion.trim();
 		if (!buildAsVersion.equals("")) {
 			try {
-				getSchedule().validateBuildVersion(buildAsVersion);
+				getSchedule().validateBuildVersion(buildAsVersion);				
+				getSchedule().setNextVersionValue(buildAsVersion);
+                Luntbuild.getDao().saveSchedule(getSchedule());
 			} catch (ValidationException e) {
 				setErrorMsg(e.getMessage());
 				return;

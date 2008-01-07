@@ -225,6 +225,8 @@ public class BuildGenerator implements StatefulJob {
                                 Luntbuild.getDao().saveSchedule(scheduleUpToDate);
                             }
                         }
+                        scheduleUpToDate.setNextVersionValue(currentBuild.getVersion());
+                        Luntbuild.getDao().saveSchedule(scheduleUpToDate);
                         currentBuild.setSchedule(scheduleUpToDate);
                     }
 

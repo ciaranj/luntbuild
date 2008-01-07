@@ -68,6 +68,7 @@
 		<property name="description" column="DESCRIPTION" length="255" />
 
 		<property name="nextVersion" column="NEXT_VERSION" length="4096" />
+		<property name="nextVersionValue" column="NEXT_VERSION_VALUE" length="4096" />
 
 		<property name="variables" column="VARIABLES" length="2048" />
 
