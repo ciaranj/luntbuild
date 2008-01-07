@@ -44,6 +44,7 @@ public class ScheduleFacade {
 	private String name;
 	private String description;
 	private String nextVersion;
+	private String nextVersionValue;
     private String variables;
 	private int triggerType;
 	private long repeatInterval;
@@ -470,12 +471,31 @@ public class ScheduleFacade {
 
     /**
      * Sets the build version number for the next build. This property is updated automatically
-     * by the building process and can also be adjusted manually from user interface.
+     * by the building process.
      * 
      * @param nextVersion the next build version
      */
 	public void setNextVersion(String nextVersion) {
 		this.nextVersion = nextVersion;
+	}
+
+    /**
+     * Gets the next build version of this schedule.
+     * 
+     * @return the next build version
+     */
+	public String getNextVersionValue() {
+		return nextVersionValue;
+	}
+
+    /**
+     * Sets the build version number for the next build. This property is updated automatically
+     * by the building process.
+     * 
+     * @param nextVersion the next build version
+     */
+	public void setNextVersionValue(String nextVersion) {
+		this.nextVersionValue = nextVersion;
 	}
 
     /**

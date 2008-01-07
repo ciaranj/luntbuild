@@ -91,6 +91,8 @@ public class Schedule implements DependentNode, VariableHolder {
 
     private String nextVersion;
 
+    private String nextVersionValue;
+    
     private String variables = "";
 
     private List associatedBuilderNames;
@@ -165,6 +167,7 @@ public class Schedule implements DependentNode, VariableHolder {
         setProject(schedule.getProject());
         setDescription(schedule.getDescription());
         setNextVersion(schedule.getNextVersion());
+        setNextVersionValue(schedule.getNextVersionValue());
         setVariables(schedule.getVariables());
         if (schedule.trigger != null)
             setTrigger((Trigger)schedule.getTrigger().clone());
@@ -645,6 +648,7 @@ public class Schedule implements DependentNode, VariableHolder {
         setScheduleDisabled(facade.isScheduleDisabled());
         setDescription(facade.getDescription());
         setNextVersion(facade.getNextVersion());
+        setNextVersionValue(facade.getNextVersionValue());
         setVariables(facade.getVariables());
         if (facade.getTriggerType() == Constants.TRIGGER_TYPE_MANUAL)
             setTrigger(null);
@@ -1283,7 +1287,7 @@ public class Schedule implements DependentNode, VariableHolder {
 
     /**
      * Sets the build version number for the next build. This property is updated automatically
-     * by the building process and can also be adjusted manually from user interface.
+     * by the building process.
      * 
      * @param nextVersion the next build version
      */
@@ -1298,6 +1302,25 @@ public class Schedule implements DependentNode, VariableHolder {
      */
     public String getNextVersion() {
         return nextVersion;
+    }
+
+    /**
+     * Sets the build version number for the next build just before the build is executed. This property is updated automatically
+     * by the building process and can also be adjusted manually from user interface.
+     * 
+     * @param nextVersion the next build version
+     */
+    public void setNextVersionValue(String nextVersion) {
+        this.nextVersionValue = nextVersion;
+    }
+
+    /**
+     * Gets the next build version of this schedule.
+     * 
+     * @return the next build version
+     */
+    public String getNextVersionValue() {
+        return nextVersionValue;
     }
 
     /**
