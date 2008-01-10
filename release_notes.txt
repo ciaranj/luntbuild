@@ -8,6 +8,7 @@ luntbuild 1.5.4 Release Notes
 - Feature: Improved date handling
 - Fix: (Bug 5984) Test and commit contributed SvnExeAdaptor patch
 - Fix: (Bug 6070) Removed "Config Spec" from Clearcase UCM documentation, this property is not used
+- Fix: (Bug 6072) Fixed file path issue in StarTeam checkout
 - Fix: (Bug 6258) Fixed URL to API documentation
 - Fix: (Bug 6325) Fixed AccurevAdaptor not saving settings
 - Fix: (Bug 6407) CVS unparseable date errors in log file
