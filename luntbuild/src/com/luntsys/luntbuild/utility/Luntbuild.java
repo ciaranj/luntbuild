@@ -1354,13 +1354,18 @@ public class Luntbuild {
      * @see #reports
      */
     private static void loadExtensions() {
-        File config = new File(installDir + File.separatorChar + extensionsConfigFile);
-        if (!config.exists()) return;
-        
-        DOMParser parser = null;
         extensions = new Hashtable();
         listeners = new Hashtable();
         reports = new Hashtable();
+
+        File config = new File(installDir + File.separatorChar + extensionsConfigFile);
+        if (!config.exists()) {
+            logger.warn("Extensions not loaded, \"" + extensionsConfigFile + "\" not found.  " +
+                "Please check the Luntbuild installation folder.");
+            return;
+        }
+
+        DOMParser parser = null;
 
         // Parse config file
         try {
