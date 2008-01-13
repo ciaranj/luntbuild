@@ -686,7 +686,7 @@ public class CvsAdaptor extends Vcs {
             commitsHappened[0] = true;
             cmdLine.createArgument().setValue("-d" + getActualCvsRoot());
             cmdLine.createArgument().setLine("-q history -c -a");
-			cmdLine.createArgument().setValue("-D\"" + SynchronizedDateFormatter.formatDate(sinceDate, DATE_FORMAT) + "\"");
+			cmdLine.createArgument().setValue("-D" + SynchronizedDateFormatter.formatDate(sinceDate, DATE_FORMAT));
             new MyExecTask("history", antProject, null, cmdLine, envs, null, -1) {
                 public void handleStdout(String line) {
                     if (line.equals("No records selected."))
