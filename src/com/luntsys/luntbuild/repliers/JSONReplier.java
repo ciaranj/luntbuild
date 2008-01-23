@@ -43,6 +43,7 @@ import com.luntsys.luntbuild.vcs.SvnExeAdaptor;
 import com.luntsys.luntbuild.vcs.UCMClearcaseAdaptor;
 import com.luntsys.luntbuild.vcs.Vcs;
 import com.luntsys.luntbuild.vcs.VssAdaptor;
+import com.luntsys.luntbuild.vcs.CvsNTAdaptor;
 
 /**
  * JSON API replier implementation.
@@ -612,6 +613,32 @@ public class JSONReplier extends Replier {
                 JSONText += "},";
             }
             JSONText += "],";
+          } else if (vcs.getClass() == (new CvsNTAdaptor()).getClass()) {
+              CvsNTAdaptor cvs = (CvsNTAdaptor) vcs;
+              JSONText += "\"cvsRoot\":\"" + escape(cvs.getCvsRoot()) + "\",";
+              JSONText += "\"cvsPassword\":\"*****\",";
+              JSONText += "\"cvsDir\":\"" + escape(cvs.getCvsDir()) + "\",";
+              JSONText += "\"cygwinCvs\":" + cvs.isCygwinCvs() + ",";
+              JSONText += "\"disableSuppressOption\":" + cvs.isDisableSuppressOption() + ",";
+              JSONText += "\"disableHistoryCmd\":" + cvs.isDisableHistoryCmd() + ",";
+              JSONText += "\"WebInterface\":" + escape(cvs.getWebInterface()) + ",";
+              JSONText += "\"WebUrl\":" + escape(cvs.getWebUrl()) + ",";
+              JSONText += "\"Auditdrv\":" + escape(cvs.getAuditdrv()) + ",";
+              JSONText += "\"AuditPwd\":" + escape(cvs.getAuditPwd()) + ",";
+              JSONText += "\"AuditURL\":" + escape(cvs.getAuditURL()) + ",";
+              JSONText += "\"Auditusr\":" + escape(cvs.getAuditusr()) + ",";
+              JSONText += "\"CvsNTAudit\":" + cvs.isCvsNTAudit() + ",";
+              JSONText += "\"modules\":[";
+              Iterator modules = cvs.getModules().iterator();
+              while (modules.hasNext()) {
+                  CvsAdaptor.CvsModule cvsmodule = (CvsAdaptor.CvsModule) modules.next();
+                  JSONText += "{";
+                  JSONText += "\"srcPath\":\"" + escape(cvsmodule.getSrcPath()) + "\",";
+                  JSONText += "\"branch\":\"" + escape(cvsmodule.getBranch()) + "\",";
+                  JSONText += "\"label\":\"" + escape(cvsmodule.getLabel()) + "\",";
+                  JSONText += "},";
+              }
+              JSONText += "],";
         } else if (vcs.getClass() == (new DynamicClearcaseAdaptor()).getClass()) {
             DynamicClearcaseAdaptor dynamic = (DynamicClearcaseAdaptor) vcs;
             JSONText += "\"viewTag\":\"" + escape(dynamic.getViewTag()) + "\",";

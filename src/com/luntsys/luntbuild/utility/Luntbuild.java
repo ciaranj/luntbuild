@@ -116,6 +116,7 @@ import com.luntsys.luntbuild.vcs.SvnExeAdaptor;
 import com.luntsys.luntbuild.vcs.UCMClearcaseAdaptor;
 import com.luntsys.luntbuild.vcs.Vcs;
 import com.luntsys.luntbuild.vcs.VssAdaptor;
+import com.luntsys.luntbuild.vcs.CvsNTAdaptor;
 
 /**
  * Luntbuild utility class to provide easy access for some commonly used objects and functions.
@@ -1320,6 +1321,7 @@ public class Luntbuild {
         vcsAdaptors.add(BaseClearcaseAdaptor.class);
         vcsAdaptors.add(DynamicClearcaseAdaptor.class);
         vcsAdaptors.add(CvsAdaptor.class);
+        vcsAdaptors.add(CvsNTAdaptor.class);
         vcsAdaptors.add(FileSystemAdaptor.class);
         vcsAdaptors.add(MksAdaptor.class);
         vcsAdaptors.add(PerforceAdaptor.class);

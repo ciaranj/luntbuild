@@ -43,6 +43,7 @@ import com.luntsys.luntbuild.vcs.SvnExeAdaptor;
 import com.luntsys.luntbuild.vcs.UCMClearcaseAdaptor;
 import com.luntsys.luntbuild.vcs.Vcs;
 import com.luntsys.luntbuild.vcs.VssAdaptor;
+import com.luntsys.luntbuild.vcs.CvsNTAdaptor;
 
 /**
  * XML API replier implementation.
@@ -567,6 +568,32 @@ public class XMLReplier extends Replier {
                 XMLText += "</module>";
             }
             XMLText += "</modules>";
+          } else if (vcs.getClass() == (new CvsNTAdaptor()).getClass()) {
+              CvsNTAdaptor cvs = (CvsNTAdaptor) vcs;
+              XMLText += "<cvsRoot>" + escape(cvs.getCvsRoot()) + "</cvsRoot>";
+              XMLText += "<cvsPassword>*****</cvsPassword>";
+              XMLText += "<cvsDir>" + escape(cvs.getCvsDir()) + "</cvsDir>";
+              XMLText += "<cygwinCvs>" + cvs.isCygwinCvs() + "</cygwinCvs>";
+              XMLText += "<disableSuppressOption>" + cvs.isDisableSuppressOption() + "</disableSuppressOption>";
+              XMLText += "<disableHistoryCmd>" + cvs.isDisableHistoryCmd() + "</disableHistoryCmd>";
+              XMLText += "<WebInterface>" + cvs.getWebInterface() + "</WebInterface>";
+              XMLText += "<WebUrl>" + cvs.getWebUrl() + "</WebUrl>";
+              XMLText += "<CvsNTAudit>" + cvs.isCvsNTAudit() + "</CvsNTAudit>";
+              XMLText += "<Auditdrv>" + cvs.getAuditdrv() + "</Auditdrv>";
+              XMLText += "<AuditPwd>" + cvs.getAuditPwd() + "</AuditPwd>";
+              XMLText += "<AuditURL>" + cvs.getAuditURL() + "</AuditURL>";
+              XMLText += "<Auditusr>" + cvs.getAuditusr() + "</Auditusr>";
+              XMLText += "<modules>";
+              Iterator modules = cvs.getModules().iterator();
+              while (modules.hasNext()) {
+                  CvsAdaptor.CvsModule cvsmodule = (CvsAdaptor.CvsModule) modules.next();
+                  XMLText += "<module>";
+                  XMLText += "<srcPath>" + escape(cvsmodule.getSrcPath()) + "</srcPath>";
+                  XMLText += "<branch>" + escape(cvsmodule.getBranch()) + "</branch>";
+                  XMLText += "<label>" + escape(cvsmodule.getLabel()) + "</label>";
+                  XMLText += "</module>";
+              }
+              XMLText += "</modules>";
         } else if (vcs.getClass() == (new DynamicClearcaseAdaptor()).getClass()) {
             DynamicClearcaseAdaptor dynamic = (DynamicClearcaseAdaptor) vcs;
             XMLText += "<viewTag>" + escape(dynamic.getViewTag()) + "</viewTag>";
