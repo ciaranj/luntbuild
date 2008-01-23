@@ -29,10 +29,14 @@
 				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
 				<!-- Connection pool -->
-				<prop key="hibernate.c3p0.min_size">5</prop>
-				<prop key="hibernate.c3p0.max_size">20</prop>
-				<prop key="hibernate.c3p0.timeout">1800</prop>
-				<prop key="hibernate.c3p0.max_statements">50</prop>
+                <prop key="hibernate.c3p0.initialPoolSize">10</prop>
+                <prop key="hibernate.c3p0.minPoolSize">10</prop>
+                <prop key="hibernate.c3p0.maxPoolSize">200</prop>
+                <prop key="hibernate.c3p0.acquire_increment">10</prop>
+                <prop key="hibernate.c3p0.min_size">10</prop>
+                <prop key="hibernate.c3p0.max_size">100</prop>
+                <prop key="hibernate.c3p0.max_statements">50</prop>
+                <prop key="hibernate.c3p0.timeout">1800</prop>
 			</props>
 		</property>
 		<property name="dataSource"><ref bean="dataSource"/></property>
