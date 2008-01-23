@@ -440,7 +440,7 @@ public abstract class BuildViewer extends SecuritySupportComponent implements Pa
         String html = "";
         String classname = log.getAttributes().item(0).getNodeValue();
         Vcs vcs = (Vcs) getBuild().getVcsList().get(getVcsIndex());
-        if (classname.equals("com.luntsys.luntbuild.vcs.CvsAdaptor")) {
+        if (classname.equals("com.luntsys.luntbuild.vcs.CvsAdaptor") || classname.equals("com.luntsys.luntbuild.vcs.CvsNTAdaptor")) {
             CvsAdaptor cvs = (CvsAdaptor) vcs;
             NodeList entries = log.getChildNodes();
             String path = "";

@@ -69,7 +69,7 @@ public class BasicProcessingFilterEntryPoint implements AuthenticationEntryPoint
 				out.completeReply();
 				return;
 			} catch (Throwable throwable) {
-				logger.error("Exception catched while filling hessian response: ", throwable);
+				logger.error("Exception caught while filling hessian response: ", throwable);
 				throw new ServletException(throwable);
 			}
 		} else {

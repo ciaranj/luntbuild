@@ -91,7 +91,7 @@ public class HessianService extends AbstractService {
 			OutputStream out = cycle.getRequestContext().getResponse().getOutputStream();
 			serviceInvoker.invoke(new HessianInput(in), new HessianOutput(out));
 		} catch (Throwable throwable) {
-			logger.error("Exception catched in HessianService.service()", throwable);
+			logger.error("Exception caught in HessianService.service()", throwable);
 			throw new ServletException(throwable);
 		}
 	}

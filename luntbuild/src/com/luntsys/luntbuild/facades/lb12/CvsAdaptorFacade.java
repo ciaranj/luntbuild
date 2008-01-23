@@ -49,7 +49,7 @@ public class CvsAdaptorFacade extends VcsFacade {
      *
      * @return the VCS adaptor class name
      */
-	public final String getVcsClassName() {
+	public String getVcsClassName() {
 		return "com.luntsys.luntbuild.vcs.CvsAdaptor";
 	}
 

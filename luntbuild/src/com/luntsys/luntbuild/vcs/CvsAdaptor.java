@@ -74,8 +74,8 @@ import com.luntsys.luntbuild.utility.ValidationException;
  * @author robin shine
  */
 public class CvsAdaptor extends Vcs {
-	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    private static final String LOG_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
+  protected static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+  protected static final String LOG_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 	/**
 	 * Keep tracks of version of this class, used when do serialization-deserialization
 	 */
@@ -321,6 +321,9 @@ public class CvsAdaptor extends Vcs {
 	 */
 	private void login(Project antProject) {
 		// call ant CVSPass task to login into cvs server
+	    if (!loginRequired()) {
+	      return;
+	    }
 		antProject.log("Login to cvs...", Project.MSG_INFO);
 
 		com.luntsys.luntbuild.ant.cvstask.CVSPass cvsPassTask = new CVSPass();
@@ -434,18 +437,67 @@ public class CvsAdaptor extends Vcs {
 		}
 	}
 
-	private String normalizeModulePath(String modulePath) {
+  protected String normalizeModulePath(String modulePath) {
 		return Luntbuild.removeTrailingSlash(Luntbuild.removeLeadingSlash(modulePath.replace('\\', '/')));
 	}
 
 	/**
+   * Derive vcs object at build time.
+   * OGNL expressions are useful for branch and label information.
+   *
+   * @return
+   */
+  public Vcs deriveBuildTimeVcs(Project antProject)
+  {
+    Vcs vcs = this;
+    try {
+      vcs = (Vcs)this.clone();
+      resolveEmbeddedOgnlVariables(vcs, antProject);
+    } catch (CloneNotSupportedException ex) {
+      ex.printStackTrace();
+    } catch (Throwable ex1) {
+      ex1.printStackTrace();
+    }
+    return vcs;
+  }
+
+  public void resolveEmbeddedOgnlVariables(Vcs vcs, Project antProject) throws Throwable
+  {
+    OgnlHelper.setAntProject(antProject);
+    OgnlHelper.setTestMode(false);
+    for (int i = 0; i < vcs.getProperties().size(); i++) {
+      DisplayProperty property = (DisplayProperty)vcs.getProperties().get(i);
+      if (property.getValue() != null)
+        property.setValue(Luntbuild.evaluateExpression(
+            OgnlHelper.getWorkingSchedule(),
+            property.getValue()));
+      else
+        property.setValue("");
+    }
+    Iterator it = vcs.getModules().iterator();
+    while (it.hasNext()) {
+      CvsAdaptor.CvsModule module = (CvsAdaptor.CvsModule)it.next();
+      module.setSrcPath(Luntbuild.evaluateExpression(
+          OgnlHelper.getWorkingSchedule(),
+          module.getSrcPath()));
+      module.setBranch(Luntbuild.evaluateExpression(
+          OgnlHelper.getWorkingSchedule(),
+          module.getBranch()));
+      module.setLabel(Luntbuild.evaluateExpression(
+          OgnlHelper.getWorkingSchedule(),
+          module.getLabel()));
+    }
+  }
+
+  /**
 	 * Checks out the contents from a module.
 	 * 
 	 * @param workingDir the working directory
 	 * @param module the module
 	 * @param antProject the ant project used for logging
 	 */
-	private void retrieveModule(String workingDir, CvsModule module, boolean isClean, Project antProject) {
+  protected void retrieveModule(String workingDir, CvsModule module, boolean isClean, Project antProject) {
+    login(antProject);
 		if (isClean)
 			antProject.log("Retrieve source path: " + module.getActualSrcPath(), Project.MSG_INFO);
 		else
@@ -488,6 +540,7 @@ public class CvsAdaptor extends Vcs {
 	 * @param antProject the ant project used for logging
 	 */
 	private void labelModule(String workingDir, CvsModule module, String label, Project antProject) {
+    login(antProject);
 		// call ant cvs task to perform code labeling
 		antProject.log("Label source path: " + module.getActualSrcPath(), Project.MSG_INFO);
 		Cvs cvsTask = new Cvs();
@@ -512,9 +565,7 @@ public class CvsAdaptor extends Vcs {
 	 */
 	public void checkoutActually(Build build, Project antProject) {
 		String workingDir = build.getSchedule().getWorkDirRaw();
-		if (getActualCvsRoot().startsWith(":pserver:"))
-			login(antProject);
-
+    // should already be logged in at this point.
 		// retrieve modules
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
@@ -565,7 +616,6 @@ public class CvsAdaptor extends Vcs {
 	 */
 	public boolean isVcsQuietSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		String workingDir = workingSchedule.getWorkDirRaw();
-		if (getActualCvsRoot().startsWith(":pserver:"))
 			login(antProject);
 		Environment envs = new Environment();
 		Environment.Variable var = new Environment.Variable();
@@ -663,7 +713,6 @@ public class CvsAdaptor extends Vcs {
      */
     public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
         String workingDir = workingSchedule.getWorkDirRaw();
-        if (getActualCvsRoot().startsWith(":pserver:"))
             login(antProject);
         final Revisions revisions = new Revisions();
         revisions.addLog(this.getClass().getName(), toString());
@@ -1586,4 +1635,8 @@ public class CvsAdaptor extends Vcs {
 	public VcsFacade constructFacade() {
 		return new CvsAdaptorFacade();
 	}
+
+  protected boolean loginRequired() {
+    return getActualCvsRoot().indexOf(":pserver:") >= 0;
+  }
 }
