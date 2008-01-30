@@ -114,7 +114,7 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 		// when set the config spec, clearcase will automatically update the project working directory
 		// with latest codes
 		if (!build.isRebuild() || !containLatestVersion())
-			setCcViewCfgSpec(build.getSchedule(), viewCfgSpec, Project.MSG_VERBOSE, antProject);
+			setCcViewCfgSpec(build.getSchedule(), getActualViewCfgSpec(), Project.MSG_VERBOSE, antProject);
 		else {
 			String rebuildCfgSpec = "element * CHECKEDOUT\n";
 			rebuildCfgSpec += "element * " + Luntbuild.getLabelByVersion(build.getVersion()) + "\n";
@@ -218,7 +218,7 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	 * @return the list of elements to load
 	 */
 	private List getLoadElements() {
-		BufferedReader reader = new BufferedReader(new StringReader(viewCfgSpec.replace(';', '\n')));
+		BufferedReader reader = new BufferedReader(new StringReader(getActualViewCfgSpec().replace(';', '\n')));
 		List loadElements = new ArrayList();
 		try {
 			String line;
@@ -236,7 +236,7 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	}
 
 	protected void prepForHistory(Schedule workingSchedule, Project antProject, String workingDir) {
-		setCcViewCfgSpec(workingSchedule, viewCfgSpec, -1, antProject);
+		setCcViewCfgSpec(workingSchedule, getActualViewCfgSpec(), -1, antProject);
     }
 
     protected void saveAdditionalStuffToFacade(VcsFacade facade) {
