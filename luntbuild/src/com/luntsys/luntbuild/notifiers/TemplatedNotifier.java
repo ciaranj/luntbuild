@@ -296,7 +296,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
 
         // Just for fun
         try {
-        	context.put("build_randomquote", getRandomQuote(this.templateDir));
+        	context.put("build_randomquote", getRandomQuote(templateDir + "/" + subDir));
         } catch (Exception ex) {
             // If we fail, this should not affect the rest of the message
         }

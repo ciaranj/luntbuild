@@ -4,6 +4,7 @@ luntbuild 1.5.5 Release Notes
 
 - Feature: (Change 6739) Create a new VCS Adapter for CvsNT
 - Fix: (Bug 6802) Fixed OGNL expression evaluation in ClearCase adaptor properties
+- Fix: (Bug 6812) Fixed random quotes in notification messages
 
 ==============================================
 luntbuild 1.5.4.1 Release Notes
