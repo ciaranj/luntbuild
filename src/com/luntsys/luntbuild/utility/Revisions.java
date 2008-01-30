@@ -279,14 +279,16 @@ public class Revisions {
      * @param revisions the revisions to merge
      */
     public void merge(Revisions revisions) {
-        setFileModified(isFileModified() || revisions.isFileModified());
-        getChangeLogs().addAll(revisions.getChangeLogs());
-        getChangeLogins().addAll(revisions.getChangeLogins());
-        NodeList logs = revisions.getLog().getChildNodes();
-        for (int i = 0; i < logs.getLength(); i++) {
-            if (logs.item(i).getNodeName().equals(LOG_TAG)) {
-                Node newLogNode = doc.importNode(logs.item(i), true);
-                revisionElement.appendChild(newLogNode);
+        if (revisions != null) {
+            setFileModified(isFileModified() || revisions.isFileModified());
+            getChangeLogs().addAll(revisions.getChangeLogs());
+            getChangeLogins().addAll(revisions.getChangeLogins());
+            NodeList logs = revisions.getLog().getChildNodes();
+            for (int i = 0; i < logs.getLength(); i++) {
+                if (logs.item(i).getNodeName().equals(LOG_TAG)) {
+                    Node newLogNode = doc.importNode(logs.item(i), true);
+                    revisionElement.appendChild(newLogNode);
+                }
             }
         }
     }
