@@ -413,7 +413,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 	 * @return the path to the cleartool executable
 	 */
 	public final String getCleartoolDir() {
-		return this.cleartoolDir;
+		return cleartoolDir;
 	}
 
 	/**
@@ -432,7 +432,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
      */
     public final void validateProperties() {
         super.validateProperties();
-        if (Luntbuild.isEmpty(this.viewStgLoc) && Luntbuild.isEmpty(this.vws)) {
+        if (Luntbuild.isEmpty(viewStgLoc) && Luntbuild.isEmpty(vws)) {
             throw new ValidationException(
                     "Both \"Clearcase view storage name\" and  \"Explicit path for view storage\" "
                             + "are empty. You should specify at least one of them to store the view information");
@@ -467,7 +467,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 	 * @return the Clearcase server-side view storage location
 	 */
 	public final String getViewStgLoc() {
-		return this.viewStgLoc;
+		return viewStgLoc;
 	}
 
 	/**
@@ -495,7 +495,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 	 * @return the path for view storage
 	 */
     public final String getVws() {
-        return this.vws;
+        return vws;
     }
 
 	/**
@@ -523,7 +523,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 	 * @return the snapshot view config spec
 	 */
     public final String getViewCfgSpec() {
-        return this.viewCfgSpec;
+        return viewCfgSpec;
     }
 
 	/**
@@ -551,7 +551,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 	 * @return the extra options
 	 */
     public final String getMkviewExtraOpts() {
-        return this.mkviewExtraOpts;
+        return mkviewExtraOpts;
     }
 
 	/**
@@ -579,7 +579,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 	 * @return the UCM stream
 	 */
     public final String getUcmStream() {
-        return this.ucmStream;
+        return ucmStream;
     }
 
 	/**
@@ -599,7 +599,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
 	 */
     protected final boolean ccViewExists(final Schedule schedule,
             final Project antProject) {
-        if (null == this.m_viewExists) {
+        if (null == m_viewExists) {
             // first check if the view folder exists, if it doesn't then the
             // mkview can't possibly return success
             if (new File(getClearcaseWorkDirRaw(schedule)).exists()) {
@@ -608,17 +608,17 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 try {
                     new MyExecTask("lsview", antProject, cmdLine,
                             Project.MSG_INFO).execute();
-                    this.m_viewExists = Boolean.TRUE;
+                    m_viewExists = Boolean.TRUE;
                 } catch (final BuildException e) {
-                    this.m_viewExists = Boolean.FALSE;
+                    m_viewExists = Boolean.FALSE;
                 }
             } else {
                 // view folder didn't exist so view doesn't exist
-                this.m_viewExists = Boolean.FALSE;
+                m_viewExists = Boolean.FALSE;
             }
             
         }
-        return this.m_viewExists.booleanValue();
+        return m_viewExists.booleanValue();
     }
 
 	/**
@@ -637,7 +637,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                     .execute();
         } catch (final BuildException e) {
         } finally {
-            this.m_viewExists = null;
+            m_viewExists = null;
         }
     }
 
@@ -667,15 +667,15 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
         if (!Luntbuild.isEmpty(getUcmStream())) {
             cmdLine.createArgument().setLine("-stream " + getUcmStream());
         }
-        if (!Luntbuild.isEmpty(this.vws)) {
+        if (!Luntbuild.isEmpty(getActualVws())) {
             if (isSnapshot()) {
-                cmdLine.createArgument().setLine("-vws " + this.vws);
+                cmdLine.createArgument().setLine("-vws " + getActualVws());
             }
         } else {
-            cmdLine.createArgument().setLine("-stgloc " + this.viewStgLoc);
+            cmdLine.createArgument().setLine("-stgloc " + getActualViewStgLoc());
         }
         
-        cmdLine.createArgument().setValue(isSnapshot() ? workingDir : this.vws);
+        cmdLine.createArgument().setValue(isSnapshot() ? workingDir : getActualVws());
         new MyExecTask("mkview", antProject, cmdLine, Project.MSG_INFO)
                 .execute();
         m_viewExists = null;
@@ -849,7 +849,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
      */
     protected final boolean containLatestVersion() {
         final BufferedReader reader =
-                new BufferedReader(new StringReader(this.viewCfgSpec.replace(
+                new BufferedReader(new StringReader(getActualViewCfgSpec().replace(
                         ';', '\n')));
         try {
             String line;
