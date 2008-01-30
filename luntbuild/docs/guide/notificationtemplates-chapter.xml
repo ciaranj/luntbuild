@@ -54,8 +54,8 @@
             <row><entry>${build_revisionlog_text}</entry><entry>The text of the revision log for the build</entry></row>
             <row><entry>${build_buildlog_url}</entry><entry>The URL to access the build log for the build</entry></row>
             <row><entry>${build_buildlog_text}</entry><entry>The text of the build log for the build</entry></row>
-            <row><entry>${build_junit_reportdir}</entry><entry>The full path to the JUnit reports for the build</entry></row>
             <row><entry>${build_type}</entry><entry>The type of build (e.g. "clean" or "increment")</entry></row>
+            <row><entry>${build_&lt;report&gt;_reporturl}</entry><entry>For every report, points to the report if it exists</entry></row>
             <row><entry>${build_labelstrategy}</entry><entry>The labeling strategy used for the build</entry></row>
          </tbody>
       </tgroup>
