@@ -2,6 +2,10 @@
 luntbuild 1.5.5 Release Notes
 ==============================================
 
+- Fix: limit xml/xslt conversion to 100K file size
+- Fix: disabled ensureBuildLog() for now, causes performance problems
+- Feature: enabled all Hibernate lazy settings for better performance, fixed a few lazy loading problems
+- Feature: improved DB caching configuration
 - Feature: (Change 6739) Create a new VCS Adapter for CvsNT
 - Fix: (Bug 6802) Fixed OGNL expression evaluation in ClearCase adaptor properties
 - Fix: (Bug 6812) Fixed random quotes in notification messages

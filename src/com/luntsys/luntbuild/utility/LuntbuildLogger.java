@@ -62,6 +62,9 @@ import org.w3c.dom.Text;
 public class LuntbuildLogger implements BuildLogger {
 
     private static final long serialVersionUID = 1L;
+    
+    private static final long MAX_XML_CONVERSION_LENGTH = 100000L;
+    
     /**
      * When in direct mode, message will be written to log without any decoration and
      * ignores its priority level
@@ -618,6 +621,10 @@ public class LuntbuildLogger implements BuildLogger {
         logXml(xmlFilename, xslUri);
 
         File xmlFile = new File(xmlFilename);
+        if (xslUri == null || xmlFile.length() > MAX_XML_CONVERSION_LENGTH) {
+            logHtmlFromText(textFilename, outFilename);
+            return;
+        }
         File xsltFile = new File(xslUri);
         // JAXP reads data using the Source interface
         Source xmlSource = new StreamSource(xmlFile);
