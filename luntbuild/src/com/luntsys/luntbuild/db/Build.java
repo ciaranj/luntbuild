@@ -321,7 +321,7 @@ public class Build {
 
         LuntbuildLogger buildLogger = getLogger();
         if (buildLogger != null)
-            buildLogger.logHtml(buildXmlPath, Luntbuild.installDir + "/log.xsl", buildPath, buildTextPath);
+            buildLogger.logHtml(buildXmlPath, null, buildPath, buildTextPath);
 
         File f = new File(buildPath);
         return f.exists() && f.canRead();
