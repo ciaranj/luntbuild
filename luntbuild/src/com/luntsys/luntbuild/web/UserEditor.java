@@ -80,6 +80,8 @@ public abstract class UserEditor extends SecuritySupportComponent implements Pag
             List projects = Luntbuild.getDao().loadProjects();
             for (Iterator iter = projects.iterator(); iter.hasNext();) {
                 Project project = (Project) iter.next();
+                Luntbuild.getDao().loadProject(project.getId()); // Need to do that to get user role mapping
+                
                 if (this.canAdminProject) {
                     List adminUsers = project.getMappedRolesUserList(Role.LUNTBUILD_PRJ_ADMIN);
                     adminUsers.add(getUser());

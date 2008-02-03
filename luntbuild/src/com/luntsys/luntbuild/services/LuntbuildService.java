@@ -80,6 +80,7 @@ public class LuntbuildService implements ILuntbuild {
         Iterator it = Luntbuild.getDao().loadProjects().iterator();
         while (it.hasNext()) {
             Project project = (Project) it.next();
+            project = Luntbuild.getDao().loadProject(project.getId());
             facades.add(project.getFacade());
         }
         return facades;
