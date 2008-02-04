@@ -264,6 +264,12 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
      * @inheritDoc
      */
     public Project loadProject(long projectId) {
+    	return loadProjectInternal(projectId);
+    }
+    /**
+     * @inheritDoc
+     */
+    public Project loadProjectInternal(long projectId) {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
             Query query = session.createQuery("from Project project left join fetch " +

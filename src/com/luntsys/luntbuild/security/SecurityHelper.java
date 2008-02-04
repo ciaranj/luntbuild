@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -51,7 +52,9 @@ import org.acegisecurity.userdetails.UserDetailsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.luntsys.luntbuild.db.Project;
 import com.luntsys.luntbuild.db.Role;
+import com.luntsys.luntbuild.db.User;
 import com.luntsys.luntbuild.utility.Luntbuild;
 
 /**
@@ -97,16 +100,20 @@ public class SecurityHelper
      * @return <code>true</code> if needed roles are assigned
      */
     public static boolean isUserInRole(long prjId, String rolesToBeChecked)
-    {
-        boolean accessGraned = false;
+    {    	
 
+        boolean accessGraned = false;
         Collection granted = getPrincipalAuthorities();
 
         Set grantedCopy = retainAll(granted, parseAuthoritiesString(prjId, rolesToBeChecked));
 
         accessGraned = !grantedCopy.isEmpty();
 
-        return accessGraned;
+        if(!accessGraned) {
+            // Project being created, allow it
+            return Luntbuild.isProjectCreator(prjId);
+        } else
+        	return true;
     }
 
     /**
@@ -205,7 +212,7 @@ public class SecurityHelper
                 	String origRole = role;
                     role = role +"_" + prjid;
                     // Initially we get proj id 0 (when no project is created), so lets include it
-                    if (prjid >= 1) {
+                    if (prjid < 1) {
                     	newProjRole = origRole +"_" + 0;
                     }
                 }
@@ -216,7 +223,7 @@ public class SecurityHelper
             	requiredAuthorities.add(new GrantedAuthorityImpl(newProjRole.trim()));
             }
         }
-
+		
         return requiredAuthorities;
     }
 

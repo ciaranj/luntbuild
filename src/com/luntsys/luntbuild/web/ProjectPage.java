@@ -64,7 +64,7 @@ public abstract class ProjectPage extends HierarchyPage implements PageDetachLis
 	}
 
 	public String getPageDataDescription() {
-		if (getProject().getId() == 0)
+		if (project == null || project.getId() == 0)
 			return "project - creating...";
 		else {
 			return "project - " + getProject().getName();
@@ -123,15 +123,15 @@ public abstract class ProjectPage extends HierarchyPage implements PageDetachLis
 						adminUsers.add(loginUser);
 					project.putMappedRolesUserList(adminUsers, Role.LUNTBUILD_PRJ_ADMIN);
 				}
-			} else
-				project = Luntbuild.getDao().loadProject(getProjectId());
+			} else {
+				project = Luntbuild.getDao().loadProjectInternal(getProjectId());
+			}
 		}
 		return project;
 	}
 
 	public void saveProject() {
 		Luntbuild.getDao().saveProject(getProject());
-		SecurityHelper.refreshUserCache();
 		if (getProjectId() == 0) {
 			Iterator it = getProject().getVcsLogins().iterator();
 			while (it.hasNext()) {
@@ -149,6 +149,9 @@ public abstract class ProjectPage extends HierarchyPage implements PageDetachLis
 			}
 		}
 		setProjectId(getProject().getId());
+        Luntbuild.setProjectCreator(getProjectId(), SecurityHelper.getPrincipalAsString());
+        
+		SecurityHelper.refreshUserCache();
 	}
 
 	public void gotoBasicTab(IRequestCycle cycle) {

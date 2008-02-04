@@ -116,6 +116,16 @@ public interface Dao {
 	Project loadProject(long projectId);
 	
 	/**
+	 * Loads the project that matches the project identifier.
+	 * Collections of the project should be loaded.
+	 * 
+	 * @param projectId the identifier of the project
+	 * @return the project or <code>null</code>
+	 * @throws DataAccessException if an error occurs durring the operation
+	 */
+    public Project loadProjectInternal(long projectId);
+    
+	/**
 	 * Loads the project that matches the project name.
 	 * Collections of the project should be loaded.
 	 * 
