@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -1878,5 +1879,18 @@ public class Luntbuild {
 
         return buf.toString();
     }
+ 
+    private static HashMap projectCreators = new HashMap();
     
+    public static final boolean isProjectCreator(long prjId) {
+    	if (prjId <= 0) return false;
+    	String loginUser = SecurityHelper.getPrincipalAsString();
+    	String creator = (String)projectCreators.get("" + prjId);
+    	if (creator == null || loginUser == null) return false;
+    	return creator.equals(loginUser);
+    }
+    
+    public static final void setProjectCreator(long projectId, String loginUser) {
+    	projectCreators.put("" + projectId, loginUser);
+    }
 }

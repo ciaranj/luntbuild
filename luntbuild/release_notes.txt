@@ -2,6 +2,7 @@
 luntbuild 1.5.5 Release Notes
 ==============================================
 
+- Fix: Bug [# 6529]  Luntbuild lets you edit projects you don't have access to
 - Fix: limit xml/xslt conversion to 100K file size
 - Fix: disabled ensureBuildLog() for now, causes performance problems
 - Feature: enabled all Hibernate lazy settings for better performance, fixed a few lazy loading problems
