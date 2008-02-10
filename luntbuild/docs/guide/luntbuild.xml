@@ -17,6 +17,7 @@
   <!ENTITY builds-chapter SYSTEM "builds-chapter.xml">
   <!ENTITY clearcaseadaptor-section SYSTEM "clearcase-section.xml">
   <!ENTITY notificationtemplates-chapter SYSTEM "notificationtemplates-chapter.xml">
+  <!ENTITY deploytask-chapter SYSTEM "../anttask/deploytask-chapter.xml">
 ]>
 
 <book>
@@ -2500,6 +2501,8 @@ Data of Luntbuild (projects, schedules, etc.) can be exported or imported using 
 </section>
 </chapter>
 
+&deploytask-chapter;
+
 <appendix id="buildognl">
 <title>OGNL Expressions</title>
 <para>
@@ -2652,4 +2655,6 @@ Please go to
 to learn more about general grammar of an OGNL expression.
 </para>
 </appendix>
+
+
 </book>
