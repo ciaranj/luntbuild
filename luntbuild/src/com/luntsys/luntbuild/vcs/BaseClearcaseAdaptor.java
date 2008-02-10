@@ -35,6 +35,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -127,28 +128,57 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 		}
 	}
 
+    /**
+     * Labels the contents in the VCS.
+     * 
+     * @param build the build
+     * @param antProject the ant project used for logging
+     */
+    public void label(Build build, Project antProject) {
+    	if (containLatestVersion()) {
+    		List vobNames = getVobNames();
+    		antProject.log("Labeling current retrieved code...", Project.MSG_INFO);
+    		String workingDir = getClearcaseWorkDirRaw(build.getSchedule());
+    		Iterator itVobName = vobNames.iterator();
+    		while (itVobName.hasNext()) {
+    			String vobName = (String) itVobName.next();
+    			createCcLabelType(workingDir, vobName, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
+    		}
+    		itVobName = vobNames.iterator();
+    		while (itVobName.hasNext()) {
+    			String vobName = (String) itVobName.next();
+    			createCcLabel(workingDir, vobName, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
+    		}
+    	}
+    }
+
+	
 	/**
-	 * Labels the contents in the VCS.
+	 * Find the names of all the vobs mentioned in the load rules.
 	 * 
-	 * @param build the build
-	 * @param antProject the ant project used for logging
+	 * @return A list of Strings, the unique vob names mentioned in the load rules
 	 */
-	public void label(Build build, Project antProject) {
-		if (containLatestVersion()) {
-			List loadElements = getLoadElements();
-			antProject.log("Labeling current retrieved code...", Project.MSG_INFO);
-			String workingDir = getClearcaseWorkDirRaw(build.getSchedule());
-			Iterator itLoadElement = loadElements.iterator();
-			while (itLoadElement.hasNext()) {
-				String loadElement = (String) itLoadElement.next();
-				createCcLabelType(workingDir, loadElement, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
-			}
-			itLoadElement = loadElements.iterator();
-			while (itLoadElement.hasNext()) {
-				String loadElement = (String) itLoadElement.next();
-				createCcLabel(workingDir, loadElement, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
+	protected List getVobNames() {
+		List loadElements = getLoadElements(); 
+
+		// preserves order and guarantees uniqueness.
+		LinkedHashSet vobNames = new LinkedHashSet();
+
+		Iterator itLoadElement = loadElements.iterator();
+		while (itLoadElement.hasNext()) {
+			String loadElement = (String) itLoadElement.next();
+
+			// load elements are of the form "load \vobname\project\src\pom.xml"
+			// we just want the vobname
+			Pattern p = Pattern.compile("\\\\(.*)\\.*");
+			Matcher m = p.matcher(loadElement);
+			if (m.matches()) {
+				String vobName = m.group();
+				vobNames.add(vobName);
 			}
 		}
+
+		return new ArrayList(vobNames);
 	}
 
 	protected void postSetCs(Project antProject, String workingDir) {
@@ -172,8 +202,8 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	 * @param ccLabelType
 	 * @param antProject
 	 */
-	private void createCcLabelType(String workingDir, String loadElement, String ccLabelType, Project antProject) {
-		String vobPath = Luntbuild.concatPath(workingDir, loadElement);
+	private void createCcLabelType(String workingDir, String vobName, String ccLabelType, Project antProject) {
+		String vobPath = Luntbuild.concatPath(workingDir, vobName);
 
 		Commandline cmdLine = buildCleartoolExecutable();
 		cmdLine.createArgument().setLine("mklbtype -c \"build_label\" " + ccLabelType);
@@ -195,8 +225,8 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	 * @param ccLabelType
 	 * @param antProject
 	 */
-	private void createCcLabel(String workingDir, String loadElement, String ccLabelType, Project antProject) {
-		String vobPath = Luntbuild.concatPath(workingDir, loadElement);
+	private void createCcLabel(String workingDir, String vobName, String ccLabelType, Project antProject) {
+		String vobPath = Luntbuild.concatPath(workingDir, vobName);
 
 		Commandline cmdLine = buildCleartoolExecutable();
 		cmdLine.createArgument().setLine("mklabel -recurse -c \"build_label\" " + ccLabelType);
@@ -217,7 +247,7 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	 *
 	 * @return the list of elements to load
 	 */
-	private List getLoadElements() {
+	protected List getLoadElements() {
 		BufferedReader reader = new BufferedReader(new StringReader(getActualViewCfgSpec().replace(';', '\n')));
 		List loadElements = new ArrayList();
 		try {
