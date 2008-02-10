@@ -99,7 +99,7 @@ public class MigrationManager {
 				setupAliasesFor111(xstream);
 				logger.info("Reading 1.1.1 data...");
 				com.luntsys.luntbuild.facades.lb111.DataCollection data111 =
-						(com.luntsys.luntbuild.facades.lb111.DataCollection) xstream.fromXML(fileReader);
+					(com.luntsys.luntbuild.facades.lb111.DataCollection) xstream.fromXML(fileReader);
 				logger.info("Migrating 1.1.1 data to 1.2 data...");
 				return migrateFrom111To12(data111);
 			}
@@ -181,7 +181,7 @@ public class MigrationManager {
 		Iterator it = data111.getProperties().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb111.PropertyFacade propertyFacade111 =
-					(com.luntsys.luntbuild.facades.lb111.PropertyFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb111.PropertyFacade) it.next();
 			if (propertyFacade111.getName().equals("antCommand") || propertyFacade111.getName().equals("envFile") ||
 					propertyFacade111.getName().equals("principalEmail") || propertyFacade111.getName().equals("smtpHost") ||
 					propertyFacade111.getName().equals("smtpPassword") || propertyFacade111.getName().equals("smtpUser")) {
@@ -207,7 +207,7 @@ public class MigrationManager {
 		it = data111.getUsers().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb111.UserFacade userFacade111 =
-					(com.luntsys.luntbuild.facades.lb111.UserFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb111.UserFacade) it.next();
 			com.luntsys.luntbuild.facades.lb12.UserFacade userFacade12 = new com.luntsys.luntbuild.facades.lb12.UserFacade();
 			logger.info("Migrating user: " + userFacade111.getName());
 			userFacade12.setCanCreateProject(false);
@@ -215,7 +215,7 @@ public class MigrationManager {
 			userFacade12.setPassword(userFacade111.getName());
 			userFacade12.setId(userFacade111.getId());
 			if (userFacade111.getName().equals("<users who check in codes recently>"))
-                userFacade12.setName(User.CHECKIN_USER_NAME_RECENT);
+				userFacade12.setName(User.CHECKIN_USER_NAME_RECENT);
 			else
 				userFacade12.setName(userFacade111.getName());
 			Iterator itContact = userFacade111.getContacts().keySet().iterator();
@@ -239,9 +239,9 @@ public class MigrationManager {
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb111.ViewFacade viewFacade111 = (com.luntsys.luntbuild.facades.lb111.ViewFacade) it.next();
 			com.luntsys.luntbuild.facades.lb111.ProjectFacade projectFacade111 =
-					data111.getProject(viewFacade111.getProjectId());
+				data111.getProject(viewFacade111.getProjectId());
 			com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade12 =
-					new com.luntsys.luntbuild.facades.lb12.ProjectFacade();
+				new com.luntsys.luntbuild.facades.lb12.ProjectFacade();
 			logger.info("Migrating view: " + projectFacade111.getName() + "/" + viewFacade111.getName());
 			// migrate general information
 			projectFacade12.setId(viewFacade111.getId());
@@ -255,12 +255,12 @@ public class MigrationManager {
 				Iterator itViewComposition = data111.getViewCompositionConfig().iterator();
 				while (itViewComposition.hasNext()) {
 					com.luntsys.luntbuild.facades.lb111.ViewCompositionConfigFacade viewCompositionConfigFacade111
-							= (com.luntsys.luntbuild.facades.lb111.ViewCompositionConfigFacade) itViewComposition.next();
+					= (com.luntsys.luntbuild.facades.lb111.ViewCompositionConfigFacade) itViewComposition.next();
 					if (viewCompositionConfigFacade111.getCompositeViewId() == viewFacade111.getId()) {
 						com.luntsys.luntbuild.facades.lb111.ViewFacade basicViewFacade111 =
-								data111.getView(viewCompositionConfigFacade111.getBasicViewId());
+							data111.getView(viewCompositionConfigFacade111.getBasicViewId());
 						com.luntsys.luntbuild.facades.lb111.ProjectFacade basicProjectFacade111 =
-								data111.getProject(basicViewFacade111.getProjectId());
+							data111.getProject(basicViewFacade111.getProjectId());
 						logger.info("Migrating VCS information from basic view: " + basicProjectFacade111.getName()
 								+ "/" + basicViewFacade111.getName());
 						projectFacade12.getVcsList().add(migrateVcsFrom111To12(basicProjectFacade111.getVcs(),
@@ -297,15 +297,15 @@ public class MigrationManager {
 		it = data111.getBuildSchedules().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb111.BuildScheduleFacade buildScheduleFacade111 =
-					(com.luntsys.luntbuild.facades.lb111.BuildScheduleFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb111.BuildScheduleFacade) it.next();
 			com.luntsys.luntbuild.facades.lb111.ScheduleFacade scheduleFacade111 =
-					data111.getSchedule(buildScheduleFacade111.getScheduleId());
+				data111.getSchedule(buildScheduleFacade111.getScheduleId());
 			com.luntsys.luntbuild.facades.lb111.ViewFacade viewFacade111 =
-					data111.getView(buildScheduleFacade111.getViewId());
+				data111.getView(buildScheduleFacade111.getViewId());
 			com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade12 =
-					data12.getProject(buildScheduleFacade111.getViewId());
+				data12.getProject(buildScheduleFacade111.getViewId());
 			com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade12 =
-					new com.luntsys.luntbuild.facades.lb12.ScheduleFacade();
+				new com.luntsys.luntbuild.facades.lb12.ScheduleFacade();
 			logger.info("Migrating build schedule: " + projectFacade12.getName() + "/" +
 					scheduleFacade111.getName());
 			scheduleFacade12.setId(buildScheduleFacade111.getId());
@@ -445,15 +445,15 @@ public class MigrationManager {
 		it = data111.getVcsLoginConfig().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb111.VcsLoginFacade vcsLoginFacade111 =
-					(com.luntsys.luntbuild.facades.lb111.VcsLoginFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb111.VcsLoginFacade) it.next();
 			Iterator itView = data111.getViews().iterator();
 			while (itView.hasNext()) {
 				com.luntsys.luntbuild.facades.lb111.ViewFacade viewFacade111 =
-						(com.luntsys.luntbuild.facades.lb111.ViewFacade) itView.next();
+					(com.luntsys.luntbuild.facades.lb111.ViewFacade) itView.next();
 				if (viewFacade111.getProjectId() != vcsLoginFacade111.getProjectId())
 					continue;
 				com.luntsys.luntbuild.facades.lb12.VcsLoginFacade vcsLoginFacade12 =
-						new com.luntsys.luntbuild.facades.lb12.VcsLoginFacade();
+					new com.luntsys.luntbuild.facades.lb12.VcsLoginFacade();
 				vcsLoginFacade12.setId(0);
 				vcsLoginFacade12.setLogin(vcsLoginFacade111.getLogin());
 				vcsLoginFacade12.setUserId(vcsLoginFacade111.getUserId());
@@ -467,9 +467,9 @@ public class MigrationManager {
 		it = data111.getNotificationConfig().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb111.NotificationConfigFacade notificationConfigFacade111 =
-					(com.luntsys.luntbuild.facades.lb111.NotificationConfigFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb111.NotificationConfigFacade) it.next();
 			com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade notifyMappingFacade12 =
-					new com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade();
+				new com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade();
 			notifyMappingFacade12.setId(0);
 			notifyMappingFacade12.setUserId(notificationConfigFacade111.getUserId());
 			notifyMappingFacade12.setProjectId(notificationConfigFacade111.getViewId());
@@ -481,15 +481,15 @@ public class MigrationManager {
 		it = data12.getProjects().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade12 =
-					(com.luntsys.luntbuild.facades.lb12.ProjectFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb12.ProjectFacade) it.next();
 			Iterator itUser = data12.getUsers().iterator();
 			while (itUser.hasNext()) {
 				com.luntsys.luntbuild.facades.lb12.UserFacade userFacade12 =
-						(com.luntsys.luntbuild.facades.lb12.UserFacade) itUser.next();
-                if (userFacade12.getName().equals(User.CHECKIN_USER_NAME_RECENT))
+					(com.luntsys.luntbuild.facades.lb12.UserFacade) itUser.next();
+				if (userFacade12.getName().equals(User.CHECKIN_USER_NAME_RECENT))
 					continue;
 				com.luntsys.luntbuild.facades.lb12.RolesMappingFacade rolesMappingFacade12 =
-						new com.luntsys.luntbuild.facades.lb12.RolesMappingFacade();
+					new com.luntsys.luntbuild.facades.lb12.RolesMappingFacade();
 				rolesMappingFacade12.setId(0);
 				rolesMappingFacade12.setProjectId(projectFacade12.getId());
 				rolesMappingFacade12.setUserId(userFacade12.getId());
@@ -505,16 +505,16 @@ public class MigrationManager {
 		it = data12.getBuilds().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade12 =
-					(com.luntsys.luntbuild.facades.lb12.BuildFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb12.BuildFacade) it.next();
 			com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade12 =
-					data12.getSchedule(buildFacade12.getScheduleId());
+				data12.getSchedule(buildFacade12.getScheduleId());
 			com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade12 =
-					data12.getProject(scheduleFacade12.getProjectId());
+				data12.getProject(scheduleFacade12.getProjectId());
 			logger.info("Migrating build artifacts for build: " + projectFacade12.getName() + "/" +
 					scheduleFacade12.getName() + "/" + buildFacade12.getVersion());
 			String buildPublishDir12 = publishDir + File.separator + projectFacade12.getName() +
-					File.separator + scheduleFacade12.getName() + File.separator +
-					buildFacade12.getVersion();
+			File.separator + scheduleFacade12.getName() + File.separator +
+			buildFacade12.getVersion();
 			String buildPublishDir111 = publishDir + File.separator + buildFacade12.getId();
 			if (new File(buildPublishDir111).exists()) {
 				logger.info("Original directory: " + buildPublishDir111);
@@ -535,14 +535,14 @@ public class MigrationManager {
 	 * @throws RuntimeException if the VCS adaptor is not supported
 	 */
 	private static com.luntsys.luntbuild.facades.lb12.VcsFacade migrateVcsFrom111To12(com.luntsys.luntbuild.facades.lb111.VcsFacade vcs111AtProjectLevel,
-																					  com.luntsys.luntbuild.facades.lb111.VcsFacade vcs111AtViewLevel) {
+			com.luntsys.luntbuild.facades.lb111.VcsFacade vcs111AtViewLevel) {
 		if (vcs111AtProjectLevel instanceof com.luntsys.luntbuild.facades.lb111.BaseClearcaseAdaptorFacade) {
 			com.luntsys.luntbuild.facades.lb111.BaseClearcaseAdaptorFacade projectVcs =
-					(com.luntsys.luntbuild.facades.lb111.BaseClearcaseAdaptorFacade) vcs111AtProjectLevel;
+				(com.luntsys.luntbuild.facades.lb111.BaseClearcaseAdaptorFacade) vcs111AtProjectLevel;
 			com.luntsys.luntbuild.facades.lb111.BaseClearcaseAdaptorFacade viewVcs =
-					(com.luntsys.luntbuild.facades.lb111.BaseClearcaseAdaptorFacade) vcs111AtViewLevel;
+				(com.luntsys.luntbuild.facades.lb111.BaseClearcaseAdaptorFacade) vcs111AtViewLevel;
 			com.luntsys.luntbuild.facades.lb12.BaseClearcaseAdaptorFacade vcs12 =
-					new com.luntsys.luntbuild.facades.lb12.BaseClearcaseAdaptorFacade();
+				new com.luntsys.luntbuild.facades.lb12.BaseClearcaseAdaptorFacade();
 			vcs12.setViewStgLoc(projectVcs.getViewStgLoc());
 			vcs12.setMkviewExtraOpts(viewVcs.getMkviewExtraOpts());
 			vcs12.setModificationDetectionConfig(viewVcs.getModificationDetectionConfig());
@@ -551,11 +551,11 @@ public class MigrationManager {
 			return vcs12;
 		} else if (vcs111AtProjectLevel instanceof com.luntsys.luntbuild.facades.lb111.CvsAdaptorFacade) {
 			com.luntsys.luntbuild.facades.lb111.CvsAdaptorFacade projectVcs =
-					(com.luntsys.luntbuild.facades.lb111.CvsAdaptorFacade) vcs111AtProjectLevel;
+				(com.luntsys.luntbuild.facades.lb111.CvsAdaptorFacade) vcs111AtProjectLevel;
 			com.luntsys.luntbuild.facades.lb111.CvsAdaptorFacade viewVcs =
-					(com.luntsys.luntbuild.facades.lb111.CvsAdaptorFacade) vcs111AtViewLevel;
+				(com.luntsys.luntbuild.facades.lb111.CvsAdaptorFacade) vcs111AtViewLevel;
 			com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade vcs12 =
-					new com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade();
+				new com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade();
 			vcs12.setCvsRoot(projectVcs.getCvsRoot());
 			vcs12.setCvsPassword(projectVcs.getCvsPassword());
 			vcs12.setCygwinCvs(projectVcs.getCygwinCvs());
@@ -565,18 +565,18 @@ public class MigrationManager {
 			return vcs12;
 		} else if (vcs111AtProjectLevel instanceof com.luntsys.luntbuild.facades.lb111.FileSystemAdaptorFacade) {
 			com.luntsys.luntbuild.facades.lb111.FileSystemAdaptorFacade projectVcs =
-					(com.luntsys.luntbuild.facades.lb111.FileSystemAdaptorFacade) vcs111AtProjectLevel;
+				(com.luntsys.luntbuild.facades.lb111.FileSystemAdaptorFacade) vcs111AtProjectLevel;
 			com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade vcs12 =
-					new com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade();
+				new com.luntsys.luntbuild.facades.lb12.FileSystemAdaptorFacade();
 			vcs12.setSourceDir(projectVcs.getSourceDir());
 			return vcs12;
 		} else if (vcs111AtProjectLevel instanceof com.luntsys.luntbuild.facades.lb111.PerforceAdaptorFacade) {
 			com.luntsys.luntbuild.facades.lb111.PerforceAdaptorFacade projectVcs =
-					(com.luntsys.luntbuild.facades.lb111.PerforceAdaptorFacade) vcs111AtProjectLevel;
+				(com.luntsys.luntbuild.facades.lb111.PerforceAdaptorFacade) vcs111AtProjectLevel;
 			com.luntsys.luntbuild.facades.lb111.PerforceAdaptorFacade viewVcs =
-					(com.luntsys.luntbuild.facades.lb111.PerforceAdaptorFacade) vcs111AtViewLevel;
+				(com.luntsys.luntbuild.facades.lb111.PerforceAdaptorFacade) vcs111AtViewLevel;
 			com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade vcs12 =
-					new com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade();
+				new com.luntsys.luntbuild.facades.lb12.PerforceAdaptorFacade();
 			vcs12.setPassword(projectVcs.getPassword());
 			vcs12.setPort(projectVcs.getPort());
 			vcs12.setUser(projectVcs.getPort());
@@ -584,11 +584,11 @@ public class MigrationManager {
 			return vcs12;
 		} else if (vcs111AtProjectLevel instanceof com.luntsys.luntbuild.facades.lb111.StarteamAdaptorFacade) {
 			com.luntsys.luntbuild.facades.lb111.StarteamAdaptorFacade projectVcs =
-					(com.luntsys.luntbuild.facades.lb111.StarteamAdaptorFacade) vcs111AtProjectLevel;
+				(com.luntsys.luntbuild.facades.lb111.StarteamAdaptorFacade) vcs111AtProjectLevel;
 			com.luntsys.luntbuild.facades.lb111.StarteamAdaptorFacade viewVcs =
-					(com.luntsys.luntbuild.facades.lb111.StarteamAdaptorFacade) vcs111AtViewLevel;
+				(com.luntsys.luntbuild.facades.lb111.StarteamAdaptorFacade) vcs111AtViewLevel;
 			com.luntsys.luntbuild.facades.lb12.StarteamAdaptorFacade vcs12 =
-					new com.luntsys.luntbuild.facades.lb12.StarteamAdaptorFacade();
+				new com.luntsys.luntbuild.facades.lb12.StarteamAdaptorFacade();
 			vcs12.setConvertEOL(projectVcs.getConvertEOL());
 			vcs12.setPassword(projectVcs.getPassword());
 			vcs12.setProjectLocation(projectVcs.getProjectLocation());
@@ -597,11 +597,11 @@ public class MigrationManager {
 			return vcs12;
 		} else if (vcs111AtProjectLevel instanceof com.luntsys.luntbuild.facades.lb111.SvnAdaptorFacade) {
 			com.luntsys.luntbuild.facades.lb111.SvnAdaptorFacade projectVcs =
-					(com.luntsys.luntbuild.facades.lb111.SvnAdaptorFacade) vcs111AtProjectLevel;
+				(com.luntsys.luntbuild.facades.lb111.SvnAdaptorFacade) vcs111AtProjectLevel;
 			com.luntsys.luntbuild.facades.lb111.SvnAdaptorFacade viewVcs =
-					(com.luntsys.luntbuild.facades.lb111.SvnAdaptorFacade) vcs111AtViewLevel;
+				(com.luntsys.luntbuild.facades.lb111.SvnAdaptorFacade) vcs111AtViewLevel;
 			com.luntsys.luntbuild.facades.lb12.SvnAdaptorFacade vcs12 =
-					new com.luntsys.luntbuild.facades.lb12.SvnAdaptorFacade();
+				new com.luntsys.luntbuild.facades.lb12.SvnAdaptorFacade();
 			vcs12.setBranches(projectVcs.getBranches());
 			vcs12.setPassword(projectVcs.getPassword());
 			vcs12.setTags(projectVcs.getTags());
@@ -612,11 +612,11 @@ public class MigrationManager {
 			return vcs12;
 		} else if (vcs111AtProjectLevel instanceof com.luntsys.luntbuild.facades.lb111.UCMClearcaseAdaptorFacade) {
 			com.luntsys.luntbuild.facades.lb111.UCMClearcaseAdaptorFacade projectVcs =
-					(com.luntsys.luntbuild.facades.lb111.UCMClearcaseAdaptorFacade) vcs111AtProjectLevel;
+				(com.luntsys.luntbuild.facades.lb111.UCMClearcaseAdaptorFacade) vcs111AtProjectLevel;
 			com.luntsys.luntbuild.facades.lb111.UCMClearcaseAdaptorFacade viewVcs =
-					(com.luntsys.luntbuild.facades.lb111.UCMClearcaseAdaptorFacade) vcs111AtViewLevel;
+				(com.luntsys.luntbuild.facades.lb111.UCMClearcaseAdaptorFacade) vcs111AtViewLevel;
 			com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade vcs12 =
-					new com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade();
+				new com.luntsys.luntbuild.facades.lb12.UCMClearcaseAdaptorFacade();
 			vcs12.setProjectVob(projectVcs.getProjectVob());
 			vcs12.setViewStgLoc(projectVcs.getViewStgLoc());
 			vcs12.setMkviewExtraOpts(viewVcs.getMkviewExtraOpts());
@@ -627,11 +627,11 @@ public class MigrationManager {
 			return vcs12;
 		} else if (vcs111AtProjectLevel instanceof com.luntsys.luntbuild.facades.lb111.VssAdaptorFacade) {
 			com.luntsys.luntbuild.facades.lb111.VssAdaptorFacade projectVcs =
-					(com.luntsys.luntbuild.facades.lb111.VssAdaptorFacade) vcs111AtProjectLevel;
+				(com.luntsys.luntbuild.facades.lb111.VssAdaptorFacade) vcs111AtProjectLevel;
 			com.luntsys.luntbuild.facades.lb111.VssAdaptorFacade viewVcs =
-					(com.luntsys.luntbuild.facades.lb111.VssAdaptorFacade) vcs111AtViewLevel;
+				(com.luntsys.luntbuild.facades.lb111.VssAdaptorFacade) vcs111AtViewLevel;
 			com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade vcs12 =
-					new com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade();
+				new com.luntsys.luntbuild.facades.lb12.VssAdaptorFacade();
 			vcs12.setDateTimeFormat(projectVcs.getDateTimeFormat());
 			vcs12.setSsDir(projectVcs.getSsDir());
 			vcs12.setVssPassword(projectVcs.getVssPassword());
@@ -664,7 +664,7 @@ public class MigrationManager {
 	 * @return the new project name
 	 */
 	private static String createProjectNameFor12(com.luntsys.luntbuild.facades.lb12.DataCollection data12,
-												 String projectNameOf111, String viewNameOf111) {
+			String projectNameOf111, String viewNameOf111) {
 		String temp = projectNameOf111 + "-" + viewNameOf111;
 		if (Luntbuild.isEmpty(temp))
 			temp = "noname";
@@ -687,7 +687,7 @@ public class MigrationManager {
 	 * @return the new schedule name
 	 */
 	private static String createScheduleNameFor12(com.luntsys.luntbuild.facades.lb12.DataCollection data12,
-												  long projectIdOf12, String scheduleNameOf111) {
+			long projectIdOf12, String scheduleNameOf111) {
 		String temp = scheduleNameOf111;
 		if (Luntbuild.isEmpty(temp))
 			temp = "noname";
@@ -749,223 +749,257 @@ public class MigrationManager {
 		Iterator it = data12.getProperties().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb12.PropertyFacade propertyFacade =
-					(com.luntsys.luntbuild.facades.lb12.PropertyFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb12.PropertyFacade) it.next();
 			Property property = new Property();
 			property.setName(propertyFacade.getName());
 			property.setFacade(propertyFacade);
 			data.getProperties().add(property);
 		}
 
-		it = data12.getProjects().iterator();
-		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade =
+		if (data12.getProjects() != null) {
+			it = data12.getProjects().iterator();
+			while (it.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.ProjectFacade projectFacade =
 					(com.luntsys.luntbuild.facades.lb12.ProjectFacade) it.next();
-			logger.info("Defacading project: " + projectFacade.getName());
-			Project project = new Project();
-			project.setId(projectFacade.getId());
-			project.setName(projectFacade.getName());
-			project.setFacade(projectFacade);
-			data.getProjects().add(project);
+				logger.info("Defacading project: " + projectFacade.getName());
+				Project project = new Project();
+				project.setId(projectFacade.getId());
+				project.setName(projectFacade.getName());
+				project.setFacade(projectFacade);
+				data.getProjects().add(project);
+			}
 		}
 
-		it = data12.getSchedules().iterator();
-		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade =
+		if (data12.getSchedules() != null) {
+			it = data12.getSchedules().iterator();
+			while (it.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade =
 					(com.luntsys.luntbuild.facades.lb12.ScheduleFacade) it.next();
-			logger.info("Defacading schedule: " + data12.getProject(scheduleFacade.getProjectId()).getName() +
-					"/" + scheduleFacade.getName());
-			Schedule schedule = new Schedule();
-			schedule.setId(scheduleFacade.getId());
-			schedule.setName(scheduleFacade.getName());
-			Project project = new Project();
-			project.setId(scheduleFacade.getProjectId());
-			int projectId = data.getProjects().indexOf(project);
-			if (projectId == -1) {
-				logger.error("Unable to locate project with id: " + scheduleFacade.getProjectId());
-				continue;
-			}
-			schedule.setProject((Project) data.getProjects().get(projectId));
-			schedule.setFacade(scheduleFacade);
-			data.getSchedules().add(schedule);
-		}
-		it = data.getSchedules().iterator();
-		while (it.hasNext()) {
-			Schedule schedule = (Schedule) it.next();
-			logger.info("Remapping dependent schedules for schedule: " + schedule.getProject().getName() +
-					"/" + schedule.getName());
-			Iterator itDependent = schedule.getDependentScheduleIds().iterator();
-			while (itDependent.hasNext()) {
-				long dependentScheduleId = ((Long) itDependent.next()).longValue();
-				Schedule dependentSchedule = new Schedule();
-				dependentSchedule.setId(dependentScheduleId);
-				int index = data.getSchedules().indexOf(dependentSchedule);
-				if (index != -1) {
-					schedule.getDependentSchedules().add(data.getSchedules().get(index));
-				} else {
-					logger.error("Unable to get dependent schedule with id: " + dependentScheduleId);
+				logger.info("Defacading schedule: " + data12.getProject(scheduleFacade.getProjectId()).getName() +
+						"/" + scheduleFacade.getName());
+				Schedule schedule = new Schedule();
+				schedule.setId(scheduleFacade.getId());
+				schedule.setName(scheduleFacade.getName());
+				Project project = new Project();
+				project.setId(scheduleFacade.getProjectId());
+				int projectId = data.getProjects().indexOf(project);
+				if (projectId == -1) {
+					logger.error("Unable to locate project with id: " + scheduleFacade.getProjectId());
 					continue;
+				}
+				schedule.setProject((Project) data.getProjects().get(projectId));
+				schedule.setFacade(scheduleFacade);
+				data.getSchedules().add(schedule);
+			}
+		}
+
+		if (data.getSchedules() != null) {
+			it = data.getSchedules().iterator();
+			while (it.hasNext()) {
+				Schedule schedule = (Schedule) it.next();
+				logger.info("Remapping dependent schedules for schedule: " + schedule.getProject().getName() +
+						"/" + schedule.getName());
+				Iterator itDependent = schedule.getDependentScheduleIds().iterator();
+				while (itDependent.hasNext()) {
+					long dependentScheduleId = ((Long) itDependent.next()).longValue();
+					Schedule dependentSchedule = new Schedule();
+					dependentSchedule.setId(dependentScheduleId);
+					int index = data.getSchedules().indexOf(dependentSchedule);
+					if (index != -1) {
+						schedule.getDependentSchedules().add(data.getSchedules().get(index));
+					} else {
+						logger.error("Unable to get dependent schedule with id: " + dependentScheduleId);
+						continue;
+					}
 				}
 			}
 		}
 
-		it = data12.getBuilds().iterator();
-		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade = (com.luntsys.luntbuild.facades.lb12.BuildFacade) it.next();
-			logger.info("Defacading build: " + data.getSchedule(buildFacade.getScheduleId()).getProject().getName() +
-					"/" + data.getSchedule(buildFacade.getScheduleId()) + "/" + buildFacade.getVersion());
-			Build build = new Build();
-			build.setId(buildFacade.getId());
-			Schedule schedule = new Schedule();
-			schedule.setId(buildFacade.getScheduleId());
-			int index = data.getSchedules().indexOf(schedule);
-			if (index == -1) {
-				logger.error("Unable to get schedule with id: " + buildFacade.getScheduleId());
-				continue;
+		if (data12.getBuilds() != null) {
+			it = data12.getBuilds().iterator();
+			while (it.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade = (com.luntsys.luntbuild.facades.lb12.BuildFacade) it.next();
+				logger.info("Defacading build: " + data.getSchedule(buildFacade.getScheduleId()).getProject().getName() +
+						"/" + data.getSchedule(buildFacade.getScheduleId()) + "/" + buildFacade.getVersion());
+				Build build = new Build();
+				build.setId(buildFacade.getId());
+				Schedule schedule = new Schedule();
+				schedule.setId(buildFacade.getScheduleId());
+				int index = data.getSchedules().indexOf(schedule);
+				if (index == -1) {
+					logger.error("Unable to get schedule with id: " + buildFacade.getScheduleId());
+					continue;
+				}
+				build.setSchedule((Schedule) data.getSchedules().get(index));
+				build.setFacade(buildFacade);
+				data.getBuilds().add(build);
 			}
-			build.setSchedule((Schedule) data.getSchedules().get(index));
-			build.setFacade(buildFacade);
-			data.getBuilds().add(build);
 		}
 
-		it = data12.getUsers().iterator();
-		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.UserFacade userFacade =
+		if (data12.getUsers() != null) {
+			it = data12.getUsers().iterator();
+			while (it.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.UserFacade userFacade =
 					(com.luntsys.luntbuild.facades.lb12.UserFacade) it.next();
-			logger.info("Defacading user: " + userFacade.getName());
-			User user = new User();
-			user.setId(userFacade.getId());
-			user.setName(userFacade.getName());
-			user.setFacade(userFacade);
-			data.getUsers().add(user);
+				logger.info("Defacading user: " + userFacade.getName());
+				User user = new User();
+				user.setId(userFacade.getId());
+				user.setName(userFacade.getName());
+				user.setFacade(userFacade);
+				data.getUsers().add(user);
+			}
 		}
 
-		it = data12.getRoles().iterator();
-		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.RoleFacade roleFacade =
+		if (data12.getRoles() != null) {
+			it = data12.getRoles().iterator();
+			while (it.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.RoleFacade roleFacade =
 					(com.luntsys.luntbuild.facades.lb12.RoleFacade) it.next();
-			logger.info("Defacading role: " + roleFacade.getName());
-			Role role = new Role();
-			role.setId(roleFacade.getId());
-			role.setName(roleFacade.getName());
-			role.setFacade(roleFacade);
-			data.getRoles().add(role);
+				logger.info("Defacading role: " + roleFacade.getName());
+				Role role = new Role();
+				role.setId(roleFacade.getId());
+				role.setName(roleFacade.getName());
+				role.setFacade(roleFacade);
+				data.getRoles().add(role);
+			}
 		}
 
-		logger.info("Defacading vcs logins...");
-		it = data12.getVcsLoginMapping().iterator();
-		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.VcsLoginFacade vcsLoginFacade =
+		if (data12.getVcsLoginMapping() != null) {
+			logger.info("Defacading vcs logins...");
+			it = data12.getVcsLoginMapping().iterator();
+			while (it.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.VcsLoginFacade vcsLoginFacade =
 					(com.luntsys.luntbuild.facades.lb12.VcsLoginFacade) it.next();
-			VcsLogin vcsLogin = new VcsLogin();
-			vcsLogin.setLogin(vcsLoginFacade.getLogin());
-			Project project = new Project();
-			project.setId(vcsLoginFacade.getProjectId());
-			User user = new User();
-			user.setId(vcsLoginFacade.getUserId());
-			int index = data.getProjects().indexOf(project);
-			if (index == -1) {
-				logger.error("Unable to find project with id: " + vcsLoginFacade.getProjectId());
-				continue;
+				VcsLogin vcsLogin = new VcsLogin();
+				vcsLogin.setLogin(vcsLoginFacade.getLogin());
+				Project project = new Project();
+				project.setId(vcsLoginFacade.getProjectId());
+				User user = new User();
+				user.setId(vcsLoginFacade.getUserId());
+				int index = data.getProjects().indexOf(project);
+				if (index == -1) {
+					logger.error("Unable to find project with id: " + vcsLoginFacade.getProjectId());
+					continue;
+				}
+				vcsLogin.setProject((Project) data.getProjects().get(index));
+				index = data.getUsers().indexOf(user);
+				if (index == -1) {
+					logger.error("Unable to find user with id: " + vcsLoginFacade.getUserId());
+					continue;
+				}
+				vcsLogin.setUser((User) data.getUsers().get(index));
+				data.getVcsLoginMapping().add(vcsLogin);
 			}
-			vcsLogin.setProject((Project) data.getProjects().get(index));
-			index = data.getUsers().indexOf(user);
-			if (index == -1) {
-				logger.error("Unable to find user with id: " + vcsLoginFacade.getUserId());
-				continue;
-			}
-			vcsLogin.setUser((User) data.getUsers().get(index));
-			data.getVcsLoginMapping().add(vcsLogin);
 		}
 
-		logger.info("Defacading roles mappings...");
-		it = data12.getRolesMapping().iterator();
-		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.RolesMappingFacade rolesMappingFacade =
+		if (data12.getRolesMapping() != null) {
+			logger.info("Defacading roles mappings...");
+			it = data12.getRolesMapping().iterator();
+			while (it.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.RolesMappingFacade rolesMappingFacade =
 					(com.luntsys.luntbuild.facades.lb12.RolesMappingFacade) it.next();
-			RolesMapping rolesMapping = new RolesMapping();
-			Project project = new Project();
-			project.setId(rolesMappingFacade.getProjectId());
-			int projectId = data.getProjects().indexOf(project);
-			if (projectId == -1) {
-				logger.error("Unable to locate project with id: " + rolesMappingFacade.getProjectId());
-				continue;
+				RolesMapping rolesMapping = new RolesMapping();
+				Project project = new Project();
+				project.setId(rolesMappingFacade.getProjectId());
+				int projectId = data.getProjects().indexOf(project);
+				if (projectId == -1) {
+					logger.error("Unable to locate project with id: " + rolesMappingFacade.getProjectId());
+					continue;
+				}
+				project = (Project) data.getProjects().get(projectId);
+				User user = new User();
+				user.setId(rolesMappingFacade.getUserId());
+				Role role = new Role();
+				role.setId(rolesMappingFacade.getRoleId());
+				rolesMapping.setProject(project);
+				int index = data.getUsers().indexOf(user);
+				if (index == -1) {
+					logger.error("Unable to get user with id: " + rolesMappingFacade.getUserId());
+					continue;
+				} else {
+					rolesMapping.setUser((User) data.getUsers().get(index));
+				}
+				index = data.getRoles().indexOf(role);
+				if (index == -1) {
+					logger.error("Unable to get role with id: " + rolesMappingFacade.getRoleId());
+					continue;
+				} else {
+					rolesMapping.setRole((Role) data.getRoles().get(index));
+				}
+				project.getRolesMappings().add(rolesMapping);
 			}
-			project = (Project) data.getProjects().get(projectId);
-			User user = new User();
-			user.setId(rolesMappingFacade.getUserId());
-			Role role = new Role();
-			role.setId(rolesMappingFacade.getRoleId());
-			rolesMapping.setProject(project);
-			int index = data.getUsers().indexOf(user);
-			if (index == -1) {
-				logger.error("Unable to get user with id: " + rolesMappingFacade.getUserId());
-				continue;
-			} else {
-				rolesMapping.setUser((User) data.getUsers().get(index));
-			}
-			index = data.getRoles().indexOf(role);
-			if (index == -1) {
-				logger.error("Unable to get role with id: " + rolesMappingFacade.getRoleId());
-				continue;
-			} else {
-				rolesMapping.setRole((Role) data.getRoles().get(index));
-			}
-			project.getRolesMappings().add(rolesMapping);
 		}
 
-		logger.info("Defacading notify mappings...");
-		it = data12.getNotifyMapping().iterator();
-		while (it.hasNext()) {
-			com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade notifyMappingFacade =
+		if (data12.getNotifyMapping() != null) {
+			logger.info("Defacading notify mappings...");
+			it = data12.getNotifyMapping().iterator();
+			while (it.hasNext()) {
+				com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade notifyMappingFacade =
 					(com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade) it.next();
-			NotifyMapping notifyMapping = new NotifyMapping();
-			Project project = new Project();
-			project.setId(notifyMappingFacade.getProjectId());
-			int projectId = data.getProjects().indexOf(project);
-			if (projectId == -1) {
-				logger.error("Unable to get project with id: " + notifyMappingFacade.getProjectId());
-				continue;
+				NotifyMapping notifyMapping = new NotifyMapping();
+				Project project = new Project();
+				project.setId(notifyMappingFacade.getProjectId());
+				int projectId = data.getProjects().indexOf(project);
+				if (projectId == -1) {
+					logger.error("Unable to get project with id: " + notifyMappingFacade.getProjectId());
+					continue;
+				}
+				project = (Project) data.getProjects().get(projectId);
+				User user = new User();
+				user.setId(notifyMappingFacade.getUserId());
+				int userId = data.getUsers().indexOf(user);
+				if (userId == -1) {
+					logger.error("Unable to get user with id: " + notifyMappingFacade.getUserId());
+					continue;
+				} else {
+					user = (User) data.getUsers().get(userId);
+				}
+				notifyMapping.setProject(project);
+				notifyMapping.setUser(user);
+				project.getNotifyMappings().add(notifyMapping);
 			}
-			project = (Project) data.getProjects().get(projectId);
-			User user = new User();
-			user.setId(notifyMappingFacade.getUserId());
-			int userId = data.getUsers().indexOf(user);
-			if (userId == -1) {
-				logger.error("Unable to get user with id: " + notifyMappingFacade.getUserId());
-				continue;
-			} else {
-				user = (User) data.getUsers().get(userId);
-			}
-			notifyMapping.setProject(project);
-			notifyMapping.setUser(user);
-			project.getNotifyMappings().add(notifyMapping);
 		}
 
-		it = data.getProjects().iterator();
-		while (it.hasNext()) {
-			Project project = (Project) it.next();
-			project.setId(0);
+		if (data.getProjects() != null) {
+			it = data.getProjects().iterator();
+			while (it.hasNext()) {
+				Project project = (Project) it.next();
+				project.setId(0);
+			}
 		}
-		it = data.getSchedules().iterator();
-		while (it.hasNext()) {
-			Schedule schedule = (Schedule) it.next();
-			schedule.setId(0);
+
+		if (data.getSchedules() != null) {
+			it = data.getSchedules().iterator();
+			while (it.hasNext()) {
+				Schedule schedule = (Schedule) it.next();
+				schedule.setId(0);
+			}
 		}
-		it = data.getBuilds().iterator();
-		while (it.hasNext()) {
-			Build build = (Build) it.next();
-			build.setId(0);
+
+		if (data.getBuilds() != null) {
+			it = data.getBuilds().iterator();
+			while (it.hasNext()) {
+				Build build = (Build) it.next();
+				build.setId(0);
+			}
 		}
-		it = data.getUsers().iterator();
-		while (it.hasNext()) {
-			User user = (User) it.next();
-			user.setId(0);
+
+		if (data.getUsers() != null) {
+			it = data.getUsers().iterator();
+			while (it.hasNext()) {
+				User user = (User) it.next();
+				user.setId(0);
+			}
 		}
-		it = data.getRoles().iterator();
-		while (it.hasNext()) {
-			Role role = (Role) it.next();
-			role.setId(0);
+
+		if (data.getRoles() != null) {
+			it = data.getRoles().iterator();
+			while (it.hasNext()) {
+				Role role = (Role) it.next();
+				role.setId(0);
+			}
 		}
+
 		return data;
 	}
 
@@ -998,7 +1032,7 @@ public class MigrationManager {
 		Iterator it = project12.getSchedules().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb12.ScheduleFacade scheduleFacade =
-					(com.luntsys.luntbuild.facades.lb12.ScheduleFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb12.ScheduleFacade) it.next();
 			logger.info("Defacading schedule: " + projectFacade.getName() + "/" + scheduleFacade.getName());
 			scheduleFacade.setDependentScheduleIds(new ArrayList());
 			Schedule schedule = new Schedule();
@@ -1081,7 +1115,7 @@ public class MigrationManager {
 		it = project12.getNotifyMapping().iterator();
 		while (it.hasNext()) {
 			com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade notifyMappingFacade =
-					(com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade) it.next();
+				(com.luntsys.luntbuild.facades.lb12.NotifyMappingFacade) it.next();
 			com.luntsys.luntbuild.facades.lb12.UserFacade userFacade =
 				project12.getUser(notifyMappingFacade.getUserId());
 			User user = data.getUser(userFacade.getName());
