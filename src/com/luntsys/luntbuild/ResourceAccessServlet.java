@@ -52,6 +52,13 @@ public class ResourceAccessServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = -819260279056874433L;
+	
+	private static final String LUNTBUILD_BASE_URL = "http://luntbuild.javaforge.com/";
+	private static final String DOCS_GUIDE_URL = LUNTBUILD_BASE_URL + "manual/guide/manual.html";
+	private static final String DOCS_QUICKSTART_URL = LUNTBUILD_BASE_URL + "doc/quickstart/quickstart.html";
+	private static final String DOCS_FAQ_URL = LUNTBUILD_BASE_URL + "doc/faq/index.html";
+	private static final String DOCS_JAVADOC_URL = LUNTBUILD_BASE_URL + "doc/javadoc/index.html";
+	private static final String DOCS_API_URL = LUNTBUILD_BASE_URL + "remote-api/javadoc/index.html";
 
 	/**
 	 * Handles a requests.
@@ -68,11 +75,11 @@ public class ResourceAccessServlet extends HttpServlet {
 			File fileToRequest = new File(docsDir + File.separator + pathToRequest);
 			String pathRelativeToPublishDir = Luntbuild.parseRelativePath(new File(docsDir), fileToRequest);
 			if (pathRelativeToPublishDir == null || pathRelativeToPublishDir.equals("")) // requested file equals to docs directory or is not under docs directory
-				throw new ServletException("Invalid file requested: " + fileToRequest.getAbsolutePath());
-			if (fileToRequest.isFile())
+				httpServletResponse.sendRedirect(getDocsUrl(pathToRequest));
+			else if (fileToRequest.isFile())
 				Luntbuild.sendFile(httpServletRequest, httpServletResponse, fileToRequest.getAbsolutePath());
 			else
-				throw new ServletException("Invalid file requested: " + fileToRequest.getAbsolutePath());
+				httpServletResponse.sendRedirect(getDocsUrl(pathToRequest));
 		} else if (httpServletRequest.getServletPath().startsWith("/logs")) {
 			Luntbuild.sendFile(httpServletRequest, httpServletResponse, Luntbuild.installDir + "/logs/" + Luntbuild.log4jFileName);
 		} else if (httpServletRequest.getServletPath().startsWith("/publish")) {
@@ -121,5 +128,16 @@ public class ResourceAccessServlet extends HttpServlet {
 		} else {
 			throw new ServletException("ResourceAccessServlet rejects servlet path: " + httpServletRequest.getServletPath());
 		}
+	}
+	
+	private String getDocsUrl(String path) {
+		if (path == null || path.trim().length() == 0) return DOCS_GUIDE_URL;
+		if (path.indexOf("guide") >= 0) return DOCS_GUIDE_URL;
+		if (path.indexOf("quickstart") >= 0) return DOCS_QUICKSTART_URL;
+		if (path.indexOf("faq") >= 0) return DOCS_FAQ_URL;
+		if (path.indexOf("javadoc") >= 0) return DOCS_JAVADOC_URL;
+		if (path.indexOf("api") >= 0) return DOCS_API_URL;
+		
+		return DOCS_GUIDE_URL;
 	}
 }
