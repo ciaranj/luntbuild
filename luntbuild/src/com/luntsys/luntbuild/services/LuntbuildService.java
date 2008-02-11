@@ -552,7 +552,12 @@ public class LuntbuildService implements ILuntbuild {
             publishDir = Luntbuild.installDir + "/publish";
         File logFile = new File(publishDir + "/" + schedule.getProject().getName() +
                 "/" + schedule.getName() + "/" + version + "/" + BuildGenerator.BUILD_HTML_LOG);
-
+        if (!logFile.exists())
+        	logFile = new File(publishDir + "/" + schedule.getProject().getName() +
+                    "/" + schedule.getName() + "/" + version + "/" + BuildGenerator.BUILD_LOG);
+        if (!logFile.exists())
+        	return new String[0];
+        
         return getFileAsStringArray(logFile);
     }
 
