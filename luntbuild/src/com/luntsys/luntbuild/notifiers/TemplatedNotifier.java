@@ -289,7 +289,7 @@ public abstract class TemplatedNotifier extends Notifier implements ReferenceIns
         Enumeration reports = Luntbuild.reports.keys();
         while (reports.hasMoreElements()) {
             String report_name = (String) reports.nextElement();
-            context.put("build_" + report_name + "_reporturl", ((Report)Luntbuild.reports.get(report_name)).getReportUrl(build.getPublishDir()));
+            context.put("build_" + report_name.toLowerCase() + "_reporturl", ((Report)Luntbuild.reports.get(report_name)).getReportUrl(build.getPublishDir()));
         }
 
         visualStudioScraper.scrape(buildText, build, context);
