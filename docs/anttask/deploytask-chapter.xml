@@ -10,8 +10,8 @@
       </orderedlist>
    </para>
    <para>
-      Hessian and Lunt jars can be found in the "remoting" directory.     
-      Jsch is available <ulink url="http://www.jcraft.com/jsch/">here.</ulink>
+      Hessian and Luntbuild API jars can be found in the "remoting" directory.     
+      Jsch is available <ulink url="http://www.jcraft.com/jsch/">here</ulink>, or also in the "remoting" directory.
    </para>
    <para>Currently, LuntDeployTask only supports deploying artifacts from the latest green (successful) build.</para>
 
