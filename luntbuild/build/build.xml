@@ -327,7 +327,11 @@
 		</javadoc>
 	</target>
 	
-    <target name="stage" depends="webstage, api, stage_docs, stage-copy"/>
+	<target name="anttask">
+    	<ant dir="contrib/anttask" target="dist" />
+	</target>
+	
+    <target name="stage" depends="webstage, api, anttask, stage_docs, stage-copy"/>
 	
     <target name="stage-nodoc" depends="webstage, api, stage-copy"/>
 	
@@ -402,7 +406,10 @@
 			<fileset dir="installer/scripts"/>
 		</copy>
 		<copy todir="stage/contrib">
-			<fileset dir="contrib"/>
+			<fileset dir="contrib">
+				<exclude name="**/src"/>
+				<exclude name="**/test-src"/>
+			</fileset>
 		</copy>
     	<copy todir="stage/templates">
             <fileset dir="templates"/>
@@ -444,6 +451,8 @@
         <delete file="db/luntbuild.script"/>
         <delete file="db/luntbuild.script.base"/>
         <delete file="db/luntbuild.script.demo"/>
+    	
+    	<ant dir="contrib/anttask" target="clean" />
     </target>
 
 	<target name="test_compile" depends="webstage"
