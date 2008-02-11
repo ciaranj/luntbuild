@@ -324,6 +324,8 @@ public class Build {
             buildLogger.logHtml(buildXmlPath, null, buildPath, buildTextPath);
 
         File f = new File(buildPath);
+        if (f.exists() && f.canRead()) return true;
+        f = new File(buildTextPath);
         return f.exists() && f.canRead();
     }
 
@@ -333,12 +335,31 @@ public class Build {
      * @return the build log URL of this build
      */
     public String getBuildLogUrl() {
-        if (ensureBuildLog())
-            return getPublishUrl() + "/" + BuildGenerator.BUILD_HTML_LOG;
-        else
+        if (ensureBuildLog()) {
+        	if (htmlLogExists())
+        		return getPublishUrl() + "/" + BuildGenerator.BUILD_HTML_LOG;
+        	else if (textLogExists())
+        		return getPublishUrl() + "/" + BuildGenerator.BUILD_LOG;
+        	else
+        		return null;
+        } else
             return null;
     }
 
+    private boolean htmlLogExists() {
+        String publishDir = getPublishDir();
+        String buildPath = publishDir + File.separator + BuildGenerator.BUILD_HTML_LOG;
+        File f = new File(buildPath);
+        return f.exists() && f.canRead();
+    }
+    
+    private boolean textLogExists() {
+        String publishDir = getPublishDir();
+        String buildPath = publishDir + File.separator + BuildGenerator.BUILD_LOG;
+        File f = new File(buildPath);
+        return f.exists() && f.canRead();
+    }
+    
     /**
      * Gets the system log URL.
      * 

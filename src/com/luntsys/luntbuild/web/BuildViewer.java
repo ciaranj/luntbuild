@@ -107,7 +107,7 @@ public abstract class BuildViewer extends SecuritySupportComponent implements Pa
 
         File f = new File(buildPath);
         if (!(f.exists() && f.canRead())) {
-            buildPath = publishDir + "/" + BuildGenerator.BUILD_LOG;
+            buildPath = buildTextPath;
             f = new File(buildPath);
             if (f.exists() && f.canRead())
                 Luntbuild.sendFile(cycle, buildPath);
