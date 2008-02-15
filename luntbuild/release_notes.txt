@@ -1,7 +1,8 @@
 ==============================================
-luntbuild 1.xxx Release Notes
+luntbuild 1.6.0 Release Notes
 ==============================================
 
+- Fix: VSS Get (last version) problem (contribution by Lorenzo)
 - Fix: (Bug 6891) Fixed report URL variables for notification templates (variable names were being inserted 
 
 ==============================================
