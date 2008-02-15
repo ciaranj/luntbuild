@@ -94,7 +94,7 @@ public class VssAdaptor extends Vcs {
 	 * 
 	 * @return the SourceSafe path
 	 */
-    private String getActualVssPath() {
+	private String getActualVssPath() {
 		return OgnlHelper.evaluateScheduleValue(getVssPath());
 	}
 
@@ -175,7 +175,7 @@ public class VssAdaptor extends Vcs {
 	 * 
 	 * @return the datetime format
 	 */
-    private String getActualDateTimeFormat() {
+	private String getActualDateTimeFormat() {
 		return OgnlHelper.evaluateScheduleValue(getDateTimeFormat());
 	}
 
@@ -188,16 +188,16 @@ public class VssAdaptor extends Vcs {
 		this.dateTimeFormat = dateTimeFormat;
 	}
 
-    /**
-     * @inheritDoc
-     */
+	/**
+	 * @inheritDoc
+	 */
 	public String getDisplayName() {
 		return "Visual Sourcesafe";
 	}
 
-    /**
-     * @inheritDoc
-     */
+	/**
+	 * @inheritDoc
+	 */
 	public String getIconName() {
 		return "vss.jpg";
 	}
@@ -206,10 +206,10 @@ public class VssAdaptor extends Vcs {
 	 * Retrieves the contents of a module.
 	 * 
 	 * @param workingDir the working directory
-     * @param module the module
+	 * @param module the module
 	 * @param isClean set <code>true</code> if this is a clean build
-     * @param antProject the ant project used for logging
-     */
+	 * @param antProject the ant project used for logging
+	 */
 	private void retrieveModule(String workingDir, VssModule module, boolean isClean, Project antProject) {
 		if (isClean)
 			antProject.log("Retrieve source path: " + module.getActualSrcPath(), Project.MSG_INFO);
@@ -228,7 +228,7 @@ public class VssAdaptor extends Vcs {
 		Commandline cmdLine = buildVssExecutable();
 		cmdLine.createArgument().setValue("Get");
 		cmdLine.createArgument().setValue(Luntbuild.concatPath("$", module.getActualSrcPath()));
-		cmdLine.createArgument().setLine("-I- -R");
+		cmdLine.createArgument().setLine("-I-Y -R");
 		if (!Luntbuild.isEmpty(module.getLabel()))
 			cmdLine.createArgument().setValue("-VL" + module.getActualLabel());
 		cmdLine.createArgument().setValue("-W");
@@ -285,7 +285,7 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-     * @inheritDoc
+	 * @inheritDoc
 	 */
 	public void checkoutActually(Build build, Project antProject) {
 		String workingDir = build.getSchedule().getWorkDirRaw();
@@ -317,14 +317,14 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-     * @inheritDoc
+	 * @inheritDoc
 	 */
 	public void label(Build build, Project antProject) {
 		// does nothing
 	}
 
 	/**
-     * @inheritDoc
+	 * @inheritDoc
 	 */
 	public void unlabel(Build build, Project antProject) {
 		if (build.getLabelStrategy() != com.luntsys.luntbuild.facades.Constants.LABEL_NONE) {
@@ -340,7 +340,7 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-     * @inheritDoc
+	 * @inheritDoc
 	 * @see VssModule
 	 */
 	public Module createNewModule() {
@@ -348,16 +348,16 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-     * @inheritDoc
+	 * @inheritDoc
 	 * @see VssModule
 	 */
-    public Module createNewModule(Module module) {
-        return new VssModule((VssModule)module);
-    }
+	public Module createNewModule(Module module) {
+		return new VssModule((VssModule)module);
+	}
 
-    /**
-     * @inheritDoc
-     */
+	/**
+	 * @inheritDoc
+	 */
 	public List getVcsSpecificProperties() {
 		List properties = new ArrayList();
 		properties.add(new DisplayProperty() {
@@ -367,8 +367,8 @@ public class VssAdaptor extends Vcs {
 
 			public String getDescription() {
 				return "The directory where your srcsafe.ini resides in. For example: \\\\machine1\\directory1. " +
-						"You should use expicit hostname eg. \"machine1\", " +
-						"not the ip address of the \"machine1\", or you should specify ip address in the Sourcesafe path.";
+				"You should use expicit hostname eg. \"machine1\", " +
+				"not the ip address of the \"machine1\", or you should specify ip address in the Sourcesafe path.";
 			}
 
 			public String getValue() {
@@ -432,9 +432,9 @@ public class VssAdaptor extends Vcs {
 
 			public String getDescription() {
 				return "Specify the date/time format used for the Sourcesafe history command. " +
-						"This property is optional. If left empty, Luntbuild will use \"M/dd/yy;h:mm:ssa\" as " +
-						"the default value. The default value is suitable for English language operating systems that use US locale. Please refer to " +
-						"the User's Guide for details how to specify this value if Luntbuild is running on a version of OS with different locale. ";
+				"This property is optional. If left empty, Luntbuild will use \"M/dd/yy;h:mm:ssa\" as " +
+				"the default value. The default value is suitable for English language operating systems that use US locale. Please refer to " +
+				"the User's Guide for details how to specify this value if Luntbuild is running on a version of OS with different locale. ";
 			}
 
 			public boolean isRequired() {
@@ -460,7 +460,7 @@ public class VssAdaptor extends Vcs {
 
 			public String getDescription() {
 				return "The directory path, where your ss.exe file resides in. " +
-						"It should be specified here, if it does not exist in the system path.";
+				"It should be specified here, if it does not exist in the system path.";
 			}
 
 			public boolean isRequired() {
@@ -478,11 +478,11 @@ public class VssAdaptor extends Vcs {
 		return properties;
 	}
 
-    /**
-     * Validates the modules of this VCS.
-     *
-     * @throws ValidationException if a module is not invalid
-     */
+	/**
+	 * Validates the modules of this VCS.
+	 *
+	 * @throws ValidationException if a module is not invalid
+	 */
 	public void validateModules() {
 		super.validateModules();
 		Iterator it = getModules().iterator();
@@ -511,18 +511,18 @@ public class VssAdaptor extends Vcs {
 		/**
 		 * Constructor, creates a blank SourceSafe module.
 		 */
-        public VssModule() {}
+		public VssModule() {}
 
 		/**
 		 * Copy constructor, creates a SourceSafe module from another SourceSafe module.
 		 * 
 		 * @param module the module to create from
 		 */
-        public VssModule(VssModule module) {
-            this.srcPath = module.srcPath;
-            this.label = module.label;
-            this.destPath = module.destPath;
-        }
+		public VssModule(VssModule module) {
+			this.srcPath = module.srcPath;
+			this.label = module.label;
+			this.destPath = module.destPath;
+		}
 
 		/**
 		 * Gets the source path.
@@ -538,7 +538,7 @@ public class VssAdaptor extends Vcs {
 		 * 
 		 * @return the source path
 		 */
-        private String getActualSrcPath() {
+		private String getActualSrcPath() {
 			return OgnlHelper.evaluateScheduleValue(getSrcPath());
 		}
 
@@ -565,7 +565,7 @@ public class VssAdaptor extends Vcs {
 		 * 
 		 * @return the label
 		 */
-        private String getActualLabel() {
+		private String getActualLabel() {
 			return OgnlHelper.evaluateScheduleValue(getLabel());
 		}
 
@@ -574,7 +574,7 @@ public class VssAdaptor extends Vcs {
 		 * 
 		 * @param label the label
 		 */
-        private void setLabel(String label) {
+		private void setLabel(String label) {
 			this.label = label;
 		}
 
@@ -592,7 +592,7 @@ public class VssAdaptor extends Vcs {
 		 * 
 		 * @return the destination path
 		 */
-        private String getActualDestPath() {
+		private String getActualDestPath() {
 			return OgnlHelper.evaluateScheduleValue(getDestPath());
 		}
 
@@ -617,8 +617,8 @@ public class VssAdaptor extends Vcs {
 
 				public String getDescription() {
 					return "Specify the path in the VSS repository, for example: \"testvss\", or \"/testvss\".\n" +
-							"NOTE. You should not add $ in front of this path, in order to specify the whole repository, " +
-							"you should just enter \"/\".";
+					"NOTE. You should not add $ in front of this path, in order to specify the whole repository, " +
+					"you should just enter \"/\".";
 				}
 
 				public String getValue() {
@@ -640,8 +640,8 @@ public class VssAdaptor extends Vcs {
 
 				public String getDescription() {
 					return "Specify the label for the above source path. This property " +
-							"is optional. If left empty, latest version " +
-							"is assumed.";
+					"is optional. If left empty, latest version " +
+					"is assumed.";
 				}
 
 				public boolean isRequired() {
@@ -667,9 +667,9 @@ public class VssAdaptor extends Vcs {
 
 				public String getDescription() {
 					return "Specify the destination directory relative to the project work directory, where " +
-							" the contents under the above source path should be retrieved to. This property " +
-							"is optional. If left empty, retrieved code will be put into directory defined by " +
-							"the source path, relative to the project work directory.";
+					" the contents under the above source path should be retrieved to. This property " +
+					"is optional. If left empty, retrieved code will be put into directory defined by " +
+					"the source path, relative to the project work directory.";
 				}
 
 				public boolean isRequired() {
@@ -691,10 +691,10 @@ public class VssAdaptor extends Vcs {
 			return properties;
 		}
 
-	    /**
-	     * @inheritDoc
-	     * @see VssModuleFacade
-	     */
+		/**
+		 * @inheritDoc
+		 * @see VssModuleFacade
+		 */
 		public ModuleFacade getFacade() {
 			VssModuleFacade facade = new VssModuleFacade();
 			facade.setDestPath(getDestPath());
@@ -703,11 +703,11 @@ public class VssAdaptor extends Vcs {
 			return facade;
 		}
 
-	    /**
-	     * @inheritDoc
-	     * @throws RuntimeException if the facade is not an <code>VssModuleFacade</code>
-	     * @see VssModuleFacade
-	     */
+		/**
+		 * @inheritDoc
+		 * @throws RuntimeException if the facade is not an <code>VssModuleFacade</code>
+		 * @see VssModuleFacade
+		 */
 		public void setFacade(ModuleFacade facade) {
 			if (facade instanceof VssModuleFacade) {
 				VssModuleFacade vssModuleFacade = (VssModuleFacade) facade;
@@ -720,23 +720,23 @@ public class VssAdaptor extends Vcs {
 	}
 
 	/**
-     * @inheritDoc
+	 * @inheritDoc
 	 */
 	public Revisions getRevisionsSince(Date sinceDate, Schedule workingSchedule, Project antProject) {
 		final Revisions revisions = new Revisions();
-        revisions.addLog(this.getClass().getName(), toString());
-        revisions.getChangeLogs().add("*************************************************************");
-        revisions.getChangeLogs().add(toString());
-        revisions.getChangeLogs().add("");
+		revisions.addLog(this.getClass().getName(), toString());
+		revisions.getChangeLogs().add("*************************************************************");
+		revisions.getChangeLogs().add(toString());
+		revisions.getChangeLogs().add("");
 
 		Commandline cmdLine = buildVssExecutable();
 		Environment env = buildVssEnvironment();
 		final RevisionBlock block = new RevisionBlock();
-        final Pattern folderPattern = Pattern.compile("^\\*\\*\\*\\*\\* (.*) \\*\\*\\*\\*$");
-        final Pattern rootPattern = Pattern.compile("^\\*.*Version (.*) \\*.*$");
-        final Pattern versionPattern = Pattern.compile("^Version (.*)$");
+		final Pattern folderPattern = Pattern.compile("^\\*\\*\\*\\*\\* (.*) \\*\\*\\*\\*$");
+		final Pattern rootPattern = Pattern.compile("^\\*.*Version (.*) \\*.*$");
+		final Pattern versionPattern = Pattern.compile("^Version (.*)$");
 		final Pattern authorDatePattern = Pattern.compile("^User:(.*)Date:(.*)Time:(.*)");
-        final Pattern commentPattern = Pattern.compile("^Comment:(.*)$");
+		final Pattern commentPattern = Pattern.compile("^Comment:(.*)$");
 		Iterator it = getModules().iterator();
 		while (it.hasNext()) {
 			final VssModule module = (VssModule) it.next();
@@ -848,9 +848,9 @@ public class VssAdaptor extends Vcs {
 											author = authormatcher.group(1).trim();
 											revisions.getChangeLogins().add(author);
 											String date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
-						                	date = SynchronizedDateFormatter.parseDate(date_text, DEFAULT_DATETIME_FORMAT);
-						                	if (date == null)
-							                	throw new BuildException("Failed to parse date from VSS history: " + date_text);
+											date = SynchronizedDateFormatter.parseDate(date_text, DEFAULT_DATETIME_FORMAT);
+											if (date == null)
+												throw new BuildException("Failed to parse date from VSS history: " + date_text);
 											parseNextLine = true;
 										} else if (commentmatcher.find()) {
 											comment = commentmatcher.group(1).trim();
@@ -954,9 +954,9 @@ public class VssAdaptor extends Vcs {
 								author = authormatcher.group(1).trim();
 								revisions.getChangeLogins().add(author);
 								String date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
-			                	date = SynchronizedDateFormatter.parseDate(date_text, DEFAULT_DATETIME_FORMAT);
-			                	if (date == null)
-				                	throw new BuildException("Failed to parse date from VSS history: " + date_text);
+								date = SynchronizedDateFormatter.parseDate(date_text, DEFAULT_DATETIME_FORMAT);
+								if (date == null)
+									throw new BuildException("Failed to parse date from VSS history: " + date_text);
 								parseNextLine = true;
 							} else if (commentmatcher.find()) {
 								comment = commentmatcher.group(1).trim();
@@ -1037,12 +1037,12 @@ public class VssAdaptor extends Vcs {
 		return sdf.format(date);
 	}
 
-    /**
-     * @inheritDoc
-     * @see VssAdaptorFacade
-     */
+	/**
+	 * @inheritDoc
+	 * @see VssAdaptorFacade
+	 */
 	public void saveToFacade(VcsFacade facade) {
-    	// TODO throw RuntimeException if the facade is not the right class
+		// TODO throw RuntimeException if the facade is not the right class
 		VssAdaptorFacade vssFacade = (VssAdaptorFacade) facade;
 		vssFacade.setDateTimeFormat(getDateTimeFormat());
 		vssFacade.setSsDir(getSsDir());
@@ -1051,11 +1051,11 @@ public class VssAdaptor extends Vcs {
 		vssFacade.setVssUser(getVssUser());
 	}
 
-    /**
-     * @inheritDoc
-     * @throws RuntimeException if the facade is not an <code>VssAdaptorFacade</code>
-     * @see VssAdaptorFacade
-     */
+	/**
+	 * @inheritDoc
+	 * @throws RuntimeException if the facade is not an <code>VssAdaptorFacade</code>
+	 * @see VssAdaptorFacade
+	 */
 	public void loadFromFacade(VcsFacade facade) {
 		if (!(facade instanceof VssAdaptorFacade))
 			throw new RuntimeException("Invalid facade class: " + facade.getClass().getName());
@@ -1067,10 +1067,10 @@ public class VssAdaptor extends Vcs {
 		setVssUser(vssFacade.getVssUser());
 	}
 
-    /**
-     * @inheritDoc
-     * @see VssAdaptorFacade
-     */
+	/**
+	 * @inheritDoc
+	 * @see VssAdaptorFacade
+	 */
 	public VcsFacade constructFacade() {
 		return new VssAdaptorFacade();
 	}
