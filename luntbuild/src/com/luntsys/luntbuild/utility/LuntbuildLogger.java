@@ -110,16 +110,10 @@ public class LuntbuildLogger implements BuildLogger {
     protected boolean emacsMode = false;
 
     /** DocumentBuilder to use when creating the document to start with. */
-    private static DocumentBuilder builder = null;
-    static {
-        try {
-            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        } catch (Exception exc) {
-            throw new ExceptionInInitializerError(exc);
-        }
-    }
+    private final DocumentBuilder builder;
+
     /** The complete log document for this build. */
-    private Document doc = builder.newDocument();
+    private final Document doc;
     /**
      * When the build started.
      */
@@ -168,6 +162,12 @@ public class LuntbuildLogger implements BuildLogger {
      * Creates a new Luntbuild logger.
      */
     public LuntbuildLogger() {
+        try {
+            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (Exception exc) {
+            throw new RuntimeException(exc);
+        }
+    	doc = builder.newDocument();
         this.buildElement = new TimedElement();
         this.buildElement.startTime = System.currentTimeMillis();
         this.buildElement.element = this.doc.createElement(BUILD_TAG);

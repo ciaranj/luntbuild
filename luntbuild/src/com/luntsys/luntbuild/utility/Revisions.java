@@ -77,16 +77,10 @@ public class Revisions {
 	private boolean fileModified = false;
 
     /** DocumentBuilder to use when creating the document to start with. */
-    private static DocumentBuilder builder = null;
-    static {
-        try {
-            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        } catch (Exception exc) {
-            throw new ExceptionInInitializerError(exc);
-        }
-    }
+    private final DocumentBuilder builder;
+
     /** The complete log document for this build. */
-    protected Document doc = builder.newDocument();
+    protected final Document doc;
     protected Element revisionElement = null;
     protected Element lastLog = null;
     protected Element lastEntry = null;
@@ -134,6 +128,12 @@ public class Revisions {
 	 * Constructor, creates a new revision manager.
 	 */
 	public Revisions() {
+        try {
+            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (Exception exc) {
+            throw new RuntimeException(exc);
+        }
+		doc = builder.newDocument();
 		changeLogs.clear();
 		changeLogins.clear();
 		fileModified = false;

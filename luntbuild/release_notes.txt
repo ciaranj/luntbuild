@@ -2,6 +2,7 @@
 luntbuild 1.6.0 Release Notes
 ==============================================
 
+- Feature: Updated svnkit (SvnAdaptor) library to version 1.1.6
 - Fix: VSS Get (last version) problem (contribution by Lorenzo)
 - Fix: (Bug 6891) Fixed report URL variables for notification templates (variable names were being inserted 
 
@@ -16,7 +17,7 @@ luntbuild 1.5.5 Release Notes
 - Fix: (Bug 6529) Luntbuild lets you edit projects you don't have access to
 - Fix: (Bug 6731) Trouble labeling sourceCode with BaseClearCaseAdaptor
 - Fix: (Bug 6802) Fixed OGNL expression evaluation in ClearCase adaptor properties
-- Fix: (Bug 6812) Fixed random quotes in notification messagesin mixed case)
+- Fix: (Bug 6812) Fixed random quotes in notification messages in mixed case
 - Fix: MigrationManager improvements (more robust)
 - Fix: If local docs not installed, use website docs
 - Fix: Limit xml/xslt build log file conversion to 100K file size

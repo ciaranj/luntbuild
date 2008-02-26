@@ -88,6 +88,8 @@ public class SvnAdaptor extends Vcs {
     private static final String REPO_LAYOUT_SINGLE = "single";
     private static final String REPO_LAYOUT_MULTIPLE = "multiple";
 
+    private transient SVNClientManager svnManager = null;
+    
     private String urlBase;
     private String layout;
     private String trunk;
@@ -115,7 +117,9 @@ public class SvnAdaptor extends Vcs {
     }
 
     private SVNClientManager getClientManager() {
-        return SVNClientManager.newInstance(SVNWCUtil.createDefaultOptions(true), this.user, this.password);
+    	if (svnManager != null) return svnManager;
+        svnManager = SVNClientManager.newInstance(SVNWCUtil.createDefaultOptions(true), this.user, this.password);
+        return svnManager;
     }
 
     /**
