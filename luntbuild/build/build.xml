@@ -18,7 +18,7 @@
     <property name="compile-source-level" value="1.4"/>
     <property name="compile-target-level" value="1.4"/>
     <property name="javadoc-source-level" value="1.4.2"/>
-	<property name="skip-javadoc" value="true"/>
+	<property name="skip-javadoc" value="false"/>
 
     <patternset id="web.images">
         <include name="**/*.gif"/>
@@ -307,7 +307,7 @@
 
 	</target>
 
-	<target name="stage_javadocs">
+	<target name="stage_javadocs" unless="skip-javadoc">
 		<echo level="info">Generating full JavaDoc</echo>
 		<mkdir dir="stage/docs/javadoc"/>
 		<javadoc sourcepath="src" classpathref="classpath" destdir="stage/docs/javadoc"
