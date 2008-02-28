@@ -875,14 +875,15 @@ public class BuildGenerator implements StatefulJob {
             String prefix = "";
             if (event.getTask() != null)
                 prefix += "        [" + event.getTask().getTaskName() + "]";
+            String msg = event.getMessage();
             if (event.getPriority() == Project.MSG_ERR)
-                logger.error(prefix + event.getMessage());
+                if (msg != null && msg.trim().length() > 0) logger.error(prefix + msg);
             else if (event.getPriority() == Project.MSG_WARN)
-                logger.warn(prefix + event.getMessage());
+            	if (msg != null && msg.trim().length() > 0) logger.warn(prefix + msg);
             else if (event.getPriority() == Project.MSG_INFO)
-                logger.info(prefix + event.getMessage());
+            	if (msg != null && msg.trim().length() > 0) logger.info(prefix + msg);
             else
-                logger.debug(prefix + event.getMessage());
+            	if (msg != null && msg.trim().length() > 0) logger.debug(prefix + msg);
         }
     }
 

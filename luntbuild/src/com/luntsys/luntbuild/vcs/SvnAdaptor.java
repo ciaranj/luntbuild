@@ -440,9 +440,11 @@ public class SvnAdaptor extends Vcs {
             try {
                 updateClient.doCheckout(url, destDir, SVNRevision.HEAD, SVNRevision.HEAD, true);
             } catch (SVNException e1) {
+                getClientManager().dispose();
                 throw new RuntimeException("Error executing checkout svn command", e1);
             }
         }
+        getClientManager().dispose();
     }
 
     private SVNURL getModuleUrl(SvnModule module) {
@@ -492,6 +494,7 @@ public class SvnAdaptor extends Vcs {
                 throw new BuildException("Failed to create label, url \"" + urlString + "\" already exists.");
             }
         } catch (SVNException e) {
+            getClientManager().dispose();
             throw new RuntimeException("Error checking that url doesn't exits: " + urlString, e);
         }
 
@@ -503,8 +506,10 @@ public class SvnAdaptor extends Vcs {
         		path += File.separatorChar + module.getActualSrcPath().trim();
             clientManager.getCopyClient().doCopy(new File(path), SVNRevision.WORKING, url, false, "Labeled: " + label);
         } catch (SVNException e) {
+            getClientManager().dispose();
             throw new RuntimeException("Error executing copy svn command", e);
         }
+        getClientManager().dispose();
     }
 
     private SVNURL parseUrl(String urlString) {
@@ -558,6 +563,7 @@ public class SvnAdaptor extends Vcs {
         } catch (SVNException e) {
             retrieveModule(workingDir, module, antProject);
         }
+        getClientManager().dispose();
     }
 
     private File getModuleDestDir(SvnModule module, String workingDir) {
@@ -593,7 +599,10 @@ public class SvnAdaptor extends Vcs {
 	 * @param urlBase the URL base
 	 */
     public void setUrlBase(String urlBase) {
-        this.urlBase = urlBase;
+    	if (urlBase != null && urlBase.length() > 0 && urlBase.endsWith("/"))
+    		this.urlBase = urlBase.substring(0, urlBase.length() - 1);
+    	else
+    		this.urlBase = urlBase;
     }
 
     /**
@@ -784,10 +793,12 @@ public class SvnAdaptor extends Vcs {
                     logClient.doLog(url, null, SVNRevision.HEAD, SVNRevision.create(sinceDate), SVNRevision.HEAD,
                             false, true, 0, handler);
                 } catch (SVNException e) {
-                    throw new RuntimeException("Error executing log svn command: " + url, e);
+                   getClientManager().dispose();
+                   throw new RuntimeException("Error executing log svn command: " + url, e);
                 }
             }
         }
+        getClientManager().dispose();
         return revisions;
     }
 
