@@ -1101,6 +1101,8 @@ public class Luntbuild {
             else if (ognlValue.equals(expression))
                 ognlValue = "";
             ognlValue = resolveOgnlExpressions(ognlRoot, ognlValue, resultClass);
+            // Need to escape escape chars because replaceFirst will reduce them 
+            ognlValue = ognlValue.replaceAll("\\\\", "\\\\\\\\");
             value = matcher.replaceFirst(ognlValue);
         }
         return value;

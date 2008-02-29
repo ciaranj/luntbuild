@@ -2,6 +2,7 @@
 luntbuild 1.6.0 Release Notes
 ==============================================
 
+- Fix: Bug [# 6928]  builder cannot use schedule variables on windows
 - Fix: Bug [# 6869]  Copy of project results in hibernate error
 - Fix: Bug [# 6435]  Luntbuild running out of database connections or memory (memory leak)
 - Feature: Updated svnkit (SvnAdaptor) library to version 1.1.6
