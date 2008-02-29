@@ -134,12 +134,12 @@ public abstract class ProjectPage extends HierarchyPage implements PageDetachLis
 		Luntbuild.getDao().saveProject(getProject());
 		if (getProjectId() == 0) {
 			Iterator it = getProject().getVcsLogins().iterator();
-			while (it.hasNext()) {
-				VcsLogin vcsLogin = (VcsLogin) it.next();
-				vcsLogin.setId(0);
-				Luntbuild.getDao().saveVcsLogin(vcsLogin);
-			}
 			if (getProjectIdToCopy() == 0) {
+				while (it.hasNext()) {
+					VcsLogin vcsLogin = (VcsLogin) it.next();
+					vcsLogin.setId(0);
+					Luntbuild.getDao().saveVcsLogin(vcsLogin);
+				}
 				it = getProject().getSchedules().iterator();
 				while (it.hasNext()) {
 					Schedule schedule = (Schedule) it.next();

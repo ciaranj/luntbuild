@@ -2,7 +2,8 @@
 luntbuild 1.6.0 Release Notes
 ==============================================
 
-- Fix:  Bug [# 6435]  Luntbuild running out of database connections or memory (memory leak)
+- Fix: Bug [# 6869]  Copy of project results in hibernate error
+- Fix: Bug [# 6435]  Luntbuild running out of database connections or memory (memory leak)
 - Feature: Updated svnkit (SvnAdaptor) library to version 1.1.6
 - Fix: VSS Get (last version) problem (contribution by Lorenzo)
 - Fix: (Bug 6891) Fixed report URL variables for notification templates (variable names were being inserted )
