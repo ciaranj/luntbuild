@@ -2532,7 +2532,7 @@ in OGNL expression evaluation.
     Build publish directory.
     </para></listitem>
     </varlistentry>
-    <varlistentry><term>build.getReportUrl("JUnit")</term>
+    <varlistentry><term>build.getReportDir("JUnit")</term>
     <listitem><para>
     JUnit tests Html reports directory
     </para></listitem>

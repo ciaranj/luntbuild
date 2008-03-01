@@ -1,5 +1,5 @@
 ==============================================
-luntbuild 1.6.0 Release Notes
+luntbuild 1.5.6 Release Notes
 ==============================================
 
 - Fix: Bug [# 6928]  builder cannot use schedule variables on windows
