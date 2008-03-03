@@ -73,7 +73,7 @@ public class Maven2Builder extends Builder {
             "buildVersion=\"${build.version}\"\n" +
             "artifactsDir=\"${build.artifactsDir}\"\n" +
             "buildDate=\"${build.startDate}\"\n" +
-            "junitHtmlReportDir=\"${build.getReportUrl(\"JUnit\")}\"";
+            "junitHtmlReportDir=\"${build.getReportDir(\"JUnit\")}\"";
 
 	/**
 	 * Constructor, creates a new maven2 builder with default settings.

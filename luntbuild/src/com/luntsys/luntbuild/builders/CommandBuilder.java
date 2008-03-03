@@ -52,7 +52,7 @@ public class CommandBuilder extends Builder {
 	 * The command to run command script
 	 */
 	private String command =
-        " \"${build.version}\" \"${build.artifactsDir}\" \"${build.startDate}\" \"${build.getReportUrl(\"JUnit\")}\"";
+        " \"${build.version}\" \"${build.artifactsDir}\" \"${build.startDate}\" \"${build.getReportDir(\"JUnit\")}\"";
 
 	/**
 	 * The directory to run command, defaults to be current project's work directory if left empty

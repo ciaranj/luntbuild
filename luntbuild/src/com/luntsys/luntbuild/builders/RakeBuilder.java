@@ -75,7 +75,7 @@ public class RakeBuilder extends Builder {
             "buildVersion=\"${build.version}\"\n" +
             "artifactsDir=\"${build.artifactsDir}\"\n" +
             "buildDate=\"${build.startDate}\"\n" +
-            "junitHtmlReportDir=\"${build.getReportUrl(\"JUnit\")}\"";
+            "junitHtmlReportDir=\"${build.getReportDir(\"JUnit\")}\"";
 
 	/**
 	 * Constructor, creates a new rake builder with default settings.
