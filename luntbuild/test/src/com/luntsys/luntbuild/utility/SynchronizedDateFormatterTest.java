@@ -96,8 +96,13 @@ public class SynchronizedDateFormatterTest extends TestCase {
 	public void testParseDateString() {
 		Date date = SynchronizedDateFormatter.parseDate("1999.11.11-12:12");
 		assertTrue("SynchronizedDateFormatter.parseDate(\"1999.11.11-12:12\")", date != null);
+
+		date = SynchronizedDateFormatter.parseDate("18-Mrz-08.16:54:32");
+		assertTrue("SynchronizedDateFormatter.parseDate(\"18-Mrz-08.16:54:32\")", date != null);
 	}
 
+	
+	
 	/**
 	 * Test method for {@link com.luntsys.luntbuild.utility.SynchronizedDateFormatter#parseDate(java.lang.String, java.lang.String)}.
 	 */
