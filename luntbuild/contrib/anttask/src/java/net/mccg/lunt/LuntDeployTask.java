@@ -44,6 +44,7 @@ public class LuntDeployTask extends Task{
 	}
 
 	void deploy(final String filepath) {
+	    log("Deploying Lunt Artifact: " + filepath);
 		try {
 			URL url = new URL(filepath);
 			URLConnection urlConn = url.openConnection();
@@ -52,19 +53,25 @@ public class LuntDeployTask extends Task{
 			DataInputStream dis = new DataInputStream(urlConn.getInputStream());
 			
 			if(isLocalCopy()){
-			    FileOutputStream fos = new FileOutputStream(deployDir+"/"+artifact);
+			    FileOutputStream fos = new FileOutputStream(deployDir+"/"+getArtifactName(artifact));
 			    int c;
 		        while ((c = dis.read()) != -1) 
 		            fos.write(c);
 		        fos.close();
 			} else {
-			    getSshService().sftp(dis, deployDir, artifact);
+			    getSshService().sftp(dis, deployDir, getArtifactName(artifact));
 			}
 		} catch (Exception e) {
 			throw new BuildException(e);
 		}
 	}
 
+	private String getArtifactName(final String artifact) {
+        if(artifact.indexOf("/") != -1)
+            return artifact.substring(artifact.lastIndexOf("/")+1);
+        return artifact;
+    }
+	
 	private boolean isLocalCopy() {
         return "true".equalsIgnoreCase(isLocalDeploy);
     }
