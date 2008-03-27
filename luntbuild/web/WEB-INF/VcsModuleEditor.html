@@ -1,0 +1,59 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+-->
+</style>
+</head>
+<span jwcid="$content$">
+  <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+<form jwcid="@Form" name="form" method="post">
+    <tr align="center" bordercolor="#EAEDF4" bgcolor="#FFFFE6"> 
+      <td colspan="4" bgcolor="#EAEDF4" scope="col"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="propertyEditorTitle"> 
+          <tr> 
+            <td align="center">Editing module information (Fields marked with the * are required)</td> 
+          </tr> 
+          <span jwcid="@Conditional" condition="ognl:errorMsg != null">
+          <tr> 
+            <td colspan="4" align="left" valign="top" class="errorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td> 
+          </tr> 
+          </span> 
+        </table></td> 
+    </tr> 
+	<span jwcid="@Foreach" source="ognl:moduleToEdit.properties" value="ognl:property" index="ognl:propertyIndex">
+    <tr>
+      <td jwcid="@Any" width="20%" align="left" valign="top" class="ognl:propertyNameCssClass" scope="col">
+      <img src="images/property.gif" width="12" height="11" align="absmiddle"> <span jwcid="@Insert" value="ognl:property.displayName">property1</span>
+      </td>
+      <td jwcid="@Any" class="ognl:propertyValueCssClass" colspan="3" align="left" valign="top" scope="col">
+        <span jwcid="@Conditional" condition="ognl:property.secret"> 
+          <input class="inputBox" value="ognl:property.value" size="75" jwcid="@TextField" hidden="ognl:true"/> 
+        </span>
+        <span jwcid="@Conditional" condition="ognl:!property.secret">
+	        <span jwcid="@Conditional" condition="ognl:(!property.multiLine && !property.select)"> 
+	          <input class="inputBox" value="ognl:property.value" size="75" jwcid="@TextField"/> 
+	        </span>
+	        <span jwcid="@Conditional" condition="ognl:property.multiLine"> 
+	          <textarea cols="70" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:property.value"/>
+	        </span>
+	        <span jwcid="@Conditional" condition="ognl:property.select"> 
+	          <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:property.selectionModel" value="ognl:property.value"/>
+	        </span>
+        </span>
+        <span jwcid="@Conditional" condition="ognl:property.required">*</span><br> 
+        <span jwcid="@InsertText" value="ognl:property.description">property description</span>
+      </td>
+    </tr>
+	</span>
+    <tr>
+      <td jwcid="@Any" class="ognl:propertyEditorTailCssClass" align="right" scope="col">&nbsp;</td>
+      <td jwcid="@Any" class="ognl:propertyEditorTailCssClass" width="19%" height="29" align="right" scope="col">
+          <input type="submit" jwcid="@Submit" listener="ognl:listeners.save" name="Submit" label=" Save " value=" save "/>
+      </td>
+      <td jwcid="@Any" class="ognl:propertyEditorTailCssClass" width="3%" align="right" scope="col">&nbsp;</td>
+      <td jwcid="@Any" class="ognl:propertyEditorTailCssClass" width="55%" align="left" scope="col">      <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="Cancel" value="cancel"/>      </td>
+    </tr>
+</form>
+</table>
+</span>
