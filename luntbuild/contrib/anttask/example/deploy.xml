@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Example Lunt Deploy" default="example.macro" basedir=".">
+    
+    <taskdef name="deploy" classname="net.mccg.lunt.LuntDeployTask"/>
+	
+    <!-- Example usage with local deploy -->
+    <target name="example.local.deploy">
+        <deploy luntUsername="luntbuild" 
+                luntPassword="luntbuild" 
+                luntServer="http://your-luntserver:8080"
+                artifact="IBSPlatform.jar" 
+                project="IBSPlatform" 
+                schedule="IBSPlatform_schedule" 
+                isLocalDeploy="true"
+                deployDir="/temp"/>
+    </target>
+    
+    <!-- Example usage with sshexec to stop/start jboss-->
+    <target name="example.ssh">
+        <echo>Stopping JBoss</echo>
+        <sshexec host="your-server" username="foo" password="bar" command="sudo /sbin/service jboss stop" trust="yes" />
+        <echo>Deploy JBoss Artifacts</echo>
+
+        <deploy 
+            luntUsername="luntuser" 
+            luntPassword="luntpassword" 
+            luntServer="http://your-luntserver:8080"
+            project="myLuntProject" 
+            schedule="myLuntProject" 
+            artifact="myArtifact.ear" 
+            deployUsername="foouser" 
+            deployPassword="barpassword" 
+            deployServer="your-server"
+            deployDir="/deployDir"/>
+        
+        <echo>Starting JBoss</echo>
+        <sshexec host="your-server" username="foo" password="bar" command="sudo /sbin/service jboss start" trust="yes" />
+    </target>
+    
+    <!-- Example usage with macro -->
+    <target name="example.macro">
+            <deploy-to-env artifact="someEJBz.jar" 
+                           project="MyEJBLuntProject" 
+                           schedule="MyEJBLuntProject_schedule" />
+            <deploy-to-env artifact="myWebApp.war" 
+                           project="MyWebAppLuntProject" 
+                           schedule="MyWebAppLuntProject_schedule"/>
+    </target>
+        
+    <macrodef name="deploy-to-env">
+        <attribute name="artifact"/>
+        <attribute name="project"/>
+        <attribute name="schedule"/>
+        <sequential>
+            <echo>Copying @{artifact} to some environment</echo>
+            <deploy 
+                luntUsername="luntuser" 
+                luntPassword="luntpassword" 
+                luntServer="http://your-luntserver:8080"
+                project="@{project}" 
+                schedule="@{schedule}" 
+                artifact="@{artifact}" 
+                deployUsername="foouser" 
+                deployPassword="barpassword" 
+                deployServer="your-server"
+                deployDir="/deployDir   "/>
+            </sequential>
+        </macrodef>
+</project>

@@ -1,0 +1,19 @@
+<span>
+${project}
+<p>
+${project_desc}.
+</p>
+<big><b>Links:</b></big></br>
+</hr>
+<table summary="" border="2" cellpadding="10" cellspacing="0">
+  <tbody>
+    <tr>
+	  	<td>Schedule List</td>
+      <td><a href="${luntbuild_webroot}/luntbuild/api/rss/${project}">${luntbuild_webroot}/luntbuild/api/rss/${project}</a></td>
+  	</tr>
+  </tbody>
+</table>
+
+-- luntbuild
+<br/><a href="${luntbuild_servlet_url}">Login Page</a>
+</span>
