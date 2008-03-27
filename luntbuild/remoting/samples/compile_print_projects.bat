@@ -1,1 +1,0 @@
-javac -d classes -classpath ../luntbuild-api.jar;../hessian-3.0.8.jar src/PrintProjects.java

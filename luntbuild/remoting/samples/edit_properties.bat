@@ -1,1 +1,0 @@
-java -classpath classes;../luntbuild-api.jar;../hessian-3.0.8.jar EditProperties
