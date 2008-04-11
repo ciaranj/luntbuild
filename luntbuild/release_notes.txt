@@ -1,13 +1,19 @@
 ==============================================
+luntbuild 1.6 Release Notes
+==============================================
+
+- Fix: (Bug 7312) Fixed NPE when importing a single project that has two schedules with builds, patch by Roger Perkins
+
+==============================================
 luntbuild 1.5.6 Release Notes
 ==============================================
 
-- Fix: Bug [# 6928]  builder cannot use schedule variables on windows
-- Fix: Bug [# 6869]  Copy of project results in hibernate error
-- Fix: Bug [# 6435]  Luntbuild running out of database connections or memory (memory leak)
 - Feature: Updated svnkit (SvnAdaptor) library to version 1.1.6
 - Fix: VSS Get (last version) problem (contribution by Lorenzo)
+- Fix: (Bug 6435)  Luntbuild running out of database connections or memory (memory leak)
+- Fix: (Bug 6869)  Copy of project results in hibernate error
 - Fix: (Bug 6891) Fixed report URL variables for notification templates (variable names were being inserted )
+- Fix: (Bug 6928)  builder cannot use schedule variables on windows
 
 ==============================================
 luntbuild 1.5.5 Release Notes
@@ -30,8 +36,8 @@ luntbuild 1.5.5 Release Notes
 luntbuild 1.5.4.1 Release Notes
 ==============================================
 
-- Reverted: Bug - [# 6422] Luntbuild is not working after a short outage of the database server
-- Reverted: Bug - [# 6729] double quotes in CVS date causes parse error
+- Reverted: (Bug 6422) Luntbuild is not working after a short outage of the database server
+- Reverted: (Bug 6729) double quotes in CVS date causes parse error
 
 ==============================================
 luntbuild 1.5.4 Release Notes
@@ -51,7 +57,7 @@ luntbuild 1.5.4 Release Notes
 - Fix: (Bug 6507) Updated upgrade instructions to include required step for external databases
 - Fix: (Bug 6583) Fixed Exception when trying to parse NULL dates
 - Fix: Added double quotes around date in CVS Adaptor
-- Fix: Bug [# 6734]  if build_log.html or revision_log.html is missing, .txt is not displayed
+- Fix: (Bug 6734)  if build_log.html or revision_log.html is missing, .txt is not displayed
 
 ==============================================
 luntbuild 1.5.3 Release Notes

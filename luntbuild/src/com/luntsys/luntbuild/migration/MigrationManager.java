@@ -1042,18 +1042,19 @@ public class MigrationManager {
 			schedule.setProject(project);
 			schedule.setFacade(scheduleFacade);
 			data.getSchedules().add(schedule);
+		}
 
-			Iterator buildit = project12.getBuilds().iterator();
-			while (buildit.hasNext()) {
-				com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade = (com.luntsys.luntbuild.facades.lb12.BuildFacade) buildit.next();
-				logger.info("Defacading build: " + data.getSchedule(buildFacade.getScheduleId()).getProject().getName() +
-						"/" + data.getSchedule(buildFacade.getScheduleId()) + "/" + buildFacade.getVersion());
-				Build build = new Build();
-				build.setId(buildFacade.getId());
-				build.setSchedule(schedule);
-				build.setFacade(buildFacade);
-				data.getBuilds().add(build);
-			}
+		Iterator buildit = project12.getBuilds().iterator();
+		while (buildit.hasNext()) {
+			com.luntsys.luntbuild.facades.lb12.BuildFacade buildFacade = (com.luntsys.luntbuild.facades.lb12.BuildFacade) buildit.next();
+			Schedule schedule = data.getSchedule(buildFacade.getScheduleId());
+			logger.info("Defacading build: " + schedule.getProject().getName() +
+					"/" + schedule.getName() + "/" + buildFacade.getVersion());
+			Build build = new Build();
+			build.setId(buildFacade.getId());
+			build.setSchedule(schedule);
+			build.setFacade(buildFacade);
+			data.getBuilds().add(build);
 		}
 
 		logger.info("Defacading vcs logins...");
