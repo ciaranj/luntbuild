@@ -754,6 +754,7 @@ public class BuildGenerator implements StatefulJob {
             antProject.log("Duration of the builder(s) execution: " +
                     (System.currentTimeMillis() - currentTime) / 60000 + " minutes",
                     org.apache.tools.ant.Project.MSG_INFO);
+            currentTime = System.currentTimeMillis();
             build.setStatus(Constants.BUILD_STATUS_SUCCESS);
         } catch (Throwable e) {
             build.setStatus(Constants.BUILD_STATUS_FAILED);
