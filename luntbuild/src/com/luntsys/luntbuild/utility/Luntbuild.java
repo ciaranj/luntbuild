@@ -1153,7 +1153,7 @@ public class Luntbuild {
      * 
      * @param context the servlet context
      */
-    public static void initApplication(ServletContext context) {
+    public static void initApplication(final ServletContext context) {
         try {
             try {
                 installDir = context.getInitParameter("installDir");
@@ -1202,7 +1202,7 @@ public class Luntbuild {
     	        	} catch (Exception e) {
     					logger.error("Failed to load ldap properties");
     	            } finally {
-    	            	if (ldapIs != null) try{ldapIs.close();} catch (Exception e) {}
+    	            	try{ldapIs.close();} catch (Exception e) {}
     				}
     	        } else {
     	        	logger.error("Failed to load ldap properties");
@@ -1217,6 +1217,17 @@ public class Luntbuild {
 
                 context.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, xwac);
                 appContext = xwac;
+                
+                // check pre-defined users, if they do not exist initialize database
+                boolean isDbInited = false;
+                try {
+                	isDbInited = getDao().isUserExistInternal(User.CHECKIN_USER_NAME_RECENT) &&
+                    	getDao().isUserExistInternal(User.CHECKIN_USER_NAME_ALL);
+                } catch (Exception e) {
+					logger.debug("Initializing DB");
+				}
+                if (!isDbInited) getDao().initialize();
+
                 setProperties(getDao().loadProperties());
 
                 loadVcsAdaptors(context);
@@ -1225,11 +1236,6 @@ public class Luntbuild {
                 loadExtensions();
 
                 SecurityHelper.runAsSiteAdmin();
-
-                // check pre-defined users
-                if (!getDao().isUserExist(User.CHECKIN_USER_NAME_RECENT)
-                        || !getDao().isUserExist(User.CHECKIN_USER_NAME_ALL))
-                    getDao().initialize();
 
                 // mark unfinished builds as failed
                 getDao().processUnfinishedBuilds();
@@ -1540,12 +1546,15 @@ public class Luntbuild {
      * @param context the servlet context
      */
     public static void destroyApplication(ServletContext context) {
+    	if (appContext == null) return;
+    	
         logWatchDog.interrupt();
         logger.info("Enter application shutdown");
         SecurityHelper.runAsSiteAdmin();
         getSchedService().shutdown();
         appContext.close();
-
+        appContext = null;
+        
 		InputStream jdbcIs = null;
 		try {
 			Properties props = new Properties();

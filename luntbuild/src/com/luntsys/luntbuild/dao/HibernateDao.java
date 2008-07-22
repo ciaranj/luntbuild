@@ -1132,6 +1132,22 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
     /**
      * @inheritDoc
      */
+    public boolean isUserExistInternal(String userName) {
+        Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
+        try {
+            Query query = session.createQuery("from User user where user.name = :name");
+            query.setParameter("name", userName);
+            List results = query.list();
+
+            return (!(results.size() == 0 || results.get(0) == null));
+        } catch (HibernateException ex) {
+        	return false;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public void initialize() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {

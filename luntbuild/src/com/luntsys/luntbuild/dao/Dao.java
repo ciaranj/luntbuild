@@ -491,6 +491,7 @@ public interface Dao {
      * @throws DataAccessException if an error occurs durring the operation
 	 */
 	boolean isUserExist(String userName);
+	boolean isUserExistInternal(String userName);
 
 	/**
 	 * Initializes the persistent data store with required data.
