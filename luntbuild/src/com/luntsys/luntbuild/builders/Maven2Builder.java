@@ -35,6 +35,7 @@ import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.ValidationException;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -79,10 +80,17 @@ public class Maven2Builder extends Builder {
 	 * Constructor, creates a new maven2 builder with default settings.
 	 */
     public Maven2Builder() {
+    	String path = System.getenv("MAVEN_HOME");
         if (System.getProperty("os.name").startsWith("Windows")) {
-            this.command = "\"C:\\maven-2.0.1\\bin\\mvn.bat\"";
+        	if (path != null)
+        		this.command = path + File.separatorChar + "bin" + File.separatorChar + "mvn.bat";
+        	else
+        		this.command = "\"C:\\apache-maven-2.0.9\\bin\\mvn.bat\"";
         } else {
-            this.command = "/usr/local/bin/mvn";
+        	if (path != null)
+        		this.command = path + File.separatorChar + "bin" + File.separatorChar + "mvn";
+        	else
+        		this.command = "/usr/local/bin/mvn";
         }
         setBuildSuccessCondition("result==0 and builderLogContainsLine(\"INFO\",\"BUILD SUCCESSFUL\")");
     }

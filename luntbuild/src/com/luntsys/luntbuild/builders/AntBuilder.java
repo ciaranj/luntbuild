@@ -81,10 +81,17 @@ public class AntBuilder extends Builder {
 	 * Constructor, creates a new ant builder with default settings.
 	 */
     public AntBuilder() {
+    	String path = System.getenv("ANT_HOME");
         if (System.getProperty("os.name").startsWith("Windows")) {
-            this.command = "C:\\apache-ant-1.6.2\\bin\\ant.bat";
+        	if (path != null)
+        		this.command = path + File.separatorChar + "bin" + File.separatorChar + "ant.bat";
+        	else
+        		this.command = "C:\\apache-ant-1.7.0\\bin\\ant.bat";
         } else {
-            this.command = "/usr/local/bin/ant";
+        	if (path != null)
+        		this.command = path + File.separatorChar + "bin" + File.separatorChar + "ant";
+        	else
+        		this.command = "/usr/local/bin/ant";
         }
         setBuildSuccessCondition("result==0 and builderLogContainsLine(\"BUILD SUCCESSFUL\")");
     }
