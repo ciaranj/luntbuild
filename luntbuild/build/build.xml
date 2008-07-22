@@ -6,8 +6,8 @@
       <format property="currentDate" pattern="MM-dd-yyyy" locale="en"/>
     </tstamp>
 
-    <property name="buildVersion" value="1.5.6"/>
-	<property name="fileVersion" value="1.5.6"/>
+    <property name="buildVersion" value="1.6.0dev"/>
+	<property name="fileVersion" value="1.6.0dev"/>
     <property name="buildId" value=""/>
     <property name="artifactsDir" value="${basedir}/distribute"/>
 	<property name="junitHtmlReportDir" value="test/junitHtmlReport"/>
