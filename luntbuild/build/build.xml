@@ -1,7 +1,5 @@
 <project name="luntbuild" default="installer" basedir="..">
 
-    <property environment="env"/>
-
     <tstamp>
       <format property="currentDate" pattern="MM-dd-yyyy" locale="en"/>
     </tstamp>
@@ -13,7 +11,8 @@
 	<property name="junitHtmlReportDir" value="test/junitHtmlReport"/>
     <property name="buildDate" value="${currentDate}"/>
     <property name="luntbuild-install-build" value="D:/luntbuild-${fileVersion}"/>
-
+    <property name="update-schema" value="false"/>
+	
     <property name="compile-with-debug" value="on"/>
     <property name="compile-source-level" value="1.4"/>
     <property name="compile-target-level" value="1.4"/>
@@ -124,6 +123,7 @@
         <delete file="stage/web/WEB-INF/users.properties"/>
         <filter token="installDir" value="${luntbuild-install-dir}"/>
         <filter token="sessionTimeout" value="30"/>
+        <filter token="updateSchema" value="${update-schema}"/>
         <filter token="luntbuildPassword" value="luntbuild"/>
         <filter token="ldapHost" value=""/>
         <filter token="ldapPort" value="389"/>
@@ -351,6 +351,7 @@
 
 		<filter token="installDir" value="$INSTALL_PATH"/>
 		<filter token="sessionTimeout" value="${sessionTimeout}"/>
+        <filter token="updateSchema" value="false"/>
 		<filter token="luntbuildPassword" value="${luntbuildPassword}"/>
     	
         <filter token="ldapHost" value="${ldap.host}"/>
@@ -436,6 +437,8 @@
     <target name="clean"
         description="Cleans the build tree of files created by the build">
         <delete dir="stage" failonerror="no"/>
+        <delete dir="logs" failonerror="no"/>
+        <delete dir="null" failonerror="no"/>
         <delete dir="remoting/samples/classes" failonerror="no"/>
         <delete dir="remoting/javadoc" failonerror="no"/>
         <delete failonerror="no">
@@ -486,6 +489,7 @@
 
 	<target name="zip" depends="stage" description="Builds Luntbuild zip distribution">		
         <filter token="sessionTimeout" value="30"/>
+        <filter token="updateSchema" value="false"/>
         <filter token="luntbuildPassword" value="luntbuild"/>
         <filter token="ldapHost" value=""/>
         <filter token="ldapPort" value="389"/>

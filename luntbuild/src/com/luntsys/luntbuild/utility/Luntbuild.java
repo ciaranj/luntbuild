@@ -1154,115 +1154,111 @@ public class Luntbuild {
      * @param context the servlet context
      */
     public static void initApplication(final ServletContext context) {
-        try {
-            try {
-                installDir = context.getInitParameter("installDir");
+    	try {
+    		installDir = context.getInitParameter("installDir");
 
-                if (isEmpty(installDir))
-                    throw new RuntimeException("Missing parameter \"installDir\" for Luntbuild servlet");
+    		if (isEmpty(installDir))
+    			throw new RuntimeException("Missing parameter \"installDir\" for Luntbuild servlet");
 
-                // load build informations
-                buildInfos = new Properties();
-                FileInputStream is = null;
-                try {
-                	is = new FileInputStream(installDir + "/buildInfo.properties");
-                	buildInfos.load(is);
-                } catch (Exception e) {
-					logger.error("Failed to load buildInfo.properties");
-	            } finally {
-	            	if (is != null) try{is.close();} catch (Exception e) {}
-	            }
+    		// load build informations
+    		buildInfos = new Properties();
+    		FileInputStream is = null;
+    		try {
+    			is = new FileInputStream(installDir + "/buildInfo.properties");
+    			buildInfos.load(is);
+    		} catch (Exception e) {
+    			logger.error("Failed to load buildInfo.properties");
+    		} finally {
+    			if (is != null) try{is.close();} catch (Exception e) {}
+    		}
 
-                // load and configure log4j properties to specify the HTML, TEXT log file
-                setLuntbuildLogs();
+    		// load and configure log4j properties to specify the HTML, TEXT log file
+    		setLuntbuildLogs();
 
-                // initialize spring application context
-                XmlWebApplicationContext xwac = new XmlWebApplicationContext();
-                xwac.setServletContext(context);
-                xwac.setParent(null);
-                xwac.setConfigLocations(new String[]{SPRING_CONFIG_LOCATION});
+    		// initialize spring application context
+    		XmlWebApplicationContext xwac = new XmlWebApplicationContext();
+    		xwac.setServletContext(context);
+    		xwac.setParent(null);
+    		xwac.setConfigLocations(new String[]{SPRING_CONFIG_LOCATION});
 
-                Properties props = new Properties();
-                InputStream jdbcIs = context.getResourceAsStream("/WEB-INF/jdbc.properties");
-                if (jdbcIs != null) {
-                    props.load(jdbcIs);
-    	        	try {
-    	        		props.load(jdbcIs);
-    	        	} catch (Exception e) {
-    					logger.error("Failed to load jdbc properties");
-    	            } finally {
-    	            	if (jdbcIs != null) try{jdbcIs.close();} catch (Exception e) {}
-    				}
-                }
-                
-    	        InputStream ldapIs = context.getResourceAsStream("/WEB-INF/ldap.properties");
-    	        if (ldapIs != null) {
-    	        	try {
-    	        		props.load(ldapIs);
-    	        	} catch (Exception e) {
-    					logger.error("Failed to load ldap properties");
-    	            } finally {
-    	            	try{ldapIs.close();} catch (Exception e) {}
-    				}
-    	        } else {
-    	        	logger.error("Failed to load ldap properties");
-    	        }
+    		Properties props = new Properties();
+    		InputStream jdbcIs = context.getResourceAsStream("/WEB-INF/jdbc.properties");
+    		if (jdbcIs != null) {
+    			props.load(jdbcIs);
+    			try {
+    				props.load(jdbcIs);
+    			} catch (Exception e) {
+    				logger.error("Failed to load jdbc properties");
+    			} finally {
+    				if (jdbcIs != null) try{jdbcIs.close();} catch (Exception e) {}
+    			}
+    		}
 
-                setEmbeddedDbUrls(props);
+    		InputStream ldapIs = context.getResourceAsStream("/WEB-INF/ldap.properties");
+    		if (ldapIs != null) {
+    			try {
+    				props.load(ldapIs);
+    			} catch (Exception e) {
+    				logger.error("Failed to load ldap properties");
+    			} finally {
+    				try{ldapIs.close();} catch (Exception e) {}
+    			}
+    		} else {
+    			logger.error("Failed to load ldap properties");
+    		}
 
-                PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
-                cfg.setProperties(props);
-                xwac.addBeanFactoryPostProcessor(cfg);
-                xwac.refresh();
+    		setEmbeddedDbUrls(props);
 
-                context.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, xwac);
-                appContext = xwac;
-                
-                // check pre-defined users, if they do not exist initialize database
-                boolean isDbInited = false;
-                try {
-                	isDbInited = getDao().isUserExistInternal(User.CHECKIN_USER_NAME_RECENT) &&
-                    	getDao().isUserExistInternal(User.CHECKIN_USER_NAME_ALL);
-                } catch (Exception e) {
-					logger.debug("Initializing DB");
-				}
-                if (!isDbInited) getDao().initialize();
+    		PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
+    		cfg.setProperties(props);
+    		xwac.addBeanFactoryPostProcessor(cfg);
+    		xwac.refresh();
 
-                setProperties(getDao().loadProperties());
+    		context.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, xwac);
+    		appContext = xwac;
 
-                loadVcsAdaptors(context);
-                loadNotifiers(context);
-                loadBuilders(context);
-                loadExtensions();
+    		// check pre-defined users, if they do not exist initialize database
+    		boolean isDbInited = false;
+    		try {
+    			isDbInited = getDao().isUserExistInternal(User.CHECKIN_USER_NAME_RECENT) &&
+    			getDao().isUserExistInternal(User.CHECKIN_USER_NAME_ALL);
+    		} catch (Exception e) {
+    			logger.debug("Initializing DB");
+    		}
+    		if (!isDbInited) getDao().initialize();
 
-                SecurityHelper.runAsSiteAdmin();
+    		setProperties(getDao().loadProperties());
 
-                // mark unfinished builds as failed
-                getDao().processUnfinishedBuilds();
-                // mark unfinished schedule executions as failed
-                getDao().processUnfinishedSchedules();
+    		loadVcsAdaptors(context);
+    		loadNotifiers(context);
+    		loadBuilders(context);
+    		loadExtensions();
 
-                // cleanup temp directory
-                cleanupDir(installDir + "/tmp");
+    		SecurityHelper.runAsSiteAdmin();
 
-                // setup upload parameters
-                DefaultMultipartDecoder.getSharedInstance().setRepositoryPath(installDir + "/tmp");
-                DefaultMultipartDecoder.getSharedInstance().setMaxSize(-1); // set no limit on max upload size
-                DefaultMultipartDecoder.getSharedInstance().setThresholdSize(FILE_BLOCK_SIZE);
+    		// mark unfinished builds as failed
+    		getDao().processUnfinishedBuilds();
+    		// mark unfinished schedule executions as failed
+    		getDao().processUnfinishedSchedules();
 
-                getSchedService().startup();
-                getSchedService().scheduleSystemBackup();
-                getSchedService().scheduleSystemCare();
-                getSchedService().rescheduleBuilds();
+    		// cleanup temp directory
+    		cleanupDir(installDir + "/tmp");
 
-                logger.info("Leaving application initialization");
+    		// setup upload parameters
+    		DefaultMultipartDecoder.getSharedInstance().setRepositoryPath(installDir + "/tmp");
+    		DefaultMultipartDecoder.getSharedInstance().setMaxSize(-1); // set no limit on max upload size
+    		DefaultMultipartDecoder.getSharedInstance().setThresholdSize(FILE_BLOCK_SIZE);
 
-            } catch (Throwable throwable) {
-                logger.error("Exception catched in LuntbuildServlet.init()", throwable);
-            }
-        } catch (Throwable throwable) {
-            logger.error("Exception catched in application initialization", throwable);
-        }
+    		getSchedService().startup();
+    		getSchedService().scheduleSystemBackup();
+    		getSchedService().scheduleSystemCare();
+    		getSchedService().rescheduleBuilds();
+
+    		logger.info("Leaving application initialization");
+
+    	} catch (Throwable throwable) {
+    		logger.error("Exception catched in LuntbuildServlet.init()", throwable);
+    	}
     }
 
     public static String resolveProperty(Properties props, String propName) {

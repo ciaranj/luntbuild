@@ -2,6 +2,7 @@
 luntbuild 1.6 Release Notes
 ==============================================
 
+- Feature: Added optional CAS support as contributed by Gustavo.
 - Fix: (Bug 7306) Fixed build log message about the duration of the post build step, now displays correct duration (was build + post-build)
 - Fix: (Bug 7312) Fixed NPE when importing a single project that has two schedules with builds, patch by Roger Perkins
 

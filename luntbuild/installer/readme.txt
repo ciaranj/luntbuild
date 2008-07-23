@@ -19,7 +19,7 @@ Those files needs to be kept in sync with its original versions in web/WEB-INF.
 Following variables are used in those files for substitution:
 
 web.xml: $INSTALL_PATH, ${sessionTimeout}
-applicationContext.xml: ${luntbuildPassword}
+applicationContext.xml: ${luntbuildPassword} ${updateSchema}
 
 Directory installer/scripts contains scripts that perform an executable part of the installation.
 Those scripts unzip luntbuild.war from distribution and replace the files web.xml, applicationContext.xml
