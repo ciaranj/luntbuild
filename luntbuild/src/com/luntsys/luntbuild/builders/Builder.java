@@ -347,6 +347,7 @@ public abstract class Builder implements Serializable {
                         continue;
                     String assname = Luntbuild.getAssignmentName(line);
                     String value = Luntbuild.getAssignmentValue(line);
+                    value = value.replaceAll("\\\\\\\\","\\\\");
                     if (!Luntbuild.isEmpty(assname) && !Luntbuild.isEmpty(value)) {
                         Environment.Variable var = new Environment.Variable();
                         var.setKey(assname);
