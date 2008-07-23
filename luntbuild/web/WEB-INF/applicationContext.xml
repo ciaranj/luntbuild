@@ -260,6 +260,97 @@
         <property name="userCache"><ref local="userCache"/></property>
     </bean>
 
+	<!-- CAS authentication provider, modify casAuthenticationProvider key password and CAS url-->	
+<!--
+	<bean id="casAuthenticationProvider"
+		class="org.acegisecurity.providers.cas.CasAuthenticationProvider">
+		<property name="casAuthoritiesPopulator">
+			<ref bean="casAuthoritiesPopulator" />
+		</property>
+		<property name="casProxyDecider">
+			<ref bean="casProxyDecider" />
+		</property>
+		<property name="ticketValidator">
+			<ref bean="casProxyTicketValidator" />
+		</property>
+		<property name="statelessTicketCache">
+			<ref bean="statelessTicketCache" />
+		</property>
+		<property name="key">
+			<value>my_password_for_this_auth_provider_only</value>
+		</property>
+	</bean>
+	<bean id="casProxyDecider"
+		class="org.acegisecurity.providers.cas.proxy.RejectProxyTickets" />
+	<bean id="statelessTicketCache"
+		class="org.acegisecurity.providers.cas.cache.EhCacheBasedTicketCache">
+		<property name="cache">
+			<ref local="ticketCacheBackend" />
+		</property>
+	</bean>
+	<bean id="ticketCacheBackend" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager">
+			<ref local="cacheManager" />
+		</property>
+		<property name="cacheName">
+			<value>ticketCache</value>
+		</property>
+	</bean>
+	<bean id="casProxyTicketValidator"
+		class="org.acegisecurity.providers.cas.ticketvalidator.CasProxyTicketValidator">
+		<property name="casValidate">
+			<value>https://casprovider/cas/proxyValidate</value>
+		</property>
+		<property name="proxyCallbackUrl">
+			<value>https://casprovider/luntbuild/casProxy/receptor</value>
+		</property>
+		<property name="serviceProperties">
+			<ref bean="serviceProperties" />
+		</property>
+	</bean>
+	<bean id="casAuthoritiesPopulator"
+		class="com.luntsys.luntbuild.security.LuntbuildCasAuthoritiesPopulator">
+		<property name="authenticationDao">
+			<ref bean="luntbuildAuthenticationDAO" />
+		</property>
+	</bean>
+	<bean id="serviceProperties" class="org.acegisecurity.ui.cas.ServiceProperties">
+		<property name="service">
+			<value>https://casprovider/luntbuild/j_acegi_cas_security_check</value>
+		</property>
+		<property name="sendRenew">
+			<value>false</value>
+		</property>
+	</bean>
+	<bean id="casProcessingFilter" class="org.acegisecurity.ui.cas.CasProcessingFilter">
+		<property name="authenticationManager">
+			<ref bean="authenticationManager" />
+		</property>
+		<property name="authenticationFailureUrl">
+			<value>/casfailed.jsp</value>
+		</property>
+		<property name="defaultTargetUrl">
+			<value>/</value>
+		</property>
+		<property name="filterProcessesUrl">
+			<value>/j_acegi_cas_security_check</value>
+		</property>
+	</bean>
+	<bean id="exceptionTranslationFilter" class="org.acegisecurity.ui.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint">
+			<ref local="casProcessingFilterEntryPoint" />
+		</property>
+	</bean>
+	<bean id="casProcessingFilterEntryPoint" class="org.acegisecurity.ui.cas.CasProcessingFilterEntryPoint">
+		<property name="loginUrl">
+			<value>https://casprovider/cas/login</value>
+		</property>
+		<property name="serviceProperties">
+			<ref bean="serviceProperties" />
+		</property>
+	</bean>
+-->
+
 	<bean id="userCache" class="org.acegisecurity.providers.dao.cache.EhCacheBasedUserCache">
 		<property name="cache"><ref local="userCacheBackend"/></property>
 	</bean>
@@ -275,6 +366,8 @@
 	<bean id="authenticationManager" class="com.luntsys.luntbuild.security.AuthenticationProviderManager">
 		<property name="providers">
 			<list>
+				<!-- <ref local="casAuthenticationProvider" /> -->
+			
 				<!-- authentication provider which uses declarative security -->
 				<ref local="inMemoryAuthenticationProvider"/>
 
@@ -440,7 +533,8 @@
 		<property name="defaultTargetUrl"><value>/app.do</value></property>
 		<property name="filterProcessesUrl"><value>/j_acegi_security_check.do</value></property>
 	</bean>
-
+	
+	<!--  Comment out if using CAS -->
 	<bean id="exceptionTranslationFilter" class="org.acegisecurity.ui.ExceptionTranslationFilter">
 		<property name="authenticationEntryPoint"><ref local="authenticationProcessingFilterEntryPoint"/></property>
 	</bean>
@@ -489,6 +583,20 @@
 	    </property>
 	</bean>
 
+	<!-- If using CAS comment out the filterChainProxy above and uncomment the filterChainProxy below  -->
+<!--
+	<bean id="filterChainProxy" class="org.acegisecurity.util.FilterChainProxy">
+	     <property name="filterInvocationDefinitionSource">
+	        <value>
+	            PATTERN_TYPE_APACHE_ANT
+	            /*.do=httpSessionContextIntegrationFilter,casProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+	            /j_acegi_cas_security_check=httpSessionContextIntegrationFilter,casProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+	            /casProxy/receptor=httpSessionContextIntegrationFilter,casProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+	       </value>
+	    </property>
+	</bean>
+ -->
+  
 	<!-- This bean is optional; it isn't used by any other bean as it only listens and logs -->
 	<bean id="loggerListener" class="org.acegisecurity.event.authentication.LoggerListener"/>
 

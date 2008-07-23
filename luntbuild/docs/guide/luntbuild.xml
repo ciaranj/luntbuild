@@ -5,6 +5,7 @@
   <!ENTITY installation-chapter SYSTEM "../installguide/install-chapter.xml">
   <!ENTITY database-chapter SYSTEM "../installguide/database-chapter.xml">
   <!ENTITY ldap-chapter SYSTEM "../installguide/ldap-chapter.xml">
+  <!ENTITY cas-chapter SYSTEM "../installguide/cas-chapter.xml">
   <!ENTITY remote-chapter SYSTEM "../api/remote-chapter.xml">
   <!ENTITY login-chapter SYSTEM "login-chapter.xml">
   <!ENTITY homepage-chapter SYSTEM "homepage-chapter.xml">
@@ -80,6 +81,8 @@
 &database-chapter;
 
 &ldap-chapter;
+
+&cas-chapter;
 
 &login-chapter;
 

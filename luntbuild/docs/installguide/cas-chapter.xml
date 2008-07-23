@@ -1,0 +1,9 @@
+<chapter id="cas">
+<title>Configuring Luntbuild to use CAS</title>
+<para>
+    Luntbuild optionally offers support for CAS authentication contributed by Gustavo. CAS can be configured in the file
+    &lt;servlet-webapps&gt;/luntbuild/WEB-INF/applicationContext.xml. See article
+    <ulink url="http://netsuke.wordpress.com/2008/03/27/casifying-luntbuild/"><citetitle>Casifing Luntbuild</citetitle></ulink>
+    by Gustavo.
+</para>
+</chapter>
