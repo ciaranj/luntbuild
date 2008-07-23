@@ -51,6 +51,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import com.luntsys.luntbuild.facades.Constants;
+
 /**
  * Luntbuild logger.
  * 
@@ -63,7 +65,8 @@ public class LuntbuildLogger implements BuildLogger {
 
     private static final long serialVersionUID = 1L;
     
-    private static final long MAX_XML_CONVERSION_LENGTH = 100000L;
+	/** Default maximum size of XML log before we stop converting to HTML */
+    public static final long DEFAULT_MAX_XML_CONVERSION_LENGTH = 100000L;
     
     /**
      * When in direct mode, message will be written to log without any decoration and
@@ -607,6 +610,19 @@ public class LuntbuildLogger implements BuildLogger {
             if(stream != null) try {stream.close();} catch (Exception e) {}
         }
     }
+    
+    public static long getMaxXmlConversionLength() {
+		String maxXmlConversionLengthText = (String) Luntbuild.getProperties().get(Constants.MAX_XML_CONVERSION_LENGTH);
+        try {
+            long maxXmlConversionLength = new Long(maxXmlConversionLengthText).longValue();
+            if (maxXmlConversionLength <= 0)
+                return DEFAULT_MAX_XML_CONVERSION_LENGTH;
+            else
+                return maxXmlConversionLength;
+        } catch (NumberFormatException e) {
+            return DEFAULT_MAX_XML_CONVERSION_LENGTH;
+        }
+    }
 
     /**
      * Writes the current log of this logger to XML, text and HTML log files.
@@ -621,7 +637,7 @@ public class LuntbuildLogger implements BuildLogger {
         logXml(xmlFilename, xslUri);
 
         File xmlFile = new File(xmlFilename);
-        if (xslUri == null || xmlFile.length() > MAX_XML_CONVERSION_LENGTH) {
+        if (xslUri == null || xmlFile.length() > getMaxXmlConversionLength()) {
             logHtmlFromText(textFilename, outFilename);
             return;
         }

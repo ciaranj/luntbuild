@@ -79,6 +79,19 @@ public abstract class PropertiesTab extends TabPageComponent {
 				return;
 			}
 		}
+		String maxXmlConversionLengthText = (String) getProperties().get(Constants.MAX_XML_CONVERSION_LENGTH);
+		if (!Luntbuild.isEmpty(maxXmlConversionLengthText)) {
+			try {
+				long maxXmlConversionLength = new Long(maxXmlConversionLengthText).longValue();
+				if (maxXmlConversionLength <= 0) {
+					setErrorMsg("Maximum conversion length of XML log should be a positive integer value!");
+					return;
+				}
+			} catch (NumberFormatException e) {
+				setErrorMsg("Maximum conversion length of XML log should be a positive integer value!");
+				return;
+			}
+		}
 		String backupCronExpression = (String) getProperties().get(Constants.BACKUP_CRON_EXPRESSION);
 		if (!Luntbuild.isEmpty(backupCronExpression)) {
 			CronTrigger cronTrigger = new CronTrigger();

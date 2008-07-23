@@ -186,6 +186,8 @@ public class Constants {
 	public static final String BACKUP_FILE_NAME = "backupFileName";
     /** Name of database backup cron expression property */
 	public static final String BACKUP_CRON_EXPRESSION = "backupCronExpression";
+    /** Name of maximum xml log conversion size property */
+	public static final String MAX_XML_CONVERSION_LENGTH = "maxXmlConversionLength";
 
 	// Special build version constants
 	/** Special build version, last build */
