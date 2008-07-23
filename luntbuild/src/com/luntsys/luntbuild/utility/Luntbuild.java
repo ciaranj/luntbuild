@@ -940,7 +940,7 @@ public class Luntbuild {
      */
     public static Commandline parseCmdLine(String input) {
         Commandline cmdLine = new Commandline();
-        char inputChars[] = input.toCharArray();
+        final char inputChars[] = input.toCharArray();
         boolean quoted = false;
         String field = "";
         for (int i = 0; i < inputChars.length; i++) {
@@ -950,7 +950,10 @@ public class Luntbuild {
                     if (!quoted) {
                         quoted = true;
                     } else {
-                        quoted = false;
+                    	if (i > 0 && inputChars[i-1] == '\\')
+                    		field += inputChar;
+                    	else
+                    		quoted = false;
                     }
                     break;
                 case '\n':
