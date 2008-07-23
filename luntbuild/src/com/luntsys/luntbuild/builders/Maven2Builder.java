@@ -80,7 +80,7 @@ public class Maven2Builder extends Builder {
 	 * Constructor, creates a new maven2 builder with default settings.
 	 */
     public Maven2Builder() {
-    	String path = System.getenv("MAVEN_HOME");
+    	String path = System.getenv("M2_HOME");
         if (System.getProperty("os.name").startsWith("Windows")) {
         	if (path != null)
         		this.command = path + File.separatorChar + "bin" + File.separatorChar + "mvn.bat";
