@@ -91,6 +91,8 @@ import com.luntsys.luntbuild.vcs.Vcs;
  * @see Schedule
  */
 public class BuildGenerator implements StatefulJob {
+	
+	private static final int MAX_TIME_TO_SEND_NOTIFICATION_MS = 30 * 1000;
     /**
      * Keep tracks of version of this class, used when do serialization-deserialization
      */
@@ -654,10 +656,16 @@ public class BuildGenerator implements StatefulJob {
 
         if (project.getNotifiers() != null) {
             it = Luntbuild.getNotifierInstances(Luntbuild.getNotifierClasses(project.getNotifiers())).iterator();
-            while (it.hasNext()) {
-                Notifier notifier = (Notifier) it.next();
-                notifier.sendBuildNotification(checkinUsers, subscribeUsers, build, antProject);
-            }
+    		TimeoutThread timeoutThread = new TimeoutThread(MAX_TIME_TO_SEND_NOTIFICATION_MS);
+    		try {
+	            while (it.hasNext()) {
+	                Notifier notifier = (Notifier) it.next();
+	                notifier.sendBuildNotification(checkinUsers, subscribeUsers, build, antProject);
+	            }
+	            timeoutThread.done();
+    		} catch (ThreadDeath e) {
+    			logger.error("Timeout when sending the notifications!");
+			}
         }
     }
 
