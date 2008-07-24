@@ -2,6 +2,8 @@
 luntbuild 1.6 Release Notes
 ==============================================
 
+- Fix: Bug [# 6731]  Trouble labeling sourceCode with BaseClearCaseAdaptor 
+- Feature: Added timeout thread (30 sec) around notifiers in case they hang
 - Fix: Allow set builder properties to include " if escaped like propertyName="\"VAL1=3251&VAL2=www.yahoo.com\""
 - Feature: Patch from Roger Perkins to make xml/html build report size settable from properties
 - Feature: Added optional CAS support as contributed by Gustavo.

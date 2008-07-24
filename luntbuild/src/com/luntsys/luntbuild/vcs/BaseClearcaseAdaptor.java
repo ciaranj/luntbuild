@@ -136,7 +136,9 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
      */
     public void label(Build build, Project antProject) {
     	if (containLatestVersion()) {
-    		List vobNames = getVobNames();
+    		final List loadElements = getLoadElements();
+    		final List vobNames = getVobNames(loadElements);
+    		
     		antProject.log("Labeling current retrieved code...", Project.MSG_INFO);
     		String workingDir = getClearcaseWorkDirRaw(build.getSchedule());
     		Iterator itVobName = vobNames.iterator();
@@ -144,10 +146,15 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
     			String vobName = (String) itVobName.next();
     			createCcLabelType(workingDir, vobName, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
     		}
-    		itVobName = vobNames.iterator();
-    		while (itVobName.hasNext()) {
-    			String vobName = (String) itVobName.next();
-    			createCcLabel(workingDir, vobName, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
+    		// DO NOT LABEL the VobNames - we want to label the loaded elements...
+    		//itVobName = vobNames.iterator();
+    		//while (itVobName.hasNext()) {
+    		//String vobName = (String) itVobName.next();
+    		//createCcLabel(workingDir, vobName, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
+    		final Iterator itLoadElement = loadElements.iterator();
+    		while (itLoadElement.hasNext()) {
+    			String loadElement = (String) itLoadElement.next();
+    			createCcLabel(workingDir, loadElement, Luntbuild.getLabelByVersion(build.getVersion()), antProject);
     		}
     	}
     }
@@ -158,22 +165,27 @@ public class BaseClearcaseAdaptor extends AbstractClearcaseAdaptor {
 	 * 
 	 * @return A list of Strings, the unique vob names mentioned in the load rules
 	 */
-	protected List getVobNames() {
-		List loadElements = getLoadElements(); 
+	protected List getVobNames( List loadElements ) {
+		// optimization: pass the loadElements as parameter instead of parsing the configSpec again...
+		// List loadElements = getLoadElements(); 
 
 		// preserves order and guarantees uniqueness.
 		LinkedHashSet vobNames = new LinkedHashSet();
 
 		Iterator itLoadElement = loadElements.iterator();
+
+		// optimization: compile the Pattern only once, not for each loadElement...
+		final Pattern p = Pattern.compile("\\\\([^\\\\]*)\\\\.*");
 		while (itLoadElement.hasNext()) {
 			String loadElement = (String) itLoadElement.next();
 
+			// load elements are of the form "load \vobname\project\src"			
 			// load elements are of the form "load \vobname\project\src\pom.xml"
-			// we just want the vobname
-			Pattern p = Pattern.compile("\\\\(.*)\\.*");
+			// Pattern p = Pattern.compile("\\\\(.*)\\.*");
 			Matcher m = p.matcher(loadElement);
 			if (m.matches()) {
-				String vobName = m.group();
+				// we just want the vobname				
+				String vobName = m.group(1);
 				vobNames.add(vobName);
 			}
 		}
