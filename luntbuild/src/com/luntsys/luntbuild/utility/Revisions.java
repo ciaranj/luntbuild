@@ -335,7 +335,7 @@ public class Revisions {
      * @param date the date of the entry
      * @param message the message/comment of the entry
      */
-    public void addEntryToLastLog(String revision, String author, Date date, String message) {
+    public void addEntryToLastLog(String revision, String author, String date, String message) {
         if (lastLog == null)
             throw new BuildException("No log exists to add entry to.");
         lastEntry = this.doc.createElement(ENTRY_TAG);
@@ -348,7 +348,7 @@ public class Revisions {
         lastEntry.appendChild(authorElement);
         Element dateElement = doc.createElement(DATE_TAG);
         if (date != null)
-            dateElement.appendChild(doc.createCDATASection(SynchronizedDateFormatter.formatDate(date, "yyyy-MM-dd'T'HH:mm:ssZ")));
+            dateElement.appendChild(doc.createCDATASection(date));
         lastEntry.appendChild(dateElement);
         lastEntry.appendChild(doc.createElement("tasks"));
         lastEntry.appendChild(doc.createElement("paths"));

@@ -792,7 +792,7 @@ public class CvsAdaptor extends Vcs {
                         cmdLine, envs, null, -1) {
                     private String revision = "";
                     private String author = "";
-                    private Date date = null;
+                    private String date = null;
                     private String message = "";
                     private String path = "";
                     private boolean captureMessage = false;
@@ -816,10 +816,7 @@ public class CvsAdaptor extends Vcs {
                                             revision = revisionmatcher.group(1).trim();
                                             addRevision = true;
                                         } else if (authormatcher.find()) {
-                                            date = SynchronizedDateFormatter.parseDate(authormatcher.group(1).trim(),
-                                            		LOG_DATE_FORMAT);
-                                            if (date == null)
-                                                logger.error("Failed to parse date from CVS log: " + authormatcher.group(1).trim());
+                                            date = authormatcher.group(1).trim();
                                             author = authormatcher.group(2).trim();
                                             revisions.getChangeLogins().add(author);
                                             captureMessage = true;
@@ -860,7 +857,7 @@ public class CvsAdaptor extends Vcs {
                                     revision = revisionmatcher.group(1).trim();
                                     addRevision = true;
                                 } else if (authormatcher.find()) {
-                                    date = SynchronizedDateFormatter.parseDate(authormatcher.group(1).trim(), LOG_DATE_FORMAT);
+                                    date = authormatcher.group(1).trim();
                                     if (date == null)
                                         logger.error("Failed to parse date from CVS log: " + authormatcher.group(1).trim());
                                     author = authormatcher.group(2).trim();
@@ -886,7 +883,7 @@ public class CvsAdaptor extends Vcs {
                 if (isDisableSuppressOption()) {
                     String revision = "";
                     String author = "";
-                    Date date = null;
+                    String date = null;
                     String message = "";
                     String path = "";
                     boolean captureMessage = false;
@@ -907,7 +904,7 @@ public class CvsAdaptor extends Vcs {
                                 revision = revisionmatcher.group(1).trim();
                                 addRevision = true;
                             } else if (authormatcher.find()) {
-                                date = SynchronizedDateFormatter.parseDate(authormatcher.group(1).trim(), LOG_DATE_FORMAT);
+                                date = authormatcher.group(1).trim();
                                 if (date == null)
                                 	throw new BuildException("Failed to parse date from CVS log:" + authormatcher.group(1).trim());
                                 author = authormatcher.group(2).trim();

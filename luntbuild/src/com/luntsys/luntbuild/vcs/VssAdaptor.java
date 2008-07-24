@@ -768,12 +768,12 @@ public class VssAdaptor extends Vcs {
 							else if (line.indexOf(" renamed to ") != -1)
 								revisions.setFileModified(true);
 						}
+						String date_text = null;
 						if (line.matches("^\\*\\*\\*\\*\\*.*\\*\\*\\*\\*$")) {
 							if (block.isValid()) {
 								String version = "";
 								String file_version = "";
 								String author = "";
-								Date date = null;
 								String comment = "";
 								String path = "";
 								String action = "";
@@ -847,10 +847,7 @@ public class VssAdaptor extends Vcs {
 										} else if (authormatcher.find()) {
 											author = authormatcher.group(1).trim();
 											revisions.getChangeLogins().add(author);
-											String date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
-											date = SynchronizedDateFormatter.parseDate(date_text, DEFAULT_DATETIME_FORMAT);
-											if (date == null)
-												throw new BuildException("Failed to parse date from VSS history: " + date_text);
+											date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
 											parseNextLine = true;
 										} else if (commentmatcher.find()) {
 											comment = commentmatcher.group(1).trim();
@@ -859,7 +856,7 @@ public class VssAdaptor extends Vcs {
 										}
 									}
 								}
-								revisions.addEntryToLastLog(version, author, date, comment);
+								revisions.addEntryToLastLog(version, author, date_text, comment);
 								revisions.addPathToLastEntry(path, action, file_version);
 							}
 							block.setReady(true);
@@ -879,7 +876,7 @@ public class VssAdaptor extends Vcs {
 					String version = "";
 					String file_version = "";
 					String author = "";
-					Date date = null;
+					String date_text = null;
 					String comment = "";
 					String path = "";
 					String action = "";
@@ -953,10 +950,7 @@ public class VssAdaptor extends Vcs {
 							} else if (authormatcher.find()) {
 								author = authormatcher.group(1).trim();
 								revisions.getChangeLogins().add(author);
-								String date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
-								date = SynchronizedDateFormatter.parseDate(date_text, DEFAULT_DATETIME_FORMAT);
-								if (date == null)
-									throw new BuildException("Failed to parse date from VSS history: " + date_text);
+								date_text = authormatcher.group(2).trim() + ";" + authormatcher.group(3).trim();
 								parseNextLine = true;
 							} else if (commentmatcher.find()) {
 								comment = commentmatcher.group(1).trim();
@@ -965,7 +959,7 @@ public class VssAdaptor extends Vcs {
 							}
 						}
 					}
-					revisions.addEntryToLastLog(version, author, date, comment);
+					revisions.addEntryToLastLog(version, author, date_text, comment);
 					revisions.addPathToLastEntry(path, action, file_version);
 				}
 				block.setReady(false);

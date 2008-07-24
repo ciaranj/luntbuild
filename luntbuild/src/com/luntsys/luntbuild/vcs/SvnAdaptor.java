@@ -66,6 +66,7 @@ import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.luntsys.luntbuild.utility.ValidationException;
 
 /**
@@ -768,7 +769,7 @@ public class SvnAdaptor extends Vcs {
                         if (!revisionDate.before(sinceDate)) {
                             String author = logEntry.getAuthor();
                         	revisions.addEntryToLastLog(Long.toString(logEntry.getRevision()), author,
-                        			revisionDate, logEntry.getMessage());
+                        			SynchronizedDateFormatter.formatDate(revisionDate), logEntry.getMessage());
                             revisions.getChangeLogins().add(author);
                             List logs = revisions.getChangeLogs();
                             logs.add("----------------------------------------------------------------------------------------------------------------------");

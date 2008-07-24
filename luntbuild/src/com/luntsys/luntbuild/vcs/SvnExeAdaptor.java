@@ -866,12 +866,12 @@ public class SvnExeAdaptor extends Vcs {
                         revisions.getChangeLogs().add("----------------------------------------------------------------------------------------------------------------------");
                         if (authorElement != null) {
                             revisions.addEntryToLastLog(logEntry.attribute("revision").getText(), authorElement.getText(),
-                                    revisionDate, message);
+                            		SynchronizedDateFormatter.formatDate(revisionDate), message);
                             revisions.getChangeLogs().add("r" + logEntry.attribute("revision").getText() + " | " +
                                 authorElement.getText() + " | " + revisionDate.toString());
                         } else {
                             revisions.addEntryToLastLog(logEntry.attribute("revision").getText(), "anonymous",
-                                    revisionDate, message);
+                            		SynchronizedDateFormatter.formatDate(revisionDate), message);
                             revisions.getChangeLogs().add("r" + logEntry.attribute("revision").getText() + " | " +
                                 "anonymous" + " | " + revisionDate.toString());
                         }

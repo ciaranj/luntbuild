@@ -36,6 +36,7 @@ import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.luntsys.luntbuild.utility.ValidationException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Copy;
@@ -220,7 +221,7 @@ public class FileSystemAdaptor extends Vcs {
 				message = "File \"" + file.getAbsolutePath() + "\" modified at " + lastModified.toString();
 				action = "file";
 			}
-			revisions.addEntryToLastLog("", "", lastModified, message);
+			revisions.addEntryToLastLog("", "", SynchronizedDateFormatter.formatDate(lastModified), message);
 			revisions.addPathToLastEntry(file.getAbsolutePath(), action, "");
 			revisions.getChangeLogs().add(message);
 		}

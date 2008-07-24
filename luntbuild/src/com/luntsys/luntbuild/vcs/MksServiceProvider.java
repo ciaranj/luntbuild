@@ -43,6 +43,7 @@ import org.apache.tools.ant.types.selectors.FilenameSelector;
 
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.luntsys.luntbuild.vcs.MksAdaptor.MksModule;
 import com.mks.api.CmdRunner;
 import com.mks.api.Command;
@@ -669,7 +670,7 @@ public class MksServiceProvider {
 
 		revisions.getChangeLogs().add(changeLog.toString());
 
-        revisions.addEntryToLastLog(revisionItem.getId(), author, revisionDate, description);
+        revisions.addEntryToLastLog(revisionItem.getId(), author, SynchronizedDateFormatter.formatDate(revisionDate), description);
         revisions.addPathToLastEntry(member, "", "");
 
 		// CHANGE LOGIN

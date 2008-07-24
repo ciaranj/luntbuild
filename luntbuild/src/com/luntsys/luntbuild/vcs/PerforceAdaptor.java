@@ -1080,7 +1080,7 @@ public class PerforceAdaptor extends Vcs {
             private boolean revisionReady = false;
             private String changelist = "";
             private String author = "";
-            private Date date = null;
+            private String date = null;
             private String msg = "";
             private boolean captureNextLineForJob = false;
             private String job_name = "";
@@ -1098,9 +1098,7 @@ public class PerforceAdaptor extends Vcs {
                     changelist = matcher.group(1).trim();
                     author = matcher.group(2).trim();
                     revisions.getChangeLogins().add(author);
-                    date = SynchronizedDateFormatter.parseDate(matcher.group(3).trim(), "yyyy/MM/dd HH:mm:ss");
-                    if (date == null)
-                        logger.error("Failed to parse date from Perforce log:" + matcher.group(3).trim());
+                    date = matcher.group(3).trim();
                 } else if (endmatcher.find() && revisionReady) {
                     revisionReady = false;
                     revisions.addEntryToLastLog(changelist, author, date, msg);

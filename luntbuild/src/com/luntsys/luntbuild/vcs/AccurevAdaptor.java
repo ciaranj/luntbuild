@@ -266,7 +266,7 @@ public class AccurevAdaptor extends Vcs {
                         .append(dateString).append(" by ").append(userName).append("\n\"")
                         .append(comment).append("\"");
                 revisions.getChangeLogs().add(buffer.toString());
-                revisions.addEntryToLastLog(transactionStr, userName, transDate, comment);
+                revisions.addEntryToLastLog(transactionStr, userName, dateString, comment);
 
                 for (Iterator versionIter = transaction.elementIterator("version"); versionIter.hasNext();) {
                     revisions.setFileModified(true);

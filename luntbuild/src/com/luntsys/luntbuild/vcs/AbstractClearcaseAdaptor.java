@@ -947,7 +947,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                 new MyExecTask("history", antProject, workingDir, cmdLine,
                         null, null, -1) {
                     private String author = "";
-                    private Date date = null;
+                    private String date = null;
                     private String action = "";
                     public void handleStdout(final String line) {
                         revisions.getChangeLogs().add(line);
@@ -959,15 +959,7 @@ public abstract class AbstractClearcaseAdaptor extends Vcs {
                                     authorMatcher.group(2).trim());
                             action = authorMatcher.group(3).trim();
                             /** Date format for Clearcase base. */
-                            SimpleDateFormat sdf = SynchronizedDateFormatter.getFormat(DATE_FORMAT);
-                            sdf.setDateFormatSymbols(new DateFormatSymbols(Locale.ENGLISH));
-                            try {
-                                date = sdf.parse(authorMatcher.group(1).trim());
-                            } catch (Exception e) {
-                            	date = SynchronizedDateFormatter.parseDate(authorMatcher.group(1).trim(), DATE_FORMAT);
-                            	if (date == null)
-                            		logger.error("Failed to parse date from log", e);
-                            }
+                            date = authorMatcher.group(1).trim();
                         } else if (fileMatcher.find()) {
                             String path = fileMatcher.group(1).trim();
                             String branch = fileMatcher.group(2).trim();

@@ -51,6 +51,7 @@ import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
 import com.luntsys.luntbuild.utility.ValidationException;
 import com.starbase.starteam.File;
 import com.starbase.starteam.Folder;
@@ -526,7 +527,7 @@ public class StarteamAdaptor extends Vcs {
 			revisions.getChangeLogins().add(user.getName());
 			userName = user.getName();
 		}
-		revisions.addEntryToLastLog("", userName, file.getModifiedTime().createDate(), file.getComment());
+		revisions.addEntryToLastLog("", userName, SynchronizedDateFormatter.formatDate(file.getModifiedTime().createDate()), file.getComment());
 		revisions.addPathToLastEntry(file.getParentFolderHierarchy() + file.getName(), action, "");
 		revisions.getChangeLogs().add(action + ": " + userName + " | " + file.getModifiedTime().createDate().toString() +
 				" | " + file.getParentFolderHierarchy() + file.getName());
