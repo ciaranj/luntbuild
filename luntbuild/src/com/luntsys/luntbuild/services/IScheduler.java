@@ -101,7 +101,7 @@ public interface IScheduler {
 	 * 
 	 * @param schedule the schedule
 	 */
-	void removeUnNecessaryManualTriggers(Schedule schedule);
+	void resetManualTriggers(Schedule schedule);
 
 	/**
 	 * Checks if the specified trigger is scheduled.

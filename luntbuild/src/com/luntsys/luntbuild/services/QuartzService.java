@@ -448,13 +448,12 @@ public class QuartzService implements IScheduler {
 	}
 
 	/**
-	 * Removes un-necessary manual builds for a schedule. Un-necessary manual
-	 * builds are defined as builds that are scheduled to occur before time this function is called.
+	 * Resets trigger time of manual builds for a schedule.
 	 * 
 	 * @param schedule the schedule
 	 * @throws RuntimeException from {@link Scheduler}
 	 */
-	public void removeUnNecessaryManualTriggers(Schedule schedule) {
+	public void resetManualTriggers(Schedule schedule) {
 		synchronized (schedLock) {
 			try {
 				Trigger manualTriggers[] = sched.getTriggersOfJob(schedule.getJobName(), Scheduler.DEFAULT_GROUP);
@@ -476,7 +475,7 @@ public class QuartzService implements IScheduler {
 						}
 					}
 					if (!executing && manualTrigger.getStartTime().before(new Date()))
-						sched.unscheduleJob(manualTrigger.getName(), manualTrigger.getGroup());
+						manualTrigger.setStartTime(new Date(System.currentTimeMillis() + 1000));
 				}
 			} catch (Exception e) {
 				logger.error("Error in removeUnNecessaryManualTriggers: ", e);

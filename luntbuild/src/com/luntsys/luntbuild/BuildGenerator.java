@@ -158,7 +158,7 @@ public class BuildGenerator implements StatefulJob {
         if (triggerGroup.equals(MANUALBUILD_GROUP)) { // triggered manually
             BuildParams buildParams = Schedule.parseTriggerName(context.getTrigger().getName());
             Luntbuild.getSchedService().
-                removeUnNecessaryManualTriggers(Luntbuild.getDao().loadSchedule(buildParams.getScheduleId()));
+                resetManualTriggers(Luntbuild.getDao().loadSchedule(buildParams.getScheduleId()));
             new Thread(new BuildDependencyWalker(
                     Schedule.parseTriggerName(context.getTrigger().getName()))).start();
             return;
