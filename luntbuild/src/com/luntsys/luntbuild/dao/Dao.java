@@ -216,6 +216,16 @@ public interface Dao {
 	 */
 	List loadSchedules();
 
+    /**
+     * Loads all schedules from the persistent data store - for INTERNAL use so it is not authorized.
+     * Collections of each schedule may not be loaded, but parent objects should be loaded.
+     * 
+     * @return a list of schedules object ordered by name
+     * @throws DataAccessException if an error occurs durring the operation
+     * @see Schedule
+     */
+    List loadSchedulesInternal();
+
 	/**
 	 * Loads the schedule that matches the schedule identifier.
 	 * Parent objects and collections of the schedule should be loaded.

@@ -2,13 +2,15 @@
 luntbuild 1.6 Release Notes
 ==============================================
 
-- Fix: Bug [# 6731]  Trouble labeling sourceCode with BaseClearCaseAdaptor 
 - Feature: Added timeout thread (30 sec) around notifiers in case they hang
-- Fix: Allow set builder properties to include " if escaped like propertyName="\"VAL1=3251&VAL2=www.yahoo.com\""
 - Feature: Patch from Roger Perkins to make xml/html build report size settable from properties
 - Feature: Added optional CAS support as contributed by Gustavo.
 - Fix: (Bug 7306) Fixed build log message about the duration of the post build step, now displays correct duration (was build + post-build)
 - Fix: (Bug 7312) Fixed NPE when importing a single project that has two schedules with builds, patch by Roger Perkins
+- Fix: Fixed detection of ant target names in build log that contain "-"
+- Fix: Allow set builder properties to include " if escaped like propertyName="\"VAL1=3251&VAL2=www.yahoo.com\""
+- Fix: (Bug 6731) Trouble labeling sourceCode with BaseClearCaseAdaptor
+- Fix: (Bug 8002, 6176) Fixed schedules not running when a regular user makes a change to one of their schedules
 
 ==============================================
 luntbuild 1.5.6 Release Notes

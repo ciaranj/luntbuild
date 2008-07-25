@@ -344,6 +344,13 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
      * @inheritDoc
      */
     public List loadSchedules() {
+        return loadSchedulesInternal();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public List loadSchedulesInternal() {
         Session session = SessionFactoryUtils.getSession(getSessionFactory(), false);
         try {
             Query query =

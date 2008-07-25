@@ -108,8 +108,7 @@ public class QuartzService implements IScheduler {
 					}
 				}
 */
-				SecurityHelper.runAsSiteAdmin();				
-				ListIterator itSchedule = Luntbuild.getDao().loadSchedules().listIterator();
+				ListIterator itSchedule = Luntbuild.getDao().loadSchedulesInternal().listIterator();
 				while (itSchedule.hasNext()) {
 					Schedule schedule = (Schedule) itSchedule.next();
 					if (schedule.getTrigger() == null || schedule.isDisabled())
