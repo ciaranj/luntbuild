@@ -157,7 +157,7 @@ public class LuntbuildLogger implements BuildLogger {
 
     private String builderName = null;
 
-    private Pattern targetPat = Pattern.compile("^\\s*(\\w+):$");
+    private Pattern targetPat = Pattern.compile("^\\s*([\\w-\\.]+):$");
     private Pattern taskPat = Pattern.compile("^\\s*\\[(\\w+)\\]\\s*(.*)$");
     private String curTarget = null;
 
@@ -170,7 +170,7 @@ public class LuntbuildLogger implements BuildLogger {
         } catch (Exception exc) {
             throw new RuntimeException(exc);
         }
-    	doc = builder.newDocument();
+        doc = builder.newDocument();
         this.buildElement = new TimedElement();
         this.buildElement.startTime = System.currentTimeMillis();
         this.buildElement.element = this.doc.createElement(BUILD_TAG);
@@ -393,15 +393,15 @@ public class LuntbuildLogger implements BuildLogger {
      * @param event a <code>BuildEvent</code> containing message information, must not be <code>null</code>
      */
     public void messageLogged(BuildEvent event) {
-        if (this.directMode) {
-            printMessage(event.getMessage(), this.out, event.getPriority());
-            messageLoggedXml(event, this.builderName);
+        if (directMode) {
+            printMessage(event.getMessage(), out, event.getPriority());
+            messageLoggedXml(event, builderName);
         } else {
             int priority = event.getPriority();
             // Filter out messages based on priority
-            if (priority <= this.msgOutputLevel) {
+            if (priority <= msgOutputLevel) {
                 StringBuffer message = new StringBuffer();
-                if (event.getTask() != null && !this.emacsMode) {
+                if (event.getTask() != null && !emacsMode) {
                     // Print out the name of the task if we're in one
                     String name = event.getTask().getTaskName();
                     String label = "[" + name + "] ";
@@ -430,19 +430,19 @@ public class LuntbuildLogger implements BuildLogger {
                         // shouldn't be possible
                         message.append(label).append(event.getMessage());
                     } finally {
-                    	if (r != null) try {r.close();} catch (Exception e) {}
+                        if (r != null) try {r.close();} catch (Exception e) {}
                     }
-                    messageLoggedXml(event, name);
+                    messageLoggedXml(event, builderName);
                 } else {
                     message.append(event.getMessage());
-                    messageLoggedXml(event, null);
+                    messageLoggedXml(event, builderName);
                 }
 
                 String msg = message.toString();
                 if (priority != Project.MSG_ERR) {
-                    printMessage(msg, this.out, priority);
+                    printMessage(msg, out, priority);
                 } else {
-                    printMessage(msg, this.err, priority);
+                    printMessage(msg, err, priority);
                 }
             }
         }
@@ -460,14 +460,22 @@ public class LuntbuildLogger implements BuildLogger {
         String msg = event.getMessage();
         if (msg == null || msg.trim().length() == 0) return;
 
+        // Filter out target name message from XML
         Matcher m = this.targetPat.matcher(msg);
         if (m.matches()) {
             this.curTarget = m.group(1);
             return;
         }
 
-        Element messageElement = this.doc.createElement(MESSAGE_TAG);
+        // Check target name
+        if (event.getTarget() != null) {
+            curTarget = event.getTarget().getName();
+        }
 
+        // Begin message construction
+        Element messageElement = doc.createElement(MESSAGE_TAG);
+
+        // Set priority
         String name = "debug";
         switch (event.getPriority()) {
             case Project.MSG_ERR:
@@ -484,17 +492,27 @@ public class LuntbuildLogger implements BuildLogger {
                 break;
         }
         messageElement.setAttribute(PRIORITY_ATTR, name);
+
+        // Set builder name
         if (bname != null)
             messageElement.setAttribute(BUILDER_ATTR, bname);
-        if (this.curTarget != null)
-            messageElement.setAttribute(TARGET_ATTR, this.curTarget);
 
-        m = this.taskPat.matcher(msg);
+        // Set target
+        if (curTarget != null)
+            messageElement.setAttribute(TARGET_ATTR, curTarget);
+
+        // Set task
+        m = taskPat.matcher(msg);
         if (m.matches()) {
-            messageElement.setAttribute(TASK_ATTR, m.group(1));
+            if (event.getTask() != null) {
+                messageElement.setAttribute(TASK_ATTR, event.getTask().getTaskName());
+            } else {
+                messageElement.setAttribute(TASK_ATTR, m.group(1));
+            }
             msg = m.group(2);
         }
 
+        // Set main body
         msg = Luntbuild.xmlEncodeEntities(msg);
         StringBuffer message = new StringBuffer();
         BufferedReader r = null;
@@ -512,13 +530,13 @@ public class LuntbuildLogger implements BuildLogger {
             // shouldn't be possible
             message.append(msg);
         } finally {
-        	if (r != null) try {r.close();} catch (Exception e) {}
+            if (r != null) try {r.close();} catch (Exception e) {}
         }
 
-        Text messageText = this.doc.createCDATASection(message.toString());
+        // Add message to log
+        Text messageText = doc.createCDATASection(message.toString());
         messageElement.appendChild(messageText);
-
-        this.buildElement.element.appendChild(messageElement);
+        buildElement.element.appendChild(messageElement);
     }
 
     /**
@@ -580,8 +598,8 @@ public class LuntbuildLogger implements BuildLogger {
         if (xslUri == null) {
             xslUri = Luntbuild.getServletRootUrl() + "/log.xsl";
         } else {
-        	String installDir = Luntbuild.installDir.replaceAll("\\\\","\\\\\\\\");
-        	xslUri = xslUri.replaceAll(installDir, Luntbuild.getServletRootUrl());
+            String installDir = Luntbuild.installDir.replaceAll("\\\\","\\\\\\\\");
+            xslUri = xslUri.replaceAll(installDir, Luntbuild.getServletRootUrl());
         }
         Writer output = null;
         OutputStream stream = null;
@@ -660,9 +678,9 @@ public class LuntbuildLogger implements BuildLogger {
                 this.err.println("Can't open output file " + outFilename);
                 logHtmlFromText(textFilename, outFilename);
             } finally {
-            	if (pout != null) {
-            		pout.close();
-            	}
+                if (pout != null) {
+                    pout.close();
+                }
             }
         } catch (Throwable e) {
             logHtmlFromText(textFilename, outFilename);
