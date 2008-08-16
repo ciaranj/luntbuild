@@ -133,6 +133,7 @@ public abstract class ManualBuildEditor extends BaseComponent implements PageDet
 		buildParams.setPostbuildStrategy(getPostbuildStrategy());
 		buildParams.setTriggerDependencyStrategy(getTriggerDependencyStrategy());
 		buildParams.setScheduleId(getSchedule().getId());
+		trigger.setJobDataMap(Schedule.constructTriggerJobMap(buildParams));
 		trigger.setName(Schedule.constructTriggerName(buildParams));
 		trigger.setRepeatCount(0);
 		trigger.setRepeatInterval(0);

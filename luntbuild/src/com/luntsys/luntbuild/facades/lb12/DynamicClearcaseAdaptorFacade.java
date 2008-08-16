@@ -13,6 +13,12 @@ public class DynamicClearcaseAdaptorFacade extends BaseClearcaseAdaptorFacade {
     private String m_projectPath;
 
     /**
+     * @inheritDoc
+	 */
+	public String getVcsClassName() {
+		return "com.luntsys.luntbuild.vcs.DynamicClearcaseAdaptor";
+	}
+    /**
      * Gets the MVFS path, where all Clearcase views are accessible.
      * 
      * @return the MVFS path

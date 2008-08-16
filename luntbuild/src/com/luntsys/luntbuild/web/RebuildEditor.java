@@ -38,6 +38,7 @@ import org.apache.tapestry.event.PageDetachListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.form.IPropertySelectionModel;
 import org.apache.tapestry.spec.IComponentSpecification;
+import org.quartz.JobDataMap;
 import org.quartz.SimpleTrigger;
 
 import com.luntsys.luntbuild.BuildGenerator;
@@ -83,11 +84,14 @@ public abstract class RebuildEditor extends BaseComponent implements PageDetachL
 
 		SimpleTrigger trigger = new SimpleTrigger();
 		trigger.setGroup(BuildGenerator.REBUILD_GROUP);
+    	JobDataMap job = new JobDataMap();
+    	job.putAsString(Luntbuild.TRIGGER_JOB_NOTIFY_STRATEGY, getNotifyStrategy());
+    	job.putAsString(Luntbuild.TRIGGER_JOB_POSTBUILD_STRATEGY, getPostbuildStrategy());
+    	job.putAsString(Luntbuild.TRIGGER_JOB_BUILD_ID, getBuild().getId());
+    	trigger.setJobDataMap(job);
+    	
 		// encode current build id, and current time stamp into the trigger name
-		trigger.setName(String.valueOf(getBuild().getId()) + Luntbuild.TRIGGER_NAME_SEPERATOR +
-			 getNotifyStrategy() + Luntbuild.TRIGGER_NAME_SEPERATOR +
-			 getPostbuildStrategy() + Luntbuild.TRIGGER_NAME_SEPERATOR +
-				String.valueOf(System.currentTimeMillis()));
+		trigger.setName(Luntbuild.REBUILD_TRIGGER_NAME + String.valueOf(System.currentTimeMillis()));
 		trigger.setRepeatCount(0);
 		trigger.setRepeatInterval(0);
 		if (getBuildTiming() == Constants.BUILD_TIMING_NOW){

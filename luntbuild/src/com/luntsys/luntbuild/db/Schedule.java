@@ -47,6 +47,7 @@ import org.acegisecurity.AccessDeniedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.CronTrigger;
+import org.quartz.JobDataMap;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 
@@ -791,9 +792,6 @@ public class Schedule implements DependentNode, VariableHolder {
     public static void validateBuildNecessaryCondition(String buildNecessaryCondition) throws ValidationException {
         if (Luntbuild.isEmpty(buildNecessaryCondition))
             throw new ValidationException("Invalid build necessary condition: should not be empty!");
-        if (buildNecessaryCondition.indexOf(Luntbuild.TRIGGER_NAME_SEPERATOR) != -1)
-            throw new ValidationException("Invalid build necessary condition: should not contain sequence \"" +
-                    Luntbuild.TRIGGER_NAME_SEPERATOR + "\"");
         try {
         	Luntbuild.validateExpression(buildNecessaryCondition);
         } catch (ValidationException e) {
@@ -933,6 +931,7 @@ public class Schedule implements DependentNode, VariableHolder {
     
                 SimpleTrigger trigger = new SimpleTrigger();
                 trigger.setGroup(BuildGenerator.DEPENDENT_GROUP);
+        		trigger.setJobDataMap(constructTriggerJobMap(buildParams));
                 trigger.setName(constructTriggerName(buildParams));
                 trigger.setRepeatCount(0);
                 trigger.setRepeatInterval(0);
@@ -983,7 +982,7 @@ public class Schedule implements DependentNode, VariableHolder {
     public boolean isVcsModified() {
         Schedule workingSchedule = OgnlHelper.getWorkingSchedule();
         Revisions revisions = new Revisions();
-        Build build = Luntbuild.getDao().loadLastBuild(this);
+        Build build = Luntbuild.getDao().loadLastSuccessBuild(this);
         if (build == null) {
             if (OgnlHelper.getRevisions() == null && workingSchedule.getProject() == getProject()) {
                 revisions.getChangeLogs().add("========== Change log ignored: base build does not exist ==========");
@@ -1114,39 +1113,55 @@ public class Schedule implements DependentNode, VariableHolder {
 	 * 
 	 * @param buildParams the build parameters
 	 * @return the trigger name
-	 * @see #parseTriggerName(String)
+	 * @see #parseTrigger(Trigger)
 	 */
     public static String constructTriggerName(BuildParams buildParams) {
-        String triggerName = buildParams.getBuildNecessaryCondition() +
-                Luntbuild.TRIGGER_NAME_SEPERATOR + buildParams.getBuildType() +
-                Luntbuild.TRIGGER_NAME_SEPERATOR + buildParams.getBuildVersion() +
-                Luntbuild.TRIGGER_NAME_SEPERATOR + buildParams.getLabelStrategy() +
-                Luntbuild.TRIGGER_NAME_SEPERATOR + buildParams.getNotifyStrategy() +
-                Luntbuild.TRIGGER_NAME_SEPERATOR + buildParams.getPostbuildStrategy() +
-                Luntbuild.TRIGGER_NAME_SEPERATOR + buildParams.getTriggerDependencyStrategy() +
-                Luntbuild.TRIGGER_NAME_SEPERATOR + buildParams.getScheduleId() +
-                Luntbuild.TRIGGER_NAME_SEPERATOR + System.currentTimeMillis() + Thread.currentThread().hashCode();
+        String triggerName = Luntbuild.MANUAL_TRIGGER_NAME + System.currentTimeMillis() + Thread.currentThread().hashCode();
         return triggerName;
     }
 
 	/**
+	 * Constructs a unique tigger name from build parameters.
+	 * 
+	 * @param buildParams the build parameters
+	 * @return the trigger name
+	 * @see #parseTrigger(Trigger)
+	 */
+    public static JobDataMap constructTriggerJobMap(BuildParams buildParams) {
+    	JobDataMap job = new JobDataMap();
+    	job.putAsString(Luntbuild.TRIGGER_JOB_BUILD_TYPE, buildParams.getBuildType());
+    	job.put(Luntbuild.TRIGGER_JOB_BUILD_NECESSARY_CONDITION, buildParams.getBuildNecessaryCondition());
+    	job.put(Luntbuild.TRIGGER_JOB_BUILD_VERSION, buildParams.getBuildVersion());
+    	job.putAsString(Luntbuild.TRIGGER_JOB_LABEL_STRATEGY, buildParams.getLabelStrategy());
+    	job.putAsString(Luntbuild.TRIGGER_JOB_NOTIFY_STRATEGY, buildParams.getNotifyStrategy());
+    	job.putAsString(Luntbuild.TRIGGER_JOB_POSTBUILD_STRATEGY, buildParams.getPostbuildStrategy());
+    	job.putAsString(Luntbuild.TRIGGER_JOB_DEPENDENCY_STRATEGY, buildParams.getTriggerDependencyStrategy());
+    	job.putAsString(Luntbuild.TRIGGER_JOB_SCHEDULE_ID, buildParams.getScheduleId());
+        return job;
+    }
+
+    
+    
+	/**
 	 * Gets build parameters from a trigger name.
 	 * 
-	 * @param triggerName the trigger name
+	 * @param trigger the trigger
 	 * @return the build params
 	 * @see #constructTriggerName(BuildParams)
 	 */
-    public static BuildParams parseTriggerName(String triggerName) {
+    public static BuildParams parseTrigger(Trigger trigger) {
         BuildParams buildParams = new BuildParams();
-        String fields[] = triggerName.split("\\" + Luntbuild.TRIGGER_NAME_SEPERATOR);
-        buildParams.setBuildNecessaryCondition(fields[0]);
-        buildParams.setBuildType(new Integer(fields[1]).intValue());
-        buildParams.setBuildVersion(fields[2]);
-        buildParams.setLabelStrategy(new Integer(fields[3]).intValue());
-        buildParams.setNotifyStrategy(new Integer(fields[4]).intValue());
-        buildParams.setPostbuildStrategy(new Integer(fields[5]).intValue());
-        buildParams.setTriggerDependencyStrategy(new Integer(fields[6]).intValue());
-        buildParams.setScheduleId(new Integer(fields[7]).intValue());
+		JobDataMap job = trigger.getJobDataMap();
+		if (job.size() == 0) return buildParams;
+		
+        buildParams.setBuildType(new Integer(job.getString(Luntbuild.TRIGGER_JOB_BUILD_TYPE)).intValue());
+        buildParams.setBuildNecessaryCondition(job.getString(Luntbuild.TRIGGER_JOB_BUILD_NECESSARY_CONDITION));
+        buildParams.setBuildVersion(job.getString(Luntbuild.TRIGGER_JOB_BUILD_VERSION));
+        buildParams.setLabelStrategy(new Integer(job.getString(Luntbuild.TRIGGER_JOB_LABEL_STRATEGY)).intValue());
+        buildParams.setNotifyStrategy(new Integer(job.getString(Luntbuild.TRIGGER_JOB_NOTIFY_STRATEGY)).intValue());
+        buildParams.setPostbuildStrategy(new Integer(job.getString(Luntbuild.TRIGGER_JOB_POSTBUILD_STRATEGY)).intValue());
+        buildParams.setTriggerDependencyStrategy(new Integer(job.getString(Luntbuild.TRIGGER_JOB_DEPENDENCY_STRATEGY)).intValue());
+        buildParams.setScheduleId(new Long(job.getString(Luntbuild.TRIGGER_JOB_SCHEDULE_ID)).longValue());
         return buildParams;
     }
 

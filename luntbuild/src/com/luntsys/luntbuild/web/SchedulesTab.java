@@ -39,6 +39,7 @@ import org.apache.tapestry.engine.IPageLoader;
 import org.apache.tapestry.event.PageDetachListener;
 import org.apache.tapestry.event.PageEvent;
 import org.apache.tapestry.spec.IComponentSpecification;
+import org.quartz.JobDataMap;
 import org.quartz.Trigger;
 
 import com.luntsys.luntbuild.BuildGenerator;
@@ -376,17 +377,17 @@ public abstract class SchedulesTab extends TabPageComponent implements PageDetac
 	public abstract Trigger getRebuildTrigger();
 
 	public String getManualBuildType() {
-		com.luntsys.luntbuild.facades.BuildParams buildParams = Schedule.parseTriggerName(getManualBuildTrigger().getName());
+		com.luntsys.luntbuild.facades.BuildParams buildParams = Schedule.parseTrigger(getManualBuildTrigger());
 		return com.luntsys.luntbuild.facades.Constants.getBuildTypeText(buildParams.getBuildType());
 	}
 
 	public String getManualBuildPostbuildStrategy() {
-		com.luntsys.luntbuild.facades.BuildParams buildParams = Schedule.parseTriggerName(getManualBuildTrigger().getName());
+		com.luntsys.luntbuild.facades.BuildParams buildParams = Schedule.parseTrigger(getManualBuildTrigger());
 		return com.luntsys.luntbuild.facades.Constants.getPostbuildStrategyText(buildParams.getPostbuildStrategy());
 	}
 
 	public String getManualBuildLabelStrategy() {
-		com.luntsys.luntbuild.facades.BuildParams buildParams = Schedule.parseTriggerName(getManualBuildTrigger().getName());
+		com.luntsys.luntbuild.facades.BuildParams buildParams = Schedule.parseTrigger(getManualBuildTrigger());
 		return com.luntsys.luntbuild.facades.Constants.getLabelStrategyText(buildParams.getLabelStrategy());
 	}
 
@@ -399,18 +400,20 @@ public abstract class SchedulesTab extends TabPageComponent implements PageDetac
 	}
 
 	public String getManualBuildNotifyStrategy() {
-		com.luntsys.luntbuild.facades.BuildParams buildParams = Schedule.parseTriggerName(getManualBuildTrigger().getName());
+		com.luntsys.luntbuild.facades.BuildParams buildParams = Schedule.parseTrigger(getManualBuildTrigger());
 		return com.luntsys.luntbuild.facades.Constants.getNotifyStrategyText(buildParams.getNotifyStrategy());
 	}
 
 	public String getRebuildNotifyStrategy() {
-		String[] fields = getRebuildTrigger().getName().split("\\" + Luntbuild.TRIGGER_NAME_SEPERATOR);
-		return com.luntsys.luntbuild.facades.Constants.getNotifyStrategyText(new Integer(fields[1]).intValue());
+		JobDataMap job = getRebuildTrigger().getJobDataMap();
+		return com.luntsys.luntbuild.facades.Constants.getNotifyStrategyText(
+				new Integer(job.getString(Luntbuild.TRIGGER_JOB_NOTIFY_STRATEGY)).intValue());
 	}
 
 	public String getRebuildPostbuildStrategy() {
-		String[] fields = getRebuildTrigger().getName().split("\\" + Luntbuild.TRIGGER_NAME_SEPERATOR);
-		return Constants.getPostbuildStrategyText(new Integer(fields[2]).intValue());
+		JobDataMap job = getRebuildTrigger().getJobDataMap();
+		return Constants.getPostbuildStrategyText(
+				new Integer(job.getString(Luntbuild.TRIGGER_JOB_POSTBUILD_STRATEGY)).intValue());
 	}
 
 	public void deleteManualBuildTrigger(IRequestCycle cycle) {

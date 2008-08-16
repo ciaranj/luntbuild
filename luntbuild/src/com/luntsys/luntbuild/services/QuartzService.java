@@ -250,7 +250,7 @@ public class QuartzService implements IScheduler {
 					Trigger manualTrigger = manualTriggers[i];
 					if (!manualTrigger.getGroup().equals(BuildGenerator.MANUALBUILD_GROUP))
 						continue;
-					BuildParams buildParams = Schedule.parseTriggerName(manualTrigger.getName());
+					BuildParams buildParams = Schedule.parseTrigger(manualTrigger);
 					if (buildParams.getScheduleId() != schedule.getId())
 						continue;
 					Iterator itExecutingJob = executingJobs.iterator();
@@ -289,8 +289,9 @@ public class QuartzService implements IScheduler {
 				String[] rebuildTriggerNames = sched.getTriggerNames(BuildGenerator.REBUILD_GROUP);
 				List executingJobs = sched.getCurrentlyExecutingJobs();
 				for (int i = 0; i < rebuildTriggerNames.length; i++) {
-					String[] fields = rebuildTriggerNames[i].split("\\" + Luntbuild.TRIGGER_NAME_SEPERATOR);
-					long buildId = new Long(fields[0]).longValue();
+					JobDataMap job = sched.getTrigger(rebuildTriggerNames[i], BuildGenerator.REBUILD_GROUP).getJobDataMap();
+
+					long buildId = new Integer(job.getString(Luntbuild.TRIGGER_JOB_BUILD_ID)).intValue();
 					Build build = Luntbuild.getDao().loadBuild(buildId);
 					if (build.getSchedule().getId() != schedule.getId())
 						continue;
@@ -461,7 +462,7 @@ public class QuartzService implements IScheduler {
 					Trigger manualTrigger = manualTriggers[i];
 					if (!manualTrigger.getGroup().equals(BuildGenerator.MANUALBUILD_GROUP))
 						continue;
-					BuildParams buildParams = Schedule.parseTriggerName(manualTrigger.getName());
+					BuildParams buildParams = Schedule.parseTrigger(manualTrigger);
 					if (buildParams.getScheduleId() != schedule.getId())
 						continue;
 					Iterator itExecutingJob = executingJobs.iterator();

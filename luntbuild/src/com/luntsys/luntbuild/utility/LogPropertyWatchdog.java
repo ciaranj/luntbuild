@@ -31,12 +31,11 @@ import org.apache.log4j.helpers.FileWatchdog;
 public class LogPropertyWatchdog extends FileWatchdog {
 
 	private static Log logger = LogFactory.getLog(Luntbuild.class);
-	
-	private final String installDir;
+	private boolean isInitialized = false;
 	
 	LogPropertyWatchdog(String config, String installDir) {
        super(config);
-       this.installDir = installDir;
+       isInitialized = true;
    }
 
    /**
@@ -45,6 +44,8 @@ public class LogPropertyWatchdog extends FileWatchdog {
     */
    public void doOnChange() {
 
+	   if (!isInitialized) return;
+	   
        new PropertyConfigurator().doConfigure(super.filename, LogManager.getLoggerRepository());
 
        Logger rootLogger = Logger.getRootLogger();
@@ -61,7 +62,7 @@ public class LogPropertyWatchdog extends FileWatchdog {
         		   setLuntbuildTextLog(app);
         	   } else {
         		   String fileName = ((FileAppender)app).getFile();
-        		   ((FileAppender) app).setFile(new File(installDir + "/logs/" +
+        		   ((FileAppender) app).setFile(new File(Luntbuild.installDir + "/logs/" +
         				   fileName).getAbsolutePath());
         		   ((FileAppender) app).activateOptions();
         	   }
@@ -78,7 +79,7 @@ public class LogPropertyWatchdog extends FileWatchdog {
     */
    public final void setLuntbuildHtmlLog(Appender app) {
        if (app != null) {
-           ((FileAppender) app).setFile(new File(installDir + "/logs/" +
+           ((FileAppender) app).setFile(new File(Luntbuild.installDir + "/logs/" +
                    Luntbuild.log4jFileName).getAbsolutePath());
            ((FileAppender) app).activateOptions();
        } else {
@@ -87,7 +88,7 @@ public class LogPropertyWatchdog extends FileWatchdog {
            layout.setTitle("Luntbuild System Log");
            layout.setLocationInfo(true);
            try {
-	           app = new FileAppender(layout, new File(installDir + "/logs/" +
+	           app = new FileAppender(layout, new File(Luntbuild.installDir + "/logs/" +
 	                   Luntbuild.log4jFileName).getAbsolutePath(), true);
 	           ((FileAppender) app).setAppend(false);
 	           Logger log = LogManager.getLogger("com.luntsys.luntbuild");
@@ -108,14 +109,14 @@ public class LogPropertyWatchdog extends FileWatchdog {
     */
    public final void setLuntbuildTextLog(Appender app) {
        if (app != null) {
-           ((FileAppender) app).setFile(new File(installDir + "/logs/" +
+           ((FileAppender) app).setFile(new File(Luntbuild.installDir + "/logs/" +
                    Luntbuild.log4jFileNameTxt).getAbsolutePath());
            ((FileAppender) app).activateOptions();
        } else {
            logger.warn("Can not find luntbuild_txt_logfile appender, creating...");
            Layout layout = new PatternLayout("%5p [%t] (%F:%L) - %m%n");
            try {
-	           app = new FileAppender(layout, new File(installDir + "/logs/" +
+	           app = new FileAppender(layout, new File(Luntbuild.installDir + "/logs/" +
 	                   Luntbuild.log4jFileNameTxt).getAbsolutePath(), true);
 	           Logger log = LogManager.getLogger("com.luntsys.luntbuild");
 	           log.setLevel(Level.INFO);

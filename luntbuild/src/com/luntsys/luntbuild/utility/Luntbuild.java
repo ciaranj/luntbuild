@@ -131,8 +131,21 @@ public class Luntbuild {
     /** Location of Spring config file */
     public static final String SPRING_CONFIG_LOCATION = "/WEB-INF/applicationContext.xml";
 
-    /** Trigger name separator */
-    public static final String TRIGGER_NAME_SEPERATOR = "$";
+    /** Trigger name */
+    public static final String MANUAL_TRIGGER_NAME = "MANUAL-TRIGGER-";
+    public static final String REBUILD_TRIGGER_NAME = "REBUILD-MANUAL-TRIGGER-";
+    
+    /** Trigger job data keys */
+	public static final String TRIGGER_JOB_BUILD_TYPE                = "BUILD_TYPE";
+	public static final String TRIGGER_JOB_BUILD_NECESSARY_CONDITION = "NECESSARY_CONDITION";
+	public static final String TRIGGER_JOB_BUILD_VERSION             = "BUILD_VERSION";
+	public static final String TRIGGER_JOB_LABEL_STRATEGY            = "LABEL_STRATEGY";
+	public static final String TRIGGER_JOB_NOTIFY_STRATEGY           = "NOTIFY_STRATEGY";
+	public static final String TRIGGER_JOB_POSTBUILD_STRATEGY        = "POSTBUILD_STRATEGY";
+	public static final String TRIGGER_JOB_DEPENDENCY_STRATEGY       = "DEPENDENCY_STRATEGY";
+	public static final String TRIGGER_JOB_SCHEDULE_ID               = "SCHEDULE_ID";
+	public static final String TRIGGER_JOB_BUILD_ID                  = "BUILD_ID";
+
     private static Log logger = LogFactory.getLog(Luntbuild.class);
 
     // Luntbuild system level properties
@@ -1160,6 +1173,9 @@ public class Luntbuild {
     	try {
     		installDir = context.getInitParameter("installDir");
 
+    		// load and configure log4j properties to specify the HTML, TEXT log file
+    		setLuntbuildLogs();
+
     		if (isEmpty(installDir))
     			throw new RuntimeException("Missing parameter \"installDir\" for Luntbuild servlet");
 
@@ -1174,9 +1190,6 @@ public class Luntbuild {
     		} finally {
     			if (is != null) try{is.close();} catch (Exception e) {}
     		}
-
-    		// load and configure log4j properties to specify the HTML, TEXT log file
-    		setLuntbuildLogs();
 
     		// initialize spring application context
     		XmlWebApplicationContext xwac = new XmlWebApplicationContext();

@@ -216,6 +216,7 @@ public class LuntbuildService implements ILuntbuild {
             Schedule.validateTriggerDependencyStrategy(triggerDependencyStrategy);
         buildParams.setTriggerDependencyStrategy(triggerDependencyStrategy);
 
+		trigger.setJobDataMap(Schedule.constructTriggerJobMap(buildParams));
         trigger.setName(Schedule.constructTriggerName(buildParams));
         trigger.setRepeatCount(0);
         trigger.setRepeatInterval(0);

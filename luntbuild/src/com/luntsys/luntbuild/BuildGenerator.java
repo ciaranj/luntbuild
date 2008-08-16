@@ -156,11 +156,11 @@ public class BuildGenerator implements StatefulJob {
         }
 
         if (triggerGroup.equals(MANUALBUILD_GROUP)) { // triggered manually
-            BuildParams buildParams = Schedule.parseTriggerName(context.getTrigger().getName());
+            BuildParams buildParams = Schedule.parseTrigger(context.getTrigger());
             Luntbuild.getSchedService().
                 resetManualTriggers(Luntbuild.getDao().loadSchedule(buildParams.getScheduleId()));
             new Thread(new BuildDependencyWalker(
-                    Schedule.parseTriggerName(context.getTrigger().getName()))).start();
+                    Schedule.parseTrigger(context.getTrigger()))).start();
             return;
         }
 
@@ -178,7 +178,7 @@ public class BuildGenerator implements StatefulJob {
 
             if (triggerGroup.equals(DEPENDENT_GROUP)) { // triggered by dependent resolving
                 com.luntsys.luntbuild.facades.BuildParams buildParams =
-                    Schedule.parseTriggerName(context.getTrigger().getName());
+                    Schedule.parseTrigger(context.getTrigger());
                 schedule = Luntbuild.getDao().loadSchedule(buildParams.getScheduleId());
                 // Reload project to initialize project lazy collection members
                 schedule.setProject(Luntbuild.getDao().loadProject(schedule.getProject().getId()));
@@ -247,14 +247,15 @@ public class BuildGenerator implements StatefulJob {
             } else { // triggered by rebuild
                 revisions.getChangeLogs().add("========== Change log ignored: rebuild performed ==========");
                 String triggerName = context.getTrigger().getName();
-                String[] fields = triggerName.split("\\" + Luntbuild.TRIGGER_NAME_SEPERATOR);
-                long buildId = new Long(fields[0]).longValue();
+        		JobDataMap job = context.getTrigger().getJobDataMap();
+
+                long buildId = new Long(job.getString(Luntbuild.TRIGGER_JOB_BUILD_ID)).longValue();
                 currentBuild = Luntbuild.getDao().loadBuild(buildId);
                 schedule = currentBuild.getSchedule();
                 // reload project to initialize project lazy members
                 schedule.setProject(Luntbuild.getDao().loadProject(schedule.getProject().getId()));
-                notifyStrategy = new Integer(fields[1]).intValue();
-                currentBuild.setPostbuildStrategy(new Integer(fields[2]).intValue());
+                notifyStrategy = new Integer(job.getString(Luntbuild.TRIGGER_JOB_NOTIFY_STRATEGY)).intValue();
+                currentBuild.setPostbuildStrategy(new Integer(job.getString(Luntbuild.TRIGGER_JOB_POSTBUILD_STRATEGY)).intValue());
                 // update status of this schedule
                 schedule.setStatus(Constants.SCHEDULE_STATUS_RUNNING);
                 schedule.setStatusDate(new Date());
