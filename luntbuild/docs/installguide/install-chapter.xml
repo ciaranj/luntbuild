@@ -257,12 +257,24 @@ or alternatively
 </programlisting>
 </para>
 <para>
-While we sure you have several options, we suggest the excellent
+While you have several options, we suggest the excellent
 <ulink url="http://wrapper.tanukisoftware.org/doc/english/introduction.html">Java Service Wrapper</ulink>
 to run standalone Luntbuild.
 You'll get a clean, cross-platform way to start/stop/restart your services. On Unix,
 you'll get an init-style script, and on Windows you'll be able to
 integrate your app as a system service if you like.
+</para>
+<para>
+On Windows platform you can use <ulink url="http://javaservice.objectweb.org/index.html">JavaService</ulink>.
+You can adapt and use script contrib/install-javaservice.bat to install Luntbuild as service.
+Use following steps to install Luntbuild as service:
+<simplelist>
+<member>Copy JavaService.exe (http://javaservice.objectweb.org/index.html ) to luntbuild [bin] folder and rename it to LuntBuild.exe.</member>
+<member>Edit contrib/install-javaservice.bat and make sure to specify correct directories in set statements.</member>
+<member>Run the script and check configuration of new service with the command <emphasis>LuntBuild.exe -queryconfig LuntBuild</emphasis></member>
+<member>Start Service with <emphasis>net start LuntBuild</emphasis></member>
+</simplelist>
+Note, that you should change localhost paremeter in contrib/install-javaservice.bat to the machine name so you can access Lunbuild from remote machines.
 </para>
 </section>
 <section id="backup"><title>Backing up Luntbuild data</title>
