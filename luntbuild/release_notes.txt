@@ -2,16 +2,25 @@
 luntbuild 1.6 Release Notes
 ==============================================
 
+- Feature: Updated SVN Adaptor svnkit library to version 1.2.0 which introduces support for new Subversion 1.5.0 features 
 - Feature: Added timeout thread (30 sec) around notifiers in case they hang
 - Feature: Patch from Roger Perkins to make xml/html build report size settable from properties
 - Feature: Added optional CAS support as contributed by Gustavo.
-- Fix: (Bug 6731) Trouble labeling sourceCode with BaseClearCaseAdaptor
-- Fix: (Bug 6735) Fixed detection of Ant target names in build log
-- Fix: (Bug 7306) Fixed build log message about the duration of the post build step, now displays correct duration (was build + post-build)
-- Fix: (Bug 7312) Fixed NPE when importing a single project that has two schedules with builds, patch by Roger Perkins
-- Fix: Fixed detection of ant target names in build log that contain "-"
+- Fix: Path by Roger Perkins to imporve send email handling
 - Fix: Allow set builder properties to include " if escaped like propertyName="\"VAL1=3251&VAL2=www.yahoo.com\""
-- Fix: (Bug 8002, 6176) Fixed schedules not running when a regular user makes a change to one of their schedules
+- Fix: Bug [# 6115]  Unable to use OGNL expressions on manual builds for build version; Bug [# 6078]  Next version number on manual schedule page (sf 1224650) 
+- Fix: Bug [# 6176]  Scheduled builds do not execute; Bug [# 8002]  Only jobs of current user are scheduled
+- Fix: Bug [# 6596]  If no successful build do not check vcsModified 
+- Fix: Bug [# 6721]  Trigger build option "When to build" = now discards schedules 
+- Fix: Bug Bug [# 6731]  Trouble labeling sourceCode with BaseClearCaseAdaptor 
+- Fix: Bug Bug [# 6735]  ant target names with "-" (minus sign) are not parsed correctly into build_log.xml
+- Fix: Bug Bug [# 7205]  luntbuild-1.5.6.zip missing trilead.jar 
+- Fix: Bug Bug [# 7240]  DateFormat parsing and handling in AbstractClearCaseAdaptor 
+- Fix: Bug Bug [# 7306]  Time given for "Duration of the post-builder(s) execution:" is wrong in the build log 
+- Fix: Bug Bug [# 7312] Importing a single project, with two schedules that have previous build logs, throws an exception that stops the project importing 
+- Fix: Bug Bug [# 7365]  LDAP settings don`t work as noticed in the help 
+- Fix: Bug Bug [# 7403]  When fixing Bug 6928 it broke the builder environment variable "SRC_ROOT=${build.schedule.workingDir}"
+- Fix: Bug Bug [# 8002]  Only jobs of current user are scheduled 
 
 ==============================================
 luntbuild 1.5.6 Release Notes
