@@ -156,29 +156,36 @@ public class EmailNotifier extends TemplatedNotifier {
      * @inheritDoc
      */
     public void sendBuildNotification(Set checkinUsers, Set subscribeUsers, Build build, Project antProject) {
+        String notificationTitle = constructNotificationTitle(build);
+        
         Iterator it = checkinUsers.iterator();
-        while (it.hasNext()) {
-            User user = (User) it.next();
-            String email =
-                ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getValue(user.getContacts());
-            if (Luntbuild.isEmpty(email))
-                antProject.log("Cannot send email to user \"" +
-                        user.getName() + "\": email is empty!", Project.MSG_WARN);
-            else
-                sendMail(email, antProject, constructNotificationTitle(build),
-                        constructNotificationBody4CheckinUsers(build));
+        if (it.hasNext()) {
+	        String notificationBody = constructNotificationBody4CheckinUsers(build);
+	        while (it.hasNext()) {
+	            User user = (User) it.next();
+	            String email =
+	                ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getValue(user.getContacts());
+	            if (Luntbuild.isEmpty(email))
+	                antProject.log("Cannot send email to user \"" +
+	                        user.getName() + "\": email is empty!", Project.MSG_WARN);
+	            else
+	                sendMail(email, antProject, notificationTitle, notificationBody);
+	        }
         }
+        
         it = subscribeUsers.iterator();
-        while (it.hasNext()) {
-            User user = (User) it.next();
-            String email =
-                ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getValue(user.getContacts());
-            if (Luntbuild.isEmpty(email))
-                antProject.log("Cannot send email to user \"" +
-                        user.getName() + "\": email is empty!", Project.MSG_WARN);
-            else
-                sendMail(email, antProject, constructNotificationTitle(build),
-                        constructNotificationBody(build));
+        if (it.hasNext()) {
+	        String notificationBody = constructNotificationBody(build);
+	        while (it.hasNext()) {
+	            User user = (User) it.next();
+	            String email =
+	                ((NotifierProperty)getUserLevelProperties().get(USER_EMAIL)).getValue(user.getContacts());
+	            if (Luntbuild.isEmpty(email))
+	                antProject.log("Cannot send email to user \"" +
+	                        user.getName() + "\": email is empty!", Project.MSG_WARN);
+	            else
+	                sendMail(email, antProject, notificationTitle, notificationBody);
+	        }
         }
     }
 
@@ -186,6 +193,8 @@ public class EmailNotifier extends TemplatedNotifier {
      * @inheritDoc
      */
     public void sendScheduleNotification(Set subscribeUsers, Schedule schedule, Project antProject) {
+        String notificationTitle = constructNotificationTitle(schedule);
+        String notificationBody = constructNotificationBody(schedule);
         Iterator it = subscribeUsers.iterator();
         while (it.hasNext()) {
             User user = (User) it.next();
@@ -195,8 +204,7 @@ public class EmailNotifier extends TemplatedNotifier {
                 antProject.log("Cannot send email to user \"" +
                         user.getName() + "\": email is empty!", Project.MSG_WARN);
             else
-                sendMail(email, antProject, constructNotificationTitle(schedule),
-                        constructNotificationBody(schedule));
+                sendMail(email, antProject, notificationTitle, notificationBody);
         }
     }
 
