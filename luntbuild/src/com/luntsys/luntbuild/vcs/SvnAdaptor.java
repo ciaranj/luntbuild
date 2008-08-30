@@ -50,6 +50,7 @@ import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNCopySource;
 import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
@@ -505,7 +506,10 @@ public class SvnAdaptor extends Vcs {
         	String path = workingDir;
         	if (module.getSrcPath() != null && module.getSrcPath().trim().length() > 0)
         		path += File.separatorChar + module.getActualSrcPath().trim();
-            clientManager.getCopyClient().doCopy(new File(path), SVNRevision.WORKING, url, false, "Labeled: " + label);
+            SVNCopySource source = new SVNCopySource(SVNRevision.UNDEFINED, SVNRevision.WORKING, new File(path));
+            clientManager.getCopyClient().doCopy(new SVNCopySource[] {source}, url,
+            	false, false, true, "Labeled: " + label, null);
+
         } catch (SVNException e) {
             getClientManager().dispose();
             throw new RuntimeException("Error executing copy svn command", e);

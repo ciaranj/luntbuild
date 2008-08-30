@@ -1,5 +1,7 @@
 package com.luntsys.luntbuild.vcs;
 
+import java.util.logging.Level;
+
 import org.apache.tools.ant.Project;
 import org.tmatesoft.svn.util.SVNDebugLogAdapter;
 
@@ -66,4 +68,59 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
     public void logError(Throwable th) {
         if (this.antProject != null) this.antProject.log(th.getMessage(), Project.MSG_ERR);
     }
+
+	public void log(Throwable th, Level level) {
+		log(th.getMessage(), level);
+	}
+
+	public void log(String msg, Level level) {
+		if (this.antProject == null) return;
+		if (level.intValue() == Level.FINE.intValue()) {
+			this.antProject.log(msg, Project.MSG_INFO);
+		} else if (level.intValue() == Level.FINER.intValue()) {
+			this.antProject.log(msg, Project.MSG_DEBUG);
+		} else if (level.intValue() == Level.FINEST.intValue()) {
+			this.antProject.log(msg, Project.MSG_DEBUG);
+		} else if (level.intValue() == Level.INFO.intValue()) {
+			this.antProject.log(msg, Project.MSG_INFO);
+		} else if (level.intValue() == Level.WARNING.intValue()) {
+			this.antProject.log(msg, Project.MSG_WARN);
+		} else if (level.intValue() == Level.SEVERE.intValue()) {
+			this.antProject.log(msg, Project.MSG_ERR);
+		} else {
+			this.antProject.log(msg, Project.MSG_DEBUG);
+		}
+	}
+
+	public void logFine(Throwable th) {
+		log(th.getMessage(), Level.FINE);
+	}
+
+	public void logFine(String msg) {
+		log(msg, Level.FINE);
+	}
+
+	public void logFiner(Throwable th) {
+		log(th.getMessage(), Level.FINER);
+	}
+
+	public void logFiner(String msg) {
+		log(msg, Level.FINER);
+	}
+
+	public void logFinest(Throwable th) {
+		log(th.getMessage(), Level.FINEST);
+	}
+
+	public void logFinest(String msg) {
+		log(msg, Level.FINEST);
+	}
+
+	public void logSevere(Throwable th) {
+		log(th.getMessage(), Level.SEVERE);
+	}
+
+	public void logSevere(String msg) {
+		log(msg, Level.SEVERE);
+	}
 }
