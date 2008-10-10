@@ -4,6 +4,7 @@ import java.util.logging.Level;
 
 import org.apache.tools.ant.Project;
 import org.tmatesoft.svn.util.SVNDebugLogAdapter;
+import org.tmatesoft.svn.util.SVNLogType;
 
 /**
  * Custom Subversion logger.  Logs messages to an Ant project.
@@ -30,7 +31,7 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
      * @param data the data from the network
      */
     public void log(String message, byte[] data) {
-        if (this.antProject != null) this.antProject.log(message, Project.MSG_DEBUG);
+        log(message, Level.FINEST);
     }
 
     /**
@@ -39,7 +40,7 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
      * @param message the message
      */
     public void logInfo(String message) {
-        if (this.antProject != null) this.antProject.log(message, Project.MSG_DEBUG);
+        log(message, Level.INFO);
     }
 
     /**
@@ -48,7 +49,7 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
      * @param message the message
      */
     public void logError(String message) {
-        if (this.antProject != null) this.antProject.log(message, Project.MSG_ERR);
+        log(message, Level.SEVERE);
     }
 
     /**
@@ -57,7 +58,7 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
      * @param th the exception
      */
     public void logInfo(Throwable th) {
-        if (this.antProject != null) this.antProject.log(th.getMessage(), Project.MSG_DEBUG);
+        log(th.getLocalizedMessage(), Level.INFO);
     }
 
     /**
@@ -66,17 +67,17 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
      * @param th the exception
      */
     public void logError(Throwable th) {
-        if (this.antProject != null) this.antProject.log(th.getMessage(), Project.MSG_ERR);
+        log(th.getLocalizedMessage(), Level.SEVERE);
     }
 
 	public void log(Throwable th, Level level) {
-		log(th.getMessage(), level);
+		log(th.getLocalizedMessage(), level);
 	}
 
 	public void log(String msg, Level level) {
 		if (this.antProject == null) return;
 		if (level.intValue() == Level.FINE.intValue()) {
-			this.antProject.log(msg, Project.MSG_INFO);
+			this.antProject.log(msg, Project.MSG_DEBUG);
 		} else if (level.intValue() == Level.FINER.intValue()) {
 			this.antProject.log(msg, Project.MSG_DEBUG);
 		} else if (level.intValue() == Level.FINEST.intValue()) {
@@ -93,7 +94,7 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
 	}
 
 	public void logFine(Throwable th) {
-		log(th.getMessage(), Level.FINE);
+		log(th.getLocalizedMessage(), Level.FINE);
 	}
 
 	public void logFine(String msg) {
@@ -101,7 +102,7 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
 	}
 
 	public void logFiner(Throwable th) {
-		log(th.getMessage(), Level.FINER);
+		log(th.getLocalizedMessage(), Level.FINER);
 	}
 
 	public void logFiner(String msg) {
@@ -109,7 +110,7 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
 	}
 
 	public void logFinest(Throwable th) {
-		log(th.getMessage(), Level.FINEST);
+		log(th.getLocalizedMessage(), Level.FINEST);
 	}
 
 	public void logFinest(String msg) {
@@ -117,10 +118,22 @@ public class SvnCustomLogger extends SVNDebugLogAdapter {
 	}
 
 	public void logSevere(Throwable th) {
-		log(th.getMessage(), Level.SEVERE);
+		log(th.getLocalizedMessage(), Level.SEVERE);
 	}
 
 	public void logSevere(String msg) {
 		log(msg, Level.SEVERE);
+	}
+
+	public void log(SVNLogType type, Throwable throwable, Level level) {
+		log(throwable, level);
+	}
+
+	public void log(SVNLogType type, String msg, Level level) {
+		log(msg, level);
+	}
+
+	public void log(SVNLogType type, String msg, byte[] arg2) {
+		log(msg, Level.FINEST);
 	}
 }
