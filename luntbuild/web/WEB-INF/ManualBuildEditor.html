@@ -1,0 +1,168 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css">
+</head>
+<span jwcid="$content$">
+  <table width="100%"  border="0" cellspacing="0" cellpadding="0">
+<form jwcid="@Form" name="form" method="post">
+    <tr align="center" bordercolor="#EAEDF4" bgcolor="#FFFFE6">
+      <td colspan="4" bgcolor="#EAEDF4" scope="col"> <table width="100%"  border="0" cellpadding="0" cellspacing="0" class="propertyEditorTitle">
+          <tr>
+            <td align="center">Trigger build manually</td>
+          </tr>
+          <span class="errorMsg" jwcid="@Conditional" condition="ognl:errorMsg != null">
+          <tr>
+            <td colspan="4" align="left" valign="top" class="errorMsg" scope="col"><img src="images/error.gif" width="32" height="32" border="0" align="absmiddle"> <span jwcid="@InsertText" value="ognl:errorMsg">error message</span></td>
+          </tr>
+          </span>
+      </table></td>
+    </tr>
+
+	<span jwcid="@Conditional" condition="ognl:cssIndex=0"/>
+
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/condition.gif" width="16" height="16" align="absmiddle"> Build necessary condition </td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+      <input name="textfield" type="text" value="ognl:buildNecessaryCondition" size="75" jwcid="@TextField"/>*
+      <br>The build necessary condition is an OGNL expression used to determine if current build is necessary. The following are some commonly used expressions:<br>
+      <strong>always</strong>: Always perform build<br>
+      <strong>never</strong>: Never perform build<br>
+      <strong>alwaysIfFailed</strong>: Always perform build when last build is failed.
+      However, if last build is successful, build will be performed only when
+      modifications are detected in related VCS, or new builds are generated in its dependent schedules.<br>
+      <strong>vcsModified or dependencyNewer</strong>: Perform build when modifications are detected in related VCS, or new builds are generated in its
+      dependent schedules.
+      Refer to the <a href="docs/guide/index.html">User's Guide</a> for details.<br>
+      <strong>dependencySuccessful and (vcsModified or dependencyNewer)</strong>: Perform build when modifications are detected in related VCS, or new builds are generated in its
+      dependent schedules, in addition that all these new generated builds are successful.
+      Refer to the <a href="docs/guide/index.html">User's Guide</a> for details.
+	</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+    <tr>
+      <td jwcid="@Any" width="20%" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/number.gif" width="18" height="18" align="absmiddle"> Build as version</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+      <input name="textfield" type="text" value="ognl:buildAsVersion" size="75" jwcid="@TextField"/>
+      <br>      Optionally, if you specify a value here, Luntbuild will use this value as the build version
+      instead of  using "next build version" property. You should carefully specify the version here
+       not to cause potential duplication with any other version. Format of this version is the same as
+       the "next build version" property.
+	</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/build_type.gif" width="16" height="16" align="absmiddle"> Build type</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+      <select jwcid="@PropertySelection" model="ognl:buildTypeSelectionModel" value="ognl:buildType" name="select">
+      </select>
+      <br>
+      Select the build type for this build, clean build can be more reliable, <br>
+but can be slower, incremental build can be quicker, but less reliable.</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/postbuild_strategy.gif" width="16" height="16" align="absmiddle"> Post-build strategy</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+      <select jwcid="@PropertySelection" model="ognl:postbuildStrategySelectionModel" value="ognl:postbuildStrategy" name="select">
+      </select>
+        <br>Choose the post-build strategy for this build. There are four strategies:<br>
+		<strong>do not post-build</strong>: do not execute the post-build script after the build.<br>
+        <strong>post-build when success</strong>: execute the post-build script only when the build was successful. <br>
+        <strong>post-build when failed</strong>: execute the post-build script only when the build has failed. <br>
+        <strong>post-build always</strong>: always execute the post-build script after the build.</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/label.gif" width="18" height="18" align="absmiddle"> Label strategy</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+      <select jwcid="@PropertySelection" model="ognl:labelStrategySelectionModel" value="ognl:labelStrategy" name="select">
+      </select>
+        <br>
+        Choose the label strategy for this build. There are following strategies:<br>
+        <strong>label successful builds</strong>: label the repository only for the successful builds. <br>
+        <strong>do not label</strong>: do not label the repository after the build.<br>
+        <strong>label always</strong>: always label the repository after the build.<br>        <br>
+NOTE. If a build is not labeled when it is initially built, it will not be rebuildable later.</td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/notify.gif" width="19" height="16" align="absmiddle"> Notify strategy</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+      <select jwcid="@PropertySelection" model="ognl:notifyStrategySelectionModel" value="ognl:notifyStrategy" name="select">
+      </select>
+        <br>
+    Choose the notify strategy for this build. There are following strategies:<br>
+    <strong>notify when status changed</strong>: send the notification when the status of the current build changes compared to the last build. That is, notification will be sent when the current build succeeds and the last build failed, or the current build fails and the last build succeeded. <br>
+    <strong>notify when failed</strong>: send the notification only when the build failed.<br>
+    <strong>notify when success</strong>: send the notification only when the build succeeds. <br>
+    <strong>do not notify</strong>: do not send the notification after the build. <br>
+    <strong>notify always</strong>: always send the notification after the build. <br>
+    <strong>notify when failed or status changed</strong>: send the notification only when the build failed or when the status of the current build changes compared to the last build. </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/trigger.gif" width="21" height="18" align="absmiddle"> Dependent triggering strategy</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+      <select jwcid="@PropertySelection" model="ognl:triggerDependencyStrategySelectionModel" value="ognl:triggerDependencyStrategy" name="select">
+      </select>
+        <br>
+    Choose dependency triggering strategy for this build. There are four strategies:<br>
+    <strong>trigger schedules this depends on</strong>: trigger schedules current schedule depends on, and this triggering will happen before current build. For example, if current schedule builds a product which contains several components in other schedules,
+    you can use this strategy to make sure all components used by this product is up to date.<br>
+    <strong>trigger schedules depends on this</strong>: trigger schedules depends on current schedule, and this triggering will happen after current build. For example, if current schedule builds a component which is used by products in other schedules,
+    you can use this strategy to make sure all products using this component is up to date.<br>
+    <strong>trigger all dependent schedules</strong>: This is a combination of the above two strategies, that is, trigger schedules current schedule depends on before current build, and
+    trigger schedules depends on current schedule after current build . <br>
+    <strong>do not trigger any dependent schedules</strong>: trigger neither schedules current schedule depends on, nor schedules depends on current schedule. <br>
+    </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+    <tr>
+      <td jwcid="@Any" align="left" valign="top" bgcolor="#FFFFFF" class="ognl:propertyNameCssClass" scope="col"><img src="images/time.gif" width="17" height="14" align="absmiddle"> When to build</td>
+      <td jwcid="@Any" colspan="3" align="left" valign="top" class="ognl:propertyValueCssClass" scope="col">
+		<span jwcid="@contrib:Choose">
+		<span jwcid="@contrib:When" condition="ognl: buildTiming == @com.luntsys.luntbuild.facades.Constants@BUILD_TIMING_AFTER">
+        <select jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" name="select" submitOnChange="ognl:true">
+        </select>
+        <input jwcid="@TextField" value="ognl:buildTime" type="text" name="textfield"/> minutes
+		</span>
+		<span jwcid="@contrib:When" condition="ognl: buildTiming == @com.luntsys.luntbuild.facades.Constants@BUILD_TIMING_AT">
+        <select jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" name="select" submitOnChange="ognl:true">
+        </select>
+        <input jwcid="@TextField" value="ognl:buildTime" type="text" name="textfield"/> (specify a time with "yyyy-MM-dd hh:mm" format)
+		</span>
+		<span jwcid="@contrib:When" condition="ognl: buildTiming == @com.luntsys.luntbuild.facades.Constants@BUILD_TIMING_LATER">
+        <select jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" name="select" submitOnChange="ognl:true">
+        </select>
+        <input jwcid="@TextField" value="ognl:buildTime" type="text" name="textfield"/> (specify a time with "hh:mm" format)
+		</span>
+		<span jwcid="@contrib:Otherwise">
+        <select jwcid="@PropertySelection" model="ognl:buildTimingSelectionModel" value="ognl:buildTiming" name="select" submitOnChange="ognl:true">
+        </select>
+		</span>
+		</span>
+	  </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+    <tr>
+      <td jwcid="@Any" height="29" colspan="2" align="right" class="ognl:tailCssClass" scope="col">
+          <input type="submit" jwcid="@Submit" listener="ognl:listeners.save" name="Submit" label=" Save " value=" save "/>      </td>
+      <td jwcid="@Any" width="4%" align="right" class="ognl:tailCssClass" scope="col">&nbsp;</td>
+      <td jwcid="@Any" width="60%" align="left" class="ognl:tailCssClass" scope="col">
+          <input name="Cancel" jwcid="@Submit" listener="ognl:listeners.cancel" type="submit" id="Cancel" label="Cancel" value="cancel"/>        </td>
+    </tr>
+	<span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+
+</form>
+</table>
+</span>

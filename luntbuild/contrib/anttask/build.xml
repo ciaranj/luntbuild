@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="MCCG Lunt ANT Task" default="build" basedir=".">
+
+	<target name="dist" depends="build">
+		<copy file="${artifacts.dir}/MCCGLuntTask.jar" tofile="${luntbuild.remote.dir}/luntanttask.jar"/>
+		<copy file="${lib.dir}/jsch-0.1.34.jar" todir="${luntbuild.remote.dir}"/>		
+	</target>
+
+	<target name="build" depends="clean, compile, jar, publish"/>
+	
+	<property name="bin.dir"       value="./bin"/>
+	<property name="compile.dir"   value="${bin.dir}/classes"/>
+	<property name="src.dir"       value="./src/java"/>
+	<property name="lib.dir"       value="./lib"/>
+	<property name="artifacts.dir" value="${bin.dir}/dist"/>
+	<property name="ant.lib.dir"   value="C:\apache-ant-1.6.5\lib"/>
+	<property name="luntbuild.remote.dir" value="../../remoting"/>
+	<property name="remoting.lib.dir" value="../../remoting"/>
+	<property name="buildversion"  value="LOCAL BUILD"/>
+
+	<path id="compile.classpath">
+        <fileset dir="${lib.dir}">
+        	<include name="**"/>
+    	</fileset>
+        <fileset dir="${remoting.lib.dir}">
+        	<include name="**"/>
+    	</fileset>
+    </path>
+	
+	<target name="clean">
+		<echo>Deleteing: ${compile.dir}</echo>
+        <delete dir="${compile.dir}"/>
+        <echo>Making: ${compile.dir}</echo>
+        <mkdir dir="${compile.dir}"/>
+		
+		<echo>Deleteing: ${artifacts.dir}</echo>
+        <delete dir="${artifacts.dir}"/>
+        <echo>Making: ${artifacts.dir}</echo>
+        <mkdir dir="${artifacts.dir}"/>
+	</target>
+	
+	<target name="compile">
+		<javac srcdir="${src.dir}" destdir="${bin.dir}/classes" includes="net/mccg/lunt/**" debug="on">
+			<classpath refid="compile.classpath"/>
+        </javac>
+	</target>
+	
+	<target name="jar">
+		<jar destfile="${artifacts.dir}/MCCGLuntTask.jar">
+            <fileset dir="${compile.dir}" includes="**/*.class"/>
+            <manifest>
+                <attribute name="LuntBuildVersion" value="${buildversion}"/>
+            </manifest>
+        </jar>
+	</target>
+	
+	<target name="publish">
+		<copy file="${artifacts.dir}/MCCGLuntTask.jar" todir="${ant.lib.dir}"/>
+	</target>
+	
+</project>

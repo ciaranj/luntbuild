@@ -1,0 +1,351 @@
+<chapter id="database">
+<title>Configuring Luntbuild to use database</title>
+<para>
+    Luntbuild uses a database to make important Luntbuild data persistent. It uses ORM package
+    <ulink url="http://hibernate.org">Hibernate</ulink> to access the persistent data and as
+    a framework to access a database.
+</para>
+<section id="hsqldb">
+    <title>HSQL database</title>
+<para>
+Luntbuild uses <ulink url="http://hsqldb.org/">HSQL DB</ulink> as default database running inside Luntbuild (in process mode).
+Additional in process (embedded) database supported by Luntbuild is <ulink url="http://www.h2database.com/html/frame.html">H2</ulink>.
+Luntbuild also supports following external (client/server mode) databases:
+<simplelist>
+<member><link linkend="mysql">MySql</link></member>
+<member><link linkend="progres">ProgreSql</link></member>
+<member><link linkend="sqlserver">SqlServer</link></member>
+<member><link linkend="oracle">Oracle</link></member>
+<member><link linkend="derby">Derby</link></member>
+<member><link linkend="h2">H2</link></member>
+</simplelist>
+For external (client/server mode) databases, you will have create initial Luntbuild database by
+executing SQL scripts in appropriate db/... subdirectories.
+</para>
+<para>
+Database definitions and data are located in the db directory of the Luntbuild installation.
+</para>
+<para>
+<ulink url="http://hsqldb.org/">HSQL DB</ulink> uses db/luntbuild.script to define DB layout.
+Following files are also used, see <ulink url="http://hsqldb.org/web/hsqlDocsFrame.html">HSQL DB documentation</ulink>:
+<simplelist>
+<member>db/luntbuild.data</member>
+<member>db/luntbuild.bakup</member>
+</simplelist>
+</para>
+<para>
+    <ulink url="http://www.h2database.com/html/frame.html">H2</ulink> embedded database uses luntbuild-h2-data* files
+    located in db directory.
+</para>
+<para>
+Sometimes, it is useful to look at the data in the DB to find out issues.
+Following are the steps to run a SQL client to examine data in the HSQL DB:
+<simplelist>
+<member>Download HSQLDB 1.7.3.3 from <ulink url="http://hsqldb.org/">www.hsqldb.org</ulink>. (Latest version 1.8.0 should also work)</member>
+<member>Extract the downloaded package.</member>
+<member>Change into the demo folder, edit the file "runServer.bat", replace the original contents with this line:</member>
+</simplelist>
+<programlisting>
+@java -classpath ../lib/hsqldb.jar org.hsqldb.Server -database &lt;db path&gt;
+</programlisting>
+&lt;db path&gt; should be  replaced with your path to Luntbuild DB.
+For example, if you are installing Luntbuild in D:\luntbuild, you should specify
+&lt;db path&gt; as D:\luntbuild\db\luntbuild.
+<simplelist>
+<member>Run "runserver.bat" to start up the database server.</member>
+<member>Run "runManager.bat", from the popup dialog, select  "HSQL Database Engine Server" as "Type" option,
+then you'll able to run SQL commands to examine contents of the DB.</member>
+</simplelist>
+</para>
+<para>
+If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
+<ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and the set the connection:
+<table id="hsqldbconfig">
+<title>QuantumDB HSQL DB Eclipse Configuration</title>
+<tgroup cols="2">
+<thead>
+<row><entry>Parameter</entry><entry>Value</entry></row>
+</thead>
+<tbody>
+<row><entry>Jdbc Url</entry><entry>jdbc:hsqldb:file:D:\luntbuild-13alpha\db\luntbuild</entry></row>
+<row><entry>User</entry><entry>sa</entry></row>
+<row><entry>Password</entry><entry></entry></row>
+<row><entry>Driver Path</entry><entry>&lt;app-server&gt;/webapps/luntbuild/WEB-INF/lib/hsqldb.jar</entry></row>
+<row><entry>Driver Class</entry><entry>org.hsqldb.jdbcDriver</entry></row>
+<row><entry>Driver Type</entry><entry>HSQL (Hypersonic)</entry></row>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para><note><para>
+Many Luntbuild tables contain binary data which can not be displayed through the client, for example,
+if you run command "select * from LB_BUILD", nothing will be displayed. You should only specify non-binary
+columns here, for example, "select LB_ID, LB_NAME from LB_BUILD", etc.
+</para></note></para>
+</section>
+<section id="mysql">
+        <title>MySql database</title>
+<para>
+<ulink url="http://www.mysql.com/">MySql</ulink> database can be used as persistent storage for Luntbuild.
+The best way to configure Luntbuild to use MySql is to use Luntbuild installer, select MySql from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for MySql
+(see jdbc.mysql.properties in the same directory):
+<programlisting>
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/luntbuild
+jdbc.username=luntbuild
+jdbc.password=luntbuild
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+</programlisting>
+Then you have to create Luntbuild database as follows:
+<programlisting>
+> cd &lt;luntbuild-install&gt;
+mysql> grant all on luntbuild.* to sa@localhost.localdomain identified by 'mypassword';
+mysql> drop database luntbuild;
+mysql> create database luntbuild;
+mysql> use luntbuild;
+mysql> source db/mysql/luntbuild.sql;
+</programlisting>
+To manage MySql consider using free version of <ulink url="http://www.webyog.com/sqlyog/download_sqlyogfree.html">SQLyog</ulink>.
+If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
+<ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
+<table id="mysqldbconfig">
+<title>QuantumDB MySql Eclipse Configuration</title>
+<tgroup cols="2">
+<thead>
+<row><entry>Parameter</entry><entry>Value</entry></row>
+</thead>
+<tbody>
+<row><entry>Jdbc Url</entry><entry>jdbc:mysql://localhost:3306/luntbuild</entry></row>
+<row><entry>User</entry><entry></entry></row>
+<row><entry>Password</entry><entry></entry></row>
+<row><entry>Driver Path</entry><entry>&lt;app-server&gt;/webapps/luntbuild/WEB-INF/lib/mysql-connector-java-3.1.7-bin.jar</entry></row>
+<row><entry>Driver Class</entry><entry>com.mysql.jdbc.Driver</entry></row>
+<row><entry>Driver Type</entry><entry>MySQL</entry></row>
+</tbody>
+</tgroup>
+</table>
+</para>
+</section>
+<section id="progres">
+        <title>PostgreSQL database</title>
+<para>
+<ulink url="http://www.postgresql.org/">PostgreSQL</ulink> database can be used as persistent storage for Luntbuild.
+The best way to configure Luntbuild to use PostgreSQL is to use Luntbuild installer, select PostgreSQL from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for PostgreSQL
+(see jdbc.postgresql.properties in the same directory):
+<programlisting>
+jdbc.driverClassName=org.postgresql.Driver
+jdbc.url=jdbc:postgresql://localhost:5432/luntbuild
+jdbc.username=luntbuild
+jdbc.password=luntbuild
+hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+</programlisting>
+Then you have to create Luntbuild database as follows:
+<programlisting>
+> psql  -h localhost -p 5432 postgres "admin"
+postgres=# CREATE USER luntbuild;
+postgres=# ALTER USER luntbuild PASSWORD 'luntbuild';
+postgres=# CREATE DATABASE luntbuild WITH OWNER luntbuild;
+postgres=# source luntbuild/db/postgresql/luntbuild.sql;
+</programlisting>
+I use free pgAdminIII that comes with Postgres installation to manage Postgres database.
+If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
+<ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
+<table id="postgresdbconfig">
+<title>QuantumDB PostgreSQL Eclipse Configuration</title>
+<tgroup cols="2">
+<thead>
+<row><entry>Parameter</entry><entry>Value</entry></row>
+</thead>
+<tbody>
+<row><entry>Jdbc Url</entry><entry>jdbc:postgresql://localhost:5432/luntbuild</entry></row>
+<row><entry>User</entry><entry></entry></row>
+<row><entry>Password</entry><entry></entry></row>
+<row><entry>Driver Path</entry><entry>&lt;app-server&gt;/webapps/luntbuild/WEB-INF/lib/postgresql-8.1-404.jdbc3.jar</entry></row>
+<row><entry>Driver Class</entry><entry>org.postgresql.Driver</entry></row>
+<row><entry>Driver Type</entry><entry>Postgres</entry></row>
+</tbody>
+</tgroup>
+</table>
+</para>
+</section>
+<section id="sqlserver">
+        <title>SqlServer</title>
+<para>
+SqlServer including <ulink url="http://msdn.microsoft.com/vstudio/express/sql/">Express</ulink> (free) edition is now supported.
+I use free SQL Server Management Studio Express for database management.
+</para>
+<para>
+The best way to configure Luntbuild to use SqlServer is to use Luntbuild installer, select SqlServer from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for SqlServer
+(see jdbc.sqlserver.properties in the same directory):
+<programlisting>
+jdbc.driverClassName=net.sourceforge.jtds.jdbc.Driver
+jdbc.url=jdbc:jtds:sqlserver://localhost:1525/luntbuild
+hibernate.dialect=org.hibernate.dialect.SQLServerDialect
+jdbc.username=sa
+password=your password
+</programlisting>
+If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
+<ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
+<table id="sqlserverdbconfig">
+<title>QuantumDB SqlServer Eclipse Configuration</title>
+<tgroup cols="2">
+<thead>
+<row><entry>Parameter</entry><entry>Value</entry></row>
+</thead>
+<tbody>
+<row><entry>Jdbc Url</entry><entry>jdbc:jtds:sqlserver://localhost:1525/luntbuild</entry></row>
+<row><entry>User</entry><entry>sa</entry></row>
+<row><entry>Password</entry><entry>your password</entry></row>
+<row><entry>Driver Path</entry><entry>D:\luntbuild\lib\jtds-1.2.jar</entry></row>
+<row><entry>Driver Class</entry><entry>net.sourceforge.jtds.jdbc.Driver</entry></row>
+<row><entry>Driver Type</entry><entry>Microsoft SQL Server</entry></row>
+</tbody>
+</tgroup>
+</table>
+</para>
+</section>
+<section id="oracle">
+        <title>Oracle</title>
+<para>
+Luntbuild has been tested with <ulink url="http://www.oracle.com/technology/products/database/oracle10g/index.html">Oracle 10g</ulink>.
+You can use Oracle Enterprise Manager to manage the database. Enterprise manager is available http://&lt;oracle-machine&gt;:1158/em/console/logon/logon.
+</para>
+<para>
+The best way to configure Luntbuild to use Oracle is to use Luntbuild installer, select Oracle from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for Oracle
+(see jdbc.oracle.properties in the same directory):
+<programlisting>
+jdbc.driverClassName=oracle.jdbc.driver.OracleDriver
+jdbc.url=jdbc:oracle:thin:@localhost:1521:luntbuild
+hibernate.dialect=org.hibernate.dialect.OracleDialect
+jdbc.username=sa
+jdbc.password=your password
+</programlisting>
+If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
+<ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
+<table id="oracledbconfig">
+<title>QuantumDB Oracle Eclipse Configuration</title>
+<tgroup cols="2">
+<thead>
+<row><entry>Parameter</entry><entry>Value</entry></row>
+</thead>
+<tbody>
+<row><entry>Jdbc Url</entry><entry>jdbc:oracle:thin:@localhost:1521:orcl</entry></row>
+<row><entry>User</entry><entry>luntbuild</entry></row>
+<row><entry>Password</entry><entry>luntbuild</entry></row>
+<row><entry>Driver Path</entry><entry>D:\luntbuild\lib\ojdbc14.jar</entry></row>
+<row><entry>Driver Class</entry><entry>oracle.jdbc.driver.OracleDriver</entry></row>
+<row><entry>Driver Type</entry><entry>Oracle</entry></row>
+</tbody>
+</tgroup>
+</table>
+</para>
+</section>
+<section id="derby">
+        <title>Derby</title>
+<para>
+    Hibernate does not officially supports Derby. Embedded version of <ulink url="http://db.apache.org/derby/">Derby</ulink>
+    fails to work with Hibernate and Luntbuild (caused by incompatibilities with BLOB data type).
+    Client/Server version of <ulink url="http://db.apache.org/derby/">Derby</ulink> was tested with Hibernate/Luntbuild and it is working
+    as expected.
+</para>
+<para>
+    If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can download and install
+    <ulink url="http://db.apache.org/derby/integrate/plugin_howto.html">Apache Derby plugin</ulink>.
+</para>
+<para>
+The best way to configure Luntbuild to use Derby is to use Luntbuild installer, select Derby Client from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for Derby
+(see jdbc.derby-cs.properties in the same directory):
+<programlisting>
+jdbc.driverClassName=org.apache.derby.jdbc.ClientDriver
+jdbc.url=jdbc:derby://localhost:1527/luntbuild
+hibernate.dialect=org.hibernate.dialect.DerbyDialect
+jdbc.username=luntbuild
+jdbc.password=luntbuild
+</programlisting>
+</para>
+<para>
+If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
+<ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
+<table id="derbydbconfig">
+<title>QuantumDB Derby Eclipse Configuration</title>
+<tgroup cols="2">
+<thead>
+<row><entry>Parameter</entry><entry>Value</entry></row>
+</thead>
+<tbody>
+<row><entry>Jdbc Url</entry><entry>jdbc:derby://localhost:1527/luntbuild</entry></row>
+<row><entry>User</entry><entry>luntbuild</entry></row>
+<row><entry>Password</entry><entry>luntbuild</entry></row>
+<row><entry>Driver Path</entry><entry>D:\luntbuild\lib\derbyclient.jar</entry></row>
+<row><entry>Driver Class</entry><entry>org.apache.derby.jdbc.ClientDriver</entry></row>
+<row><entry>Driver Type</entry><entry>Apache Derby</entry></row>
+</tbody>
+</tgroup>
+</table>
+</para>
+</section>
+<section id="h2">
+        <title>H2</title>
+<para>
+<ulink url="http://www.h2database.com/html/frame.html">H2</ulink> is database written in Java, available
+in both embedded and client/server mode. Based on <ulink url="http://www.h2database.com/html/performance.html">performance comparison</ulink>
+H2 is very fast and performs well with Luntbuild in both embedded and client/server mode. H2 comes with
+web client <ulink url="http://www.h2database.com/html/quickstartText.html">management console</ulink>.
+</para>
+<para>
+The best way to configure Luntbuild to use H2 is to use Luntbuild installer, select H2 Embedded or H2 Client from
+Database install page, and fill appropriate database attributes.
+Alternatively you can configure &lt;app-server&gt;/webapps/WEB-INF/jdbc.properties for H2
+(see jdbc.h2-embedded.properties or jdbc.h2-cs.properties in the same directory):
+<programlisting>
+jdbc.driverClassName=org.h2.Driver
+jdbc.url=jdbc:h2:tcp://localhost:9092/luntbuild or ${h2Url}
+hibernate.dialect=org.hibernate.dialect.HSQLDialect
+jdbc.username=sa
+jdbc.password=
+</programlisting>
+If you are using <ulink url="http://eclipse.org">Eclipse</ulink> you can use DB plugin
+<ulink url="http://quantum.sourceforge.net/">Quantum DB</ulink> and set the connection:
+<table id="h2dbconfig">
+<title>QuantumDB H2 Eclipse Configuration</title>
+<tgroup cols="2">
+<thead>
+<row><entry>Parameter</entry><entry>Value</entry></row>
+</thead>
+<tbody>
+<row><entry>Jdbc Url</entry><entry>jdbc:h2:tcp://localhost:9092/luntbuild or jdbc:h2:file:D:/luntbuild/db/luntbuild-h2-data</entry></row>
+<row><entry>User</entry><entry>sa</entry></row>
+<row><entry>Password</entry><entry></entry></row>
+<row><entry>Driver Path</entry><entry>D:\luntbuild\lib\h2.jar</entry></row>
+<row><entry>Driver Class</entry><entry>org.h2.Driver</entry></row>
+<row><entry>Driver Type</entry><entry>HSQL</entry></row>
+</tbody>
+</tgroup>
+</table>
+</para>
+</section>
+<section id="upgradedb">
+<title>Updating database during Luntbuild upgrade</title>
+<para>
+    The only supported way of updating Luntbuild database is to:
+    <orderedlist numeration="arabic">
+    <listitem><para>Export Luntbuild data from currently installed Luntuild.</para></listitem>
+    <listitem><para>Backup the Luntbuild database.</para></listitem>
+    <listitem><para>Delete the Luntbuild database.</para></listitem>
+    <listitem><para>Follow appropriate database installation to create database.</para></listitem>
+    <listitem><para>Follow appropriate Luntbuild installation.</para></listitem>
+    <listitem><para>Import previously exported data.</para></listitem>
+    </orderedlist>
+</para>
+</section>
+</chapter>
