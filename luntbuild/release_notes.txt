@@ -3,10 +3,10 @@ luntbuild 1.6 Release Notes
 ==============================================
 
 - Feature: Updated SVN Adaptor svnkit library to version 1.2.0 which introduces support for new Subversion 1.5.0 features 
-- Feature: Added timeout thread (30 sec) around notifiers in case they hang
+- Feature: Added timeout thread around notifiers in case they hang
 - Feature: Patch from Roger Perkins to make xml/html build report size settable from properties
 - Feature: Added optional CAS support as contributed by Gustavo.
-- Fix: Path by Roger Perkins to imporve send email handling
+- Fix: Path by Roger Perkins to improve send email handling
 - Fix: Allow set builder properties to include " if escaped like propertyName="\"VAL1=3251&VAL2=www.yahoo.com\""
 - Fix: Bug [# 6115]  Unable to use OGNL expressions on manual builds for build version; Bug [# 6078]  Next version number on manual schedule page (sf 1224650) 
 - Fix: Bug [# 6176]  Scheduled builds do not execute; Bug [# 8002]  Only jobs of current user are scheduled
