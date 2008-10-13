@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.luntbuild</groupId>
+  <artifactId>luntbuild2</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Luntbuild2 project</name>
+  <version>1.0.0-SNAPSHOT</version>
+  <description>Luntbuild version 2.x -continuous integration tool</description>
+  
+  <modules>
+    <module>org.luntbuild.core</module>
+    <module>org.luntbuild.bootstrap</module>
+    <module>org.luntbuild.libs</module>
+  </modules>
+
+	<properties>
+		<spring.maven.artifact.version>2.5.5</spring.maven.artifact.version>
+		<spring.dm.version>1.1.2</spring.dm.version>
+		<eclipse.osgi.version>3.3.0-v20070530</eclipse.osgi.version>
+	</properties>
+	
+    <dependencyManagement>	
+		<dependencies>
+			<dependency>
+				<groupId>org.eclipse</groupId>
+				<artifactId>osgi</artifactId>
+				<version>${eclipse.osgi.version}</version>	
+			</dependency>
+			<!-- BEGIN: Spring OSGi Framework -->
+			<dependency>
+				<groupId>org.springframework.osgi</groupId>
+				<artifactId>spring-osgi-core</artifactId>
+				<version>${spring.dm.version}</version>
+			</dependency>	
+			<dependency>
+				<groupId>org.springframework.osgi</groupId>
+				<artifactId>spring-osgi-extender</artifactId>
+				<version>${spring.dm.version}</version>
+			</dependency>	
+			<dependency>
+				<groupId>org.springframework.osgi</groupId>
+				<artifactId>spring-osgi-io</artifactId>
+				<version>${spring.dm.version}</version>
+			</dependency>	
+			<dependency>
+				<groupId>org.springframework.osgi</groupId>
+				<artifactId>spring-osgi-mock</artifactId>
+				<version>${spring.dm.version}</version>
+			</dependency>	
+			<dependency>
+				<groupId>org.springframework.osgi</groupId>
+				<artifactId>spring-osgi-annotation</artifactId>
+				<version>${spring.dm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.osgi</groupId>
+				<artifactId>aopalliance.osgi</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.osgi</groupId>
+				<artifactId>junit.osgi</artifactId>
+				<version>3.8.2-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.osgi</groupId>
+				<artifactId>log4j.osgi</artifactId>
+				<version>1.2.15-SNAPSHOT</version>
+			</dependency>
+			<!-- END: Spring OSGi Framework -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${spring.maven.artifact.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-aop</artifactId>
+				<version>${spring.maven.artifact.version}</version>
+			</dependency>		
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.maven.artifact.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.maven.artifact.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring.maven.artifact.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${spring.maven.artifact.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.maven.artifact.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>${spring.maven.artifact.version}</version>
+			</dependency>
+			<dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+				<version>${spring.maven.artifact.version}</version>
+			</dependency>
+		</dependencies>
+    </dependencyManagement>	
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>1.4.0</version>
+				<configuration>
+					<instructions>
+						<manifestLocation>META-INF</manifestLocation>
+						<_include>-osgi.bnd</_include>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+    </build>
+
+	<repositories>
+		<repository>
+			<id>apache.m2.incubator</id>
+			<name>Apache M2 Incubator Repository</name>
+			<url>
+				http://people.apache.org/repo/m2-incubating-repository/
+			</url>
+		</repository>
+		<repository>
+			<id>eclipse-repository</id>
+			<name>Eclipse Repository</name>
+			<url>http://repo1.maven.org/eclipse/</url>
+		</repository>
+		<repository>
+			<id>safehaus-repository</id>
+			<name>Safehaus Repository</name>
+			<url>http://m2.safehaus.org</url>
+		</repository>
+		<repository>
+			<id>spring-ext</id>
+			<name>Spring External Dependencies Repository</name>
+			<url>
+				https://springframework.svn.sourceforge.net/svnroot/springframework/repos/repo-ext/
+			</url>
+		</repository>
+		<repository>
+			<id>i21-s3-osgi-repo</id>
+			<name>i21 osgi artifacts repo</name>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<url>
+				http://s3.amazonaws.com/maven.springframework.org/osgi
+			</url>
+		</repository>
+		<repository>
+			<id>i21-s3-maven-repo</id>
+			<name>i21 S3 milestone repo</name>
+			<url>
+				http://s3.amazonaws.com/maven.springframework.org/milestone
+			</url>
+		</repository>
+		<repository>
+			<id>ops4j-repo</id>
+			<name>ops4j repo</name>
+			<url>http://repository.ops4j.org/maven2/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>maven-repo</id>
+			<name>maven repo</name>
+			<url>http://repo1.maven.org/maven2/</url>
+		</pluginRepository>
+	</pluginRepositories>
+  	
+</project>
