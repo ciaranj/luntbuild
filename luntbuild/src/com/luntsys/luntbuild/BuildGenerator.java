@@ -91,8 +91,8 @@ import com.luntsys.luntbuild.vcs.Vcs;
  * @see Schedule
  */
 public class BuildGenerator implements StatefulJob {
-	
-	private static final int MAX_TIME_TO_SEND_NOTIFICATION_MS = 30 * 1000;
+
+	private static final int DEFAULT_TIME_TO_SEND_NOTIFICATION = 120;
     /**
      * Keep tracks of version of this class, used when do serialization-deserialization
      */
@@ -355,9 +355,22 @@ public class BuildGenerator implements StatefulJob {
         }
     }
 
+    public static long getNotifierExecutionTimeoutLength() {
+		String notifierExecutionTimeout = (String) Luntbuild.getProperties().get(Constants.NOTIFIER_EXECUTION_TIMEOUT);
+        try {
+            long notifierExecutionTimeoutLength = new Long(notifierExecutionTimeout).longValue();
+            if (!(notifierExecutionTimeoutLength == 0 || notifierExecutionTimeoutLength >= 60))
+                return DEFAULT_TIME_TO_SEND_NOTIFICATION;
+            else
+                return notifierExecutionTimeoutLength;
+        } catch (NumberFormatException e) {
+            return DEFAULT_TIME_TO_SEND_NOTIFICATION;
+        }
+    }
+
     /**
      * Write the revision log for specified build.
-     * 
+     *
      * @param build the build
      * @param revisions the revisions object
      */
@@ -372,7 +385,7 @@ public class BuildGenerator implements StatefulJob {
 
     /**
      * Write the revision log for specified build in plain text.
-     * 
+     *
      * @param publishDir the location to put the log
      * @param build the build
      * @param revisions the revisions object
@@ -399,7 +412,7 @@ public class BuildGenerator implements StatefulJob {
 
     /**
      * Write the revision log for specified build in XML format.
-     * 
+     *
      * @param publishDir the location to put the log
      * @param build the build
      * @param revisions the revisions object
@@ -443,7 +456,7 @@ public class BuildGenerator implements StatefulJob {
 
     /**
      * Write the revision log for specified build in HTML format.
-     * 
+     *
      * @param publishDir the location to put the log
      * @param build the build
      * @param revisions the revisions object
@@ -484,7 +497,7 @@ public class BuildGenerator implements StatefulJob {
 
     /**
      * Derive the build time VCS list from specified VCS list.
-     * 
+     *
      * @param vcsList the VCS list
      * @param antProject the ant project used for logging purpose
      * @return the build time VCS list
@@ -522,7 +535,7 @@ public class BuildGenerator implements StatefulJob {
 
 	/**
 	 * Gets the revisions for the working schedule.
-	 * 
+	 *
 	 * @return the revisions object
 	 * @throws IllegalStateException if unable to get revisions
 	 * @see OgnlHelper#getRevisions()
@@ -540,7 +553,7 @@ public class BuildGenerator implements StatefulJob {
 
 	/**
 	 * Initializes the <code>OgnlHelper</code>.
-	 * 
+	 *
 	 * @param schedule the working schedule
 	 * @param antProject the ant project used for logging purpose
 	 * @see OgnlHelper
@@ -554,7 +567,7 @@ public class BuildGenerator implements StatefulJob {
 
 	/**
 	 * Determines if a build is necessary for the working schedule based on an OGNL expression.
-	 * 
+	 *
 	 * @param buildNecessaryCondition the OGNL expression
 	 * @return <code>true</code> if a build is necessary
 	 * @throws RuntimeException if unable to evaluate the build necessary condition
@@ -657,13 +670,14 @@ public class BuildGenerator implements StatefulJob {
 
         if (project.getNotifiers() != null) {
             it = Luntbuild.getNotifierInstances(Luntbuild.getNotifierClasses(project.getNotifiers())).iterator();
-    		TimeoutThread timeoutThread = new TimeoutThread(MAX_TIME_TO_SEND_NOTIFICATION_MS);
+    		TimeoutThread timeoutThread = null;
+    		if (getNotifierExecutionTimeoutLength() > 0) new TimeoutThread(getNotifierExecutionTimeoutLength() * 1000);
     		try {
 	            while (it.hasNext()) {
 	                Notifier notifier = (Notifier) it.next();
 	                notifier.sendBuildNotification(checkinUsers, subscribeUsers, build, antProject);
 	            }
-	            timeoutThread.done();
+	            if (timeoutThread != null) timeoutThread.done();
     		} catch (ThreadDeath e) {
     			logger.error("Timeout when sending the notifications!");
 			}
@@ -878,7 +892,7 @@ public class BuildGenerator implements StatefulJob {
     private static class Log4jBuildListener extends EmptyBuildListenerImpl {
         /**
          * Logs a message for an event.
-         * 
+         *
          * @param event the event
          */
         public void messageLogged(BuildEvent event) {
@@ -898,14 +912,14 @@ public class BuildGenerator implements StatefulJob {
     }
 
     /**
-     * 
+     *
      */
     private static class BuildDependencyWalker implements Runnable {
         private BuildParams buildParams;
 
         /**
          * Creates a new build dependency walker.
-         * 
+         *
          * @param buildParams the build parameters
          */
         public BuildDependencyWalker(BuildParams buildParams) {

@@ -4,15 +4,15 @@
       <format property="currentDate" pattern="MM-dd-yyyy" locale="en"/>
     </tstamp>
 
-    <property name="buildVersion" value="1.6.0"/>
-	<property name="fileVersion" value="1.6.0"/>
+    <property name="buildVersion" value="1.6.1"/>
+	<property name="fileVersion" value="1.6.1"/>
     <property name="buildId" value=""/>
     <property name="artifactsDir" value="${basedir}/distribute"/>
 	<property name="junitHtmlReportDir" value="test/junitHtmlReport"/>
     <property name="buildDate" value="${currentDate}"/>
     <property name="luntbuild-install-build" value="D:/luntbuild-${fileVersion}"/>
     <property name="update-schema" value="false"/>
-	
+
     <property name="compile-with-debug" value="on"/>
     <property name="compile-source-level" value="1.4"/>
     <property name="compile-target-level" value="1.4"/>
@@ -96,7 +96,7 @@
 		<filter token="buildVersion" value="${buildVersion}"/>
 		<copy todir="stage/web" overwrite="true" filtering="true" >
 			<fileset dir="web" includes="*.html"/>
-		</copy>    	
+		</copy>
 		<copy todir="stage/web/WEB-INF/lib">
 			<fileset dir="lib">
 				<exclude name="**/servlet*.jar"/>
@@ -162,7 +162,7 @@
 		<copy file="stage/web/WEB-INF/jdbc.hsqldb.properties" tofile="stage/web/WEB-INF/jdbc.properties"
         	overwrite="true" filtering="true" />
 	</target>
-	
+
     <!-- Used for development, please do not remove. lubosp.
     The luntbuild.war deployment file is in stage/luntbuild.war.
       -->
@@ -325,15 +325,15 @@
 			<bottom><![CDATA[<i>Copyright &#169; 2007 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
 		</javadoc>
 	</target>
-	
+
 	<target name="anttask">
     	<ant dir="contrib/anttask" target="dist" />
 	</target>
-	
+
     <target name="stage" depends="webstage, api, anttask, stage_docs, stage-copy"/>
-	
+
     <target name="stage-nodoc" depends="webstage, api, stage-copy"/>
-	
+
     <target name="stage-copy" description="Stages Luntbuild for packaging">
         <!--
                 Writes some important informations about this build into a property file which
@@ -353,7 +353,7 @@
 		<filter token="sessionTimeout" value="${sessionTimeout}"/>
         <filter token="updateSchema" value="false"/>
 		<filter token="luntbuildPassword" value="${luntbuildPassword}"/>
-    	
+
         <filter token="ldapHost" value="${ldap.host}"/>
         <filter token="ldapPort" value="${ldap.port}"/>
         <filter token="ldapPath" value="${ldap.path}"/>
@@ -453,7 +453,7 @@
         <delete file="db/luntbuild.script"/>
         <delete file="db/luntbuild.script.base"/>
         <delete file="db/luntbuild.script.demo"/>
-    	
+
     	<ant dir="contrib/anttask" target="clean" />
     </target>
 
@@ -487,7 +487,7 @@
 		</junitreport>
 	</target>
 
-	<target name="zip" depends="stage" description="Builds Luntbuild zip distribution">		
+	<target name="zip" depends="stage" description="Builds Luntbuild zip distribution">
         <filter token="sessionTimeout" value="30"/>
         <filter token="updateSchema" value="false"/>
         <filter token="luntbuildPassword" value="luntbuild"/>

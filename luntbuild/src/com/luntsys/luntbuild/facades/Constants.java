@@ -188,6 +188,8 @@ public class Constants {
 	public static final String BACKUP_CRON_EXPRESSION = "backupCronExpression";
     /** Name of maximum xml log conversion size property */
 	public static final String MAX_XML_CONVERSION_LENGTH = "maxXmlConversionLength";
+    /** Name of notifiers execution timout property */
+	public static final String NOTIFIER_EXECUTION_TIMEOUT = "notifierExecutionTimeout";
 
 	// Special build version constants
 	/** Special build version, last build */
@@ -197,7 +199,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for build type.
-	 * 
+	 *
 	 * @param buildType the build type
 	 * @return the display text
 	 * @see #BUILD_TYPE_CLEAN
@@ -214,7 +216,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for post-build strategy.
-	 * 
+	 *
 	 * @param postbuildStrategy the post-build strategy
 	 * @return the display text
 	 * @see #POSTBUILD_ALWAYS
@@ -237,7 +239,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for label strategy.
-	 * 
+	 *
 	 * @param labelStrategy the label strategy
 	 * @return the display text
 	 * @see #LABEL_ALWAYS
@@ -257,7 +259,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for notify strategy.
-	 * 
+	 *
 	 * @param notifyStrategy the notify strategy
 	 * @return the display text
 	 * @see #NOTIFY_ALWAYS
@@ -286,7 +288,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for dependency triggering strategy.
-	 * 
+	 *
 	 * @param triggerDependencyStrategy the dependency triggering strategy
 	 * @return the display text
 	 * @see #TRIGGER_ALL_DEPENDENT_SCHEDULES
@@ -309,7 +311,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for trigger type.
-	 * 
+	 *
 	 * @param triggerType the trigger type
 	 * @return the display text
 	 * @see #TRIGGER_TYPE_CRON
@@ -329,7 +331,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for build status.
-	 * 
+	 *
 	 * @param buildStatus the build status
 	 * @return the display text
 	 * @see #BUILD_STATUS_FAILED
@@ -352,7 +354,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for schedule status.
-	 * 
+	 *
 	 * @param scheduleStatus the schedule status
 	 * @return the display text
 	 * @see #SCHEDULE_STATUS_FAILED
@@ -375,7 +377,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for build timing prefix.
-	 * 
+	 *
 	 * @param buildTiming the build timing prefix
 	 * @return the display text
 	 * @see #BUILD_TIMING_AFTER
@@ -398,7 +400,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for log level.
-	 * 
+	 *
 	 * @param logLevel the log level
 	 * @return the display text
 	 * @see #LOG_LEVEL_BRIEF
@@ -418,7 +420,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for build cleanup strategy.
-	 * 
+	 *
 	 * @param buildCleanupStrategy the build cleanup strategy
 	 * @return the display text
 	 * @see #BUILD_CLEANUP_NONE
@@ -438,7 +440,7 @@ public class Constants {
 
 	/**
 	 * Gets the display text for Jabber server type.
-	 * 
+	 *
 	 * @param type the Jabber server type
 	 * @return the display text
 	 * @see #JABBER_SERVER_TYPE_NORMAL
@@ -458,7 +460,7 @@ public class Constants {
 
     /**
      * Gets the Jabber server type value.
-     * 
+     *
      * @param type the server type
      * @return the server type value
      */
@@ -475,7 +477,7 @@ public class Constants {
 
     /**
      * Gets the list of Jabber server types.
-     * 
+     *
      * @return the list of Jabber server types
      */
     public static String[] getJabberServerTypes() {

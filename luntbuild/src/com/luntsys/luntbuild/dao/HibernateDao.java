@@ -1603,13 +1603,13 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
      */
     static class ScheduleComparator implements java.util.Comparator, Serializable {
     	/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 6193017725796941429L;
 
 		/**
     	 * Compares two schedules by their name and their project's name.
-    	 * 
+    	 *
     	 * @param o1 the first schedule
     	 * @param o2 the second schedule
     	 * @return <code>0</code> if both schedules are the same,

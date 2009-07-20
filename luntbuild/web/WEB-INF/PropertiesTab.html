@@ -75,6 +75,13 @@
           </tr>
 		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
           <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/number.gif" width="18" height="18" align="absmiddle"> Notifiers Execution Timeout </td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.notifierExecutionTimeout" size="75" jwcid="@TextField"/>
+                <br>
+      Specify the Notifiers execution timeout in seconds. Value 0 disables timeout, value larger than 60 sets execution timeout.</td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
             <td jwcid="@Any" align="left" valign="top" class="ognl:notifierTitleCssClass" colspan="2">
             <img src="images/hint.gif" width="19" height="19" align="absmiddle"> Set automated backup related properties here
             </td>

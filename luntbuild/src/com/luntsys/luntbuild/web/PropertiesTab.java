@@ -4,7 +4,7 @@
  * Time: 10:17:46
  *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: 1.
  * Redistributions of source code must retain the above copyright notice, this
@@ -12,7 +12,7 @@
  * binary form must reproduce the above copyright notice, this list of
  * conditions and the following disclaimer in the documentation and/or other
  * materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,7 +23,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  
+ *
  */
 package com.luntsys.luntbuild.web;
 
@@ -89,6 +89,19 @@ public abstract class PropertiesTab extends TabPageComponent {
 				}
 			} catch (NumberFormatException e) {
 				setErrorMsg("Maximum conversion length of XML log should be a positive integer value!");
+				return;
+			}
+		}
+		String notifierExecutionTimeout = (String) getProperties().get(Constants.NOTIFIER_EXECUTION_TIMEOUT);
+		if (!Luntbuild.isEmpty(notifierExecutionTimeout)) {
+			try {
+				long notifierExecutionTimeoutLength = new Long(notifierExecutionTimeout).longValue();
+				if (!(notifierExecutionTimeoutLength == 0 || notifierExecutionTimeoutLength >= 60)) {
+					setErrorMsg("Notifiers Execution Timeout should be 0 or more than 60 sec!");
+					return;
+				}
+			} catch (NumberFormatException e) {
+				setErrorMsg("Notifiers Execution Timeout should be 0 or more than 60 sec!");
 				return;
 			}
 		}
