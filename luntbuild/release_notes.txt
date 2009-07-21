@@ -1,0 +1,471 @@
+==============================================
+luntbuild 1.6.1 Release Notes
+==============================================
+
+- Fix: Reverted Bug [# 6596]  If no successful build do not check vcsModified to pre 1.6 behavior
+- Feature: Added notification timeout to global properties, can be set by user
+
+==============================================
+luntbuild 1.6 Release Notes
+==============================================
+
+- Feature: Updated SVN Adaptor svnkit library to version 1.2.0 which introduces support for new Subversion 1.5.0 features
+- Feature: Added timeout thread around notifiers in case they hang
+- Feature: Patch from Roger Perkins to make xml/html build report size settable from properties
+- Feature: Added optional CAS support as contributed by Gustavo.
+- Fix: Path by Roger Perkins to improve send email handling
+- Fix: Allow set builder properties to include " if escaped like propertyName="\"VAL1=3251&VAL2=www.yahoo.com\""
+- Fix: Bug [# 6115]  Unable to use OGNL expressions on manual builds for build version; Bug [# 6078]  Next version number on manual schedule page (sf 1224650)
+- Fix: Bug [# 6176]  Scheduled builds do not execute; Bug [# 8002]  Only jobs of current user are scheduled
+- Fix: Bug [# 6596]  If no successful build do not check vcsModified
+- Fix: Bug [# 6721]  Trigger build option "When to build" = now discards schedules
+- Fix: Bug Bug [# 6731]  Trouble labeling sourceCode with BaseClearCaseAdaptor
+- Fix: Bug Bug [# 6735]  ant target names with "-" (minus sign) are not parsed correctly into build_log.xml
+- Fix: Bug Bug [# 7205]  luntbuild-1.5.6.zip missing trilead.jar
+- Fix: Bug Bug [# 7240]  DateFormat parsing and handling in AbstractClearCaseAdaptor
+- Fix: Bug Bug [# 7306]  Time given for "Duration of the post-builder(s) execution:" is wrong in the build log
+- Fix: Bug Bug [# 7312] Importing a single project, with two schedules that have previous build logs, throws an exception that stops the project importing
+- Fix: Bug Bug [# 7365]  LDAP settings don`t work as noticed in the help
+- Fix: Bug Bug [# 7403]  When fixing Bug 6928 it broke the builder environment variable "SRC_ROOT=${build.schedule.workingDir}"
+- Fix: Bug Bug [# 8002]  Only jobs of current user are scheduled
+
+==============================================
+luntbuild 1.5.6 Release Notes
+==============================================
+
+- Feature: Updated svnkit (SvnAdaptor) library to version 1.1.6
+- Fix: VSS Get (last version) problem (contribution by Lorenzo)
+- Fix: (Bug 6435)  Luntbuild running out of database connections or memory (memory leak)
+- Fix: (Bug 6869)  Copy of project results in hibernate error
+- Fix: (Bug 6891) Fixed report URL variables for notification templates (variable names were being inserted )
+- Fix: (Bug 6928)  builder cannot use schedule variables on windows
+
+==============================================
+luntbuild 1.5.5 Release Notes
+==============================================
+
+- Feature: Luntbuild comes with an ANT task to automate aspects of the artifact promotion process (contribution by Kevin Lagace)
+- Feature: Enabled all Hibernate lazy settings for better performance, fixed a few lazy loading problems
+- Feature: Improved DB caching configuration
+- Feature: (Change 6739) Create a new VCS Adapter for CvsNT
+- Fix: (Bug 6529) Luntbuild lets you edit projects you don't have access to
+- Fix: (Bug 6731) Trouble labeling sourceCode with BaseClearCaseAdaptor
+- Fix: (Bug 6802) Fixed OGNL expression evaluation in ClearCase adaptor properties
+- Fix: (Bug 6812) Fixed random quotes in notification messages in mixed case
+- Fix: MigrationManager improvements (more robust)
+- Fix: If local docs not installed, use website docs
+- Fix: Limit xml/xslt build log file conversion to 100K file size
+- Fix: Disabled ensureBuildLog() for now, causes performance problems
+
+==============================================
+luntbuild 1.5.4.1 Release Notes
+==============================================
+
+- Reverted: (Bug 6422) Luntbuild is not working after a short outage of the database server
+- Reverted: (Bug 6729) double quotes in CVS date causes parse error
+
+==============================================
+luntbuild 1.5.4 Release Notes
+==============================================
+
+- Feature: Added nextVersionValue expression to Schedule so it can be retrieved for VCS Adaptors
+- Feature: Enabled using OGNL expressions in schedule variables (that can be referenced in VCS Adaptors)
+- Feature: OGNL expressions can now be evaluated recursively
+- Feature: Improved date handling
+- Fix: (Bug 5984) Test and commit contributed SvnExeAdaptor patch
+- Fix: (Bug 6070) Removed "Config Spec" from Clearcase UCM documentation, this property is not used
+- Fix: (Bug 6072) Fixed file path issue in StarTeam checkout
+- Fix: (Bug 6258) Fixed URL to API documentation
+- Fix: (Bug 6325) Fixed AccurevAdaptor not saving settings
+- Fix: (Bug 6407) CVS unparseable date errors in log file
+- Fix: (Bug 6408) Fixed missing attributes in CVS revision logs causing exceptions on build viewer page
+- Fix: (Bug 6507) Updated upgrade instructions to include required step for external databases
+- Fix: (Bug 6583) Fixed Exception when trying to parse NULL dates
+- Fix: Added double quotes around date in CVS Adaptor
+- Fix: (Bug 6734)  if build_log.html or revision_log.html is missing, .txt is not displayed
+
+==============================================
+luntbuild 1.5.3 Release Notes
+==============================================
+
+- Fix: (Bug 6146) Fixed NULL and blank value handling for revision logs (caused problems with CDATA sections)
+- Fix: (Bug 6184) Fixed race condition between notifiers and repliers (RSS) over template files
+- Fix: (Bug 6205) Fixed regression bug with copying projects
+- Fix: (Bug 6206) Fixed exported projects only exporting with their first schedule
+- Fix: (Bug 6239) Updated configuration files to make Zip installation easier
+- Fix: (Bug 6240) Updated installation instructions text file
+- Fix: (Bug 6255) Fixed quiet period for StarTeam adaptor
+
+==============================================
+luntbuild 1.5.2 Release Notes
+==============================================
+
+!NOTE! - ${build.junitHtmlReportDir} has been depreciated, please use ${build.getReportDir("JUnit")} instead
+!NOTE! - LDAP configuration changed. Spring LDAP is now being used.
+
+- Feature: Updated SVNKIT library to version 1.1.4.
+- Feature: (Change 5972) Implemented build listener and report extension system, please see <install_dir>/luntbuild_config.xml for details
+- Feature: (Change 6075) Added support for sventon, SVN web interface
+- Fix: (Bug 6133) Luntbuild signals a build failure if it is unable to resolve a VCS username
+- Fix: (Bug 4413) Error while login as anonymous when LDAP is enabled
+- Fix: (Bug 1507) No BaseDN option when configuring LDAP
+- Fix: (Bug 5995) Critical Security Failure: LDAP errors ignored (sf 1767222)
+- Fix: Improved migration manager to handle orphaned users/schedules/builds
+- Fix: Diff links for SVN revision logs will now only show where appropriate
+- Fix: (Bug 6066) Fixed support for WebSVN and multiple repositories, SVN web interface
+- Fix: (Bug 5969) Fixed manual builds executing multiple times when refreshing immediately after starting a manual build
+- Fix: (Bug 6036) Fixed exception case when creating a new project with a normal user
+- Fix: (Bug 5985) Fixed display of elapsed build time for running builds when using MySQL as the luntbuild database
+- Fix: (Bug 6177) Fixed date format bug for PerforceAdaptor introduced in Luntbuild 1.5.0
+
+==============================================
+luntbuild 1.5.1 Release Notes
+==============================================
+
+- Fix: Rolled back Hibernate 3.2.5 to Hibernate 3.1. 3.2.5 causes problems with persisting Quartz triggers.
+- Fix: Fixed lazy initialization problem in Hibernate.
+
+==============================================
+luntbuild 1.5 Release Notes
+==============================================
+
+!NOTE! - luntbuild-login.jsp changed to luntbuild-login.html. PLEASE change your bookmarks!
+
+- Feature: Updated Quartz to version 1.6.
+- Feature: Standalone Luntbuild updated to use jetty 6.0.1. Changed login jsp to html.
+- Feature: Revision logs are now parsed into XML
+- Feature: Revision logs from some VCS adaptors (CVS, FileSystem, Perforce, SVN) can be view on the build viewer page
+- Feature: Revision logs for some VCS adaptors (CVS, FileSystem, Perforce, SVN) are now integrated with many kinds of web interfaces, set a web interface and URL in the settings for the VCS adaptor
+- Feature: New web API available (see the "API" help link in the Luntbuild interface), this API allows access to information in Luntbuild in XML or JSON format
+- Feature: RSS/Atom feeds are now generated by the new web API, links to important feeds have been added to the interface, see the API help for more information
+- Feature: Perforce adaptors will now store the changelist they were sinked to, this is available from the build viewer page or through OGNL as ${build.changelist} (only for the first Perforce adaptor)
+- Feature: The administration tab now allows individual projects to be exported or imported, this function will export the project, its schedules and builds, and any users related to the project (importing will not overwrite an existing project)
+- Feature: (Task 5976) SMTP port can now be configured for Email notification in the Luntbuild system properties
+- Feature: (Task 5978) Added destination directory as an optional property for FileSystem VCS adaptor
+- Feature: (Bug 5983) SvnAdaptor and SvnExeAdaptor now support single (trunk/project) or multiple (project/trunk) repository layouts
+- Feature: (Bug 6004) Expanded support for builder success conditions, two new functions logContainsLine(level, linePattern) and builderLogContainsLine(level, pattern) will search for messages of a specific log level (priority)
+- Feature: (Change 4017) Added new special notification user "<users who checked in since last successful build>", this will only work on failed builds built with this version of luntbuild or later
+- Fix: (Bug 5869) Fixed some cases where builds would finish but stay in the "running" state, this was be caused by ginormous build logs (seriously 68,000+ lines)
+- Fix: Installer will now make sure that a JDK exists on the path (not just a JRE) so that the install will not fail
+- Fix: Installer will now propertly fail if one of the install scripts fails
+- Fix: Exceptions during Email sending will now be propertly logged (including stack traces)
+- Fix: Common errors during export or import of configurations will no longer lead to an exception page
+- Fix: (Bug 5877) Solved intermitted failures due to unsynchronized use of SimpleDateFormat
+- Fix: (Bug 5876) Fixed creation of Clearcase UCM and Base Clearcase snapshot views.  Now longer deletes a view and recreates it for a clean build, just the contents of the view.
+- Fix: (Bug 5939) Fixed disabled schedules being triggered by dependency settings, disabled schedules should not run for any reason
+- Fix: (Bug 5873) Updated instructions for ZIP installation
+- Fix: (Bug 5986) Fixed some properties in ProjectFacade for the API that were not being set; projectAdmins, projectBuilders, projectViewers, and notifyUsers
+- Fix: (Bug 4005) Fixed support for the "file://" protocol in SvnAdaptor
+- Fix: (Bug 5967) Fixed orphaned objects being left in database for old versions of MySQL, all tables will be forced to InnoDB format
+- Fix: Closing appropriate IO streams, code cleanup with Findbugs
+- Fix: (Bug 5875) ZIP Installation: old DB for H2 being distributed
+- Fix: (Bug 5980) User who launched build not tracked properly
+- Fix: Installer - possibility to select "." webapp if user doesn't want to deploy luntbuild war
+- Fix: (Bug 6004) Updated the default build success condition for the Maven2 builder to use logContainsLine(level, linePattern)
+- Other: Greatly improved JavaDoc comments throughout Luntbuild codebase
+
+==============================================
+luntbuild 1.4.2 Release Notes
+==============================================
+
+- Feature: (Bug 5750) SSL/TSL support can now be configured for Email notification in the Luntbuild system properties
+- Feature: Changes to the UI that do not alter the look of luntbuild, but just make it easier to theme.
+- Feature: Refactor of web interface to remove colours from HTML to make it easier to theme via CSS
+- Feature: Simplifications to odd/even table row colourings to reduce duplication in CSS
+- Feature: Improved ability to detect which builder failed among multiple builders, use the new "builderLogContainsLine()" function to look for messages from a specific builder
+- Fix: Fixed IzPack installer look & feel Linux issues
+- Fix: (Bug 5717) Log files are no longer left open on build error
+- Fix: (Bug 5777) Fixed Project and Schedule variables not updating correctly for builders
+- Fix: (Bug 5661) Fixed handling of spaces in build versions
+- Fix: Fixed build and revision log links to use "getBuildLogUrl()" and "getRevisionLogUrl()" so that the URLs are unique and user friendly
+
+==============================================
+luntbuild 1.4.1 Release Notes
+==============================================
+
+Contribution by David Roussel. Thanks David!
+
+- fixed VCS history for builds with dynamic and base clearcase views
+- fixed error "Unable to create view" when performing a clean build or rebuild on a base clearcase view
+
+Other:
+
+- Fixed Clearcase command line option handling
+- Improved manual build at/later handling to support date and hour
+- Improved build log pattern detection
+
+==============================================
+luntbuild 1.4.0 Release Notes
+==============================================
+
+Contribution from Jason Archer, thanks Jason!
+
+Installer
+- Fixed the "webapps folder" search box in the installer (wasn't showing titles for the options).
+- Fixed installation scripts failing without message.
+
+UI/Help/Documentation
+- Added chapter to documentation on notification templates and their use.
+- Updated the link to the cron trigger help on schedule edit page.
+- Added ability for interface tabs to hide themselves.
+- Added catch for MigrationExceptions to the AdministrationTab so that common errors show up as error messages rather than execption pages (rather annoying).
+- Added links to the quickstart guide, FAQ, and JavaDoc on the website.
+
+Build System
+- Expanded JavaDoc to include all classes.
+- Added links to external JavaDocs.
+- Added separate API JavaDocs.
+- Added descriptions to all targets.
+- Separated API documentation generation from API compiling.
+
+General
+- Fix for system properties not immediately updating when importing a new config.  The webapp was not updating its copy of the properties.
+- Fix to allow relative paths when specifing an import config file, export already did this.
+- Added automated backup/export of database (configurable with a cron trigger).
+
+Scheduling
+- Added ability to enable/disable schedules with one click.  Disabled schedules will not run and you don't have to change trigger information.
+
+Notification
+- Added luntbuild servlet URL as an available variable for templates.
+- Added ability to configure templates for specific schedules (this could be better done though).
+- Added new notification strategy "Notify if failed or status changed".
+- Fixed error messages in TemplatedNotifier.
+
+Contribution from Dominique Leducq. Thanks Dominique!
+
+- Added variables support for a schedule. Variables can be used in the similar fashion as project variables in OGNL expressions.
+- Added OGNL support for VCS adaptor modules (for example ${var["cvsBranch"]}) and most of the VCS adaptor properties
+  like root path, url etc.
+
+Contribution from David Roussel. Thanks David!
+
+- Changed style sheet to specify font settings as before it used to reply on browser default serif font.
+- Changed text and link colour scheme to be lighter.
+- Changed tab graphics to match colour scheme.
+- Made banner mixed case rather than all upper case.
+
+The style theme is not installed by default. If you wish to install the theme, unzip <luntbuild-install>contrib/jira-theme.zip
+to <tomcat>/webapp/luntbuild. To reverse bask to original Luntbuild theme, unzip <luntbuild-install>contrib/classic-theme.zip
+to <tomcat>/webapp/luntbuild.
+
+
+Other changes:
+
+- Fixed EHCache configuration
+- Improved Clearcase mview delete/recreate
+- Fixed SVN adaptor labeling (label working copy, not a HEAD copy)
+- Updated IzPack installer to version 3.10.1
+- Changed Luntbuild license to Apache License, Version 2.0
+
+==============================================
+luntbuild 1.3.6 Release Notes
+==============================================
+
+Bugs fixed:
+
+Fixed current build update in web app introduced in 1.3.5
+MKS integration improvements:
+   1. When an objects gets removed form the MKS repository, checking for revisions used to fail (with MKS API error) and failed the build. Now error gets reported into revision log and build proceeds.
+   2. Logic was enhanced to detect changes in the MKS modules. Adding/changing the version/checkpoint label or development path to existing MKS module no longer fails the build. Once a change is detected sandbox is dropped and recreated with changed parameters.
+StarTeam patch which adds the ability to check out by promotional state to Luntbuild
+
+==============================================
+luntbuild 1.3.5 Release Notes
+==============================================
+
+Bugs fixed:
+
+Improved Hibernate/DB access, make use of lazy loading and caching
+Upgraded to ehcache 1.2.4
+Fixed manual build execution
+
+==============================================
+luntbuild 1.3.4 Release Notes
+==============================================
+
+Bugs fixed:
+
+[ luntbuild-Bugs-1596098 ] Problems with link in email notification - fixed
+[ 1596325 ] Problems with link in email notification - fixed
+[luntbuild - Help] Dependency trigger stopped working in 1.3 - rolled back changes made in 1.3.3
+[luntbuild - Help] Getting 1.3.2 and svn 1.4 to work - upgraded to svnkit.ja4 1.1.0 (previously javasvn.jar)
+Upgraded mail.jar to 1.4 to support TLS
+[Luntbuild-users] 1.3.3 Project sort order? - changed order to sort by project, schedule names
+
+==============================================
+luntbuild 1.3.3 Release Notes
+==============================================
+
+1. Changes since 1.3.2
+
+ * Added MKS VCS Adaptor contributed by Stefan Baramov.
+ * Added support for ActiveDirectory LDAP contributed by Dave Dunkin.
+ * Added support for Dynamic Clearcase views.
+   NOTE: Base Clearcase users will need to export and reimport their configuration as
+         the old serialized versions persisted in the database are not compatible with
+         the new Clearcase support.
+ * Returned back Svn adapter (SubversionExe) that uses external svn executable in addition to Svn adaptor based on JavaSvn.
+ * Updated Acegi Security to 1.0.1 from 0.9.
+ * Updated Spring to 1.2.8.
+ * Upgraded to Hsqldb 1.8.0.5.
+ * Redesigned anonymous login access (based on Acegi), added Remember User access
+ * Added setting access rights to existing projects when creating new user
+ * Added SVN logging
+
+==============================================
+luntbuild 1.3.2 Release Notes
+==============================================
+
+1. Changes since 1.3.1
+
+ * Re-implemented SVN Adaptor based on JavaSvn http://tmate.org/svn/. Implemented by Alexei Vidmich.
+   Improves and simplifies SVN Adaptor including ssh access.
+ * Updated log4j to 1.2.13 added patch for html date format.
+ * Added initial support for Derby (derby.apache.org) in client/server mode (embedded mode fails).
+ * Added initial support for H2 (http://www.h2database.com) in client/server and embeded mode.
+ * Added initial support for SQLServer.
+ * Added initial support for Oracle 10g.
+ * Added VisualStudio build information scraper and template. Implemented by Kevin Lin.
+ * Upgraded to Hibernate 3.1.3.
+ * When "Build necessary condition" is "always", the build is executed even if dependencies are not satisfied.
+
+==============================================
+luntbuild 1.3.1 Release Notes
+==============================================
+
+1. Changes since 1.3
+
+ * Fixed access authentication by user for projects/builds broken by LDAP implementation
+
+==============================================
+luntbuild 1.3 Release Notes
+==============================================
+
+1. Changes since 1.2.2
+
+ * Added deleteBuilds(), moveBuilds() methods to Luntbuild remote API (after beta)
+ * Added basic LDAP authentication support
+ * Added canCreateProject(), getUsers(), getUser() methods to Luntbuild remote API (after beta)
+ * Added createSchedule(), deleteSchedule(), getBuildLog(), getBuildLogHtml(), getRevisionLog(), getRevisionLogHtml(),
+   getSystemLog(), getSystemLogHtml() methods to Luntbuild remote API (after beta)
+ * Added support for Maven version 2
+ * Added getSystemLogUrl() method to Build facade (for remote access)
+ * Improved output format (Html, Xml, Text) of Luntbuild reports (build, revision, system log)
+ * Added templates support for Luntbuild notifiers messages,
+   based on Velocity template engine http://jakarta.apache.org/velocity/
+ * Added Build Filter using javascript to Builds page (contributed by Fabrice Belingard)
+ * Added, tested support for external DBs (installer, scripts); MySql, Progres are supported
+ * Updated Hibernate to version 3
+ * Added Rake builder http://rake.rubyforge.org/
+ * Updated security to acegi-0.9 (Scott Battaglia patch, Lubos to 0.9)
+ * Implemented anonymous user access (view)
+ * Updated Quartz scheduler to 1.5.1
+ * Implemented standalone luntbuild using Jetty servlet container
+ * Implemented copy for vcs adapter, builder, schedule
+ * Updated Jabber notifier to support SSL, GoogleTalk
+ * Added notifier support for Lotus Sametime http://cquick.conacyt.mx/sametime/toolkits/st30javatk/
+ * Fix the bug that hessian client can not get error message sometimes.
+ * Fix the bug that HSQLDB shuts down abnormally when application shuts down.
+ * Fix the bug that the source been labeled may be different from the source been build against
+   in case of using StarTeam as version control system.
+ * Fix the potential bug that there are extra bytes in downloaded build artifacts.
+ * Fix the bug that some icon can not be displayed when run Luntbuild in tomcat 5.5 or uppper.
+ * Fix the bug that label can not be applied if more than one module shares the same StarTeam
+   view.
+ * When talk to StarTeam server, 10 seconds are deduced from the current configuration time in
+   order to tolerate slight time difference (must be less than 10 seconds hence) between build
+   and StarTeam server.
+ * Fix the bug that "clean by days" build cleanup strategy does not work due to a acegi
+   authentication credentials not found exception.
+ * Fix the bug that import/export does not work when installs without demo data.
+ * Url mapping of Tapestry servlet is now "/luntbuild/app.do". The previous mapping ("/luntbuild/app")
+   has some problems when deploying into Orion application server.
+ * Wiki has been moved to: http://www.javaforge.com/proj/doc.do?proj_id=70
+
+2. Changes since version 1.2
+------------------------------
+
+ * Disable write-delay for the default HSQL database bundled with Luntbuild distribution,
+   and apply not-null constraints for all foreign keys. (Write-delay and not-null constraints
+   can be set in file <luntbuild_install_dir>/db/luntbuild.script if you want to apply
+   these changes for an existing HSQL database. Find the line "SET WRITE_DELAY 60"
+   and change it to "SET WRITE_DELAY 0").
+ * Fix the bug that Luntbuild's CVS adaptor can not send email to users who has recently
+   checked in codes.
+ * Fix the NPE when Luntbuild is not been installed as an exploded web application.
+ * Re-configure acegi security setting, and add an extra resource access servlet so that
+   accessing to web resources(such as icons in the web page) will no longer be authenticated.
+   This will improve performance of Luntbuild web interface.
+ * Schedule dependency mechanism is enhanced. Now you are able to choose whether to fail related
+   schedules when there are unsatisfied dependencies, or just avoid building them until all
+   dependencies are satisfied.
+ * Fix the bug that UCM Clearcase adaptor can not retrieve source codes on Linux platform.
+ * Fix the bug that "Notifier methods" of project can not be exported.
+ * Add a GNOME panel applet which runs as a tray icon to monitor build status (Thanks to Marcus)
+ * Upgrade msnm library to make MSN messenger notifier works.
+
+3. Changes since version 1.2 beta2
+------------------------------
+
+ * Fix the bug that Luntbuild's CVS adaptor can not work properly when there are spaces
+   contained in CVS module definition.
+
+4. Changes since version 1.2 beta1
+------------------------------
+
+ * Fix the bug that JUNIT report can not be shown correctly when access
+   through Firefox
+ * Fix the bug that Luntbuild reports "java.lang.NoSuchMethodError: org.apache.tools.ant.taskdefs.Cvs.setCvsDir(Ljava/lang/String;)"
+   when check out codes from CVS repository
+ * Move logout button upper in order to avoid mis-triggering
+ * Fix the bug that when more than one StarTeam adaptors configured for a project, build will
+   fail with error message "StarTeam view XXX not found"
+ * Add the ability to verify user's password
+ * Add the ability to configure total number of build threads
+ * Remove a silly mistake in UCMClearcaseAdaptor:
+   line 660 in UCMClearcaseAdapter.java does length() - 2
+   to remove the quote..
+   should be -1
+ * Fix the bug that Accurev adaptor can not perform clean builds
+ * Fix the bug that Accurev adaptor requires additional libraries
+ * Fix the bug that Luntbuild can not run in JBoss (a .bak file steps in the lib directory)
+ * Fix the bug that email address and MSN account can not be imported correctly from version 1.1.1
+
+5. Changes since version 1.1.1
+------------------------------
+
+ * Maven builder support
+ * Command shell builder support
+ * ACL based Security (thanks Johannes Plachy)
+ * Project/schedule dependency
+ * Ability to stop running build
+ * Ability to clone/copy a project
+ * Ability to associate different builders with different schedules
+ * Ability to configure "build cleanup strategy" which gives user
+   the option to only keep a specified number of builds, or to keep
+   specified build days for particular schedules
+ * Easier way to specify properties for Ant and Maven builder,
+   separated properties in its own text area
+ * Ability to define multiple builders, VCS adaptors, and schedules for
+   a project
+ * New File system based Vcs adaptor
+ * New Vcs Aadaptor for AccuRev (thanks Jason Carreira)
+ * Quiet period can be set before check out code for build
+ * Luntbuild data can be exported to an XML file or imported from an XML file
+ * Ability to notify about build status using Jabber (thanks Johannes Plachy)
+ * More supported servlet containers, application servers:
+   Tomcat, Jetty, Resin, JBoss, JOnAS, SunOne
+ * New notification strategy: "Notify when build status changed"
+ * User password encryption
+ * Hide password from log
+ * Display summary of [http://junit.org JUnit] test results on build page
+ * Upgraded Hsql/Spring and some other 3rd party libraries
+ * For HSQLDB, changed build table definition to be a cached table
+   in HSQL database. This way, rows of build table will be swapped
+   to disk when they become too large
+ * New User's Guide and FAQ documentation
+ * New Luntbuild GUI based installer
+ * Started Luntbuild Project Wiki at
+   http://luntbuild.sourceforge.net/cgi-bin/moin.cgi/FrontPage
+

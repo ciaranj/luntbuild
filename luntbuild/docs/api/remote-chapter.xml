@@ -1,0 +1,69 @@
+<chapter id="remote">
+   <title>Using Luntbuild External API</title>
+   <para>
+      Luntbuild provides a suite of remoting API with the following abilities:
+      <orderedlist numeration="arabic">
+         <listitem><para>Create or edit a project.</para></listitem>
+         <listitem><para>Trigger a build in any build schedule.</para></listitem>
+         <listitem><para>Configure properties of projects, as well as global properties.</para></listitem>
+         <listitem><para>Search builds and get a build information such as its artifacts url, etc.</para></listitem>
+      </orderedlist>
+      By utilizing the Hessian web service protocol, this API is very easy to use.
+      Basically two jar files needs to be included in the classpath,
+      <emphasis>hessian-3.0.8.jar</emphasis> and <emphasis>luntbuild-api.jar</emphasis>.
+      They can be found in the "remoting" directory. There are also some examples to demonstrate usage of the API.
+      The remoting API Javadoc is available <ulink url="http://luntbuild.javaforge.com/remote-api/javadoc/index.html">here.</ulink>
+      Following examples are available:
+      <orderedlist numeration="arabic">
+         <listitem><para><ulink url="http://luntbuild.javaforge.com/remote-api/samples/EditProperties.java.html">Edit Properties</ulink> - This class gives an example of using luntbuild web service API to edit propertie of a project</para></listitem>
+         <listitem><para><ulink url="http://luntbuild.javaforge.com/remote-api/samples/SearchBuilds.java.html">Search Builds</ulink> - This class demonstrates search builds in the system, and how to access build information</para></listitem>
+         <listitem><para><ulink url="http://luntbuild.javaforge.com/remote-api/samples/TriggerBuild.java.html">Trigger Build</ulink> - This class gives an example of using luntbuild web service API to trigger a build</para></listitem>
+         <listitem><para><ulink url="http://luntbuild.javaforge.com/remote-api/samples/LuntbuildConnection.java.html">LuntbuildConnection</ulink>- This class demonstrates access to project, schedule and build data. It shows how to create, edit and delete a project (supported since Luntbuild 1.3).
+            This class is part of the Luntclipse, Eclipse plugin for Luntbuild.</para></listitem>
+      </orderedlist>
+      The provided TriggerBuild example can be used to implement a real-time Continuous Integration,
+      that is, whenever a checkin is made into the repository, Luntbuild can trigger immediate build.
+      We create a sample Cvs repository to show how to do this:
+      <orderedlist numeration="arabic">
+         <listitem><para>
+            Create a manually triggered schedule in a project you will use to implement real-time continuous integration.
+            To get the build fast, you can configure the build to build incrementally.
+         </para></listitem>
+         <listitem><para>
+            Checkout "loginfo" file under CVSROOT directory of your cvs repository, and append a line like this:
+            <programlisting>
+testcvs cmd /c d:/lunt/cvs/lunt/luntbuild/remoting/samples/trigger_build.bat
+            </programlisting>
+            </para>
+            <para>
+            <note><para>Before editing, this file should be checked out first using your cvs client, just like you edit
+               other files in your cvs repository.</para></note>
+            </para>
+            <para>
+               where <emphasis>testcvs</emphasis> should be replaced with the directory path of your Cvs repository.
+               All checkins under this path will trigger the trigger_build.bat command.
+               The file trigger_build.bat resides in the "remoting/samples" directory.
+               Of course, you can copy the related files (the remoting API jar files, the TriggerBuild.class file,
+               and the trigger_build.bat file) to any other machine as long as JDK1.4 or higher are installed.
+               The path to trigger_build.bat need to be changed to fit your environment.
+               Contents of trigger_build.bat should be changed to reflect proper classpaths, your Luntbuild server url,
+               your desired project, and build schedule. On Unix platform, you can create the trigger_build.sh script
+               easily based on the contents of the file trigger_build.bat.
+            </para></listitem>
+            <listitem><para>
+               Check in the "loginfo" file. From now on, the checkins under your configured path will trigger
+               the trigger_build command, which will result in a build you have configured above.
+            </para></listitem>
+         </orderedlist>
+   </para>
+   <note><para>
+      Any other Version Control System that can trigger an external command on checkin can use this method
+      to implement real-time Continuous Integration.
+   </para></note>
+   <section id="javadoc">
+      <title>JavaDoc</title>
+      <para>
+         The JavaDoc for the external API is available <ulink url="../api/javadoc/index.html"><emphasis>here</emphasis></ulink>.
+      </para>
+   </section>
+</chapter>

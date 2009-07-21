@@ -1,0 +1,97 @@
+<chapter id="anttask">
+   <title>Using Luntbuild ANT Task</title>
+   <para>
+      Luntbuild comes with an ANT task to automate aspects of the artifact promotion process. To use the task, you need the following jars in the ANT classpath  
+      <orderedlist numeration="arabic">
+         <listitem><para><emphasis>hessian-3.0.8.jar</emphasis></para></listitem>
+         <listitem><para><emphasis>luntbuild-api.jar</emphasis></para></listitem>
+         <listitem><para><emphasis>jsch-0.1.34.jar</emphasis></para></listitem>
+         <listitem><para><emphasis>luntanttask.jar</emphasis></para></listitem>
+      </orderedlist>
+   </para>
+   <para>
+      Hessian and Luntbuild API jars can be found in the "remoting" directory.     
+      Jsch is available <ulink url="http://www.jcraft.com/jsch/">here</ulink>, or also in the "remoting" directory.
+   </para>
+   <para>Currently, LuntDeployTask only supports deploying artifacts from the latest green (successful) build.</para>
+
+<section id="declaringthetask">
+   <title>Declaring the task</title>
+   <para>Use the <emphasis>taskdef</emphasis> declaration to declare the Lunt task.</para>
+   <programlisting>
+    <![CDATA[
+    <taskdef name="deploy" classname="net.mccg.lunt.LuntDeployTask"/>
+    ]]>
+    </programlisting>
+</section>
+
+<section id="usingthetask">
+   <title>Using the deploy task</title>
+   <para>Deploying a published Luntbuild artifact can be done with the <emphasis>deploy</emphasis> task</para>
+   <programlisting>
+    <![CDATA[
+    <target name="example.deploy">
+        <deploy 
+            luntUsername="luntuser" 
+            luntPassword="luntpassword" 
+            luntServer="http://your-luntserver:8080"
+            project="myLuntProject" 
+            schedule="myLuntProject" 
+            artifact="myArtifact.ear" 
+            deployUsername="foouser" 
+            deployPassword="barpassword" 
+            deployServer="your-server"
+            deployDir="/deployDir"/>
+    </target>
+    ]]>
+    </programlisting>
+    <para>If deploying on the same machine that invokes the ANT task, than the <emphasis>isLocalDeploy</emphasis> attribute can be used</para>
+    <programlisting>
+    <![CDATA[
+    <target name="example.deploy">
+        <deploy luntUsername="luntbuild" 
+                luntPassword="luntbuild" 
+                luntServer="http://your-luntserver:8080"
+                artifact="IBSPlatform.jar" 
+                project="IBSPlatform" 
+                schedule="IBSPlatform_schedule" 
+                isLocalDeploy="true"
+                deployDir="/temp"/>
+    </target>
+    ]]>
+    </programlisting>
+</section>
+
+<section id="usingthetaskwithmacro">
+    <title>Using the deploy task in a macro</title>
+    <para>If many artifacts need to be copied/deployed, than a simple ANT macro can lighten the amount of duplication in your ANT script</para>
+    <programlisting>
+    <![CDATA[
+    <target name="example.macro">
+            <deploy-to-env artifact="someEJBz.jar" />
+            <deploy-to-env artifact="myWebApp.war" />
+            <deploy-to-env artifact="datasource.xml" />
+    </target>
+        
+    <macrodef name="deploy-to-env">
+        <attribute name="artifact"/>
+        <sequential>
+            <echo>Copying @{artifact} to some environment</echo>
+            <deploy 
+                luntUsername="luntuser" 
+                luntPassword="luntpassword" 
+                luntServer="http://your-luntserver:8080"
+                project="@{project}" 
+                schedule="myLuntProject" 
+                artifact="myLuntSchedule" 
+                deployUsername="foouser" 
+                deployPassword="barpassword" 
+                deployServer="your-server"
+                deployDir="/deployDir   "/>
+            </sequential>
+    </macrodef>
+    ]]>
+    </programlisting>
+</section>   
+    
+</chapter>

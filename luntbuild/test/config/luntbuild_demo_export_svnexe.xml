@@ -1,0 +1,1079 @@
+<DataCollection>
+  <version>1.2</version>
+  <properties/>
+  <projects>
+    <com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+      <id>1</id>
+      <name>caveatemptor</name>
+      <description></description>
+      <variables>versionIterator=1</variables>
+      <logLevel>1</logLevel>
+      <vcsList>
+        <com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+          <urlBase>http://svn1.cvsdude.com/luntbuild-svn/luntbuild-demo</urlBase>
+          <layout>single</layout>
+          <trunk>trunk</trunk>
+          <branches></branches>
+          <tags></tags>
+          <user>luntbuild-svn</user>
+          <password>demo</password>
+          <svnDir>D:\svn-win32-1.4.5\bin</svnDir>
+          <webInterface></webInterface>
+          <webUrl></webUrl>
+          <quietPeriod></quietPeriod>
+          <modules>
+            <com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+              <srcPath></srcPath>
+              <branch></branch>
+              <label></label>
+              <destPath></destPath>
+            </com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+          </modules>
+        </com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+      </vcsList>
+      <builderList>
+        <com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+          <command>D:\apache-ant-1.7.0\bin\ant.bat</command>
+          <buildScriptPath>build.xml</buildScriptPath>
+          <buildTargets>deploy</buildTargets>
+          <buildProperties>buildVersion=&quot;${build.version}&quot;&#x0D;
+artifactsDir=&quot;${build.artifactsDir}&quot;&#x0D;
+buildDate=&quot;${build.startDate}&quot;&#x0D;
+junitHtmlReportDir=&quot;${build.getReportUrl(&quot;JUnit&quot;)}&quot;</buildProperties>
+          <name>caveatemptor</name>
+          <environments></environments>
+          <buildSuccessCondition>result==0 and builderLogContainsLine(&quot;BUILD SUCCESSFUL&quot;)</buildSuccessCondition>
+        </com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+      </builderList>
+      <scheduleList>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>1</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>caveatemptor</name>
+          <description></description>
+          <nextVersion>caveatemptor-62</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>30</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>always</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>caveatemptor</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 13:55:41.546</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l1&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>1</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>10</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>caveatemptor-sixty</name>
+          <description></description>
+          <nextVersion>caveatemptor-sixty-17</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>60</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>always</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>caveatemptor</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 13:23:09.296</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l1&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>1</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      </scheduleList>
+      <notifiers/>
+      <projectAdmins/>
+      <projectBuilders/>
+      <projectViewers/>
+      <notifyUsers/>
+    </com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+    <com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+      <id>2</id>
+      <name>caveatemptor-copy</name>
+      <description></description>
+      <variables>versionIterator=1</variables>
+      <logLevel>1</logLevel>
+      <vcsList>
+        <com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+          <urlBase>http://svn1.cvsdude.com/luntbuild-svn/luntbuild-demo</urlBase>
+          <layout>single</layout>
+          <trunk>trunk</trunk>
+          <branches></branches>
+          <tags></tags>
+          <user>luntbuild-svn</user>
+          <password>demo</password>
+          <svnDir>D:\svn-win32-1.4.5\bin</svnDir>
+          <webInterface></webInterface>
+          <webUrl></webUrl>
+          <quietPeriod></quietPeriod>
+          <modules>
+            <com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+              <srcPath></srcPath>
+              <branch></branch>
+              <label></label>
+              <destPath></destPath>
+            </com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+          </modules>
+        </com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+      </vcsList>
+      <builderList>
+        <com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+          <command>D:\apache-ant-1.7.0\bin\ant.bat</command>
+          <buildScriptPath>build.xml</buildScriptPath>
+          <buildTargets>deploy</buildTargets>
+          <buildProperties>buildVersion=&quot;${build.version}&quot;&#x0D;
+artifactsDir=&quot;${build.artifactsDir}&quot;&#x0D;
+buildDate=&quot;${build.startDate}&quot;&#x0D;
+junitHtmlReportDir=&quot;${build.getReportUrl(&quot;JUnit&quot;)}&quot;</buildProperties>
+          <name>caveatemptor</name>
+          <environments></environments>
+          <buildSuccessCondition>result==0 and builderLogContainsLine(&quot;BUILD SUCCESSFUL&quot;)</buildSuccessCondition>
+        </com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+      </builderList>
+      <scheduleList>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>2</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>caveatemptor</name>
+          <description></description>
+          <nextVersion>caveatemptor-copy-72</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>25</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>always</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>caveatemptor</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 13:47:07.671</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l2&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>2</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      </scheduleList>
+      <notifiers/>
+      <projectAdmins/>
+      <projectBuilders/>
+      <projectViewers/>
+      <notifyUsers/>
+    </com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+    <com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+      <id>3</id>
+      <name>tapestryinaction</name>
+      <description></description>
+      <variables>versionIterator=1</variables>
+      <logLevel>1</logLevel>
+      <vcsList>
+        <com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+          <urlBase>http://svn1.cvsdude.com/luntbuild-svn/luntbuild-demo</urlBase>
+          <layout>single</layout>
+          <trunk>trunk</trunk>
+          <branches></branches>
+          <tags></tags>
+          <user>luntbuild-svn</user>
+          <password>demo</password>
+          <svnDir>D:\svn-win32-1.4.5\bin</svnDir>
+          <webInterface></webInterface>
+          <webUrl></webUrl>
+          <quietPeriod></quietPeriod>
+          <modules>
+            <com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+              <srcPath></srcPath>
+              <branch></branch>
+              <label></label>
+              <destPath></destPath>
+            </com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+          </modules>
+        </com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+      </vcsList>
+      <builderList>
+        <com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+          <command>d:\apache-ant-1.7.0\bin\ant.bat</command>
+          <buildScriptPath>build.xml</buildScriptPath>
+          <buildTargets>deploy</buildTargets>
+          <buildProperties>buildVersion=&quot;${build.version}&quot;&#x0D;
+artifactsDir=&quot;${build.artifactsDir}&quot;&#x0D;
+buildDate=&quot;${build.startDate}&quot;&#x0D;
+junitHtmlReportDir=&quot;${build.getReportUrl(&quot;JUnit&quot;)}&quot;</buildProperties>
+          <name>tapestryinaction</name>
+          <environments></environments>
+          <buildSuccessCondition>result==0 and builderLogContainsLine(&quot;BUILD SUCCESSFUL&quot;)</buildSuccessCondition>
+        </com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+      </builderList>
+      <scheduleList>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>3</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>tapestryinaction</name>
+          <description></description>
+          <nextVersion>tapestryinaction-45</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>40</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>always</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>tapestryinaction</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 14:29:07.593</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l3&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>3</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      </scheduleList>
+      <notifiers/>
+      <projectAdmins/>
+      <projectBuilders/>
+      <projectViewers/>
+      <notifyUsers/>
+    </com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+    <com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+      <id>4</id>
+      <name>tapestryinaction-copy</name>
+      <description></description>
+      <variables>versionIterator=1</variables>
+      <logLevel>1</logLevel>
+      <vcsList>
+        <com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+          <urlBase>http://svn1.cvsdude.com/luntbuild-svn/luntbuild-demo</urlBase>
+          <layout>single</layout>
+          <trunk>trunk</trunk>
+          <branches></branches>
+          <tags></tags>
+          <user>luntbuild-svn</user>
+          <password>demo</password>
+          <svnDir>D:\svn-win32-1.4.5\bin</svnDir>
+          <webInterface></webInterface>
+          <webUrl></webUrl>
+          <quietPeriod></quietPeriod>
+          <modules>
+            <com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+              <srcPath></srcPath>
+              <branch></branch>
+              <label></label>
+              <destPath></destPath>
+            </com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+          </modules>
+        </com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+      </vcsList>
+      <builderList>
+        <com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+          <command>d:\apache-ant-1.7.0\bin\ant.bat</command>
+          <buildScriptPath>build.xml</buildScriptPath>
+          <buildTargets>deploy</buildTargets>
+          <buildProperties>buildVersion=&quot;${build.version}&quot;&#x0D;
+artifactsDir=&quot;${build.artifactsDir}&quot;&#x0D;
+buildDate=&quot;${build.startDate}&quot;&#x0D;
+junitHtmlReportDir=&quot;${build.getReportUrl(&quot;JUnit&quot;)}&quot;</buildProperties>
+          <name>tapestryinaction</name>
+          <environments></environments>
+          <buildSuccessCondition>result==0 and builderLogContainsLine(&quot;BUILD SUCCESSFUL&quot;)</buildSuccessCondition>
+        </com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+      </builderList>
+      <scheduleList>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>4</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>tapestryinaction</name>
+          <description></description>
+          <nextVersion>tapestryinaction-copy-52</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>35</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>always</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>tapestryinaction</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 13:36:54.015</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l4&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>4</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      </scheduleList>
+      <notifiers/>
+      <projectAdmins/>
+      <projectBuilders/>
+      <projectViewers/>
+      <notifyUsers/>
+    </com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+    <com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+      <id>5</id>
+      <name>mavengettingstarted</name>
+      <description></description>
+      <variables>versionIterator=1</variables>
+      <logLevel>1</logLevel>
+      <vcsList>
+        <com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade>
+          <cvsRoot>:pserver:lunt-examples@cvs9.cvsdude.com:/cvs/stdk</cvsRoot>
+          <cvsPassword>demo</cvsPassword>
+          <cygwinCvs>yes</cygwinCvs>
+          <disableHistoryCmd>yes</disableHistoryCmd>
+          <disableSuppressOption>no</disableSuppressOption>
+          <cvsDir></cvsDir>
+          <webInterface></webInterface>
+          <webUrl></webUrl>
+          <quietPeriod>60</quietPeriod>
+          <modules>
+            <com.luntsys.luntbuild.facades.lb12.CvsModuleFacade>
+              <srcPath>mavenexample</srcPath>
+              <branch></branch>
+              <label></label>
+            </com.luntsys.luntbuild.facades.lb12.CvsModuleFacade>
+          </modules>
+        </com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade>
+      </vcsList>
+      <builderList>
+        <com.luntsys.luntbuild.facades.lb12.Maven2BuilderFacade>
+          <command>&quot;D:\maven-2.0.5\bin\mvn.bat&quot;</command>
+          <dirToRunMaven>mavenexample</dirToRunMaven>
+          <goals>compile test package</goals>
+          <buildProperties>buildVersion=&quot;${build.version}&quot;&#x0D;
+artifactsDir=&quot;${build.artifactsDir}&quot;&#x0D;
+buildDate=&quot;${build.startDate}&quot;&#x0D;
+junitHtmlReportDir=&quot;${build.getReportUrl(&quot;JUnit&quot;)}&quot;</buildProperties>
+          <name>mavengettingstarted</name>
+          <environments></environments>
+          <buildSuccessCondition>result==0 and builderLogContainsLine(&quot;INFO&quot;,&quot;BUILD SUCCESSFUL&quot;)</buildSuccessCondition>
+        </com.luntsys.luntbuild.facades.lb12.Maven2BuilderFacade>
+      </builderList>
+      <scheduleList>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>5</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>mavengettingstarted</name>
+          <description></description>
+          <nextVersion>mavenexample-5</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>25</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>vcsModified or dependencyNewer</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>mavengettingstarted</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 13:45:27.921</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l5&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>5</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      </scheduleList>
+      <notifiers/>
+      <projectAdmins/>
+      <projectBuilders/>
+      <projectViewers/>
+      <notifyUsers/>
+    </com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+    <com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+      <id>6</id>
+      <name>caveatemptor-cvs</name>
+      <description></description>
+      <variables>versionIterator=1</variables>
+      <logLevel>1</logLevel>
+      <vcsList>
+        <com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade>
+          <cvsRoot>:pserver:luntbuild@cvs1.cvsdude.com:/cvs/stdk</cvsRoot>
+          <cvsPassword>demo</cvsPassword>
+          <cygwinCvs>yes</cygwinCvs>
+          <disableHistoryCmd>yes</disableHistoryCmd>
+          <disableSuppressOption>no</disableSuppressOption>
+          <cvsDir></cvsDir>
+          <webInterface></webInterface>
+          <webUrl></webUrl>
+          <quietPeriod>60</quietPeriod>
+          <modules>
+            <com.luntsys.luntbuild.facades.lb12.CvsModuleFacade>
+              <srcPath>caveatemptor</srcPath>
+              <branch></branch>
+              <label></label>
+            </com.luntsys.luntbuild.facades.lb12.CvsModuleFacade>
+          </modules>
+        </com.luntsys.luntbuild.facades.lb12.CvsAdaptorFacade>
+      </vcsList>
+      <builderList>
+        <com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+          <command>d:\apache-ant-1.7.0\bin\ant.bat</command>
+          <buildScriptPath>caveatemptor/build.xml</buildScriptPath>
+          <buildTargets>junit</buildTargets>
+          <buildProperties>buildVersion=&quot;${build.version}&quot;&#x0D;
+artifactsDir=&quot;${build.artifactsDir}&quot;&#x0D;
+buildDate=&quot;${build.startDate}&quot;&#x0D;
+junitHtmlReportDir=&quot;${build.getReportUrl(&quot;JUnit&quot;)}&quot;</buildProperties>
+          <name>caveatemptor-cvs</name>
+          <environments></environments>
+          <buildSuccessCondition>result==0 and builderLogContainsLine(&quot;BUILD SUCCESSFUL&quot;)</buildSuccessCondition>
+        </com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+      </builderList>
+      <scheduleList>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>6</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>caveatemptor-cvs</name>
+          <description></description>
+          <nextVersion>caveatemptor-cvs-2</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>45</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>vcsModified or dependencyNewer</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>caveatemptor-cvs</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 13:35:37.328</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l6&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>6</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>11</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>caveatemptor-cvs-twohours</name>
+          <description></description>
+          <nextVersion>caveatemptor-cvs-twohours-12</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>120</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>always</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>caveatemptor-cvs</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 12:21:51.281</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l6&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>6</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      </scheduleList>
+      <notifiers/>
+      <projectAdmins/>
+      <projectBuilders/>
+      <projectViewers/>
+      <notifyUsers/>
+    </com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+    <com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+      <id>7</id>
+      <name>luntbuild-test-componentA</name>
+      <description></description>
+      <variables>versionIterator=1</variables>
+      <logLevel>1</logLevel>
+      <vcsList>
+        <com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+          <urlBase>http://svn1.cvsdude.com/luntbuild-svn/luntbuild-demo/componentA</urlBase>
+          <layout>single</layout>
+          <trunk>trunk</trunk>
+          <branches></branches>
+          <tags></tags>
+          <user>luntbuild-svn</user>
+          <password>demo</password>
+          <svnDir>D:\svn-win32-1.4.5\bin</svnDir>
+          <webInterface></webInterface>
+          <webUrl></webUrl>
+          <quietPeriod></quietPeriod>
+          <modules>
+            <com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+              <srcPath></srcPath>
+              <branch></branch>
+              <label></label>
+              <destPath></destPath>
+            </com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+          </modules>
+        </com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+      </vcsList>
+      <builderList>
+        <com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+          <command>d:\apache-ant-1.7.0\bin\ant.bat</command>
+          <buildScriptPath>build/build.xml</buildScriptPath>
+          <buildTargets>distribute</buildTargets>
+          <buildProperties>buildVersion=&quot;${build.version}&quot;&#x0D;
+artifactsDir=&quot;${build.artifactsDir}&quot;&#x0D;
+buildDate=&quot;${build.startDate}&quot;&#x0D;
+junitHtmlReportDir=&quot;${build.getReportUrl(&quot;JUnit&quot;)}&quot;</buildProperties>
+          <name>luntbuild-test-componentA</name>
+          <environments></environments>
+          <buildSuccessCondition>result==0 and builderLogContainsLine(&quot;BUILD SUCCESSFUL&quot;)</buildSuccessCondition>
+        </com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+      </builderList>
+      <scheduleList>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>7</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>luntbuild-test-componentA</name>
+          <description></description>
+          <nextVersion>luntbuild-test-componentA-39</nextVersion>
+          <variables></variables>
+          <triggerType>0</triggerType>
+          <repeatInterval>0</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>always</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>luntbuild-test-componentA</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 14:16:35.234</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l7&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>7</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      </scheduleList>
+      <notifiers/>
+      <projectAdmins/>
+      <projectBuilders/>
+      <projectViewers/>
+      <notifyUsers/>
+    </com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+    <com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+      <id>8</id>
+      <name>luntbuild-test-productA</name>
+      <description></description>
+      <variables>versionIterator=1</variables>
+      <logLevel>1</logLevel>
+      <vcsList>
+        <com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+          <urlBase>http://svn1.cvsdude.com/luntbuild-svn/luntbuild-demo/productA</urlBase>
+          <layout>single</layout>
+          <trunk>trunk</trunk>
+          <branches></branches>
+          <tags></tags>
+          <user>luntbuild-svn</user>
+          <password>demo</password>
+          <svnDir>D:\svn-win32-1.4.5\bin</svnDir>
+          <webInterface></webInterface>
+          <webUrl></webUrl>
+          <quietPeriod></quietPeriod>
+          <modules>
+            <com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+              <srcPath></srcPath>
+              <branch></branch>
+              <label></label>
+              <destPath></destPath>
+            </com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+          </modules>
+        </com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+      </vcsList>
+      <builderList>
+        <com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+          <command>d:\apache-ant-1.7.0\bin\ant.bat</command>
+          <buildScriptPath>build/build.xml</buildScriptPath>
+          <buildTargets>distribute</buildTargets>
+          <buildProperties>buildVersion=&quot;${build.version}&quot;&#x0D;
+artifactsDir=&quot;${build.artifactsDir}&quot;&#x0D;
+buildDate=&quot;${build.startDate}&quot;&#x0D;
+junitHtmlReportDir=&quot;${build.getReportUrl(&quot;JUnit&quot;)}&quot;</buildProperties>
+          <name>luntbuild-test-productA</name>
+          <environments></environments>
+          <buildSuccessCondition>result==0 and builderLogContainsLine(&quot;BUILD SUCCESSFUL&quot;)</buildSuccessCondition>
+        </com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+      </builderList>
+      <scheduleList>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>8</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>luntbuild-test-productA</name>
+          <description></description>
+          <nextVersion>luntbuild-test-productA-42</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>30</repeatInterval>
+          <buildType>0</buildType>
+          <buildNecessaryCondition>vcsModified or dependencyNewer</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>luntbuild-test-productA</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 13:53:50.031</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l8&amp;sp=l1</url>
+          <dependentScheduleIds>
+            <long>7</long>
+          </dependentScheduleIds>
+          <workingPath></workingPath>
+          <projectId>8</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      </scheduleList>
+      <notifiers/>
+      <projectAdmins/>
+      <projectBuilders/>
+      <projectViewers/>
+      <notifyUsers/>
+    </com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+    <com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+      <id>9</id>
+      <name>luntbuild</name>
+      <description></description>
+      <variables>versionIterator=1</variables>
+      <logLevel>1</logLevel>
+      <vcsList>
+        <com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+          <urlBase>http://svn.javaforge.com/svn/luntbuild</urlBase>
+          <layout>single</layout>
+          <trunk>trunk</trunk>
+          <branches></branches>
+          <tags></tags>
+          <user>anonymous</user>
+          <password>anon</password>
+          <svnDir>D:\svn-win32-1.4.5\bin</svnDir>
+          <webInterface></webInterface>
+          <webUrl></webUrl>
+          <quietPeriod></quietPeriod>
+          <modules>
+            <com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+              <srcPath>luntbuild</srcPath>
+              <branch></branch>
+              <label></label>
+              <destPath></destPath>
+            </com.luntsys.luntbuild.facades.lb12.SvnExeModuleFacade>
+          </modules>
+        </com.luntsys.luntbuild.facades.lb12.SvnExeAdaptorFacade>
+      </vcsList>
+      <builderList>
+        <com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+          <command>d:\apache-ant-1.7.0\bin\ant.bat</command>
+          <buildScriptPath>luntbuild/build/build.xml</buildScriptPath>
+          <buildTargets>clean installer</buildTargets>
+          <buildProperties>buildVersion=&quot;${build.version}&quot;&#x0D;
+artifactsDir=&quot;${build.artifactsDir}&quot;&#x0D;
+buildDate=&quot;${build.startDate}&quot;&#x0D;
+junitHtmlReportDir=&quot;${build.getReportUrl(&quot;JUnit&quot;)}&quot;</buildProperties>
+          <name>luntbuild</name>
+          <environments></environments>
+          <buildSuccessCondition>result==0 and builderLogContainsLine(&quot;BUILD SUCCESSFUL&quot;)</buildSuccessCondition>
+        </com.luntsys.luntbuild.facades.lb12.AntBuilderFacade>
+      </builderList>
+      <scheduleList>
+        <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+          <id>9</id>
+          <scheduleDisabled>false</scheduleDisabled>
+          <name>luntbuild</name>
+          <description></description>
+          <nextVersion>luntbuild-7</nextVersion>
+          <variables></variables>
+          <triggerType>1</triggerType>
+          <repeatInterval>60</repeatInterval>
+          <buildType>1</buildType>
+          <buildNecessaryCondition>vcsModified or dependencyNewer</buildNecessaryCondition>
+          <associatedBuilderNames>
+            <string>luntbuild</string>
+          </associatedBuilderNames>
+          <associatedPostbuilderNames/>
+          <triggerDependencyStrategy>0</triggerDependencyStrategy>
+          <buildCleanupStrategy>0</buildCleanupStrategy>
+          <postbuildStrategy>0</postbuildStrategy>
+          <labelStrategy>2</labelStrategy>
+          <notifyStrategy>0</notifyStrategy>
+          <status>1</status>
+          <statusDate class="sql-timestamp">2008-02-24 13:20:26.375</statusDate>
+          <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l9&amp;sp=l1</url>
+          <dependentScheduleIds/>
+          <workingPath></workingPath>
+          <projectId>9</projectId>
+        </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      </scheduleList>
+      <notifiers/>
+      <projectAdmins/>
+      <projectBuilders/>
+      <projectViewers/>
+      <notifyUsers/>
+    </com.luntsys.luntbuild.facades.lb12.ProjectFacade>
+  </projects>
+  <schedules>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>1</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>caveatemptor</name>
+      <description></description>
+      <nextVersion>caveatemptor-62</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>30</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>always</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l1&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>1</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>2</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>caveatemptor</name>
+      <description></description>
+      <nextVersion>caveatemptor-copy-72</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>25</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>always</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[2]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[2]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[2]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l2&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[2]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>2</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>3</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>tapestryinaction</name>
+      <description></description>
+      <nextVersion>tapestryinaction-45</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>40</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>always</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[3]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[3]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[3]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l3&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[3]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>3</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>4</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>tapestryinaction</name>
+      <description></description>
+      <nextVersion>tapestryinaction-copy-52</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>35</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>always</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[4]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[4]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[4]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l4&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[4]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>4</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>5</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>mavengettingstarted</name>
+      <description></description>
+      <nextVersion>mavenexample-5</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>25</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>vcsModified or dependencyNewer</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[5]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[5]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[5]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l5&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[5]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>5</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>6</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>caveatemptor-cvs</name>
+      <description></description>
+      <nextVersion>caveatemptor-cvs-2</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>45</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>vcsModified or dependencyNewer</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[6]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[6]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[6]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l6&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[6]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>6</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>7</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>luntbuild-test-componentA</name>
+      <description></description>
+      <nextVersion>luntbuild-test-componentA-39</nextVersion>
+      <variables></variables>
+      <triggerType>0</triggerType>
+      <repeatInterval>0</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>always</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[7]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[7]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[7]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l7&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[7]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>7</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>8</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>luntbuild-test-productA</name>
+      <description></description>
+      <nextVersion>luntbuild-test-productA-42</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>30</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>vcsModified or dependencyNewer</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[8]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[8]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[8]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l8&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[8]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>8</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>9</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>luntbuild</name>
+      <description></description>
+      <nextVersion>luntbuild-7</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>60</repeatInterval>
+      <buildType>1</buildType>
+      <buildNecessaryCondition>vcsModified or dependencyNewer</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[9]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[9]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[9]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l9&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[9]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>9</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>10</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>caveatemptor-sixty</name>
+      <description></description>
+      <nextVersion>caveatemptor-sixty-17</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>60</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>always</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade[2]/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade[2]/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade[2]/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l1&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade[2]/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>1</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+    <com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+      <id>11</id>
+      <scheduleDisabled>false</scheduleDisabled>
+      <name>caveatemptor-cvs-twohours</name>
+      <description></description>
+      <nextVersion>caveatemptor-cvs-twohours-12</nextVersion>
+      <variables></variables>
+      <triggerType>1</triggerType>
+      <repeatInterval>120</repeatInterval>
+      <buildType>0</buildType>
+      <buildNecessaryCondition>always</buildNecessaryCondition>
+      <associatedBuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[6]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade[2]/associatedBuilderNames"/>
+      <associatedPostbuilderNames reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[6]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade[2]/associatedPostbuilderNames"/>
+      <triggerDependencyStrategy>0</triggerDependencyStrategy>
+      <buildCleanupStrategy>0</buildCleanupStrategy>
+      <postbuildStrategy>0</postbuildStrategy>
+      <labelStrategy>2</labelStrategy>
+      <notifyStrategy>0</notifyStrategy>
+      <status>1</status>
+      <statusDate class="sql-timestamp" reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[6]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade[2]/statusDate"/>
+      <url>http://localhost:8080/luntbuild/app.do?service=external/ProjectPage&amp;sp=l6&amp;sp=l1</url>
+      <dependentScheduleIds reference="../../../projects/com.luntsys.luntbuild.facades.lb12.ProjectFacade[6]/scheduleList/com.luntsys.luntbuild.facades.lb12.ScheduleFacade[2]/dependentScheduleIds"/>
+      <workingPath></workingPath>
+      <projectId>6</projectId>
+    </com.luntsys.luntbuild.facades.lb12.ScheduleFacade>
+  </schedules>
+  <builds/>
+  <users>
+    <com.luntsys.luntbuild.facades.lb12.UserFacade>
+      <id>1</id>
+      <name>&lt;users who checked in code recently&gt;</name>
+      <canCreateProject>false</canCreateProject>
+      <contacts class="linked-hash-map"/>
+    </com.luntsys.luntbuild.facades.lb12.UserFacade>
+    <com.luntsys.luntbuild.facades.lb12.UserFacade>
+      <id>2</id>
+      <name>&lt;users who checked in since last successful build&gt;</name>
+      <canCreateProject>false</canCreateProject>
+      <contacts class="linked-hash-map"/>
+    </com.luntsys.luntbuild.facades.lb12.UserFacade>
+  </users>
+  <vcsLoginMapping/>
+  <rolesMapping/>
+  <notifyMapping/>
+  <roles>
+    <com.luntsys.luntbuild.facades.lb12.RoleFacade>
+      <id>1</id>
+      <name>ROLE_AUTHENTICATED</name>
+    </com.luntsys.luntbuild.facades.lb12.RoleFacade>
+    <com.luntsys.luntbuild.facades.lb12.RoleFacade>
+      <id>2</id>
+      <name>ROLE_SITE_ADMIN</name>
+    </com.luntsys.luntbuild.facades.lb12.RoleFacade>
+    <com.luntsys.luntbuild.facades.lb12.RoleFacade>
+      <id>3</id>
+      <name>LUNTBUILD_PRJ_ADMIN</name>
+    </com.luntsys.luntbuild.facades.lb12.RoleFacade>
+    <com.luntsys.luntbuild.facades.lb12.RoleFacade>
+      <id>4</id>
+      <name>LUNTBUILD_PRJ_BUILDER</name>
+    </com.luntsys.luntbuild.facades.lb12.RoleFacade>
+    <com.luntsys.luntbuild.facades.lb12.RoleFacade>
+      <id>5</id>
+      <name>LUNTBUILD_PRJ_VIEWER</name>
+    </com.luntsys.luntbuild.facades.lb12.RoleFacade>
+    <com.luntsys.luntbuild.facades.lb12.RoleFacade>
+      <id>6</id>
+      <name>ROLE_ANONYMOUS</name>
+    </com.luntsys.luntbuild.facades.lb12.RoleFacade>
+  </roles>
+</DataCollection>
