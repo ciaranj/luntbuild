@@ -497,7 +497,7 @@ public abstract class SchedulesTab extends TabPageComponent implements PageDetac
 	}
 
 	public Set getDependentSchedules() {
-		return getSchedule().getDependsOn(Luntbuild.getDao().loadSchedules());
+		return getSchedule().getDependsOn();
 	}
 
 	public void gotoBuilder(IRequestCycle cycle) {

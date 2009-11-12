@@ -243,7 +243,8 @@ public class BuildGenerator implements StatefulJob {
                     logger.info("Perform build in \"" + currentBuild.getSchedule().getProject().getName() +
                             "/" + currentBuild.getSchedule().getName() + "\"...");
                 } else
-                    logger.info("Build necessary condition not met, build not performed!");
+                    logger.info("Build necessary condition " + buildParams.getBuildNecessaryCondition() +
+                    		" for schedule " + schedule.getName() + " not met, build not performed!");
             } else { // triggered by rebuild
                 revisions.getChangeLogs().add("========== Change log ignored: rebuild performed ==========");
                 String triggerName = context.getTrigger().getName();

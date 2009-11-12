@@ -28,6 +28,7 @@
 package com.luntsys.luntbuild.services;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -66,7 +67,7 @@ import com.luntsys.luntbuild.utility.ValidationException;
 
 /**
  * Quartz scheduler implementation. This will loaded by Spring framework as a singleton.
- * 
+ *
  * @author robin shine
  */
 public class QuartzService implements IScheduler {
@@ -85,7 +86,7 @@ public class QuartzService implements IScheduler {
 
 	/**
 	 * Reschedules builds based on build scheduling information existed in the persistent storage.
-	 * 
+	 *
 	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void rescheduleBuilds() {
@@ -96,9 +97,13 @@ public class QuartzService implements IScheduler {
 				for (int i = 0; i < names.length; i++) {
 					sched.unscheduleJob(names[i], Scheduler.DEFAULT_GROUP);
 				}
+			} catch (Exception e) {
+				logger.error("Error in rescheduleBuilds: ", e);
+				throw new RuntimeException(e);
+			}
 
-				// Jobs could not be deleted due to a bug in quartz-1.4.0 which will cause
-				// stateful job blocked permernantly if it is deleted while executing
+			// Jobs could not be deleted due to a bug in quartz-1.4.0 which will cause
+			// stateful job blocked permernantly if it is deleted while executing
 /*
 				groups = sched.getJobGroupNames();
 				for (int i = 0; i < groups.length; i++) {
@@ -108,15 +113,18 @@ public class QuartzService implements IScheduler {
 					}
 				}
 */
-				ListIterator itSchedule = Luntbuild.getDao().loadSchedulesInternal().listIterator();
-				while (itSchedule.hasNext()) {
-					Schedule schedule = (Schedule) itSchedule.next();
-					if (schedule.getTrigger() == null || schedule.isDisabled())
-						continue;
-                    String jobName = schedule.getJobName();
+			List scheduleList = Luntbuild.getDao().loadSchedulesInternal();
+			logger.info(scheduleList.size() + " schedules loaded to be re-scheduled");
+			for (int i = 0; i < scheduleList.size(); i++) {
+				Schedule schedule = (Schedule) scheduleList.get(i);
+				if (schedule.getTrigger() == null || schedule.isDisabled())
+					continue;
+				logger.info("Schedule " + schedule.getName() + " is being re-scheduled");
+				try {
+	                String jobName = schedule.getJobName();
 					JobDetail jobDetail = sched.getJobDetail(jobName, Scheduler.DEFAULT_GROUP);
 					if (jobDetail == null) {
-                        jobDetail = new JobDetail();
+	                    jobDetail = new JobDetail();
 						jobDetail.setDurability(true);
 						jobDetail.setGroup(Scheduler.DEFAULT_GROUP);
 						jobDetail.setName(jobName);
@@ -130,13 +138,13 @@ public class QuartzService implements IScheduler {
 					// should not save scheduleId here, cause one job instance can associate with
 					// more than one schedules, and scheduleId may get messed up if two or more
 					// schedules with same job instance calls this method
-/*
-                    JobDataMap dataMap = new JobDataMap();
-                    dataMap.put("scheduleId", String.valueOf(schedule.getId()));
-                    jobDetail.setJobDataMap(dataMap);
-*/
+	/*
+	                    JobDataMap dataMap = new JobDataMap();
+	                    dataMap.put("scheduleId", String.valueOf(schedule.getId()));
+	                    jobDetail.setJobDataMap(dataMap);
+	*/
 
-                    Trigger trigger = (Trigger) schedule.getTrigger().clone();
+	                Trigger trigger = (Trigger) schedule.getTrigger().clone();
 					trigger.setGroup(Scheduler.DEFAULT_GROUP);
 					trigger.setName(String.valueOf(schedule.getId()));
 					trigger.setJobGroup(Scheduler.DEFAULT_GROUP);
@@ -148,10 +156,12 @@ public class QuartzService implements IScheduler {
 					} else
 						trigger.setStartTime(new Date(System.currentTimeMillis()));
 					sched.scheduleJob(trigger);
+					logger.info("Schedule " + schedule.getName() + " will start at " +
+							SimpleDateFormat.getInstance().format(trigger.getStartTime()));
+				} catch (Exception e) {
+					logger.error("Error in rescheduleBuilds: ", e);
+					throw new RuntimeException(e);
 				}
-			} catch (Exception e) {
-				logger.error("Error in rescheduleBuilds: ", e);
-				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -248,8 +258,8 @@ public class QuartzService implements IScheduler {
 				List executingJobs = sched.getCurrentlyExecutingJobs();
 				for (int i = 0; i < manualTriggers.length; i++) {
 					Trigger manualTrigger = manualTriggers[i];
-					if (!manualTrigger.getGroup().equals(BuildGenerator.MANUALBUILD_GROUP))
-						continue;
+//					if (!manualTrigger.getGroup().equals(BuildGenerator.MANUALBUILD_GROUP))
+//						continue;
 					BuildParams buildParams = Schedule.parseTrigger(manualTrigger);
 					if (buildParams.getScheduleId() != schedule.getId())
 						continue;
@@ -326,7 +336,7 @@ public class QuartzService implements IScheduler {
 
 	/**
 	 * Initialize and startup the scheduler.
-	 * 
+	 *
 	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void startup() {
@@ -347,7 +357,7 @@ public class QuartzService implements IScheduler {
             String quartzStore = props.getProperty("org.quartz.jobStore.class", "");
             if (!StringUtils.isEmpty(quartzStore) && quartzStore.equals("org.quartz.impl.jdbcjobstore.JobStoreTX"))
             	resolveJdbcVars(props);
-            
+
 			String buildThreadCountText = (String) Luntbuild.getProperties().get(Constants.BUILD_THREAD_COUNT);
 			if (!Luntbuild.isEmpty(buildThreadCountText))
 				props.setProperty("org.quartz.threadPool.threadCount", buildThreadCountText);
@@ -375,7 +385,7 @@ public class QuartzService implements IScheduler {
         } else {
         	logger.error("Unable to initialize /WEB-INF/jdbc.properties");
         }
-        
+
 		String propStr = jdbcProps.getProperty("quartz.delegateClassName");
 		if (!StringUtils.isEmpty(propStr)) {
 			props.setProperty("org.quartz.jobStore.driverDelegateClass", propStr);
@@ -397,7 +407,7 @@ public class QuartzService implements IScheduler {
 			logger.error("Unable to set property org.quartz.dataSource.LuntbuildDS.URL");
 		}
 	}
-	
+
 	/**
 	 * Shutdown the scheduler. The scheduler can not be re-started after a shutdown.
 	 */
@@ -413,7 +423,7 @@ public class QuartzService implements IScheduler {
 
 	/**
 	 * Validates a trigger.
-	 * 
+	 *
 	 * @param trigger the trigger
 	 * @throws ValidationException if the trigger is not valid
 	 * @throws RuntimeException if validate fails without a message
@@ -449,44 +459,45 @@ public class QuartzService implements IScheduler {
 
 	/**
 	 * Resets trigger time of manual builds for a schedule.
-	 * 
+	 *
 	 * @param schedule the schedule
 	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void resetManualTriggers(Schedule schedule) {
-		synchronized (schedLock) {
-			try {
-				Trigger manualTriggers[] = sched.getTriggersOfJob(schedule.getJobName(), Scheduler.DEFAULT_GROUP);
-				List executingJobs = sched.getCurrentlyExecutingJobs();
-				for (int i = 0; i < manualTriggers.length; i++) {
-					Trigger manualTrigger = manualTriggers[i];
-					if (!manualTrigger.getGroup().equals(BuildGenerator.MANUALBUILD_GROUP))
-						continue;
-					BuildParams buildParams = Schedule.parseTrigger(manualTrigger);
-					if (buildParams.getScheduleId() != schedule.getId())
-						continue;
-					Iterator itExecutingJob = executingJobs.iterator();
-					boolean executing = false;
-					while (itExecutingJob.hasNext()) {
-						JobExecutionContext jobExecutionContext = (JobExecutionContext) itExecutingJob.next();
-						if (manualTrigger.equals(jobExecutionContext.getTrigger())) {
-							executing = true;
-							break;
-						}
-					}
-					if (!executing && manualTrigger.getStartTime().before(new Date()))
-						manualTrigger.setStartTime(new Date(System.currentTimeMillis() + 1000));
-				}
-			} catch (Exception e) {
-				logger.error("Error in removeUnNecessaryManualTriggers: ", e);
-				throw new RuntimeException(e);
-			}
-		}
+// Commented out in 1.6.2, causes manual build execution to be dropped/missed after a while
+//		synchronized (schedLock) {
+//			try {
+//				Trigger manualTriggers[] = sched.getTriggersOfJob(schedule.getJobName(), Scheduler.DEFAULT_GROUP);
+//				List executingJobs = sched.getCurrentlyExecutingJobs();
+//				for (int i = 0; i < manualTriggers.length; i++) {
+//					Trigger manualTrigger = manualTriggers[i];
+//					if (!manualTrigger.getGroup().equals(BuildGenerator.MANUALBUILD_GROUP))
+//						continue;
+//					BuildParams buildParams = Schedule.parseTrigger(manualTrigger);
+//					if (buildParams.getScheduleId() != schedule.getId())
+//						continue;
+//					Iterator itExecutingJob = executingJobs.iterator();
+//					boolean executing = false;
+//					while (itExecutingJob.hasNext()) {
+//						JobExecutionContext jobExecutionContext = (JobExecutionContext) itExecutingJob.next();
+//						if (manualTrigger.equals(jobExecutionContext.getTrigger())) {
+//							executing = true;
+//							break;
+//						}
+//					}
+//					if (!executing && manualTrigger.getStartTime().before(new Date()))
+//						manualTrigger.setStartTime(new Date(System.currentTimeMillis() + 1000));
+//				}
+//			} catch (Exception e) {
+//				logger.error("Error in removeUnNecessaryManualTriggers: ", e);
+//				throw new RuntimeException(e);
+//			}
+//		}
 	}
 
 	/**
 	 * Checks if the specified trigger is scheduled.
-	 * 
+	 *
 	 * @param trigger the trigger
 	 * @return <code>true</code> if the trigger is scheduled
 	 */
@@ -505,7 +516,7 @@ public class QuartzService implements IScheduler {
 
 	/**
 	 * Schedules system backup jobs. Ensures that the jobs are schedule, safe to call multiple times.
-	 * 
+	 *
 	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void scheduleSystemBackup() {
@@ -543,7 +554,7 @@ public class QuartzService implements IScheduler {
 
 	/**
 	 * Schedules system care jobs. Ensures that the jobs are schedule, safe to call multiple times.
-	 * 
+	 *
 	 * @throws RuntimeException from {@link Scheduler}
 	 */
 	public void scheduleSystemCare() {

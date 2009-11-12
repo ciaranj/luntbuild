@@ -911,6 +911,22 @@ public class Schedule implements DependentNode, VariableHolder {
     }
 
 	/**
+	 * Gets the sub set of schedules that this schedule depends from a list of schedules.
+	 *
+	 * @return the sub set of schedules that this schedule depends on
+	 */
+    public Set getDependsOn() {
+        Set dependsOn = new HashSet();
+        Iterator itId = getDependentScheduleIds().iterator();
+        while (itId.hasNext()) {
+    		Schedule schedule = Luntbuild.getDao().loadSchedule(((Long) itId.next()).longValue());
+            if (schedule != null)
+                dependsOn.add(schedule);
+        }
+        return dependsOn;
+    }
+
+	/**
 	 * Schedules a trigger for this schedule as part of dependency execution.
 	 *
 	 * @param userData the list of build params
@@ -1002,7 +1018,7 @@ public class Schedule implements DependentNode, VariableHolder {
         Build lastBuild = Luntbuild.getDao().loadLastBuild(this);
         if (lastBuild == null)
             return true;
-        Set dependents = getDependsOn(Luntbuild.getDao().loadSchedules());
+        Set dependents = getDependsOn();
         boolean isDependentNewer = false;
         Iterator it = dependents.iterator();
         while (it.hasNext()) {
@@ -1031,7 +1047,7 @@ public class Schedule implements DependentNode, VariableHolder {
 	 * @return the unsatisfied dependency or <code>null</code>
 	 */
     public Schedule getNotSatisfiedDependency() {
-        Set dependents = getDependsOn(Luntbuild.getDao().loadSchedules());
+        Set dependents = getDependsOn();
         Iterator it = dependents.iterator();
         while (it.hasNext()) {
             Schedule dependentSchedule = (Schedule) it.next();

@@ -359,7 +359,7 @@ public class HibernateDao extends HibernateDaoSupport implements Dao {
                     "order by schedule.name");
             List schedules = query.list();
             Collections.sort(schedules, new ScheduleComparator());
-            return schedules;
+            return new ArrayList(schedules);
         } catch (HibernateException ex) {
             logger.error("Error in loadSchedules: ", ex);
             throw SessionFactoryUtils.convertHibernateAccessException(ex);
