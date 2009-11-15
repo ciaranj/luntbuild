@@ -2,7 +2,8 @@
 luntbuild 1.6.2 Release Notes
 ==============================================
 
-- Feature: Updated Quartz scheduler to 1.6.5
+- Feature: Rolled back Quartz scheduler to 1.6.0, not sure if that improves manual task scheduling
+- Fix: Improved Schedule tab performance
 
 ==============================================
 luntbuild 1.6.1 Release Notes
