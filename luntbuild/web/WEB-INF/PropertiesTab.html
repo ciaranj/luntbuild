@@ -1,0 +1,159 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<link href="css/luntbuild.css" rel="stylesheet" type="text/css"/>
+</head>
+<span jwcid="$content$">
+  <table width="100%"  border="0" cellpadding="0" cellspacing="0">
+    <tr>
+    <td height="13" align="left" valign="top" bgcolor="#CCCCCC"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="iconTable">
+        <tr>
+          <td>&nbsp;</td>
+          <td width="25">&nbsp;</td>
+        </tr>
+      </table></td>
+    </tr>
+    <tr>
+      <td>
+	  	<span jwcid="@Conditional" condition="ognl:isSiteAdmin()">
+        <table width="100%"  border="0" cellpadding="0" cellspacing="0">
+        <span jwcid="@Conditional" condition="ognl:errorMsg!=null">
+          <tr>
+            <td colspan="2" align="left" valign="top" class="errorMsg2"><img src="images/error.gif" width="32" height="32" align="absmiddle"><span jwcid="@InsertText" value="ognl:errorMsg">Invalid value</span></td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+        </span>
+        <span jwcid="@Conditional" condition="ognl:successMsg!=null">
+          <tr>
+            <td colspan="2" align="left" valign="top" class="successMsg2"><img src="images/operation_success.gif" width="18" height="25" align="absmiddle"> <span jwcid="@InsertText" value="ognl:successMsg">updated successfully</span></td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+        </span>
+		<form jwcid="@Form" listener="ognl:listeners.update" name="form" method="post">
+        <span jwcid="@Conditional" condition="ognl:cssIndex = 0"/>
+          <tr>
+            <td jwcid="@Any" width="20%" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/url.gif" width="18" height="18" align="absmiddle"> Url to access luntbuild servlet </td>
+            <td jwcid="@Any" width="80%" align="left" valign="top" class="ognl:propertyValueCssClass"><p>
+                <input name="textfield3" type="text" class="inputBox" value="ognl:properties.servletUrl" size="75" jwcid="@TextField"/>
+                <br>
+      The servlet url should be specified correctly so Luntbuild can refer to this url in the notification messages. Normally this value should be http://&lt;server&gt;:&lt;port&gt;/luntbuild/app.do, where &lt;server&gt; is your build server name or ip address, and &lt;port&gt; is the port number you use to access Luntbuild. If this property is left empty, Luntbuild will default this value to be &quot;http://&lt;server_ip&gt;:&lt;server_port&gt;/luntbuild/app.do&quot;, where &lt;server_ip&gt; is the ip address of the build server. </p></td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" width="20%" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/folder.gif" width="16" height="16" align="absmiddle"> Work directory </td>
+            <td jwcid="@Any" width="80%" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield" type="text" class="inputBox" value="ognl:properties.workingDir" size="75" jwcid="@TextField"/>
+                <br>
+      You can optionally specify a work directory for the build system. The work directory is the directory which Luntbuild uses to hold artifacts checked out from the Version Control System. If not specified, Luntbuild will use the &quot;work&quot; sub-directory under the Luntbuild installation directory. </td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/folder.gif" width="16" height="16" align="absmiddle"> Publish directory </td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.publishDir" size="75" jwcid="@TextField"/>
+                <br>
+      You can optionally specify a publish directory for the build system. The publish directory is the directory which Luntbuild uses to hold the output of the build process - the build log, and the other build artifacts.</td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/number.gif" width="18" height="18" align="absmiddle"> Number of build threads </td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.buildThreadCount" size="75" jwcid="@TextField"/>
+                <br>
+      Specify number of build threads. Builds will wait in the queue if all build threads are occupied. The default number of build threads is 10. <br>
+      NOTE: This property will take effect after you restart the application. </td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/time.gif" width="17" height="14" align="absmiddle"> Page refresh interval </td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.pageRefreshInterval" size="75" jwcid="@TextField"/>
+                <br>
+      You can optionally specify a page refresh interval in seconds. If left empty, the default value will be 15 seconds.</td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/number.gif" width="18" height="18" align="absmiddle"> Max XML conversion length</td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.maxXmlConversionLength" size="75" jwcid="@TextField"/>
+                <br>
+      Specify the maximum length that the XML log can reach before we stop converting it to HTML. You can optionally specify the maximum conversion length in bytes, if left empty however the default value will be 100,000 bytes.</td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/number.gif" width="18" height="18" align="absmiddle"> Notifiers Execution Timeout </td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.notifierExecutionTimeout" size="75" jwcid="@TextField"/>
+                <br>
+      Specify the Notifiers execution timeout in seconds. Value 0 disables timeout, value larger than 60 sets execution timeout.</td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:notifierTitleCssClass" colspan="2">
+            <img src="images/hint.gif" width="19" height="19" align="absmiddle"> Set automated backup related properties here
+            </td>
+          </tr>
+          <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/file.gif" width="16" height="16" align="absmiddle"> Database backup file </td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.backupFileName" size="75" jwcid="@TextField"/>
+                <br>
+      You can optionally specify a file to store the regular database backup. The default file is "database.xml".<br>
+      If relative path is specified, the file will be placed relative to the "backup" directory in the Luntbuild installation directory.</td>
+          </tr>
+		  <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <tr>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass"><img src="images/time.gif" width="17" height="14" align="absmiddle"> Database backup cron expression </td>
+            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass"><input name="textfield2" type="text" class="inputBox" value="ognl:properties.backupCronExpression" size="75" jwcid="@TextField"/>
+                <br>
+      Set a cron expression to control when the Luntbuild database will be backed up. If blank, no backup will occur.<br>
+      The format is &lt;seconds&gt; &lt;minutes&gt; &lt;hours&gt; &lt;day-of-month&gt; &lt;month&gt; &lt;day-of-week&gt;. For example, 0 0 1 * * ? means 1:00am every day. For details of the format, refer to <a href="http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html">http://www.opensymphony.com/quartz/wikidocs/TutorialLesson6.html</a>.</td>
+          </tr>
+          <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+          <span jwcid="@Foreach" source="ognl:notifierInstances" value="ognl:notifier">
+		    <tr>
+		  	  <td jwcid="@Any" align="left" valign="top" class="ognl:notifierTitleCssClass" colspan="2">
+			  <img src="images/hint.gif" width="19" height="19" align="absmiddle"> <span jwcid="@InsertText" value="ognl:notifierTitle">Set email related properties here if you want to notify user by email</span>
+			  </td>
+		    </tr>
+		    <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+   	  	    <span jwcid="@Foreach" source="ognl:notifier.systemLevelProperties" value="ognl:property">
+	          <tr>
+	            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyNameCssClass">
+	                <img src="images/property.gif" width="12" height="11" align="absmiddle">
+	                <span jwcid="@Insert" value="ognl:property.displayName">SMTP host</span>
+	            </td>
+	            <td jwcid="@Any" align="left" valign="top" class="ognl:propertyValueCssClass">
+	                <span jwcid="@Conditional" condition="ognl:property.secret">
+	                  <input class="inputBox" value="ognl:property.value[properties]" size="75" jwcid="@TextField" hidden="ognl:true"/>
+	                </span>
+			        <span jwcid="@Conditional" condition="ognl:!property.secret">
+				        <span jwcid="@Conditional" condition="ognl:(!property.multiLine && !property.select)">
+				          <input class="inputBox" value="ognl:property.value[properties]" size="75" jwcid="@TextField"/>
+				        </span>
+				        <span jwcid="@Conditional" condition="ognl:property.multiLine">
+				          <textarea cols="70" rows="10" class="inputBox" jwcid="@TextArea" value="ognl:property.value[properties]"/>
+				        </span>
+				        <span jwcid="@Conditional" condition="ognl:property.select">
+				          <select name="select" class="inputBox" jwcid="@PropertySelection" model="ognl:property.selectionModel" value="ognl:property.value[properties]"/>
+				        </span>
+			        </span>
+			        <br>
+	                <span jwcid="@InsertText" value="ognl:property.description">
+	                    You can optionally specify the SMTP mail host to be used by Luntbuild to send email notifications. If this property is not specified, Luntbuild will use localhost as the default value.
+	                </span>
+	            </td>
+	          </tr>
+		      <span jwcid="@Conditional" condition="ognl:cssIndex = cssIndex + 1"/>
+		    </span>
+		  </span>
+          <tr>
+            <td jwcid="@Any" class="ognl:tailCssClass">&nbsp;</td>
+            <td jwcid="@Any" align="left" class="ognl:tailCssClass">
+			<input name="Submit" type="submit" value="update" jwcid="@Submit" label="Update"/></td>
+          </tr>
+		</form>
+        </table>
+		</span>
+		<span jwcid="@Conditional" condition="ognl:!isSiteAdmin()">
+		<div align="left" class="exceptionMsg">
+			  <img src="images/sigh.gif" width="32" height="32" align="absmiddle"> Only site admin can access this page!
+		</div>
+		</span>
+      </td>
+    </tr>
+  </table>
+</span>

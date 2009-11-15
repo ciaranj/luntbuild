@@ -1,0 +1,310 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Luntbuild - XML Schema</title><link rel="stylesheet" href="../guide/luntbuild.css" type="text/css"></head>
+
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a name="id4644407"></a>Luntbuild - XML Schema</h1></div></div><hr></div>
+<div class="toc"><p><b>Table of Contents</b></p>
+<dl>
+	<dt><span class="chapter"><a href="#introduction">1. Introduction</a></span></dt>
+	<dt><span class="chapter"><a href="#root">2. Luntbuild Element</a></span></dt>
+	<dt><span class="chapter"><a href="#system">3. System Element</a></span></dt>
+	<dt><span class="chapter"><a href="#project">4. Project Element</a></span></dt>
+	<dt><span class="chapter"><a href="#schedule">5. Schedule Element</a></span></dt>
+	<dt><span class="chapter"><a href="#build">6. Build Element</a></span></dt>
+	<dt><span class="chapter"><a href="#user">7. User Element</a></span></dt>
+	<dt><span class="chapter"><a href="#vcs">8. VCS Element</a></span></dt>
+	<dt><span class="chapter"><a href="#builder">9. Builder Element</a></span></dt>
+	<dt><span class="chapter"><a href="#notifierproperty">10. Notifier Property Element</a></span></dt>
+	<dt><span class="chapter"><a href="#host">11. Host Element</a></span></dt>
+	<dt><span class="chapter"><a href="#server">12. Server Element</a></span></dt>
+</dl></div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="introduction"></a>Chapter 1. Introduction</h2></div></div></div>
+<p></p>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="root"></a>Chapter 2. Luntbuild Element</h2></div></div></div>
+<p>All XML responces from Luntbuild have the <span class="emphasis"><em>&lt;luntbuild&gt;</em></span> element as the document root.  The root object contains the <span class="emphasis"><em><a href="#system">&lt;system&gt;</a></em></span> element,
+	with all of the system wide information, and the <span class="emphasis"><em>&lt;result&gt;</em></span> element.  The result element contains all the elements returned by the query. 
+	The structure of the results depends on the query.  The <span class="emphasis"><em>&lt;luntbuild&gt;</em></span> element may also have a child element named <span class="emphasis"><em>&lt;error&gt;</em></span> that contains any error messages encountered.</p>
+<p><span class="emphasis"><em>&lt;luntbuild&gt;</em></span> element:</p>
+<pre class="programlisting">
+&lt;luntbuild&gt;
+	&lt;system&gt;
+		...
+	&lt;/system&gt;
+	&lt;results&gt;
+		...
+	&lt;/results&gt;
+	&lt;error&gt;Unsupported method&lt;/error&gt;
+&lt;/luntbuild&gt;
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="system"></a>Chapter 3. System Element</h2></div></div></div>
+<p>The <span class="emphasis"><em>&lt;system&gt;</em></span> element stores all system wide settings and the list of uers.</p>
+<p><span class="emphasis"><em>&lt;system&gt;</em></span> element:</p>
+<pre class="programlisting">
+&lt;system&gt;
+	&lt;servletUrl&gt;http://&lt;hostname&gt;:8080/luntbuild/app.do&lt;/servletUrl&gt;
+	&lt;workingDir&gt;C:\Program Files\luntbuild\work&lt;/workingDir&gt;
+	&lt;publishDir&gt;C:\Program Files\luntbuild\publish&lt;/publishDir&gt;
+	&lt;pageRefreshInterval&gt;15&lt;/pageRefreshInterval&gt;
+	&lt;buildThreadCount&gt;10&lt;/buildThreadCount&gt;
+	&lt;emailProperties&gt;
+		...
+	&lt;/emailProperties&gt;
+	&lt;msnProperties&gt;
+		...
+	&lt;/msnProperties&gt;
+	&lt;jabberProperties&gt;
+		...
+	&lt;/jabberProperties&gt;
+	&lt;sametimeProperties&gt;
+		...
+	&lt;/sametimeProperties&gt;
+	&lt;users&gt;
+		...
+	&lt;/users&gt;
+	&lt;hosts&gt;
+		...
+	&lt;/hosts&gt;
+	&lt;servers&gt;
+		...
+	&lt;/servers&gt;
+&lt;/system&gt;
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="project"></a>Chapter 4. Project Element</h2></div></div></div>
+<p>The <span class="emphasis"><em>&lt;project&gt;</em></span> element stores all project settings, vcs adaptors, and builders for a project.</p>
+<p><span class="emphasis"><em>&lt;project&gt;</em></span> element:</p>
+<pre class="programlisting">
+&lt;project&gt;
+	&lt;id&gt;1&lt;/id&gt;
+	&lt;name&gt;my_test_project&lt;/name&gt;
+	&lt;description&gt;This is a test project.&lt;/description&gt;
+	&lt;variables&gt;
+		...
+	&lt;/variables&gt;
+	&lt;logLevel&gt;normal&lt;/logLevel&gt;
+	&lt;projectAdmins&gt;
+		...
+	&lt;/projectAdmins&gt;
+	&lt;projectBuilders&gt;
+		...
+	&lt;/projectBuilders&gt;
+	&lt;projectViewers&gt;
+		...
+	&lt;/projectViewers&gt;
+	&lt;notifyUsers&gt;
+		...
+	&lt;/notifyUsers&gt;
+	&lt;vcss&gt;
+		...
+	&lt;/vcss&gt;
+	&lt;builders&gt;
+		...
+	&lt;/builders&gt;
+	&lt;notifiers&gt;
+		...
+	&lt;/notifiers&gt;
+	&lt;schedules&gt;
+		...
+	&lt;/schedules&gt;
+&lt;/project&gt;
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="schedule"></a>Chapter 5. Schedule Element</h2></div></div></div>
+<p></p>
+<p><span class="emphasis"><em>&lt;schedule&gt;</em></span> element:</p>
+<pre class="programlisting">
+&lt;schedule&gt;
+	&lt;id&gt;1&lt;/id&gt;
+	&lt;name&gt;my_schedule&lt;/name&gt;
+	&lt;description&gt;This is a test schedule.&lt;/description&gt;
+	&lt;url&gt;http://&lt;hostname&gt;:8080/luntbuild/app.do?service=direct/1/Home/builds.$DirectLink$8&amp;sp=l1#1&lt;/url&gt;
+	&lt;scheduleDisabled&gt;false&lt;/scheduleDisabled&gt;
+	&lt;buildType&gt;increment&lt;/buildType&gt;
+	&lt;labelStrategy&gt;do not label&lt;/labelStrategy&gt;
+	&lt;notifyStrategy&gt;notify when failed&lt;/notifyStrategy&gt;
+	&lt;postbuildStrategy&gt;do not post-build&lt;/postbuildStrategy&gt;
+	&lt;triggerDependencyStrategy&gt;trigger schedules this schedule depends on&lt;/triggerDependencyStrategy&gt;
+	&lt;status&gt;success&lt;/status&gt;
+	&lt;statusDate&gt;2007-01-15T13:24:55-700&lt;/statusDate&gt;
+	&lt;buildNecessaryCondition&gt;always&lt;/buildNecessaryCondition&gt;
+	&lt;buildCleanupStrategy&gt;keep builds by count&lt;/buildCleanupStrategy&gt;
+	&lt;buildCleanupStrategyData&gt;20&lt;/buildCleanupStrategyData&gt;
+	&lt;nextVersion&gt;${#timedate=system.(month+dayOfMonth+"-"+hour+minute),#timedate}&lt;/nextVersion&gt;
+	&lt;workingPath&gt;C:\test&lt;/workingPath&gt;
+	&lt;publishDir&gt;C:\Program Files\luntbuild\publish\my_test_project\my_schedule&lt;/publishDir&gt;
+	&lt;triggerType&gt;cron&lt;/triggerType&gt;
+	&lt;trigger&gt;0 0 1 * * ?&lt;/trigger&gt;
+	&lt;associatedBuilderNames&gt;
+		...
+	&lt;/associatedBuilderNames&gt;
+	"associatedPostbuilderNames&gt;
+		...
+	&lt;/associatedPostbuilderNames&gt;
+	&lt;dependentScheduleIds&gt;
+		...
+	&lt;/dependentScheduleIds&gt;
+	&lt;builds&gt;
+		...
+	&lt;/builds&gt;
+&lt;/schedule&gt;
+</pre>
+
+
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="build"></a>Chapter 6. Build Element</h2></div></div></div>
+<p></p>
+<p><span class="emphasis"><em>&lt;build&gt;</em></span> element:</p>
+<pre class="programlisting">
+&lt;build&gt;
+	&lt;id&gt;23&lt;/id&gt;
+	&lt;version&gt;Dec08-1118&lt;/version&gt;
+	&lt;status&gt;success&lt;/status&gt;
+	&lt;startDate&gt;2006-12-08T11:18:24-700&lt;/startDate&gt;
+	&lt;endDate&gt;2006-12-08T11:19:43-700&lt;/endDate&gt;
+	&lt;haveLabelOnHead&gt;true&lt;/haveLabelOnHead&gt;
+	&lt;buildType&gt;increment&lt;/buildType&gt;
+	&lt;rebuild&gt;false&lt;/rebuild&gt;
+	&lt;url&gt;http://&lt;hostname&gt;:8080/luntbuild/app.do?service=direct/1/Home/builds.$DirectLink$9&amp;sp=l23&lt;/url&gt;
+	&lt;buildLogUrl&gt;http://&lt;hostname&gt;:8080/luntbuild/publish/my_test_project/my_schedule/Dec08-1118\/build_log.html&lt;/buildLogUrl&gt;
+	&lt;systemLogUrl&gt;http://&lt;hostname&gt;:8080/luntbuild/logs/luntbuild_log.html&lt;/systemLogUrl&gt;
+	&lt;revisionLogUrl&gt;http://&lt;hostname&gt;:8080/luntbuild/publish/my_test_project/my_schedule/Dec08-1118\/revision_log.html&lt;/revisionLogUrl&gt;
+	&lt;labelStrategy&gt;do not label&lt;/labelStrategy&gt;
+	&lt;postbuildStrategy&gt;do not post-build&lt;/postbuildStrategy&gt;
+	&lt;publishDir&gt;http://&lt;hostname&gt;:8080/luntbuild/publish/my_test_project/my_schedule/Dec08-1118&lt;/publishDir&gt;
+	&lt;artifactsDir&gt;http://&lt;hostname&gt;:8080/luntbuild/publish/my_test_project/my_schedule/Dec08-1118\/artifacts&lt;/artifactsDir&gt;
+	&lt;junitHtmlReportDir&gt;http://&lt;hostname&gt;:8080/luntbuild/publish/my_test_project/my_schedule/Dec08-1118/junit_html_report&lt;/junitHtmlReportDir&gt;
+	&lt;vcss&gt;
+		...
+	&lt;/vcss&gt;
+	&lt;builders&gt;
+		...
+	&lt;/builders&gt;
+	&lt;postbuilders&gt;
+		...
+	&lt;/postbuilders&gt;
+&lt;/build&gt;
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="user"></a>Chapter 7. User Element</h2></div></div></div>
+<p>Child elements in blue only exist in <span class="emphasis"><em>&lt;user&gt;</em></span> elements stored in the <span class="emphasis"><em><a href="#system">&lt;system&gt;</a></em></span> element.</p>
+<p><span class="emphasis"><em>&lt;user&gt;</em></span> element:</p>
+<pre class="programlisting">
+&lt;user&gt;
+	&lt;id&gt;5&lt;/id&gt;
+	&lt;name&gt;lead&lt;/name&gt;
+	&lt;fullname&gt;Project Lead&lt;/fullname&gt;
+	&lt;canCreateProject&gt;true&lt;/canCreateProject&gt;
+	&lt;contacts&gt;
+		...
+	&lt;/contacts&gt;
+&lt;/user&gt;
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="vcs"></a>Chapter 8. VCS Element</h2></div></div></div>
+<p></p>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="builder"></a>Chapter 9. Builder Element</h2></div></div></div>
+<p></p>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="notifierproperty"></a>Chapter 10. Notifier Property Element</h2></div></div></div>
+<p>Child elements in blue only exist in <span class="emphasis"><em>&lt;notifierProperty&gt;</em></span> element stored in the <span class="emphasis"><em><a href="#system">&lt;system&gt;</a></em></span> element.</p>
+<p><span class="emphasis"><em>&lt;notifierProperty&gt;</em></span> element:</p>
+<pre class="programlisting">
+&lt;notifierProperty&gt;
+	&lt;key&gt;com.luntsys.luntbuild.notifiers.EmailNotifier#Email address of the sender&lt;/key&gt;
+	&lt;value&gt;luntbuild@&lt;hostname&gt;&lt;/value&gt;
+	&lt;displayName&gt;Email address of the sender&lt;/displayName&gt;
+	&lt;description&gt;This property is optional. If specified, Luntbuild will use this email as the sender address when sending out email notifications. Otherwise, the sender address will be "luntbuild@&amp;lt;hostname&amp;gt;", where &amp;lt;hostname&amp;gt; is the host name of the build machine.&lt;/description&gt;
+	&lt;notifierClass&gt;com.luntsys.luntbuild.notifiers.EmailNotifier&lt;/notifierClass&gt;
+&lt;/notifierProperty&gt;
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="host"></a>Chapter 11. Host Element</h2></div></div></div>
+<p></p>
+<p><span class="emphasis"><em>&lt;host&gt;</em></span> element:</p>
+<pre class="programlisting">
+&lt;host&gt;
+	&lt;id&gt;0&lt;/id&gt;
+	&lt;name&gt;localhost&gt;&lt;/name&gt;
+	&lt;description&gt;The local build environment&lt;/description&gt;
+	&lt;osname&gt;windows 2003&lt;/osname&gt;
+	&lt;buildthreads&gt;5&lt;/buildthreads&gt;
+	&lt;port&gt;22&lt;/port&gt;
+	&lt;user&gt;&lt;/user&gt;
+	&lt;password&gt;&lt;/password&gt;
+&lt;/host&gt;
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="server"></a>Chapter 12. Server Element</h2></div></div></div>
+<p></p>
+<p><span class="emphasis"><em>&lt;server&gt;</em></span> element:</p>
+<pre class="programlisting">
+&lt;server&gt;
+	&lt;id&gt;1&lt;/id&gt;
+	&lt;name&gt;luntbuild01&gt;&lt;/name&gt;
+	&lt;description&gt;Builds XZY products&lt;/description&gt;
+	&lt;url&gt;http://luntbuild01:8080/luntbuild/app.do&lt;/url&gt;
+&lt;/server&gt;
+</pre>
+</div>
+
+</div></div></body></html>
+
+
+<!--
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+	<table border="0" summary="Note">
+		<tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr>
+		<tr><td colspan="2" align="left" valign="top"><p></td></tr>
+	</table>
+</div>
+
+<pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; bin/luntbuild.sh localhost 8888
+</pre>
+
+<div class="orderedlist"><ol type="1">
+	<li><p></p></li>
+	<li><p></p></li>
+</ol></div>
+
+<div class="itemizedlist"><ul type="disc">
+	<li><p><a href="http://www.martinfowler.com/articles/continuousIntegration.html" target="_top">
+		<em class="citetitle">Continuous Integration</em>
+	</a></p></li>
+	<li><p><a href="http://www.joelonsoftware.com/articles/fog0000000023.html" target="_top">
+		<em class="citetitle">Daily Builds Are Your Friend</em>
+	</a></p></li>
+</ul></div>
+
+
+<div class="table">
+	<p class="title"><b>Table 3.1. QuantumDB HSQL DB Eclipse Configuration</b></p>
+	<table summary="QuantumDB HSQL DB Eclipse Configuration" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+		<tbody>
+			<tr><td>Jdbc Url</td><td>jdbc:hsqldb:file:D:\luntbuild-13alpha\db\luntbuild</td></tr>
+			<tr><td>User</td><td>sa</td></tr>
+			<tr><td>Password</td><td> </td></tr>
+			<tr><td>Driver Path</td><td>&lt;app-server&gt;/webapps/luntbuild/WEB-INF/lib/hsqldb.jar</td></tr>
+			<tr><td>Driver Class</td><td>org.hsqldb.jdbcDriver</td></tr>
+			<tr><td>Driver Type</td><td>HSQL (Hypersonic)</td></tr>
+		</tbody>
+	</table>
+</div>
+-->

@@ -1,0 +1,451 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Luntbuild - JSON Object Structure</title><link rel="stylesheet" href="../guide/luntbuild.css" type="text/css"></head>
+
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="book" lang="en"><div class="titlepage"><div><div><h1 class="title"><a name="id4644407"></a>Luntbuild - JSON Object Structure</h1></div></div><hr></div>
+<div class="toc"><p><b>Table of Contents</b></p>
+<dl>
+	<dt><span class="chapter"><a href="#introduction">1. Introduction</a></span></dt>
+	<dt><span class="chapter"><a href="#datatypes">2. Data Types</a></span></dt>
+	<dt><span class="chapter"><a href="#root">3. Root Object</a></span></dt>
+	<dt><span class="chapter"><a href="#system">4. System Object</a></span></dt>
+	<dt><span class="chapter"><a href="#project">5. Project Object</a></span></dt>
+	<dt><span class="chapter"><a href="#schedule">6. Schedule Object</a></span></dt>
+	<dt><span class="chapter"><a href="#build">7. Build Object</a></span></dt>
+	<dt><span class="chapter"><a href="#user">8. User Object</a></span></dt>
+	<dt><span class="chapter"><a href="#vcs">9. VCS Object</a></span></dt>
+	<dt><span class="chapter"><a href="#builder">10. Builder Object</a></span></dt>
+	<dt><span class="chapter"><a href="#notifierproperty">11. Notifier Property Object</a></span></dt>
+	<dt><span class="chapter"><a href="#host">12. Host Object</a></span></dt>
+	<dt><span class="chapter"><a href="#server">13. Server Object</a></span></dt>
+</dl></div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="introduction"></a>Chapter 1. Introduction</h2></div></div></div>
+<p><a href="http://www.json.org/" title="JSON Homepage">JavaScript Object Notation</a> (JSON) is a type of data-interchange language:</p>
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+	<table border="0" summary="Note">
+		<tr><td align="left" valign="top"><p>JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write.
+			It is easy for machines to parse and generate. It is based on a subset of the JavaScript Programming Language, Standard ECMA-262 3rd Edition - December 1999.
+			JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages,
+			including C, C++, C#, Java, JavaScript, Perl, Python, and many others. These properties make JSON an ideal data-interchange language.</p></td></tr>
+		<tr><td align="left" valign="top"><p> - <a href="http://www.json.org/"><i>http://www.json.org/</i></a></p></td></tr>
+	</table>
+</div>
+<p>You can obtain almost all information stored in Luntbuild in JSON format.  JSON format is particularly useful in JavaScript because it is automatically recognized and parsed.
+	Once parsed, the information will be available as any normal object structure with basic data types.</p>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="datatypes"></a>Chapter 2. Data Types</h2></div></div></div>
+<p></p>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="root"></a>Chapter 3. Root Object</h2></div></div></div>
+<p>All JSON responces from Luntbuild have the same root (document) object, just like an XML document.  The root object contains the <span class="emphasis"><em><a href="#system">System</a></em></span> object,
+	with all of the system wide information, and an array called <span class="emphasis"><em>result</em></span>.  The result array contains the objects returned by the query. 
+	The type of objects returned depends on the query.  The root object may also have a member named <span class="emphasis"><em>error</em></span> that contains any error messages encountered.</p>
+<div class="table">
+	<p class="title"><b>Root Data Members</b></p>
+	<table summary="Root Data Members" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Name</th><th>Type</th></tr></thead>
+		<tbody>
+			<tr><td>system</td><td><span class="emphasis"><em>object</em></span> (see <a href="#system">System</a>)</td></tr>
+			<tr><td>result</td><td><span class="emphasis"><em>array</em></span></td></tr>
+			<tr><td>error</td><td><span class="emphasis"><em>string</em></span></td></tr>
+		</tbody>
+	</table>
+</div>
+<p>JSON text:
+<pre class="programlisting">
+{
+	"system":{...},
+	"result":[{...},...],
+	"error":"Unsupported method"
+}
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="system"></a>Chapter 4. System Object</h2></div></div></div>
+<p>The system object stores all system wide settings and the list of uers.</p>
+<div class="table">
+	<p class="title"><b>System Data Members</b></p>
+	<table summary="System Data Members" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Name</th><th>Type</th></tr></thead>
+		<tbody>
+			<tr><td>servletUrl</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>workingDir</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>publishDir</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>pageRefreshInterval</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>buildThreadCount</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>emailProperties</td><td><span class="emphasis"><em>array</em></span> (see <a href="#notifierproperty">Notifier Property</a>)</td></tr>
+			<tr><td>msnProperties</td><td><span class="emphasis"><em>array</em></span> (see <a href="#notifierproperty">Notifier Property</a>)</td></tr>
+			<tr><td>jabberProperties</td><td><span class="emphasis"><em>array</em></span> (see <a href="#notifierproperty">Notifier Property</a>)</td></tr>
+			<tr><td>sametimeProperties</td><td><span class="emphasis"><em>array</em></span> (see <a href="#notifierproperty">Notifier Property</a>)</td></tr>
+			<tr><td>users</td><td><span class="emphasis"><em>array</em></span> (see <a href="#user">User</a>)</td></tr>
+			<tr><td>hosts</td><td><span class="emphasis"><em>array</em></span> (see <a href="#host">Host</a>)</td></tr>
+			<tr><td>servers</td><td><span class="emphasis"><em>array</em></span> (see <a href="#server">Server</a>)</td></tr>
+		</tbody>
+	</table>
+</div>
+<p>JSON text:
+<pre class="programlisting">
+{
+	"servletUrl":"http:\/\/&lt;hostname&gt;:8080\/luntbuild\/app.do",
+	"workingDir":"C:\\Program Files\\luntbuild\\work",
+	"publishDir":"C:\\Program Files\\luntbuild\\publish",
+	"pageRefreshInterval":15,
+	"buildThreadCount":10,
+	"emailProperties":[{...},{...}],
+	"msnProperties":[{...},{...}],
+	"jabberProperties":[{...},{...},{...}],
+	"sametimeProperties":[{...},{...}],
+	"users":[{...},{...},{...}],
+	"hosts":[{...},{...},{...}],
+	"servers":[{...},{...},{...}]
+}
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="project"></a>Chapter 5. Project Object</h2></div></div></div>
+<p>The project object stores all project settings, vcs adaptors, and builders for a project.</p>
+<div class="table">
+	<p class="title"><b>Project Data Members</b></p>
+	<table summary="Project Data Members" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Name</th><th>Type</th></tr></thead>
+		<tbody>
+			<tr><td>id</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>name</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>description</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>host</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>variables</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>logLevel</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>projectAdmins</td><td><span class="emphasis"><em>array</em></span> (see <a href="#User">User</a>)</td></tr>
+			<tr><td>projectBuilders</td><td><span class="emphasis"><em>array</em></span> (see <a href="#User">User</a>)</td></tr>
+			<tr><td>projectViewers</td><td><span class="emphasis"><em>array</em></span> (see <a href="#User">User</a>)</td></tr>
+			<tr><td>notifyUsers</td><td><span class="emphasis"><em>array</em></span> (see <a href="#User">User</a>)</td></tr>
+			<tr><td>vcss</td><td><span class="emphasis"><em>array</em></span> (see <a href="#vcs">VCS</a>)</td></tr>
+			<tr><td>builders</td><td><span class="emphasis"><em>array</em></span> (see <a href="#builder">Builder</a>)</td></tr>
+			<tr><td>notifiers</td><td><span class="emphasis"><em>array</em></span> (of <span class="emphasis"><em>string</em></span>)</td></tr>
+			<tr><td>schedules</td><td><span class="emphasis"><em>array</em></span> (see <a href="#schedule">Schedule</a>)</td></tr>
+		</tbody>
+	</table>
+</div>
+<p>JSON text:
+<pre class="programlisting">
+{
+	"id":1,
+	"name":"my_test_project",
+	"description":"This is a test project.",
+	"host":"localhost",
+	"variables":"",
+	"logLevel":"normal",
+	"projectAdmins":[{...}],
+	"projectBuilders":[{...},{...}],
+	"projectViewers":[],
+	"notifyUsers":[{...},{...}],
+	"vcss":[{...},{...}],
+	"builders":[{...},{...}],
+	"notifiers":["Email","Jabber"],
+	"schedules":[{...},{...}]
+}
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="schedule"></a>Chapter 6. Schedule Object</h2></div></div></div>
+<p></p>
+<div class="table">
+	<p class="title"><b>Project Data Members</b></p>
+	<table summary="Project Data Members" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Name</th><th>Type</th></tr></thead>
+		<tbody>
+			<tr><td>id</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>name</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>description</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>url</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>scheduleDisabled</td><td><span class="emphasis"><em>boolean</em></span></td></tr>
+			<tr><td>buildType</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>labelStrategy</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>notifyStrategy</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>postbuildStrategy</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>triggerDependencyStrategy</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>status</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>statusDate</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>buildNecessaryCondition</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>buildCleanupStrategy</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>buildCleanupStrategyData</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>nextVersion</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>workingPath</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>publishDir</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>triggerType</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>trigger</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>associatedBuilderNames</td><td><span class="emphasis"><em>array</em></span> (of <span class="emphasis"><em>string</em></span>)</td></tr>
+			<tr><td>associatedPostbuilderNames</td><td><span class="emphasis"><em>array</em></span> (of <span class="emphasis"><em>string</em></span>)</td></tr>
+			<tr><td>dependentScheduleIds</td><td><span class="emphasis"><em>array</em></span> (of <span class="emphasis"><em>number</em></span>)</td></tr>
+			<tr><td>builds</td><td><span class="emphasis"><em>array</em></span> (see <a href="#build">Build</a>)</td></tr>
+		</tbody>
+	</table>
+</div>
+<p>JSON text:
+<pre class="programlisting">
+{
+	"id":1,
+	"name":"my_schedule",
+	"description":"This is a test schedule.",
+	"url":"http:\/\/&lt;hostname&gt;:8080\/luntbuild\/app.do?service=direct\/1\/Home\/builds.$DirectLink$8&sp=l1#1",
+	"scheduleDisabled":false,
+	"buildType":"increment",
+	"labelStrategy":"do not label",
+	"notifyStrategy":"notify when failed",
+	"postbuildStrategy":"do not post-build",
+	"triggerDependencyStrategy":"trigger schedules this schedule depends on",
+	"status":"success",
+	"statusDate":"2007-01-15T13:24:55-700",
+	"buildNecessaryCondition":"always",
+	"buildCleanupStrategy":"keep builds by count",
+	"buildCleanupStrategyData":"20",
+	"nextVersion":"${#timedate=system.(month+dayOfMonth+\"-\"+hour+minute),#timedate}",
+	"workingPath":"C:\\test",
+	"publishDir":"C:\\Program Files\\luntbuild\\publish\\my_test_project\\my_schedule",
+	"triggerType":"cron",
+	"trigger":"0 0 1 * * ?",
+	"associatedBuilderNames":["release","debug"],
+	"associatedPostbuilderNames":["test","publish"],
+	"dependentScheduleIds":[2,3],";
+	"builds":[{...},{...}]
+}
+</pre>
+
+
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="build"></a>Chapter 7. Build Object</h2></div></div></div>
+<p></p>
+<div class="table">
+	<p class="title"><b>Build Data Members</b></p>
+	<table summary="Build Data Members" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Name</th><th>Type</th></tr></thead>
+		<tbody>
+			<tr><td>id</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>version</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>status</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>startDate</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>endDate</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>haveLabelOnHead</td><td><span class="emphasis"><em>boolean</em></span></td></tr>
+			<tr><td>buildType</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>rebuild</td><td><span class="emphasis"><em>boolean</em></span></td></tr>
+			<tr><td>url</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>buildLogUrl</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>systemLogUrl</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>revisionLogUrl</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>labelStrategy</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>postbuildStrategy</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>publishDir</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>artifactsDir</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>junitHtmlReportDir</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>vcss</td><td><span class="emphasis"><em>array</em></span> (see <a href="#vcs">VCS</a>)</td></tr>
+			<tr><td>builders</td><td><span class="emphasis"><em>array</em></span> (see <a href="#builder">Builder</a>)</td></tr>
+			<tr><td>postbuilders</td><td><span class="emphasis"><em>array</em></span> (see <a href="#builder">Builder</a>)</td></tr>
+		</tbody>
+	</table>
+</div>
+<p>JSON text:
+<pre class="programlisting">
+{
+	"id":23,
+	"version":"Dec08-1118",
+	"status":"success",
+	"startDate":"2006-12-08T11:18:24-700",
+	"endDate":"2006-12-08T11:19:43-700",
+	"haveLabelOnHead":true,
+	"buildType":"increment",
+	"rebuild":false,
+	"url":"http:\/\/&lt;hostname&gt;:8080\/luntbuild\/app.do?service=direct\/1\/Home\/builds.$DirectLink$9&sp=l23",
+	"buildLogUrl":"http:\/\/&lt;hostname&gt;:8080\/luntbuild\/publish\/my_test_project\/my_schedule\/Dec08-1118\/build_log.html",
+	"systemLogUrl":"http:\/\/&lt;hostname&gt;:8080\/luntbuild\/logs\/luntbuild_log.html",
+	"revisionLogUrl":"http:\/\/&lt;hostname&gt;:8080\/luntbuild\/publish\/my_test_project\/my_schedule\/Dec08-1118\/revision_log.html",
+	"labelStrategy":"do not label",
+	"postbuildStrategy":"do not post-build",
+	"publishDir":"http:\/\/&lt;hostname&gt;:8080\/luntbuild\/publish\/my_test_project\/my_schedule\/Dec08-1118",
+	"artifactsDir":"http:\/\/&lt;hostname&gt;:8080\/luntbuild\/publish\/my_test_project\/my_schedule\/Dec08-1118\/artifacts",
+	"junitHtmlReportDir":"http:\/\/&lt;hostname&gt;:8080\/luntbuild\/publish\/my_test_project\/my_schedule\/Dec08-1118\/junit_html_report",
+	"vcss":[{...}],
+	"builders":[],
+	"postbuilders":[]
+}
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="user"></a>Chapter 8. User Object</h2></div></div></div>
+<p>Data members in blue only exist in User objects stored in the <span class="emphasis"><em><a href="#system">System</a></em></span> object.</p>
+<div class="table">
+	<p class="title"><b>User Data Members</b></p>
+	<table summary="User Data Members" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Name</th><th>Type</th></tr></thead>
+		<tbody>
+			<tr><td>id</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>name</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td><font color="blue">fullname</font></td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td><font color="blue">canCreateProject</font></td><td><span class="emphasis"><em>boolean</em></span></td></tr>
+			<tr><td><font color="blue">contacts</font></td><td><span class="emphasis"><em>array</em></span> (see <a href="#notifierproperty">Notifier Property</a>)</td></tr>
+		</tbody>
+	</table>
+</div>
+<p>JSON text:
+<pre class="programlisting">
+{
+	"id":5,
+	"name":"lead",
+	"fullname":"Project Lead",
+	"canCreateProject":true,
+	"contacts":[{...},{...}]
+}
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="vcs"></a>Chapter 9. VCS Object</h2></div></div></div>
+<p></p>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="builder"></a>Chapter 10. Builder Object</h2></div></div></div>
+<p></p>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="notifierproperty"></a>Chapter 11. Notifier Property Object</h2></div></div></div>
+<p>Data members in blue only exist in Notifier Property objects stored in the <span class="emphasis"><em><a href="#system">System</a></em></span> object.</p>
+<div class="table">
+	<p class="title"><b>Notifier Property Data Members</b></p>
+	<table summary="Notifier Property Data Members" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Name</th><th>Type</th></tr></thead>
+		<tbody>
+			<tr><td>key</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>value</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td><font color="blue">displayName</font></td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td><font color="blue">description</font></td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td><font color="blue">notifierClass</font></td><td><span class="emphasis"><em>string</em></span></td></tr>
+		</tbody>
+	</table>
+</div>
+<p>JSON text:
+<pre class="programlisting">
+{
+	"key":"com.luntsys.luntbuild.notifiers.EmailNotifier#Email address of the sender",
+	"value":"luntbuild@&lt;hostname&gt;",
+	"displayName":"Email address of the sender",
+	"description":"This property is optional. If specified, Luntbuild will use this email as the sender address when sending out email notifications. Otherwise, the sender address will be \"luntbuild@&lt;hostname&gt;\", where &lt;hostname&gt; is the host name of the build machine.",
+	"notifierClass":"com.luntsys.luntbuild.notifiers.EmailNotifier"
+}
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="host"></a>Chapter 12. Host Object</h2></div></div></div>
+<p></p>
+<div class="table">
+	<p class="title"><b>Host Data Members</b></p>
+	<table summary="Host Data Members" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Name</th><th>Type</th></tr></thead>
+		<tbody>
+			<tr><td>id</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>name</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>description</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>osname</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>buildthreads</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>port</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>user</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>password</td><td><span class="emphasis"><em>string</em></span></td></tr>
+		</tbody>
+	</table>
+</div>
+<p>JSON text:
+<pre class="programlisting">
+{
+	"id":"0",
+	"name":"localhost",
+	"description":"The local build environment",
+	"osname":"windows 2003",
+	"buildthreads":5,
+	"port":22,
+	"user":"",
+	"password":""
+}
+</pre>
+</div>
+
+<div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="server"></a>Chapter 13. Server Object</h2></div></div></div>
+<p></p>
+<div class="table">
+	<p class="title"><b>Server Data Members</b></p>
+	<table summary="Server Data Members" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Name</th><th>Type</th></tr></thead>
+		<tbody>
+			<tr><td>id</td><td><span class="emphasis"><em>number</em></span></td></tr>
+			<tr><td>name</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>description</td><td><span class="emphasis"><em>string</em></span></td></tr>
+			<tr><td>url</td><td><span class="emphasis"><em>string</em></span></td></tr>
+		</tbody>
+	</table>
+</div>
+<p>JSON text:
+<pre class="programlisting">
+{
+	"id":1,
+	"name":"luntbuild01",
+	"description":"Builds XZY products",
+	"url":"http:\/\/luntbuild01:8080\/luntbuild\/app.do"
+}
+</pre>
+</div>
+
+</div></div></body></html>
+
+
+<!--
+<div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+	<table border="0" summary="Note">
+		<tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="../images/note.png"></td><th align="left">Note</th></tr>
+		<tr><td colspan="2" align="left" valign="top"><p></td></tr>
+	</table>
+</div>
+
+<pre class="programlisting">
+&gt; cd &lt;luntbuild-install-dir&gt;
+&gt; bin/luntbuild.sh localhost 8888
+</pre>
+
+<div class="orderedlist"><ol type="1">
+	<li><p></p></li>
+	<li><p></p></li>
+</ol></div>
+
+<div class="itemizedlist"><ul type="disc">
+	<li><p><a href="http://www.martinfowler.com/articles/continuousIntegration.html" target="_top">
+		<em class="citetitle">Continuous Integration</em>
+	</a></p></li>
+	<li><p><a href="http://www.joelonsoftware.com/articles/fog0000000023.html" target="_top">
+		<em class="citetitle">Daily Builds Are Your Friend</em>
+	</a></p></li>
+</ul></div>
+
+
+<div class="table">
+	<p class="title"><b>Table 3.1. QuantumDB HSQL DB Eclipse Configuration</b></p>
+	<table summary="QuantumDB HSQL DB Eclipse Configuration" border="1">
+		<colgroup><col><col></colgroup>
+		<thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+		<tbody>
+			<tr><td>Jdbc Url</td><td>jdbc:hsqldb:file:D:\luntbuild-13alpha\db\luntbuild</td></tr>
+			<tr><td>User</td><td>sa</td></tr>
+			<tr><td>Password</td><td> </td></tr>
+			<tr><td>Driver Path</td><td>&lt;app-server&gt;/webapps/luntbuild/WEB-INF/lib/hsqldb.jar</td></tr>
+			<tr><td>Driver Class</td><td>org.hsqldb.jdbcDriver</td></tr>
+			<tr><td>Driver Type</td><td>HSQL (Hypersonic)</td></tr>
+		</tbody>
+	</table>
+</div>
+-->

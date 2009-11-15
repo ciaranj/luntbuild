@@ -1,0 +1,56 @@
+<chapter id="login">
+<title>Login to Luntbuild</title>
+<para>
+    And now is the exciting time to login for the first time into Luntbuild. The Luntbuild login page:
+    <screenshot>
+    <screeninfo>Luntbuild Login Page</screeninfo>
+    <mediaobject>
+        <imageobject><imagedata fileref="images/login.jpg" format="JPG" /> </imageobject>
+    <textobject> <phrase>Luntbuild Login Page</phrase> </textobject>
+    </mediaobject>
+    </screenshot>
+    asks you to enter a <emphasis>Name</emphasis> and <emphasis>Password</emphasis>. Use luntbuild/luntbuild
+    for name/password, or if you have modified the security configuration, use the password
+    you have specified in applicationContext.xml configuration file (please see
+    <emphasis>Luntbuild Security</emphasis> for details).
+</para>
+<para>
+    Login page contains two icons in upper right corner of the screen. Those two icons are present on all Luntbuild
+    pages. The icon
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/help.gif" format="GIF" /> </imageobject>
+    </inlinemediaobject>
+    is a link to this Luntbuild User's Guide.
+    The icon
+    <inlinemediaobject>
+        <imageobject><imagedata fileref="images/home.gif" format="GIF" /> </imageobject>
+    </inlinemediaobject>
+    is a link to the Luntbuild web site.
+</para>
+<para>
+    Enter the name and the password and click the Login button (or press Enter) to login to Luntbuild.
+</para>
+<para>
+    You can login to Luntbuild as:
+    <orderedlist numeration="arabic">
+     <listitem><para><emphasis>System Administrator</emphasis> - with default name/password luntbuild/luntbuild</para></listitem>
+     <listitem><para><emphasis>Registered user</emphasis> - created by system administrator</para></listitem>
+     <listitem><para><emphasis>Anonymous user</emphasis> - does not need to be registered</para></listitem>
+    </orderedlist>
+</para>
+<para>
+    Registered users may optionally create projects. They can be granted privileges to view and modify
+    projects, builds and schedules, and execute builds.
+</para>
+<para>
+    Anonymous users may can only view projects, builds and schedules.
+</para>
+<para>
+    You can login as anonymous user by using one of the following methods:
+    <orderedlist numeration="arabic">
+     <listitem><para><emphasis>http://&lt;server&gt;:8080/luntbuild/luntbuild-login.html</emphasis> - click on "Login as Anonymous" link</para></listitem>
+     <listitem><para><emphasis>http://&lt;server&gt;:8080/luntbuild/luntbuild-login-anonymous.html</emphasis> - automatically redirects to anonymous login</para></listitem>
+     <listitem><para><emphasis>http://&lt;server&gt;:8080/luntbuild/j_acegi_security_check.do?j_username=anonymous&amp;j_password=anonymous</emphasis> - does not need to be registered</para></listitem>
+    </orderedlist>
+</para>
+</chapter>

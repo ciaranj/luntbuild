@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification
+      PUBLIC "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+      "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification
+	class="com.luntsys.luntbuild.web.ProjectBasicTab" allow-informal-parameters="no">
+
+	<property-specification name="action" type="java.lang.String" persistent="yes"/>
+	<property-specification name="user" type="com.luntsys.luntbuild.db.User"/>
+	<property-specification name="userIndex" type="int"/>
+	<property-specification name="notifier" type="com.luntsys.luntbuild.notifiers.Notifier"/>
+	<property-specification name="notifierIndex" type="int"/>
+	<property-specification name="cssIndex" type="int"/>
+
+</component-specification>

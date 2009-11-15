@@ -1,0 +1,610 @@
+<project name="luntbuild" default="installer" basedir="..">
+
+    <tstamp>
+      <format property="currentDate" pattern="MM-dd-yyyy" locale="en"/>
+    </tstamp>
+
+    <property name="buildVersion" value="1.6.2"/>
+	<property name="fileVersion" value="1.6.2"/>
+    <property name="buildId" value=""/>
+    <property name="artifactsDir" value="${basedir}/distribute"/>
+	<property name="junitHtmlReportDir" value="test/junitHtmlReport"/>
+    <property name="buildDate" value="${currentDate}"/>
+    <property name="luntbuild-install-build" value="D:/luntbuild-${fileVersion}"/>
+    <property name="update-schema" value="false"/>
+
+    <property name="compile-with-debug" value="on"/>
+    <property name="compile-source-level" value="1.4"/>
+    <property name="compile-target-level" value="1.4"/>
+    <property name="javadoc-source-level" value="1.4.2"/>
+
+    <patternset id="web.images">
+        <include name="**/*.gif"/>
+        <include name="**/*.bmp"/>
+        <include name="**/*.jpg"/>
+        <include name="**/*.png"/>
+    	<include name="**/*.ico"/>
+    </patternset>
+
+    <patternset id="web.css">
+        <include name="**/*.css"/>
+    </patternset>
+
+    <patternset id="web.other_resources">
+        <include name="**/*.htm"/>
+        <include name="**/*.html"/>
+        <include name="**/*.jsp"/>
+        <include name="**/*.page"/>
+        <include name="**/*.jwc"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.xsl"/>
+        <include name="**/*.properties"/>
+        <include name="**/*.library"/>
+        <include name="**/*.application"/>
+        <include name="**/*.js"/>
+		<exclude name="**/web.xml"/>
+		<exclude name="**/applicationContext.xml"/>
+    </patternset>
+
+    <path id="classpath">
+        <fileset dir="lib" includes="**/*.jar"/>
+        <fileset dir="lib/sametime" includes="**/*.jar"/>
+        <fileset dir="standalone/lib" includes="**/*.jar"/>
+    </path>
+
+	<path id="classpath.test">
+		<fileset dir="lib" includes="**/*.jar"/>
+        <fileset dir="lib/sametime" includes="**/*.jar"/>
+        <fileset dir="standalone/lib" includes="**/*.jar"/>
+		<pathelement location="stage/web/WEB-INF/classes"/>
+		<pathelement location="test/classes"/>
+	</path>
+
+	<target name="webstage_compile"
+        description="Compiles Luntbuild">
+		<mkdir dir="stage/web/WEB-INF/classes"/>
+        <echo message="Compiling using source level: ${compile-source-level}, target level: ${compile-target-level}"/>
+        <javac sourcepath="" srcdir="src" destdir="stage/web/WEB-INF/classes"
+            debug="${compile-with-debug}" source="${compile-source-level}" target="${compile-target-level}">
+            <classpath refid="classpath"/>
+        </javac>
+	</target>
+
+    <target name="webstage" depends="webstage_compile, compile-standalone"
+        description="Stages web resources">
+		<copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml" overwrite="true"/>
+		<copy file="web/WEB-INF/applicationContext.xml"
+			tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true"/>
+		<copy todir="stage/web/images" flatten="true">
+			<fileset dir="web">
+				<patternset refid="web.images"/>
+			</fileset>
+			<fileset dir="src">
+				<patternset refid="web.images"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/web/css" flatten="true">
+			<fileset dir="web">
+				<patternset refid="web.css"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/web">
+			<fileset dir="web">
+				<patternset refid="web.other_resources"/>
+			</fileset>
+		</copy>
+		<filter token="buildVersion" value="${buildVersion}"/>
+		<copy todir="stage/web" overwrite="true" filtering="true" >
+			<fileset dir="web" includes="*.html"/>
+		</copy>
+		<copy todir="stage/web/WEB-INF/lib">
+			<fileset dir="lib">
+				<exclude name="**/servlet*.jar"/>
+			</fileset>
+            <fileset dir="lib/sametime">
+            </fileset>
+		</copy>
+        <copy todir="stage/web/WEB-INF/classes">
+            <fileset dir="src" excludes="log4j.properties">
+                <patternset refid="web.other_resources"/>
+            </fileset>
+        </copy>
+        <copy todir="stage">
+            <fileset dir="config">
+                <include name="*.xsl"/>
+                <include name="*.xml"/>
+            </fileset>
+        </copy>
+    </target>
+
+	<target name="web-config" depends="webstage">
+        <delete file="stage/web/WEB-INF/web.xml"/>
+        <delete file="stage/web/WEB-INF/applicationContext.xml"/>
+        <delete file="stage/web/WEB-INF/users.properties"/>
+        <filter token="installDir" value="${luntbuild-install-dir}"/>
+        <filter token="sessionTimeout" value="30"/>
+        <filter token="updateSchema" value="${update-schema}"/>
+        <filter token="luntbuildPassword" value="luntbuild"/>
+        <filter token="ldapHost" value=""/>
+        <filter token="ldapPort" value="389"/>
+        <filter token="ldapPath" value=""/>
+        <filter token="ldapBaseDn" value=""/>
+        <filter token="ldapGroup0" value=""/>
+        <filter token="ldapGroup1" value=""/>
+        <filter token="ldapGroup2" value=""/>
+        <filter token="ldapGroup3" value=""/>
+        <filter token="ldapGroup4" value=""/>
+        <filter token="ldapGroup5" value=""/>
+        <filter token="ldapGroup6" value=""/>
+        <filter token="ldapGroup7" value=""/>
+        <filter token="ldapGroup8" value=""/>
+        <filter token="ldapGroup9" value=""/>
+        <filter token="ldapSearchBase" value="OU=All Users"/>
+        <filter token="ldapGroupRoleAttr" value="OU"/>
+        <filter token="ldapGroupMemberAttr" value="sAMAccountName"/>
+        <filter token="ldapAccountNameAttr" value="sAMAccountName"/>
+        <filter token="ldapManagerCn" value="changeme"/>
+        <filter token="ldapManagerPass" value="changeme"/>
+        <filter token="ldapCreateLuntbuildUser" value="true"/>
+        <filter token="ldapCanCreateProject" value="true"/>
+        <filter token="ldapCanViewProject" value="true"/>
+        <filter token="ldapCanBuildProject" value="true"/>
+        <filter token="ldapEmailAttrName" value="mail"/>
+        <filter token="ldapFullNameAttr" value=""/>
+        <copy file="web/WEB-INF/users.properties"
+            tofile="stage/web/WEB-INF/users.properties" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/ldap.properties"
+            tofile="stage/web/WEB-INF/ldap.properties" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/applicationContext.xml"
+            tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
+            overwrite="true" filtering="true" />
+		<copy file="stage/web/WEB-INF/jdbc.hsqldb.properties" tofile="stage/web/WEB-INF/jdbc.properties"
+        	overwrite="true" filtering="true" />
+	</target>
+
+    <!-- Used for development, please do not remove. lubosp.
+    The luntbuild.war deployment file is in stage/luntbuild.war.
+      -->
+    <target name="war" depends="web-config"
+        description="Builds Luntbuild webapp deployment package">
+        <copy file="stage/web/WEB-INF/web.xml" tofile="stage/web.xml" overwrite="true" />
+        <delete file="stage/web/WEB-INF/web.xml"/>
+        <war basedir="stage/web" destfile="stage/luntbuild.war" webxml="stage/web.xml"/>
+        <delete file="stage/web.xml"/>
+    </target>
+
+	<target name="api" depends="webstage_compile, api_docs"
+        description="Builds remote API">
+		<copy todir="remoting">
+			<fileset dir="lib" includes="hessian*.jar"/>
+		</copy>
+		<jar basedir="stage/web/WEB-INF/classes" destfile="remoting/luntbuild-api.jar">
+			<include name="com/luntsys/luntbuild/facades/*.class"/>
+			<include name="com/luntsys/luntbuild/facades/lb12/*.class"/>
+		</jar>
+		<mkdir dir="remoting/samples/classes"/>
+		<javac sourcepath="" srcdir="remoting/samples/src" destdir="remoting/samples/classes"
+			debug="${compile-with-debug}" source="${compile-source-level}" target="${compile-target-level}">
+			<classpath>
+				<fileset dir="remoting" includes="*.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="api_docs" depends="" unless="skip-javadoc"
+        description="Builds API related documentation">
+		<echo level="info">Generating API JavaDoc</echo>
+		<javadoc sourcepath="src" classpathref="classpath" destdir="stage/docs/api/javadoc"
+			source="${compile-source-level}" author="true" version="true" use="true" windowtitle="Luntbuild API">
+			<fileset dir="src" defaultexcludes="yes">
+				<include name="com/luntsys/luntbuild/facades/*.java"/>
+				<include name="com/luntsys/luntbuild/facades/lb12/*.java"/>
+			</fileset>
+			<link href="http://java.sun.com/j2se/${javadoc-source-level}/docs/api/"/>
+			<link href="http://www.opensymphony.com/quartz/api/"/>
+			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
+		</javadoc>
+		<echo level="info">Generating remoting example JavaDoc</echo>
+		<javadoc sourcepath="src" classpathref="classpath" destdir="remoting/javadoc"
+			source="${compile-source-level}" author="true" version="true" use="true" windowtitle="Luntbuild Remoting Samples">
+			<fileset dir="remoting" defaultexcludes="yes">
+				<include name="samples/src/*.java"/>
+			</fileset>
+			<fileset dir="src" defaultexcludes="yes">
+				<include name="com/luntsys/luntbuild/facades/*.java"/>
+				<include name="com/luntsys/luntbuild/facades/lb12/*.java"/>
+			</fileset>
+			<link href="http://java.sun.com/j2se/${javadoc-source-level}/docs/api/"/>
+			<link href="http://www.opensymphony.com/quartz/api/"/>
+			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2004 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
+		</javadoc>
+	</target>
+
+    <target name="compile-standalone" depends="webstage_compile"
+        description="Builds Luntbuild standalone launcher">
+        <pathconvert property="luntbuild-standalone.lib.path" pathsep=" ">
+          <path>
+              <fileset dir="standalone/lib" includes="**/*.jar"/>
+          </path>
+          <chainedmapper>
+            <flattenmapper/>
+            <globmapper from="*" to="lib/*"/>
+          </chainedmapper>
+        </pathconvert>
+        <pathconvert property="luntbuild.lib.path" pathsep=" ">
+            <path>
+                <fileset dir="lib" includes="**/*.jar"/>
+                <fileset dir="lib/sametime" includes="**/*.jar"/>
+            </path>
+            <chainedmapper>
+              <flattenmapper/>
+              <globmapper from="*" to="web/WEB-INF/lib/*"/>
+            </chainedmapper>
+        </pathconvert>
+        <jar destfile="stage/luntbuild-standalone.jar">
+            <fileset dir="stage/web/WEB-INF/classes" />
+            <manifest>
+              <attribute name="Built-By" value="Luntbuild"/>
+                <attribute name="Main-Class" value="com.luntsys.luntbuild.StandaloneLauncher"/>
+                <attribute name="Class-Path" value="${luntbuild-standalone.lib.path} ${luntbuild.lib.path}"/>
+            </manifest>
+        </jar>
+    </target>
+
+	<target name="stage_docs" depends="stage_javadocs"
+        description="Builds primary documentation">
+		<echo level="info">Staging documentation</echo>
+		<copy todir="stage/docs/api">
+			<fileset dir="docs/api">
+				<exclude name="*.xsl"/>
+				<exclude name="*.xml"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/docs/guide">
+			<fileset dir="docs/guide">
+				<exclude name="*.xsl"/>
+				<exclude name="*.xml"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/docs/faq">
+			<fileset dir="docs/faq">
+				<exclude name="*.xsl"/>
+				<exclude name="*.xml"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/docs/installguide">
+			<fileset dir="docs/installguide">
+				<exclude name="*.xsl"/>
+				<exclude name="*.xml"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/docs/quickstart">
+			<fileset dir="docs/quickstart">
+				<exclude name="*.xsl"/>
+				<exclude name="*.xml"/>
+				<exclude name="*.pdf"/>
+				<exclude name="*.project"/>
+			</fileset>
+		</copy>
+		<copy todir="stage/docs/images">
+			<fileset dir="docs/images"/>
+		</copy>
+		<copy todir="stage/docs/zh-cn">
+			<fileset dir="docs/zh-cn"/>
+		</copy>
+
+	</target>
+
+	<target name="stage_javadocs" unless="skip-javadoc">
+		<echo level="info">Generating full JavaDoc</echo>
+		<mkdir dir="stage/docs/javadoc"/>
+		<javadoc sourcepath="src" classpathref="classpath" destdir="stage/docs/javadoc"
+			source="${compile-source-level}" author="true" version="true" use="true" windowtitle="Luntbuild Java Documentation">
+			<fileset dir="src" defaultexcludes="yes">
+				<include name="**/*.java"/>
+			</fileset>
+			<link href="http://java.sun.com/j2se/${javadoc-source-level}/docs/api/"/>
+			<link href="http://www.opensymphony.com/quartz/api/"/>
+			<link href="http://www.springframework.org/docs/api/"/>
+			<link href="http://www.dpml.net/api/ant/1.6.4/"/>
+			<link href="http://java.sun.com/products/servlet/2.3/javadoc/"/>
+			<link href="http://tapestry.apache.org/tapestry3/doc/api/"/>
+			<link href="http://acegisecurity.org/multiproject/acegi-security/apidocs/"/>
+			<doctitle><![CDATA[<h1>Luntbuild</h1>]]></doctitle>
+			<bottom><![CDATA[<i>Copyright &#169; 2007 Luntsys Corp. All Rights Reserved.</i>]]></bottom>
+		</javadoc>
+	</target>
+
+	<target name="anttask">
+    	<ant dir="contrib/anttask" target="dist" />
+	</target>
+
+    <target name="stage" depends="webstage, api, anttask, stage_docs, stage-copy"/>
+
+    <target name="stage-nodoc" depends="webstage, api, stage-copy"/>
+
+    <target name="stage-copy" description="Stages Luntbuild for packaging">
+        <!--
+                Writes some important informations about this build into a property file which
+                will be used by the application to show build version, date, etc.
+        -->
+        <propertyfile file="stage/buildInfo.properties">
+            <entry key="buildVersion" value="${buildVersion}"/>
+            <entry key="buildId" value="${buildId}"/>
+            <entry key="buildDate" value="${buildDate}"/>
+        </propertyfile>
+
+		<copy todir="stage/3rdparty_licenses">
+			<fileset dir="3rdparty_licenses"/>
+		</copy>
+
+		<filter token="installDir" value="$INSTALL_PATH"/>
+		<filter token="sessionTimeout" value="${sessionTimeout}"/>
+        <filter token="updateSchema" value="false"/>
+		<filter token="luntbuildPassword" value="${luntbuildPassword}"/>
+
+        <filter token="ldapHost" value="${ldap.host}"/>
+        <filter token="ldapPort" value="${ldap.port}"/>
+        <filter token="ldapPath" value="${ldap.path}"/>
+        <filter token="ldapBaseDn" value="${ldap.basedn}"/>
+    	<filter token="ldapGroup0" value="${ldap.group0}"/>
+    	<filter token="ldapGroup1" value="${ldap.group1}"/>
+    	<filter token="ldapGroup2" value="${ldap.group2}"/>
+    	<filter token="ldapGroup3" value="${ldap.group3}"/>
+        <filter token="ldapGroup4" value="${ldap.group4}"/>
+        <filter token="ldapGroup5" value="${ldap.group5}"/>
+        <filter token="ldapGroup6" value="${ldap.group6}"/>
+        <filter token="ldapGroup7" value="${ldap.group7}"/>
+        <filter token="ldapGroup8" value="${ldap.group8}"/>
+        <filter token="ldapGroup9" value="${ldap.group9}"/>
+        <filter token="ldapSearchBase" value="${ldap.searchBase}"/>
+        <filter token="ldapGroupRoleAttr" value="${ldap.groupRoleAttr}"/>
+        <filter token="ldapGroupMemberAttr" value="${ldap.groupMemberAttr}"/>
+        <filter token="ldapAccountNameAttr" value="${ldap.accountNameAttr}"/>
+        <filter token="ldapManagerCn" value="${ldap.manager.cn}"/>
+        <filter token="ldapManagerPass" value="${ldap.manager.pass}"/>
+        <filter token="ldapCreateLuntbuildUser" value="${ldap.CreateLuntbuildUser}"/>
+        <filter token="ldapCanCreateProject" value="${ldap.CanCreateProject}"/>
+        <filter token="ldapCanViewProject" value="${ldap.CanViewProject}"/>
+        <filter token="ldapCanBuildProject" value="${ldap.CanBuildProject}"/>
+        <filter token="ldapEmailAttrName" value="${ldap.EmailAttrName}"/>
+        <filter token="ldapFullNameAttr" value="${ldap.fullNameAttr}"/>
+        <copy file="web/WEB-INF/users.properties"
+            tofile="stage/web/WEB-INF/users.properties" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/ldap.properties"
+            tofile="stage/web/WEB-INF/ldap.properties" overwrite="true" filtering="true" />
+		<copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
+			overwrite="true" filtering="true" />
+		<copy file="web/WEB-INF/applicationContext.xml"
+			tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+
+        <copy todir="stage">
+            <fileset dir="." includes="*.txt,*.properties"/>
+        </copy>
+
+        <copy todir="stage" file="src/log4j.properties"/>
+
+        <copy todir="stage/osdependent">
+            <fileset dir="osdependent"/>
+        </copy>
+
+		<copy todir="stage/remoting">
+			<fileset dir="remoting"/>
+		</copy>
+		<copy todir="stage/scripts">
+			<fileset dir="installer/scripts"/>
+		</copy>
+		<copy todir="stage/contrib">
+			<fileset dir="contrib">
+				<exclude name="**/src"/>
+				<exclude name="**/test-src"/>
+			</fileset>
+		</copy>
+    	<copy todir="stage/templates">
+            <fileset dir="templates"/>
+        </copy>
+        <copy todir="stage/bin">
+            <fileset dir="bin"/>
+        </copy>
+        <copy todir="stage/lib">
+            <fileset dir="standalone/lib"/>
+        </copy>
+        <mkdir dir="stage/work"/>
+        <touch file="stage/work/dummy"/>
+        <mkdir dir="stage/publish"/>
+        <touch file="stage/publish/dummy"/>
+        <mkdir dir="stage/logs"/>
+        <touch file="stage/logs/luntbuild_log.txt"/>
+        <mkdir dir="stage/tmp"/>
+        <touch file="stage/tmp/dummy"/>
+
+		<delete>
+            <fileset dir="stage" includes="**/*.bak,**/*#*,**/.cvsignore"/>
+        </delete>
+    </target>
+
+    <target name="clean"
+        description="Cleans the build tree of files created by the build">
+        <delete dir="stage" failonerror="no"/>
+        <delete dir="logs" failonerror="no"/>
+        <delete dir="null" failonerror="no"/>
+        <delete dir="remoting/samples/classes" failonerror="no"/>
+        <delete dir="remoting/javadoc" failonerror="no"/>
+        <delete failonerror="no">
+			<fileset dir="remoting" includes="*.jar"/>
+		</delete>
+		<delete dir="test/junitReports"/>
+		<delete dir="test/classes"/>
+		<delete failonerror="no" file="luntbuild_log.html"/>
+		<delete failonerror="no" file="luntbuild_log.txt"/>
+		<delete dir="${artifactsDir}"/>
+		<delete dir="${junitHtmlReportDir}"/>
+        <delete file="db/luntbuild.script"/>
+        <delete file="db/luntbuild.script.base"/>
+        <delete file="db/luntbuild.script.demo"/>
+
+    	<ant dir="contrib/anttask" target="clean" />
+    </target>
+
+	<target name="test_compile" depends="webstage"
+        description="Compiles Luntbuild test cases">
+		<mkdir dir="test/classes"/>
+		<javac srcdir="test/src" destdir="test/classes" classpathref="classpath.test"
+            source="${compile-source-level}" target="${compile-target-level}"
+        />
+	</target>
+
+	<target name="test" depends="test_compile"
+        description="Runs JUnit tests on Luntbuild using test cases">
+		<mkdir dir="test/junitReports"/>
+		<junit printsummary="yes">
+			<formatter type="xml"/>
+			<batchtest todir="test/junitReports">
+				<fileset dir="test/src">
+					<include name="**/*Test.java"/>
+				</fileset>
+			</batchtest>
+			<classpath refid="classpath.test"/>
+		</junit>
+
+		<mkdir dir="${junitHtmlReportDir}"/>
+		<junitreport todir="test/junitReports">
+			<fileset dir="test/junitReports">
+				<include name="TEST-*.xml"/>
+			</fileset>
+			<report todir="${junitHtmlReportDir}"/>
+		</junitreport>
+	</target>
+
+	<target name="zip" depends="stage" description="Builds Luntbuild zip distribution">
+        <filter token="sessionTimeout" value="30"/>
+        <filter token="updateSchema" value="false"/>
+        <filter token="luntbuildPassword" value="luntbuild"/>
+        <filter token="ldapHost" value=""/>
+        <filter token="ldapPort" value="389"/>
+        <filter token="ldapPath" value=""/>
+        <filter token="ldapBaseDn" value=""/>
+        <filter token="ldapGroup0" value=""/>
+        <filter token="ldapGroup1" value=""/>
+        <filter token="ldapGroup2" value=""/>
+        <filter token="ldapGroup3" value=""/>
+        <filter token="ldapGroup4" value=""/>
+        <filter token="ldapGroup5" value=""/>
+        <filter token="ldapGroup6" value=""/>
+        <filter token="ldapGroup7" value=""/>
+        <filter token="ldapGroup8" value=""/>
+        <filter token="ldapGroup9" value=""/>
+        <filter token="ldapSearchBase" value="OU=All Users"/>
+        <filter token="ldapGroupRoleAttr" value="OU"/>
+        <filter token="ldapGroupMemberAttr" value="sAMAccountName"/>
+        <filter token="ldapAccountNameAttr" value="sAMAccountName"/>
+        <filter token="ldapManagerCn" value="changeme"/>
+        <filter token="ldapManagerPass" value="changeme"/>
+        <filter token="ldapCreateLuntbuildUser" value="true"/>
+        <filter token="ldapCanCreateProject" value="true"/>
+        <filter token="ldapCanViewProject" value="true"/>
+        <filter token="ldapCanBuildProject" value="true"/>
+        <filter token="ldapEmailAttrName" value="mail"/>
+        <filter token="ldapFullNameAttr" value="CN"/>
+        <copy file="web/WEB-INF/users.properties"
+            tofile="stage/web/WEB-INF/users.properties" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/ldap.properties"
+            tofile="stage/web/WEB-INF/ldap.properties" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/applicationContext.xml"
+            tofile="stage/web/WEB-INF/applicationContext.xml" overwrite="true" filtering="true" />
+        <copy file="web/WEB-INF/web.xml" tofile="stage/web/WEB-INF/web.xml"
+            overwrite="true" filtering="true" />
+		<delete dir="stage/db"/>
+		<copy todir="stage/db">
+			<fileset dir="db"/>
+		</copy>
+        <copy todir="stage/db">
+            <fileset dir="stage/db/empty"/>
+        </copy>
+		<mkdir dir="${artifactsDir}"/>
+		<zip basedir="stage" destfile="${artifactsDir}/luntbuild-${fileVersion}.zip"/>
+	</target>
+
+    <target name="zip-source" depends="clean" description="Builds Luntbuild source zip distribution">
+        <mkdir dir="${artifactsDir}"/>
+        <zip basedir="." excludes=".settings/**,classes/**,website/**,.classpath,.project,"
+            destfile="${artifactsDir}/luntbuild-${fileVersion}-source.zip"/>
+    </target>
+
+    <!-- Allows us to use the IzPack Ant task -->
+    <taskdef name="izpack" classpath="installer/lib/standalone-compiler.jar"
+        classname="com.izforge.izpack.ant.IzPackTask"/>
+
+    <target name="installer" depends="stage" description="Builds Luntbuild installer">
+		<delete dir="stage/db"/>
+        <copy todir="stage/db">
+            <fileset dir="db"/>
+        </copy>
+    	<!--
+        <exec executable="dos2unix" dir="${basedir}/stage/scripts" failifexecutionfails="false">
+    		<arg line="-U *.sh"/>
+    	</exec>
+    	-->
+		<mkdir dir="${artifactsDir}"/>
+		<filter token="appVersion" value="${buildVersion}" />
+		<copy file="installer/install.xml" tofile="installer/install.xml.temp"
+			overwrite="true" filtering="true" />
+		<copy file="installer/target.dir.windows" tofile="installer/target.dir.windows.temp"
+			overwrite="true" filtering="true" />
+		<copy file="installer/target.dir.unix" tofile="installer/target.dir.unix.temp"
+			overwrite="true" filtering="true" />
+        <izpack input="${basedir}/installer/install.xml.temp"
+            output="${artifactsDir}/luntbuild-${fileVersion}-installer.jar"
+            installerType="standard"
+            basedir="${basedir}/stage">
+            </izpack>
+		<delete file="installer/install.xml.temp"/>
+		<delete file="installer/target.dir.windows.temp"/>
+		<delete file="installer/target.dir.unix.temp"/>
+    </target>
+
+    <target name="weekly" depends="weekly.installer, weekly.source">
+    </target>
+
+    <target name="weekly.installer" depends="installer">
+        <CBRelease file="${artifactsDir}/luntbuild-${fileVersion}-installer.jar"
+            todir="Downloads/Weekly" tofile="luntbuild-${fileVersion}-${buildDate}-installer.jar"
+            description="Development snapshot of Luntbuild version: ${fileVersion}"
+        />
+    </target>
+
+    <target name="weekly.source" depends="zip-source">
+        <CBRelease file="${artifactsDir}/luntbuild-${fileVersion}-source.zip"
+            todir="Downloads/Weekly" tofile="luntbuild-${fileVersion}-source.zip"
+            description="Development source snapshot of Luntbuild version: ${fileVersion}"
+        />
+    </target>
+
+	<target name="extension-test" description="Build extensions test jar">
+		<delete dir="examples/src/java/classes"/>
+		<mkdir dir="examples/src/java/classes"/>
+		<mkdir dir="stage"/>
+		<javac sourcepath="" srcdir="examples/src/java" destdir="examples/src/java/classes"
+			debug="${compile-with-debug}" source="${compile-source-level}" target="${compile-target-level}">
+		</javac>
+		<copy file="examples/src/java/luntbuild_extension.properties"
+			tofile="examples/src/java/classes/luntbuild_extension.properties"
+			overwrite="true"/>
+		<jar basedir="examples/src/java/classes" destfile="stage/extension-test.jar">
+			<include name="com/luntsys/luntbuild/extensions/*.class"/>
+			<include name="luntbuild_extension.properties"/>
+		</jar>
+	</target>
+
+</project>

@@ -1,0 +1,83 @@
+<Luntbuild>
+	
+	<!--
+		Configure Luntbuild extensions here, they can be any class.	Extensions can be accessed through
+		OGNL using ${getExtension("<extension_name>")}.
+	-->
+	<extensions>
+		<!-- Example extension, do not uncomment -->
+		<!-- <extension name="HelloWorldExtension" class="com.luntsys.luntbuild.extensions.HelloWorldExtension"/> -->
+	</extensions>
+	
+	<!--
+		Configure Luntbuild build listeners here.	Build listeners must implement the interface
+		"com.luntsys.luntbuild.listeners.Listener".	All listeners will be notified of the appropriate build
+		events of all builds.
+	-->
+	<listeners>
+		<!-- Sample build listener -->
+		<listener name="ListenerSample" class="com.luntsys.luntbuild.listeners.ListenerSample"/>
+	</listeners>
+	
+	<!--
+		Configure Luntbuild build reports here.	Build reports must implement the interface
+		"com.luntsys.luntbuild.reports.Report".	Reports are accessable through OGNL with
+		${build.getReportDir("report_name")}, on the build viewer page (if their URL is not null), and
+		in notifier templates as ${build_<reportname>_reporturl}.
+		
+		Unneeded reports may be commented out.	No other configuration is required.
+	-->
+	<reports>
+		<!--
+			Common Java reports
+		-->
+		
+		<!-- JUnit, unit testing for Java -->
+		<report name="JUnit" class="com.luntsys.luntbuild.reports.JUnitReport"/>
+		
+		<!-- JCoverage, code coverage analysis for Java -->
+		<report name="JCoverage" class="com.luntsys.luntbuild.reports.JCoverageReport"/>
+		
+		<!-- Clover, code coverage analysis for Java -->
+		<report name="Clover" class="com.luntsys.luntbuild.reports.CloverReport"/>
+		
+		<!-- Cobertura, code coverage analysis for Java -->
+		<report name="Cobertura" class="com.luntsys.luntbuild.reports.CoberturaReport"/>
+		
+		<!-- Emma, code coverage analysis for Java -->
+		<report name="Emma" class="com.luntsys.luntbuild.reports.EmmaReport"/>
+		
+		<!-- Jester, test coverage analysis for Java -->
+		<report name="Jester" class="com.luntsys.luntbuild.reports.JesterReport"/>
+		
+		<!-- Checkstyle, code standards checking for Java -->
+		<report name="Checkstyle" class="com.luntsys.luntbuild.reports.CheckstyleReport"/>
+		
+		<!-- PMD, code standards checking for Java -->
+		<report name="PMD" class="com.luntsys.luntbuild.reports.PMDReport"/>
+		
+		<!-- JDepend, dependency reporting for Java -->
+		<report name="JDepend" class="com.luntsys.luntbuild.reports.JDependReport"/>
+		
+		<!--
+			Common .NET reports
+		-->
+		
+		<!-- NUnit, unit testing for .NET -->
+		<report name="NUnit" class="com.luntsys.luntbuild.reports.NUnitReport"/>
+		
+		<!-- NCover, code coverage analysis for .NET -->
+		<report name="NCover" class="com.luntsys.luntbuild.reports.NCoverReport"/>
+		
+		<!--
+			General reports
+		-->
+		
+		<!-- Xref, code cross referencing and refactoring for C and Java -->
+		<report name="Xref" class="com.luntsys.luntbuild.reports.XrefReport"/>
+		
+		<!-- CPD, duplicate code checking for Java, JSP, C, C++, Fortran and PHP -->
+		<report name="CPD" class="com.luntsys.luntbuild.reports.CPDReport"/>
+	</reports>
+	
+</Luntbuild>
