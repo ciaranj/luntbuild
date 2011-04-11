@@ -109,6 +109,7 @@ import com.luntsys.luntbuild.vcs.BaseClearcaseAdaptor;
 import com.luntsys.luntbuild.vcs.CvsAdaptor;
 import com.luntsys.luntbuild.vcs.DynamicClearcaseAdaptor;
 import com.luntsys.luntbuild.vcs.FileSystemAdaptor;
+import com.luntsys.luntbuild.vcs.GitAdaptor;
 import com.luntsys.luntbuild.vcs.MksAdaptor;
 import com.luntsys.luntbuild.vcs.PerforceAdaptor;
 import com.luntsys.luntbuild.vcs.StarteamAdaptor;
@@ -134,7 +135,7 @@ public class Luntbuild {
     /** Trigger name */
     public static final String MANUAL_TRIGGER_NAME = "MANUAL-TRIGGER-";
     public static final String REBUILD_TRIGGER_NAME = "REBUILD-MANUAL-TRIGGER-";
-    
+
     /** Trigger job data keys */
 	public static final String TRIGGER_JOB_BUILD_TYPE                = "BUILD_TYPE";
 	public static final String TRIGGER_JOB_BUILD_NECESSARY_CONDITION = "NECESSARY_CONDITION";
@@ -164,7 +165,7 @@ public class Luntbuild {
 
     /** ISO date format, used by web feeds */
     public static final SynchronizedDateFormatter DATE_DISPLAY_FORMAT_ISO =
-            new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ssZ"); 
+            new SynchronizedDateFormatter("yyyy-MM-dd'T'HH:mm:ssZ");
 
     /** Log4j system log - HTML */
     public static final String log4jFileName = "luntbuild_log.html";
@@ -174,7 +175,7 @@ public class Luntbuild {
 
     /** log watchdog interval in ms */
     public static final long LOG_WATCH_INTERVAL = 60 * 1000;
-    
+
     /** Extensions configuration file */
     public static final String extensionsConfigFile = "luntbuild_config.xml";
 
@@ -212,9 +213,9 @@ public class Luntbuild {
     public static String serverName = "localhost";
     /** Server port */
     public static int serverPort = 8080;
-    
+
     public static LogPropertyWatchdog logWatchDog;
-    
+
     public static final Pattern ognlVariablePattern = Pattern.compile("\\$\\{([^$]*)\\}");
 
 
@@ -263,7 +264,7 @@ public class Luntbuild {
 
     /**
      * Gets the authentication manager.
-     * 
+     *
      * @return the authentication manager
      * @throws RuntimeException if the authentication manager could not be found
      */
@@ -307,7 +308,7 @@ public class Luntbuild {
 
     /**
      * Gets all messages from any throwable object.
-     * 
+     *
      * @param throwable the throwable object
      * @return the messages
      */
@@ -364,7 +365,7 @@ public class Luntbuild {
 
     /**
      * Deletes a local directory and all the contents inside of it.
-     * 
+     *
      * @param directory
      *            the directory to delete
      * @param excludes
@@ -382,7 +383,7 @@ public class Luntbuild {
             deleteTask.getProject().init();
             deleteTask.setDir(new File(directory));
             deleteTask.setFailOnError(false);
-            
+
             // pass the excludes pattern, if we have one
             if (excludes != null && excludes.length() > 0) {
                 deleteTask.setExcludes(excludes);
@@ -398,7 +399,7 @@ public class Luntbuild {
 
     /**
      * Renames a local directory.
-     * 
+     *
      * @param from the current directory name
      * @param to the new directory name
      * @throws RuntimeException from {@link File#getCanonicalFile()}
@@ -471,7 +472,7 @@ public class Luntbuild {
 
     /**
      * Touches a file to update its modification time, if the file does not exist it will be created.
-     * 
+     *
      * @param file the file to touch
      * @throws org.apache.tools.ant.BuildException
      *
@@ -486,7 +487,7 @@ public class Luntbuild {
 
     /**
      * Sends the contents of the specified file to the specified request cycle.
-     * 
+     *
      * @param cycle the request cycle
      * @param filePath the file to send
      */
@@ -497,7 +498,7 @@ public class Luntbuild {
 
     /**
      * Sends the contents of the specified file to the specified HTTP request.
-     * 
+     *
      * @param request the HTTP request
      * @param response the HTTP response
      * @param filePath the file to send
@@ -568,9 +569,9 @@ public class Luntbuild {
 
     /**
      * Sends the contents of the specified URL to the specified HTTP request.
-     * 
+     *
      * @param request the HTTP request
-     * @param response the HTTP response 
+     * @param response the HTTP response
      * @param url the URL to send
      * @throws ApplicationRuntimeException if the URL could not be read
      */
@@ -613,7 +614,7 @@ public class Luntbuild {
 
     /**
      * Gets the EOL setting to use for the specified HTTP request.
-     *  
+     *
      * @param request the HTTP request
      * @return the EOL to use
      */
@@ -774,7 +775,7 @@ public class Luntbuild {
 
     /**
      * Creates a cloned copy of the specified module.
-     * 
+     *
      * @param vcs the VCS the module is for
      * @param module the module
      * @return the clone of the module
@@ -799,7 +800,7 @@ public class Luntbuild {
 
     /**
      * Gets the URL to access the Luntbuild servlet.
-     * 
+     *
      * @return the servlet URL
      */
     public static String getServletUrl() {
@@ -812,7 +813,7 @@ public class Luntbuild {
 
     /**
      * Gets the root of the Luntbuild servlet URL.
-     * 
+     *
      * @return the servlet root URL
      */
     public static String getServletRootUrl() {
@@ -825,7 +826,7 @@ public class Luntbuild {
 
     /**
      * Gets the host name of this build server.
-     * 
+     *
      * @return the host name
      */
     public static String getHostName() {
@@ -839,7 +840,7 @@ public class Luntbuild {
 
     /**
      * Gets the IP address of this build server.
-     * 
+     *
      * @return the IP address
      */
     public static String getIpAddress() {
@@ -859,7 +860,7 @@ public class Luntbuild {
      * <li><code>shorter</code> is a directory and <code>longer</code> is a sub-directory</li>
      * <li><code>shorter</code> is a directory and <code>longer</code> is recursively under <code>shorter</code></li>
      * </ul>
-     * 
+     *
      * @param shorter the shorter file
      * @param longer the longer file
      * @return the path of <code>longer</code> relative to <code>shorter</code>, or <code>null</code> if
@@ -886,7 +887,7 @@ public class Luntbuild {
 
     /**
      * Filters the given list of notifier class names to get a list of existing notifier classes.
-     * 
+     *
      * @param notifierClassNames the list of notifier class names, should not be <code>null</code>
      * @return the list of existing notifier classes
      */
@@ -909,7 +910,7 @@ public class Luntbuild {
 
     /**
      * Converts a list of notifier classes to a list of notifier instances.
-     * 
+     *
      * @param notifierClasses the list of notifier classes, should not be <code>null</code>
      * @return the list of notifier instances
      * @throws RuntimeException if unable to create an instance of a notifier
@@ -930,7 +931,7 @@ public class Luntbuild {
 
     /**
      * Gets the URL to access the Luntbuild system log.
-     * 
+     *
      * @return the Luntbuild system log URL
      * @throws RuntimeException if the servlet URL is invalid
      */
@@ -943,7 +944,7 @@ public class Luntbuild {
 
     /**
      * Creates a commandline object from a command line string.
-     * 
+     *
      * <p>This function parses the input command line string to get rid of special characters such as
      * quotation, end of line, tab, etc. It also extracts characters inside a pair of quotation marks to form
      * a single argument.</p>
@@ -1062,7 +1063,7 @@ public class Luntbuild {
 
     /**
      * Determines if an OGNL variable reference is contained in the specified OGNL expresion.
-     * 
+     *
      * @param expression the OGNL expression
      * @return <code>true</code> if a variable reference is contained
      */
@@ -1078,7 +1079,7 @@ public class Luntbuild {
      * Evaluates the value of an OGNL expression. During the evaluation, substring contained in ${...} will be treated
      * as an OGNL expression and will be evaluated against the specified <code>ognlRoot</code> object. For example,
      * the string "testcvs-${year}" can evaluate to be "testcvs-2004".
-     * 
+     *
      * @param ognlRoot the root object
      * @param expression the OGNL expression
      * @return the evaluated string
@@ -1093,7 +1094,7 @@ public class Luntbuild {
      * Evaluates the value of an OGNL expression. During the evaluation, substring contained in ${...} will be treated
      * as an OGNL expression and will be evaluated against the specified <code>ognlRoot</code> object. For example,
      * the string "testcvs-${year}" can evaluate to be "testcvs-2004".
-     * 
+     *
      * @param ognlRoot the root object
      * @param expression the OGNL expression
      * @param resultClass class of the ognl value
@@ -1117,16 +1118,16 @@ public class Luntbuild {
             else if (ognlValue.equals(expression))
                 ognlValue = "";
             ognlValue = resolveOgnlExpressions(ognlRoot, ognlValue, resultClass);
-            // Need to escape escape chars because replaceFirst will reduce them 
+            // Need to escape escape chars because replaceFirst will reduce them
             ognlValue = ognlValue.replaceAll("\\\\", "\\\\\\\\");
             value = matcher.replaceFirst(ognlValue);
         }
         return value;
     }
-    
+
     /**
      * Validates the specified OGNL expression.
-     * 
+     *
      * @param expression the OGNL expression
      * @return the OGNL expression with variable references removed
      * @throws ValidationException
@@ -1148,7 +1149,7 @@ public class Luntbuild {
 
     /**
      * Loads and configures log4j properties to specify the HTML and TEXT log files.
-     * 
+     *
      * @throws IOException from {@link #setLuntbuildHtmlLog(String)} or {@link #setLuntbuildTextLog(String)}
      */
     public static final void setLuntbuildLogs() throws IOException {
@@ -1161,12 +1162,12 @@ public class Luntbuild {
     	logWatchDog.setDelay(LOG_WATCH_INTERVAL);
     	logWatchDog.start();
     }
-    
+
     /**
      * Initializes the Luntbuild system.
-     * 
+     *
      * <p>Luntbuild lifecycle management moved here from servlet.</p>
-     * 
+     *
      * @param context the servlet context
      */
     public static void initApplication(final ServletContext context) {
@@ -1283,7 +1284,7 @@ public class Luntbuild {
     	if (propName.endsWith("}")) propName = propName.substring(0, propName.length() - 1);
     	return props.getProperty(propName, "");
     }
-    
+
     public static void setEmbeddedDbUrls(Properties props) {
         // Set dataset DB for HSQLDB in process DB
         String hsqlUrl = props.getProperty("hsqlUrl");
@@ -1293,12 +1294,12 @@ public class Luntbuild {
             props.setProperty("hsqlUrl", "jdbc:hsqldb:" + dataset);
             String hsqlUsername = props.getProperty("jdbcUsername");
             if (hsqlUsername == null || hsqlUsername.trim().length() == 0 || hsqlUsername.trim().startsWith("${"))
-            	props.setProperty("jdbcUsername", "sa");                    
+            	props.setProperty("jdbcUsername", "sa");
             String hsqlPassword = props.getProperty("jdbcPassword");
             if (hsqlPassword == null || hsqlPassword.trim().length() == 0 || hsqlPassword.trim().startsWith("${"))
-            	props.setProperty("jdbcPassword", "");                    
+            	props.setProperty("jdbcPassword", "");
         }
-        
+
         // Set dataset DB for Derby in process DB
         String derbyUrl = props.getProperty("derbyUrl");
         if (derbyUrl == null || derbyUrl.trim().length() == 0 ||
@@ -1307,10 +1308,10 @@ public class Luntbuild {
             props.setProperty("derbyUrl", "jdbc:derby:" + dataset);
             String derbyUsername = props.getProperty("jdbcUsername");
             if (derbyUsername == null || derbyUsername.trim().length() == 0 || derbyUsername.trim().startsWith("${"))
-            	props.setProperty("jdbcUsername", "sa");                    
+            	props.setProperty("jdbcUsername", "sa");
             String derbyPassword = props.getProperty("jdbcPassword");
             if (derbyPassword == null || derbyPassword.trim().length() == 0 || derbyPassword.trim().startsWith("${"))
-            	props.setProperty("jdbcPassword", "");                    
+            	props.setProperty("jdbcPassword", "");
         }
         // Set dataset DB for H2 in process DB
         String h2Url = props.getProperty("h2Url");
@@ -1320,13 +1321,13 @@ public class Luntbuild {
             props.setProperty("h2Url", "jdbc:h2:file:" + dataset);
             String h2Username = props.getProperty("jdbcUsername");
             if (h2Username == null || h2Username.trim().length() == 0 || h2Username.trim().startsWith("${"))
-            	props.setProperty("jdbcUsername", "sa");                    
+            	props.setProperty("jdbcUsername", "sa");
             String h2Password = props.getProperty("jdbcPassword");
             if (h2Password == null || h2Password.trim().length() == 0 || h2Password.trim().startsWith("${"))
-            	props.setProperty("jdbcPassword", "");                    
+            	props.setProperty("jdbcPassword", "");
         }
     }
-    
+
     private static void loadBuilders(ServletContext context) {
         builders = new ArrayList();
         builders.add(AntBuilder.class);
@@ -1344,6 +1345,7 @@ public class Luntbuild {
         vcsAdaptors.add(CvsAdaptor.class);
         vcsAdaptors.add(CvsNTAdaptor.class);
         vcsAdaptors.add(FileSystemAdaptor.class);
+        vcsAdaptors.add(GitAdaptor.class);
         vcsAdaptors.add(MksAdaptor.class);
         vcsAdaptors.add(PerforceAdaptor.class);
         vcsAdaptors.add(StarteamAdaptor.class);
@@ -1371,7 +1373,7 @@ public class Luntbuild {
 
     /**
      * Loads extensions, listeners and reports.  Reads from the XML configuration file "luntbuild_extensions.xml".
-     * 
+     *
      * @see #extensions
      * @see #listeners
      * @see #reports
@@ -1552,21 +1554,21 @@ public class Luntbuild {
 
     /**
      * Shuts down the Luntbuild system.
-     * 
+     *
      * <p>Does some cleanup works, such as cleanup the schedule thread, etc.</p>
-     * 
+     *
      * @param context the servlet context
      */
     public static void destroyApplication(ServletContext context) {
     	if (appContext == null) return;
-    	
+
         logWatchDog.interrupt();
         logger.info("Enter application shutdown");
         SecurityHelper.runAsSiteAdmin();
         getSchedService().shutdown();
         appContext.close();
         appContext = null;
-        
+
 		InputStream jdbcIs = null;
 		try {
 			Properties props = new Properties();
@@ -1608,7 +1610,7 @@ public class Luntbuild {
 
     /**
      * Removes the special "checkin user" from a list of users if it exists.
-     * 
+     *
      * @param users the list of users
      * @return the list of users without the special "checkin user"
      */
@@ -1626,7 +1628,7 @@ public class Luntbuild {
 
     /**
      * Creates and initializes a blank ant project.
-     * 
+     *
      * @return the ant project
      */
     public static Project createAntProject() {
@@ -1637,7 +1639,7 @@ public class Luntbuild {
 
     /**
      * Gets the name of a property or assignment from a string (example: "name=value").
-     * 
+     *
      * @param assignment the assignment string
      * @return the name of the property or assignment
      */
@@ -1652,7 +1654,7 @@ public class Luntbuild {
 
     /**
      * Gets the value of a property or assignment from a string (example: "name=value").
-     * 
+     *
      * @param assignment the assignment string
      * @return the value of the property or assignment
      */
@@ -1667,7 +1669,7 @@ public class Luntbuild {
 
     /**
      * Encrypts a password.
-     * 
+     *
      * @param passwd the unencrypted password
      * @return the encrypted password
      * @throws RuntimeException if an {@link StringEncrypter.EncryptionException} occurs
@@ -1686,7 +1688,7 @@ public class Luntbuild {
 
     /**
      * Decrypts a password.
-     * 
+     *
      * @param passwd the encrypted password
      * @return the decrypted password
      * @throws RuntimeException if an {@link StringEncrypter.EncryptionException} occurs
@@ -1705,7 +1707,7 @@ public class Luntbuild {
 
     /**
      * Gets the page refresh interval.
-     * 
+     *
      * @return the page refresh interval
      */
     public static int getPageRefreshInterval() {
@@ -1723,7 +1725,7 @@ public class Luntbuild {
 
     /**
      * Gets the system properties map.
-     * 
+     *
      * @return the system properties
      */
     public static Map getProperties() {
@@ -1732,7 +1734,7 @@ public class Luntbuild {
 
     /**
      * Sets the system properties map.
-     * 
+     *
      * @param properties the system properties
      */
     public static void setProperties(Map properties) {
@@ -1742,7 +1744,7 @@ public class Luntbuild {
     /**
      * Used for Java 1.4 compatability.
      * Replace with Node.getTextContent() for Java 1.5.
-     * 
+     *
      * @param node the node
      * @return the text content
      */
@@ -1761,9 +1763,9 @@ public class Luntbuild {
 
     /**
      * Sends the contents of the specified asset to the specified HTTP request.
-     * 
+     *
      * @param request the HTTP request
-     * @param response the HTTP response 
+     * @param response the HTTP response
      * @param assetLocation the location of the asset
      * @throws ApplicationRuntimeException if the asset could not be found or read
      */
@@ -1811,7 +1813,7 @@ public class Luntbuild {
 
     /**
      * Encodes a character for XML.
-     * 
+     *
      * @param ch the character
      * @return the encoded character, or <code>null</code> if the character does not need to be encoded
      */
@@ -1828,7 +1830,7 @@ public class Luntbuild {
 
     /**
      * Checks if a character needs to be encoded for XML.
-     * 
+     *
      * @param ch the character
      * @return <code>true</code> if the character needs to be encoded
      */
@@ -1902,9 +1904,9 @@ public class Luntbuild {
 
         return buf.toString();
     }
- 
+
     private static HashMap projectCreators = new HashMap();
-    
+
     public static final boolean isProjectCreator(long prjId) {
     	if (prjId <= 0) return false;
     	String loginUser = SecurityHelper.getPrincipalAsString();
@@ -1912,7 +1914,7 @@ public class Luntbuild {
     	if (creator == null || loginUser == null) return false;
     	return creator.equals(loginUser);
     }
-    
+
     public static final void setProjectCreator(long projectId, String loginUser) {
     	projectCreators.put("" + projectId, loginUser);
     }
