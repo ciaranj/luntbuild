@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
 import com.luntsys.luntbuild.ant.Commandline;
@@ -12,6 +13,7 @@ import com.luntsys.luntbuild.db.Schedule;
 import com.luntsys.luntbuild.facades.lb12.VcsFacade;
 import com.luntsys.luntbuild.utility.DisplayProperty;
 import com.luntsys.luntbuild.utility.Luntbuild;
+import com.luntsys.luntbuild.utility.MyExecTask;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
 
@@ -121,6 +123,23 @@ public class GitAdaptor extends Vcs {
 			Schedule workingSchedule, Project antProject) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void cleanupCheckout(Schedule workingSchedule, Project antProject) {
+		antProject.log("Cleaning (the git way)... ");
+		Commandline cmdLine = buildGitExecutable();
+		try {
+			cmdLine.clearArgs();
+			cmdLine.createArgument().setValue("clean");
+			cmdLine.createArgument().setValue("-d");
+			cmdLine.createArgument().setValue("-x");
+			cmdLine.createArgument().setValue("-f");
+			new MyExecTask("clean", antProject, workingSchedule.getWorkDirRaw(), cmdLine, null, null, Project.MSG_INFO).execute();
+		}
+		catch( BuildException e ) {
+			antProject.log("Problem doing the clean, the git way: '"+ e.getMessage() +"' falling back to old-skool delete");
+			super.cleanupCheckout(workingSchedule, antProject);
+		}
 	}
 
 
