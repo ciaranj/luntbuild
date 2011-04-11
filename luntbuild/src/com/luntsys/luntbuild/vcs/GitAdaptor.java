@@ -162,11 +162,40 @@ public class GitAdaptor extends Vcs {
 	}
 
 	private void doGitPull(Project antProject, String directory) {
+		// Because tags could be deleted remotely we don't want to have stuff
+		// here that ought not to be (it may get pushed back upstream, which would
+		// get mighty confusing!) .. So we delete all our local tags and re-fetch em.
+		antProject.log("Cleaning up local tags...");
+		// First cull all the local tags (wqsteful after a clone, ho-hum)
 		Commandline cmdLine = buildGitExecutable();
 		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("tag");
+		cmdLine.createArgument().setValue("-l");
+		final List tags= new ArrayList();
+		new MyExecTask("ListTags", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG){
+	        public void handleStdout(String line) {
+	            tags.add(line);
+	        }
+		}.execute();
+		if( tags.size() >0 ) {
+			for(int i=0;i<tags.size();i++) {
+				cmdLine.clearArgs();
+				cmdLine.createArgument().setValue("tag");
+				cmdLine.createArgument().setValue("-d");
+				cmdLine.createArgument().setValue((String)tags.get(i));
+				new MyExecTask("DeleteTag", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG).execute();
+			}
+		}
+
+		antProject.log("Fetching new commits,branches and referenced tags, removing dead branches");
+		// Pull down all the branch refs (pruning out dead branches)
+		cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("pull");
+		cmdLine.createArgument().setValue("--prune");
 		cmdLine.createArgument().setValue("origin");
-		new MyExecTask("pull", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		new MyExecTask("pull", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG).execute();
+
 	}
 
 	private void doGitCheckout(Project antProject, String directory, String versionToBuild) {
@@ -185,7 +214,7 @@ public class GitAdaptor extends Vcs {
 		cmdLine.createArgument().setValue("status");
 	    final StringBuffer buffer = new StringBuffer();
 	    try {
-			new MyExecTask("status", antProject,  directory, cmdLine, null, null, Project.MSG_INFO){
+			new MyExecTask("status", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG){
 		        public void handleStdout(String line) {
 		            buffer.append(line);
 		            buffer.append("\n");
@@ -234,7 +263,24 @@ public class GitAdaptor extends Vcs {
 	}
 
 	public void label(Build build, Project antProject) {
-		// TODO Auto-generated method stub
+		antProject.log("Tagging new version: " + Luntbuild.getLabelByVersion(build.getVersion()));
+		// Tag it
+		Commandline cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("tag");
+		cmdLine.createArgument().setValue(Luntbuild.getLabelByVersion(build.getVersion()));
+		new MyExecTask("Tag", antProject,  build.getSchedule().getWorkDirRaw(), cmdLine, null, null, Project.MSG_INFO).execute();
+
+		antProject.log("Pushing version tag upstream");
+		// Push it.
+		cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("push");
+		cmdLine.createArgument().setValue("origin");
+		cmdLine.createArgument().setValue(Luntbuild.getLabelByVersion(build.getVersion()));
+		new MyExecTask("Push", antProject,  build.getSchedule().getWorkDirRaw(), cmdLine, null, null, Project.MSG_INFO).execute();
+
+		// The local tags will get blitzed on the next pull /clean anyway so forget about bothering with cleanup ;)
 	}
 
 	public Revisions getRevisionsSince(Date sinceDate,
