@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 
+import sun.security.action.GetLongAction;
+
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
 import com.luntsys.luntbuild.db.Schedule;
@@ -110,13 +112,120 @@ public class GitAdaptor extends Vcs {
 	}
 
 	public void checkoutActually(Build build, Project antProject) {
-		// TODO Auto-generated method stub
 
+		// Start off assuming we want to checkout the current branch
+		String versionToBuild=  Luntbuild.isEmpty(this.getBranch())? "master" :this.getBranch();
+
+		if( build.isRebuild() ) {
+			versionToBuild= Luntbuild.getLabelByVersion(build.getVersion());
+		}
+		boolean doClean= false;
+
+        if (build.isRebuild() || build.isCleanBuild())
+        	doClean= true;
+        else
+        	doClean= false;
+
+        checkout(build, antProject, versionToBuild, doClean);
+
+	}
+
+	private void checkout(Build build, Project antProject, String versionToBuild, boolean doClean) {
+		String directory= build.getSchedule().getWorkDirRaw();
+
+		boolean isGitRepo= isGitRepository(antProject, directory);
+		if( doClean && isGitRepo ) {
+			try {
+				doGitClean(antProject, directory);
+			}
+			catch(Exception e) {
+				// Meh lets hope it worked.
+			}
+		}
+
+		if(!isGitRepo) {
+			doGitClone(antProject, directory);
+		}
+		else {
+			try {
+				doGitReset(antProject, directory);
+			}
+			catch(Exception e) {
+				// meh lets hope it worked.
+			}
+		}
+
+		// At this point we've either cleaned ourselves up or cloned fresh.
+		doGitCheckout(antProject, directory, versionToBuild);
+	}
+
+	private void doGitCheckout(Project antProject, String directory, String versionToBuild) {
+		antProject.log("Checking out: "+ versionToBuild);
+		Commandline cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("checkout");
+		cmdLine.createArgument().setValue(versionToBuild);
+		new MyExecTask("reset", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+
+	}
+
+	private boolean isGitRepository(Project antProject, String directory) {
+		boolean isRepository= true;
+		Commandline cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("status");
+	    final StringBuffer buffer = new StringBuffer();
+	    try {
+			new MyExecTask("status", antProject,  directory, cmdLine, null, null, Project.MSG_INFO){
+		        public void handleStdout(String line) {
+		            buffer.append(line);
+		            buffer.append("\n");
+		        }
+			}.execute();
+	    }
+	    catch(Exception e) {
+	    	//Swallowed....
+	    	isRepository= false;
+	    }
+		String result= buffer.toString();
+		if( result.startsWith("fatal:") ) {
+			antProject.log("Dir: '"+ directory + "' appears not to be a repository, received: "+ result + "\n... from git status");
+			isRepository= false;
+		}
+		return isRepository;
+	}
+
+	private void doGitReset(Project antProject, String directory ) {
+		antProject.log("Resetting (the git way)... ");
+		Commandline cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("reset");
+		cmdLine.createArgument().setValue("--hard");
+		new MyExecTask("reset", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+	}
+	private void doGitClone(Project antProject, String directory) {
+		antProject.log("Cloning git repository from: "+ getRepositoryUrl());
+		Commandline cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("clone");
+		cmdLine.createArgument().setValue(getRepositoryUrl());
+		cmdLine.createArgument().setValue(".");
+		new MyExecTask("clone", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+	}
+
+	private void doGitClean(Project antProject, String directory) {
+		antProject.log("Cleaning (the git way)... ");
+		Commandline cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("clean");
+		cmdLine.createArgument().setValue("-d");
+		cmdLine.createArgument().setValue("-x");
+		cmdLine.createArgument().setValue("-f");
+		new MyExecTask("clean", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
 	}
 
 	public void label(Build build, Project antProject) {
 		// TODO Auto-generated method stub
-
 	}
 
 	public Revisions getRevisionsSince(Date sinceDate,
@@ -126,17 +235,10 @@ public class GitAdaptor extends Vcs {
 	}
 
 	public void cleanupCheckout(Schedule workingSchedule, Project antProject) {
-		antProject.log("Cleaning (the git way)... ");
-		Commandline cmdLine = buildGitExecutable();
 		try {
-			cmdLine.clearArgs();
-			cmdLine.createArgument().setValue("clean");
-			cmdLine.createArgument().setValue("-d");
-			cmdLine.createArgument().setValue("-x");
-			cmdLine.createArgument().setValue("-f");
-			new MyExecTask("clean", antProject, workingSchedule.getWorkDirRaw(), cmdLine, null, null, Project.MSG_INFO).execute();
+			doGitClean( antProject, workingSchedule.getWorkDirRaw() );
 		}
-		catch( BuildException e ) {
+		catch( Exception e ) {
 			antProject.log("Problem doing the clean, the git way: '"+ e.getMessage() +"' falling back to old-skool delete");
 			super.cleanupCheckout(workingSchedule, antProject);
 		}
