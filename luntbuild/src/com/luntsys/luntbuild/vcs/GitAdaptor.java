@@ -155,8 +155,18 @@ public class GitAdaptor extends Vcs {
 			}
 		}
 
+		doGitPull(antProject, directory);
+
 		// At this point we've either cleaned ourselves up or cloned fresh.
 		doGitCheckout(antProject, directory, versionToBuild);
+	}
+
+	private void doGitPull(Project antProject, String directory) {
+		Commandline cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("pull");
+		cmdLine.createArgument().setValue("origin");
+		new MyExecTask("pull", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
 	}
 
 	private void doGitCheckout(Project antProject, String directory, String versionToBuild) {
@@ -166,7 +176,6 @@ public class GitAdaptor extends Vcs {
 		cmdLine.createArgument().setValue("checkout");
 		cmdLine.createArgument().setValue(versionToBuild);
 		new MyExecTask("reset", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
-
 	}
 
 	private boolean isGitRepository(Project antProject, String directory) {
