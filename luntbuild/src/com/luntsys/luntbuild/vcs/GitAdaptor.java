@@ -376,7 +376,7 @@ public class GitAdaptor extends Vcs {
         Commandline cmdLine = buildGitExecutable();
         cmdLine.clearArgs();
         cmdLine.createArgument().setValue("whatchanged");
-        cmdLine.createArgument().setValue("--since=\""+ rfc2822Formatter.format(sinceDate)  +"\"");
+        cmdLine.createArgument().setValue("--since="+  Long.toString( sinceDate.getTime() / 1000 ) );
         cmdLine.createArgument().setValue("--reverse");
 
         final LogEntry logEntry= new LogEntry();
@@ -384,6 +384,7 @@ public class GitAdaptor extends Vcs {
 
         	private boolean firstCommit= true;
         	public void handleStdout(String line)  {
+        		antProject.log(line, Project.MSG_VERBOSE);
             	if( line.startsWith("commit") ){
             		if( !firstCommit ) {
             			handleLogEntry(logEntry, revisions, sinceDate);
