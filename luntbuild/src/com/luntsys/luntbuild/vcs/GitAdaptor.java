@@ -1,13 +1,13 @@
 package com.luntsys.luntbuild.vcs;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-
-import sun.security.action.GetLongAction;
 
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
@@ -18,6 +18,8 @@ import com.luntsys.luntbuild.utility.Luntbuild;
 import com.luntsys.luntbuild.utility.MyExecTask;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
+import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
+import com.luntsys.luntbuild.vcs.SvnExeAdaptor.SvnRevisions;
 
 /**
  * Git VCS adaptor implementation.
@@ -33,6 +35,8 @@ public class GitAdaptor extends Vcs {
 	private String repositoryUrl;
 	private String gitDir;
 	private String branch;
+
+	private static final String RFC2822_PATTERN = "EEE MMM dd HH:mm:ss yyyy z";
 
 	public String getDisplayName() {
 		return "Git";
@@ -111,10 +115,13 @@ public class GitAdaptor extends Vcs {
 		return properties;
 	}
 
+	private String getActiveBranch() {
+		return Luntbuild.isEmpty(this.getBranch())? "master" :this.getBranch();
+	}
 	public void checkoutActually(Build build, Project antProject) {
 
 		// Start off assuming we want to checkout the current branch
-		String versionToBuild=  Luntbuild.isEmpty(this.getBranch())? "master" :this.getBranch();
+		String versionToBuild=  this.getActiveBranch();
 
 		if( build.isRebuild() ) {
 			versionToBuild= Luntbuild.getLabelByVersion(build.getVersion());
@@ -126,12 +133,11 @@ public class GitAdaptor extends Vcs {
         else
         	doClean= false;
 
-        checkout(build, antProject, versionToBuild, doClean);
+        checkout(build.getSchedule().getWorkDirRaw(), antProject, versionToBuild, doClean);
 
 	}
 
-	private void checkout(Build build, Project antProject, String versionToBuild, boolean doClean) {
-		String directory= build.getSchedule().getWorkDirRaw();
+	private void checkout(String directory, Project antProject, String versionToBuild, boolean doClean) {
 
 		boolean isGitRepo= isGitRepository(antProject, directory);
 		if( doClean && isGitRepo ) {
@@ -155,13 +161,13 @@ public class GitAdaptor extends Vcs {
 			}
 		}
 
-		doGitPull(antProject, directory);
+		doGitFetchAndRepositoryTidy(antProject, directory);
 
 		// At this point we've either cleaned ourselves up or cloned fresh.
 		doGitCheckout(antProject, directory, versionToBuild);
 	}
 
-	private void doGitPull(Project antProject, String directory) {
+	private void doGitFetchAndRepositoryTidy(Project antProject, String directory) {
 		// Because tags could be deleted remotely we don't want to have stuff
 		// here that ought not to be (it may get pushed back upstream, which would
 		// get mighty confusing!) .. So we delete all our local tags and re-fetch em.
@@ -191,11 +197,17 @@ public class GitAdaptor extends Vcs {
 		// Pull down all the branch refs (pruning out dead branches)
 		cmdLine = buildGitExecutable();
 		cmdLine.clearArgs();
-		cmdLine.createArgument().setValue("pull");
-		cmdLine.createArgument().setValue("--prune");
-		cmdLine.createArgument().setValue("origin");
-		new MyExecTask("pull", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG).execute();
+		cmdLine.createArgument().setValue("fetch");
+		cmdLine.createArgument().setValue("--all");
+		new MyExecTask("fetch", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG).execute();
 
+		// Pruning out dead branches)
+		cmdLine = buildGitExecutable();
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("remote");
+		cmdLine.createArgument().setValue("prune");
+		cmdLine.createArgument().setValue("origin");
+		new MyExecTask("Prune", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG).execute();
 	}
 
 	private void doGitCheckout(Project antProject, String directory, String versionToBuild) {
@@ -204,7 +216,18 @@ public class GitAdaptor extends Vcs {
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("checkout");
 		cmdLine.createArgument().setValue(versionToBuild);
-		new MyExecTask("reset", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		new MyExecTask("checkout", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+
+		// If this is a local branch (not a tag) then we may need to pull .. if we try this
+		// on a tag (detached-head) we will get errors, so suppress em :(
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("pull");
+		try {
+			new MyExecTask("pull", antProject,  directory, cmdLine, null, null, -1).execute();
+		}
+		catch(BuildException e) {
+			// This makes me a bad person :(
+		}
 	}
 
 	private boolean isGitRepository(Project antProject, String directory) {
@@ -242,6 +265,9 @@ public class GitAdaptor extends Vcs {
 		new MyExecTask("reset", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
 	}
 	private void doGitClone(Project antProject, String directory) {
+		// Make sure we're really clean before we do this
+		Luntbuild.cleanupDir(directory);
+
 		antProject.log("Cloning git repository from: "+ getRepositoryUrl());
 		Commandline cmdLine = buildGitExecutable();
 		cmdLine.clearArgs();
@@ -249,6 +275,31 @@ public class GitAdaptor extends Vcs {
 		cmdLine.createArgument().setValue(getRepositoryUrl());
 		cmdLine.createArgument().setValue(".");
 		new MyExecTask("clone", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+
+		// Setup some useful config settings.
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("config");
+		cmdLine.createArgument().setValue("diff.renames");
+		cmdLine.createArgument().setValue("copy");
+		new MyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("config");
+		cmdLine.createArgument().setValue("core.autocrlf");
+		cmdLine.createArgument().setValue("false");
+		new MyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("config");
+		cmdLine.createArgument().setValue("core.filemode");
+		cmdLine.createArgument().setValue("false");
+		new MyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+
+		cmdLine.clearArgs();
+		cmdLine.createArgument().setValue("config");
+		cmdLine.createArgument().setValue("core.ignorecase");
+		cmdLine.createArgument().setValue("true");
+		new MyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
 	}
 
 	private void doGitClean(Project antProject, String directory) {
@@ -283,10 +334,97 @@ public class GitAdaptor extends Vcs {
 		// The local tags will get blitzed on the next pull /clean anyway so forget about bothering with cleanup ;)
 	}
 
-	public Revisions getRevisionsSince(Date sinceDate,
-			Schedule workingSchedule, Project antProject) {
-		// TODO Auto-generated method stub
-		return null;
+	private void handleLogEntry(LogEntry entry, Revisions revisions, Date sinceDate) {
+        if (!entry.date.before(sinceDate)) {
+
+			// Looks like we've already seen a commit log entry , we need to save that one off, and create a new one
+			// End of commit log entry.
+			List logs= revisions.getChangeLogs();
+	        revisions.addEntryToLastLog(entry.revision, entry.author,SynchronizedDateFormatter.formatDate(entry.date), entry.message.toString());
+			revisions.getChangeLogins().add(entry.author);
+
+	        logs.add("----------------------------------------------------------------------------------------------------------------------");
+	        logs.add(  entry.revision + " | " + entry.author+ " | " + entry.date.toString());
+	        logs.add("Changed paths:");
+
+	        if( entry.paths.size() >0 ) {
+	        	for( int i=0;i<entry.paths.size();i++ ) {
+	        		String pathModification= (String)entry.paths.get(i);
+	        		revisions.addPathToLastEntry(pathModification, "?", entry.revision);
+	        		logs.add( pathModification );
+	        	}
+	        	revisions.setFileModified(true);
+	        }
+
+	        logs.add(entry.message.toString());
+        }
+	}
+
+	public Revisions getRevisionsSince(final Date sinceDate, final Schedule workingSchedule, final Project antProject) {
+
+		// We need to make sure we've checked out the correct branch before asking this question.
+		checkout( workingSchedule.getWorkDirRaw(), antProject, getActiveBranch(), false);
+
+		final SimpleDateFormat rfc2822Formatter = new SimpleDateFormat(RFC2822_PATTERN);
+        String workingDir = workingSchedule.getWorkDirRaw();
+        final Revisions revisions = new Revisions();
+        revisions.addLog(this.getClass().getName(), toString());
+        revisions.getChangeLogs().add("*************************************************************");
+        revisions.getChangeLogs().add(toString());
+        revisions.getChangeLogs().add("");
+
+        Commandline cmdLine = buildGitExecutable();
+        cmdLine.clearArgs();
+        cmdLine.createArgument().setValue("whatchanged");
+        cmdLine.createArgument().setValue("--since=\""+ rfc2822Formatter.format(sinceDate)  +"\"");
+        cmdLine.createArgument().setValue("--reverse");
+
+        final LogEntry logEntry= new LogEntry();
+        new MyExecTask("WhatChanged", antProject, workingDir, cmdLine, null, null, Project.MSG_INFO) {
+
+        	private boolean firstCommit= true;
+        	public void handleStdout(String line)  {
+            	if( line.startsWith("commit") ){
+            		if( !firstCommit ) {
+            			handleLogEntry(logEntry, revisions, sinceDate);
+                        //Start Over.
+                        logEntry.reset();
+            		}
+            		logEntry.revision= line.substring(7).trim();
+            		firstCommit= false;
+            	}
+            	else if( line.startsWith("Author:") ) {
+            		int toIndex= line.indexOf("<");
+            		logEntry.author= line.substring(8, toIndex).trim();
+            	}
+            	else if( line.startsWith("Date:") ) {
+            		try {
+            			logEntry.date= rfc2822Formatter.parse( line.substring(5).trim() );
+					} catch (ParseException e) {
+						throw new BuildException(e);
+					}
+            	}
+            	else if( line.startsWith(":") ) {
+        			// Path modification
+            		logEntry.paths.add(line);
+            	}
+            	else if ( line.equals("") ) {
+            		// Gap
+            	}
+            	else {
+            		logEntry.message.append(line);
+            		logEntry.message.append("\n");
+            	}
+
+            }
+        }.execute();
+
+        // Handle the trailing log entry (if there was one).
+        if( logEntry.isChanged() ) {
+        	handleLogEntry( logEntry, revisions, sinceDate);
+        }
+
+		return revisions;
 	}
 
 	public void cleanupCheckout(Schedule workingSchedule, Project antProject) {
@@ -405,6 +543,25 @@ public class GitAdaptor extends Vcs {
         else
             cmdLine.setExecutable(Luntbuild.concatPath(getGitDir(), "git"));
         return cmdLine;
+    }
+
+    private class LogEntry {
+       	public String author= "";
+       	public Date date=null;
+       	public StringBuffer message= new StringBuffer();
+       	public String revision="";
+       	public List paths= new ArrayList();
+       	public void reset() {
+           	author= "";
+           	date=null;
+           	message= new StringBuffer();
+           	revision="";
+           	paths= new ArrayList();
+       	}
+
+       	public boolean isChanged() {
+       		return !author.equals("");
+       	}
     }
 
 }
