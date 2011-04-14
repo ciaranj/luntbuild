@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.Environment;
 
 import com.luntsys.luntbuild.ant.Commandline;
 import com.luntsys.luntbuild.db.Build;
@@ -19,7 +20,6 @@ import com.luntsys.luntbuild.utility.MyExecTask;
 import com.luntsys.luntbuild.utility.OgnlHelper;
 import com.luntsys.luntbuild.utility.Revisions;
 import com.luntsys.luntbuild.utility.SynchronizedDateFormatter;
-import com.luntsys.luntbuild.vcs.SvnExeAdaptor.SvnRevisions;
 
 /**
  * Git VCS adaptor implementation.
@@ -178,7 +178,7 @@ public class GitAdaptor extends Vcs {
 		cmdLine.createArgument().setValue("tag");
 		cmdLine.createArgument().setValue("-l");
 		final List tags= new ArrayList();
-		new MyExecTask("ListTags", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG){
+		new ErrorLoggingMyExecTask("ListTags", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE){
 	        public void handleStdout(String line) {
 	            tags.add(line);
 	        }
@@ -189,7 +189,7 @@ public class GitAdaptor extends Vcs {
 				cmdLine.createArgument().setValue("tag");
 				cmdLine.createArgument().setValue("-d");
 				cmdLine.createArgument().setValue((String)tags.get(i));
-				new MyExecTask("DeleteTag", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG).execute();
+				new ErrorLoggingMyExecTask("DeleteTag", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 			}
 		}
 
@@ -199,7 +199,8 @@ public class GitAdaptor extends Vcs {
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("fetch");
 		cmdLine.createArgument().setValue("--all");
-		new MyExecTask("fetch", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG).execute();
+		cmdLine.createArgument().setValue("--quiet");
+		new ErrorLoggingMyExecTask("fetch", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 
 		// Pruning out dead branches)
 		cmdLine = buildGitExecutable();
@@ -207,7 +208,7 @@ public class GitAdaptor extends Vcs {
 		cmdLine.createArgument().setValue("remote");
 		cmdLine.createArgument().setValue("prune");
 		cmdLine.createArgument().setValue("origin");
-		new MyExecTask("Prune", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG).execute();
+		new ErrorLoggingMyExecTask("Prune", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 	}
 
 	private void doGitCheckout(Project antProject, String directory, String versionToBuild) {
@@ -216,14 +217,15 @@ public class GitAdaptor extends Vcs {
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("checkout");
 		cmdLine.createArgument().setValue(versionToBuild);
-		new MyExecTask("checkout", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		cmdLine.createArgument().setValue("--quiet");
+		new ErrorLoggingMyExecTask("checkout", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 
 		// If this is a local branch (not a tag) then we may need to pull .. if we try this
 		// on a tag (detached-head) we will get errors, so suppress em :(
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("pull");
 		try {
-			new MyExecTask("pull", antProject,  directory, cmdLine, null, null, -1).execute();
+			new ErrorLoggingMyExecTask("pull", antProject,  directory, cmdLine, null, null, -1).execute();
 		}
 		catch(BuildException e) {
 			// This makes me a bad person :(
@@ -237,7 +239,7 @@ public class GitAdaptor extends Vcs {
 		cmdLine.createArgument().setValue("status");
 	    final StringBuffer buffer = new StringBuffer();
 	    try {
-			new MyExecTask("status", antProject,  directory, cmdLine, null, null, Project.MSG_DEBUG){
+			new ErrorLoggingMyExecTask("status", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE){
 		        public void handleStdout(String line) {
 		            buffer.append(line);
 		            buffer.append("\n");
@@ -262,7 +264,7 @@ public class GitAdaptor extends Vcs {
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("reset");
 		cmdLine.createArgument().setValue("--hard");
-		new MyExecTask("reset", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		new ErrorLoggingMyExecTask("reset", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 	}
 	private void doGitClone(Project antProject, String directory) {
 		// Make sure we're really clean before we do this
@@ -274,32 +276,32 @@ public class GitAdaptor extends Vcs {
 		cmdLine.createArgument().setValue("clone");
 		cmdLine.createArgument().setValue(getRepositoryUrl());
 		cmdLine.createArgument().setValue(".");
-		new MyExecTask("clone", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		new ErrorLoggingMyExecTask("clone", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 
 		// Setup some useful config settings.
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("config");
 		cmdLine.createArgument().setValue("diff.renames");
 		cmdLine.createArgument().setValue("copy");
-		new MyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		new ErrorLoggingMyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("config");
 		cmdLine.createArgument().setValue("core.autocrlf");
 		cmdLine.createArgument().setValue("false");
-		new MyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		new ErrorLoggingMyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("config");
 		cmdLine.createArgument().setValue("core.filemode");
 		cmdLine.createArgument().setValue("false");
-		new MyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		new ErrorLoggingMyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("config");
 		cmdLine.createArgument().setValue("core.ignorecase");
 		cmdLine.createArgument().setValue("true");
-		new MyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		new ErrorLoggingMyExecTask("config", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 	}
 
 	private void doGitClean(Project antProject, String directory) {
@@ -310,7 +312,7 @@ public class GitAdaptor extends Vcs {
 		cmdLine.createArgument().setValue("-d");
 		cmdLine.createArgument().setValue("-x");
 		cmdLine.createArgument().setValue("-f");
-		new MyExecTask("clean", antProject,  directory, cmdLine, null, null, Project.MSG_INFO).execute();
+		new ErrorLoggingMyExecTask("clean", antProject,  directory, cmdLine, null, null, Project.MSG_VERBOSE).execute();
 	}
 
 	public void label(Build build, Project antProject) {
@@ -320,7 +322,7 @@ public class GitAdaptor extends Vcs {
 		cmdLine.clearArgs();
 		cmdLine.createArgument().setValue("tag");
 		cmdLine.createArgument().setValue(Luntbuild.getLabelByVersion(build.getVersion()));
-		new MyExecTask("Tag", antProject,  build.getSchedule().getWorkDirRaw(), cmdLine, null, null, Project.MSG_INFO).execute();
+		new ErrorLoggingMyExecTask("Tag", antProject,  build.getSchedule().getWorkDirRaw(), cmdLine, null, null, Project.MSG_INFO).execute();
 
 		antProject.log("Pushing version tag upstream");
 		// Push it.
@@ -329,7 +331,7 @@ public class GitAdaptor extends Vcs {
 		cmdLine.createArgument().setValue("push");
 		cmdLine.createArgument().setValue("origin");
 		cmdLine.createArgument().setValue(Luntbuild.getLabelByVersion(build.getVersion()));
-		new MyExecTask("Push", antProject,  build.getSchedule().getWorkDirRaw(), cmdLine, null, null, Project.MSG_INFO).execute();
+		new ErrorLoggingMyExecTask("Push", antProject,  build.getSchedule().getWorkDirRaw(), cmdLine, null, null, Project.MSG_VERBOSE).execute();
 
 		// The local tags will get blitzed on the next pull /clean anyway so forget about bothering with cleanup ;)
 	}
@@ -380,7 +382,7 @@ public class GitAdaptor extends Vcs {
         cmdLine.createArgument().setValue("--reverse");
 
         final LogEntry logEntry= new LogEntry();
-        new MyExecTask("WhatChanged", antProject, workingDir, cmdLine, null, null, Project.MSG_INFO) {
+        new ErrorLoggingMyExecTask("WhatChanged", antProject, workingDir, cmdLine, null, null, Project.MSG_VERBOSE) {
 
         	private boolean firstCommit= true;
         	public void handleStdout(String line)  {
@@ -565,4 +567,13 @@ public class GitAdaptor extends Vcs {
        	}
     }
 
+    private class ErrorLoggingMyExecTask extends MyExecTask {
+    	public ErrorLoggingMyExecTask(String taskName, Project project, String workingDir, Commandline cmdLine, Environment env, String input, int outputPriority) {
+    		super(taskName, project, workingDir, cmdLine, env, input, outputPriority);
+    	}
+
+    	public void handleStderr(String line) {
+    		this.getProject().log(line, Project.MSG_ERR);
+    	}
+    }
 }
